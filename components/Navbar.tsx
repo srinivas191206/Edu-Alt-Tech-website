@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, ArrowUpRight, LogOut, User, Layout } from 'lucide-react';
-import { onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
+// Use type-only import for User and standard modular imports for functions
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import type { User as FirebaseUser } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { LINKS } from '../constants';
 
@@ -19,7 +21,7 @@ const Navbar: React.FC = () => {
     };
     window.addEventListener('scroll', handleScroll);
     
-    // Listen for auth state changes
+    // Listen for auth state changes using the modular API
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });

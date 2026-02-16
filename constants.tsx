@@ -15,50 +15,18 @@ export const TEAM: TeamMember[] = [
     role: "CEO",
     phone: "+91 80191 25121",
     email: "alrihabchandhinimohammed@gmail.com",
-    image: "https://picsum.photos/seed/alrihab/400/400"
+    image: "https://picsum.photos/seed/alrihab/400/400",
+    linkedin: "https://www.linkedin.com/in/al-rihab-chandhini-mohammed-745160296/"
   },
   {
     name: "CH. Uma Krishna Kanth",
     role: "CFO",
     phone: "+91 91215 05879",
     email: "ukkukk97@gmail.com",
-    image: "https://picsum.photos/seed/uma/400/400"
+    image: "https://picsum.photos/seed/uma/400/400",
+    linkedin: "https://www.linkedin.com/in/chokkapu-uma-krishna-kanth-50a502288/"
   },
-  {
-    name: "Vinukonda Ranadeep",
-    role: "CTO",
-    phone: "+91 8919473722",
-    email: "viranadeep@gmail.com",
-    image: "https://picsum.photos/seed/ranadeep/400/400"
-  },
-  {
-    name: "Kakara Sandeep",
-    role: "CMO",
-    phone: "+91 93461 05182",
-    email: "sandeepkakara2005@gmail.com",
-    image: "https://picsum.photos/seed/sandeep/400/400"
-  },
-  {
-    name: "Akula Venkat Surya Satyanarayana",
-    role: "COO",
-    phone: "+91 81438 53022",
-    email: "akulasatish49@gmail.com",
-    image: "https://picsum.photos/seed/venkat/400/400"
-  },
-  {
-    name: "Byra Lava Raju",
-    role: "Customer Service Manager",
-    phone: "+91 8497981640",
-    email: "lavaraju5751@gmail.com",
-    image: "https://picsum.photos/seed/lavaraju/400/400"
-  },
-  {
-    name: "Gnana Sri Bathina",
-    role: "CHRO",
-    phone: "+91 7569197763",
-    email: "gnanasribathinagmail.com",
-    image: "https://picsum.photos/seed/gnanasri/400/400"
-  }
+
 ];
 
 export const HOW_IT_WORKS: FeatureCard[] = [

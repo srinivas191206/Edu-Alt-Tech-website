@@ -31,9 +31,16 @@ const Team: React.FC = () => {
                     <a href={`mailto:${member.email}`} className="p-3 bg-white rounded-full text-slate-900 hover:bg-[#90EE90] transition-colors">
                       <Mail className="w-5 h-5" />
                     </a>
-                    <a href="#" className="p-3 bg-white rounded-full text-slate-900 hover:bg-[#90EE90] transition-colors">
-                      <Linkedin className="w-5 h-5" />
-                    </a>
+                    {member.linkedin && (
+                      <a 
+                        href={member.linkedin} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="p-3 bg-white rounded-full text-slate-900 hover:bg-[#90EE90] transition-colors"
+                      >
+                        <Linkedin className="w-5 h-5" />
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
