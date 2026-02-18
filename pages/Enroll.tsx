@@ -19,8 +19,8 @@ const Enroll: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Replace this URL with your Google Apps Script Web App URL
-      const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+      // Google Apps Script Web App URL for enrollment tracking
+      const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTwWclKSEHufZYCteDWd2IE9oLMuTBMcEeu7s7V8iAFyuX4JmJMP-EsQetgxkcca6Yzg/exec';
 
       const response = await fetch(SCRIPT_URL, {
         method: 'POST',
