@@ -18,10 +18,10 @@ const Login: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
+
       // Check if email is verified
       if (!userCredential.user.emailVerified) {
         // Sign out immediately
@@ -48,7 +48,7 @@ const Login: React.FC = () => {
     setGoogleLoading(true);
     setError('');
     const provider = new GoogleAuthProvider();
-    
+
     try {
       const result = await signInWithPopup(auth, provider);
       // Google accounts are verified by default
@@ -70,7 +70,7 @@ const Login: React.FC = () => {
       <Link to="/" className="mb-12 inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to Home
       </Link>
-      
+
       <div className="w-full max-w-md bg-white p-10 md:p-12 rounded-[2.5rem] shadow-2xl shadow-slate-200 border border-slate-100">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold text-slate-900 mb-2 tracking-tight">Welcome Back</h1>
@@ -89,8 +89,8 @@ const Login: React.FC = () => {
               <label className="block text-sm font-bold text-slate-700 mb-2">Email</label>
               <div className="relative">
                 <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -106,8 +106,8 @@ const Login: React.FC = () => {
               </div>
               <div className="relative">
                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -118,7 +118,7 @@ const Login: React.FC = () => {
             </div>
           </div>
 
-          <button 
+          <button
             type="submit"
             disabled={loading || googleLoading}
             className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all shadow-lg text-lg flex items-center justify-center gap-2"
@@ -135,7 +135,7 @@ const Login: React.FC = () => {
             </div>
           </div>
 
-          <button 
+          <button
             type="button"
             onClick={handleGoogleLogin}
             disabled={loading || googleLoading}
@@ -167,7 +167,7 @@ const Login: React.FC = () => {
               </>
             )}
           </button>
-          
+
           <div className="text-center pt-4">
             <p className="text-slate-500 text-sm">
               Don't have an account? <Link to="/signup" className="font-bold text-slate-900 hover:text-emerald-600 transition-colors underline underline-offset-4">Sign Up</Link>

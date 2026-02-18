@@ -29,7 +29,7 @@ const Signup: React.FC = () => {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      
+
       // Update the user profile with the name
       await updateProfile(userCredential.user, {
         displayName: name
@@ -60,7 +60,7 @@ const Signup: React.FC = () => {
       <Link to="/" className="mb-12 inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to Home
       </Link>
-      
+
       <div className="w-full max-w-xl bg-white p-10 md:p-12 rounded-[2.5rem] shadow-2xl shadow-slate-200 border border-slate-100">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold text-slate-900 mb-2 tracking-tight">Create Account</h1>
@@ -76,8 +76,8 @@ const Signup: React.FC = () => {
         <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleSignup}>
           <div className="md:col-span-2">
             <label className="block text-sm font-bold text-slate-700 mb-2">Full Name</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -87,8 +87,8 @@ const Signup: React.FC = () => {
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">Email</label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -98,8 +98,8 @@ const Signup: React.FC = () => {
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">Phone</label>
-            <input 
-              type="tel" 
+            <input
+              type="tel"
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
@@ -109,8 +109,8 @@ const Signup: React.FC = () => {
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">Password</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -120,8 +120,8 @@ const Signup: React.FC = () => {
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">Confirm Password</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -131,7 +131,7 @@ const Signup: React.FC = () => {
           </div>
 
           <div className="md:col-span-2 pt-4">
-            <button 
+            <button
               type="submit"
               disabled={loading}
               className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all shadow-lg text-lg flex items-center justify-center gap-2"

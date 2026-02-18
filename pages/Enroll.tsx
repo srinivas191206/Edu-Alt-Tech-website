@@ -14,18 +14,36 @@ const Enroll: React.FC = () => {
     goal: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulation of submission
-    setTimeout(() => {
+
+    try {
+      // Replace this URL with your Google Apps Script Web App URL
+      const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Google Apps Script requires no-cors for simple POST
+        cache: 'no-cache',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
       setIsSubmitting(false);
       setIsDone(true);
-      
-      // We open the form in a new tab so the user can easily "come back" to this app
-      window.open(LINKS.enroll, '_blank');
-    }, 1500);
+
+      // Delay opening the form to ensure user sees the "Step 1 Complete" message
+      setTimeout(() => {
+        window.open(LINKS.enroll, '_blank');
+      }, 2000);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('There was an error submitting your enrollment. Please try again.');
+      setIsSubmitting(false);
+    }
   };
 
   if (isDone) {
@@ -43,16 +61,16 @@ const Enroll: React.FC = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-            <a 
-              href={LINKS.enroll} 
-              target="_blank" 
+            <a
+              href={LINKS.enroll}
+              target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all shadow-xl flex items-center justify-center gap-2 group"
             >
               Didn't open? Click here <ExternalLink className="w-4 h-4" />
             </a>
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="w-full sm:w-auto px-8 py-4 bg-white text-slate-900 font-bold rounded-2xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition-all flex items-center justify-center gap-2"
             >
               <Home className="w-4 h-4" /> Back to Home
@@ -60,10 +78,10 @@ const Enroll: React.FC = () => {
           </div>
 
           <div className="pt-8">
-             <p className="text-xs text-slate-400 uppercase tracking-widest font-bold mb-3">Redirect Progress</p>
-             <div className="w-full max-w-xs mx-auto bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                <div className="bg-emerald-500 h-full animate-[loading_2s_ease-in-out_forwards]"></div>
-             </div>
+            <p className="text-xs text-slate-400 uppercase tracking-widest font-bold mb-3">Redirect Progress</p>
+            <div className="w-full max-w-xs mx-auto bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div className="bg-emerald-500 h-full animate-[loading_2s_ease-in-out_forwards]"></div>
+            </div>
           </div>
           <style>{`
             @keyframes loading {
@@ -86,7 +104,7 @@ const Enroll: React.FC = () => {
           <p className="text-slate-600 text-lg mb-10 leading-relaxed">
             Take the first step towards a structured, accountability-driven education. Join a community of doers and bridge the execution gap.
           </p>
-          
+
           <div className="space-y-6">
             {[
               "Join a peer-driven ecosystem",
@@ -109,51 +127,51 @@ const Enroll: React.FC = () => {
             <div className="grid grid-cols-1 gap-6">
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Full Name</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   required
                   placeholder="Enter your full name"
                   className="w-full px-5 py-4 bg-slate-50 rounded-2xl border border-slate-200 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 outline-none transition-all"
                   value={formData.name}
-                  onChange={e => setFormData({...formData, name: e.target.value})}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   required
                   placeholder="name@example.com"
                   className="w-full px-5 py-4 bg-slate-50 rounded-2xl border border-slate-200 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 outline-none transition-all"
                   value={formData.email}
-                  onChange={e => setFormData({...formData, email: e.target.value})}
+                  onChange={e => setFormData({ ...formData, email: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Phone Number</label>
-                <input 
-                  type="tel" 
+                <input
+                  type="tel"
                   required
                   placeholder="+91 XXXXX XXXXX"
                   className="w-full px-5 py-4 bg-slate-50 rounded-2xl border border-slate-200 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 outline-none transition-all"
                   value={formData.phone}
-                  onChange={e => setFormData({...formData, phone: e.target.value})}
+                  onChange={e => setFormData({ ...formData, phone: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Main Goal in Learning</label>
-                <textarea 
+                <textarea
                   required
                   placeholder="What is your biggest execution hurdle?"
                   className="w-full px-5 py-4 bg-slate-50 rounded-2xl border border-slate-200 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 outline-none transition-all h-32 resize-none"
                   value={formData.goal}
-                  onChange={e => setFormData({...formData, goal: e.target.value})}
+                  onChange={e => setFormData({ ...formData, goal: e.target.value })}
                 />
               </div>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isSubmitting}
               className="w-full py-5 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-2 group text-lg"
             >
