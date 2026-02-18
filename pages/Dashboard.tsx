@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../lib/firebase';
-import { 
-  User, LogOut, Layout, BookOpen, Clock, Target, 
-  FolderPlus, FilePlus, Plus, FileText, Folder, 
-  Trash2, X, Loader2, Users, ChevronRight, 
+import {
+  User, LogOut, Layout, BookOpen, Clock, Target,
+  FolderPlus, FilePlus, Plus, FileText, Folder,
+  Trash2, X, Loader2, Users, ChevronRight,
   StickyNote, UserPlus, Search, MoreVertical, Sparkles, Brain, Zap
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 // Fix modular imports for Firebase Auth
 import { signOut, onAuthStateChanged } from 'firebase/auth';
-import { 
-  collection, addDoc, getDocs, query, 
-  orderBy, deleteDoc, doc, serverTimestamp, 
-  onSnapshot 
+import {
+  collection, addDoc, getDocs, query,
+  orderBy, deleteDoc, doc, serverTimestamp,
+  onSnapshot
 } from 'firebase/firestore';
-import { 
-  DashboardFile, DashboardFolder, DashboardNote, DashboardTeamMember 
+import {
+  DashboardFile, DashboardFolder, DashboardNote, DashboardTeamMember
 } from '../types';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // --- Modal Component ---
 const Modal: React.FC<{
@@ -49,13 +49,13 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'files' | 'notes' | 'team' | 'ai'>('files');
   const [loading, setLoading] = useState(true);
-  
+
   // Data States
   const [files, setFiles] = useState<DashboardFile[]>([]);
   const [folders, setFolders] = useState<DashboardFolder[]>([]);
   const [notes, setNotes] = useState<DashboardNote[]>([]);
   const [teamMembers, setTeamMembers] = useState<DashboardTeamMember[]>([]);
-  
+
   // AI States
   const [aiPlan, setAiPlan] = useState<string | null>(null);
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
@@ -98,7 +98,7 @@ const Dashboard: React.FC = () => {
         unsubTeam();
       };
     }
-    
+
     return () => unsubscribeAuth();
   }, [user, navigate]);
 
@@ -162,15 +162,16 @@ const Dashboard: React.FC = () => {
       alert("Please add some notes first so the AI Mentor has context for your progress.");
       return;
     }
-    
+
     setIsGeneratingPlan(true);
     setAiPlan(null);
     setActiveTab('ai');
 
     try {
-      // Create a fresh GoogleGenAI instance for the request
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      
+      // Create a fresh GoogleGenerativeAI instance for the request
+      const genAI = new GoogleGenerativeAI(import.meta.env.VITE_FIREBASE_API_KEY);
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
       const prompt = `
         You are an expert Education Strategist and Mentor at Edu Alt Tech.
         Your mission: Bridge the "Execution Gap" for the student.
@@ -199,18 +200,17 @@ const Dashboard: React.FC = () => {
         5. Motivational Closing: A discipline-focused human-first encouragement.
       `;
 
-      // Use gemini-3-pro-preview for high-reasoning complex planning tasks
-      const result = await ai.models.generateContent({
-        model: 'gemini-3-pro-preview',
-        contents: prompt,
-        config: {
+      // Generate content using the new SDK patterns
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
           temperature: 0.8,
           topP: 0.9,
-          systemInstruction: "You are the AI Mentor of Edu Alt Tech, focused on bridging the execution gap. You are practical, demanding yet encouraging, and system-heavy.",
         }
       });
 
-      setAiPlan(result.text || "I couldn't synthesize a plan at this moment. Please try again.");
+      const response = await result.response;
+      setAiPlan(response.text() || "I couldn't synthesize a plan at this moment. Please try again.");
     } catch (error) {
       console.error("AI Generation Error:", error);
       setAiPlan("The AI Mentor is currently offline or busy. Please check your connection and try again.");
@@ -220,7 +220,7 @@ const Dashboard: React.FC = () => {
   };
 
   const TabButton: React.FC<{ id: typeof activeTab; icon: React.ReactNode; label: string; count?: number }> = ({ id, icon, label, count }) => (
-    <button 
+    <button
       onClick={() => setActiveTab(id)}
       className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-bold transition-all relative ${activeTab === id ? 'bg-slate-900 text-white shadow-xl' : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-100'}`}
     >
@@ -250,7 +250,7 @@ const Dashboard: React.FC = () => {
             <p className="text-slate-500 text-lg">Manage your files, notes and team in one place.</p>
           </div>
           <div className="flex gap-4 animate-in fade-in slide-in-from-right-4 duration-500">
-             <button 
+            <button
               onClick={generateAIPlan}
               disabled={isGeneratingPlan}
               className="flex items-center gap-2 px-6 py-3 bg-[#90EE90] text-slate-900 font-bold rounded-2xl hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-200/50 disabled:opacity-50"
@@ -258,7 +258,7 @@ const Dashboard: React.FC = () => {
               {isGeneratingPlan ? <Loader2 className="w-5 h-5 animate-spin" /> : <Brain className="w-5 h-5" />}
               AI Mentor
             </button>
-             <button 
+            <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all shadow-sm"
             >
@@ -277,20 +277,20 @@ const Dashboard: React.FC = () => {
 
         {/* Content Area */}
         <div className="bg-white rounded-[3rem] p-8 md:p-12 shadow-sm border border-slate-100 min-h-[500px] relative overflow-hidden animate-in fade-in zoom-in-95 duration-500">
-          
+
           {/* Section: Files */}
           {activeTab === 'files' && (
             <div className="space-y-8">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-slate-900">File Depository</h2>
                 <div className="flex gap-3">
-                  <button 
+                  <button
                     onClick={() => setModalType('folder')}
                     className="flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl hover:bg-emerald-100 transition-colors text-sm"
                   >
                     <FolderPlus className="w-4 h-4" /> New Folder
                   </button>
-                  <button 
+                  <button
                     onClick={() => setModalType('file')}
                     className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors text-sm"
                   >
@@ -354,7 +354,7 @@ const Dashboard: React.FC = () => {
             <div className="space-y-8">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-slate-900">Personal Insights</h2>
-                <button 
+                <button
                   onClick={() => setModalType('note')}
                   className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors text-sm"
                 >
@@ -375,7 +375,7 @@ const Dashboard: React.FC = () => {
                   {notes.map(note => (
                     <div key={note.id} className="group p-8 bg-slate-50/50 rounded-[2.5rem] border border-slate-100 hover:border-emerald-200 hover:bg-white hover:shadow-xl transition-all relative overflow-hidden">
                       <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                         <button onClick={() => deleteItem('notes', note.id)} className="p-2 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors">
+                        <button onClick={() => deleteItem('notes', note.id)} className="p-2 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -399,7 +399,7 @@ const Dashboard: React.FC = () => {
             <div className="space-y-8">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-slate-900">Study Partners</h2>
-                <button 
+                <button
                   onClick={() => setModalType('member')}
                   className="flex items-center gap-2 px-5 py-2.5 bg-[#90EE90] text-slate-900 font-bold rounded-xl hover:bg-emerald-400 transition-colors text-sm"
                 >
@@ -439,7 +439,7 @@ const Dashboard: React.FC = () => {
                           </td>
                           <td className="p-6 border-b border-slate-50 text-slate-600 font-medium">{member.role || 'Member'}</td>
                           <td className="p-6 border-b border-slate-50">
-                             <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-xs font-bold rounded-full border border-emerald-100">Active</span>
+                            <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-xs font-bold rounded-full border border-emerald-100">Active</span>
                           </td>
                           <td className="p-6 border-b border-slate-50 text-right">
                             <button onClick={() => deleteItem('teamMembers', member.id)} className="p-2 text-slate-300 hover:text-red-500 transition-colors">
@@ -466,7 +466,7 @@ const Dashboard: React.FC = () => {
                   <h2 className="text-2xl font-bold text-slate-900">AI Mentor Intelligence</h2>
                 </div>
                 {aiPlan && !isGeneratingPlan && (
-                  <button 
+                  <button
                     onClick={generateAIPlan}
                     className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200 transition-colors text-sm"
                   >
@@ -497,7 +497,7 @@ const Dashboard: React.FC = () => {
                   </div>
                   <h3 className="text-xl font-bold text-slate-900 mb-2">No active roadmap</h3>
                   <p className="text-slate-400 max-w-sm mb-8">Click the AI Mentor button to transform your notes into a high-performance execution plan.</p>
-                  <button 
+                  <button
                     onClick={generateAIPlan}
                     className="px-8 py-4 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-100"
                   >
@@ -542,25 +542,25 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* --- Modals --- */}
-      
+
       {/* New Folder Modal */}
-      <Modal 
-        isOpen={modalType === 'folder'} 
-        onClose={() => setModalType(null)} 
+      <Modal
+        isOpen={modalType === 'folder'}
+        onClose={() => setModalType(null)}
         title="Create New Folder"
       >
         <form onSubmit={handleSave} className="space-y-4">
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">Folder Name</label>
-            <input 
+            <input
               type="text" required autoFocus
               className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-50 transition-all"
               placeholder="e.g., Physics Notes"
               value={formData.name}
-              onChange={e => setFormData({...formData, name: e.target.value})}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
             />
           </div>
-          <button 
+          <button
             type="submit" disabled={modalLoading}
             className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-slate-800 transition-all disabled:opacity-50"
           >
@@ -570,46 +570,46 @@ const Dashboard: React.FC = () => {
       </Modal>
 
       {/* Add File Modal */}
-      <Modal 
-        isOpen={modalType === 'file'} 
-        onClose={() => setModalType(null)} 
+      <Modal
+        isOpen={modalType === 'file'}
+        onClose={() => setModalType(null)}
         title="Add Metadata File"
       >
         <form onSubmit={handleSave} className="space-y-4">
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">File Name</label>
-            <input 
+            <input
               type="text" required autoFocus
               className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-50 transition-all"
               placeholder="lesson_1.pdf"
               value={formData.name}
-              onChange={e => setFormData({...formData, name: e.target.value})}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">Size (Label)</label>
-              <input 
+              <input
                 type="text"
                 className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-50 transition-all text-sm"
                 placeholder="2.5 MB"
                 value={formData.size}
-                onChange={e => setFormData({...formData, size: e.target.value})}
+                onChange={e => setFormData({ ...formData, size: e.target.value })}
               />
             </div>
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">Folder</label>
-              <select 
+              <select
                 className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-50 transition-all text-sm"
                 value={formData.folderId}
-                onChange={e => setFormData({...formData, folderId: e.target.value})}
+                onChange={e => setFormData({ ...formData, folderId: e.target.value })}
               >
                 <option value="">None</option>
                 {folders.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
               </select>
             </div>
           </div>
-          <button 
+          <button
             type="submit" disabled={modalLoading}
             className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-slate-800 transition-all disabled:opacity-50"
           >
@@ -619,32 +619,32 @@ const Dashboard: React.FC = () => {
       </Modal>
 
       {/* New Note Modal */}
-      <Modal 
-        isOpen={modalType === 'note'} 
-        onClose={() => setModalType(null)} 
+      <Modal
+        isOpen={modalType === 'note'}
+        onClose={() => setModalType(null)}
         title="Capture Reflection"
       >
         <form onSubmit={handleSave} className="space-y-4">
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">Title</label>
-            <input 
+            <input
               type="text" required autoFocus
               className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-50 transition-all"
               placeholder="Weekly Learnings"
               value={formData.title}
-              onChange={e => setFormData({...formData, title: e.target.value})}
+              onChange={e => setFormData({ ...formData, title: e.target.value })}
             />
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">Content</label>
-            <textarea 
+            <textarea
               className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-50 transition-all h-32 resize-none"
               placeholder="What did you execute today?"
               value={formData.content}
-              onChange={e => setFormData({...formData, content: e.target.value})}
+              onChange={e => setFormData({ ...formData, content: e.target.value })}
             />
           </div>
-          <button 
+          <button
             type="submit" disabled={modalLoading}
             className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-slate-800 transition-all disabled:opacity-50"
           >
@@ -654,33 +654,33 @@ const Dashboard: React.FC = () => {
       </Modal>
 
       {/* Add Member Modal */}
-      <Modal 
-        isOpen={modalType === 'member'} 
-        onClose={() => setModalType(null)} 
+      <Modal
+        isOpen={modalType === 'member'}
+        onClose={() => setModalType(null)}
         title="Add Study Partner"
       >
         <form onSubmit={handleSave} className="space-y-4">
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">Partner Name</label>
-            <input 
+            <input
               type="text" required autoFocus
               className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-50 transition-all"
               placeholder="e.g., Alex Smith"
               value={formData.name}
-              onChange={e => setFormData({...formData, name: e.target.value})}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
             />
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">Role / Project Goal</label>
-            <input 
+            <input
               type="text"
               className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-50 transition-all"
               placeholder="e.g., Data Science Study Lead"
               value={formData.role}
-              onChange={e => setFormData({...formData, role: e.target.value})}
+              onChange={e => setFormData({ ...formData, role: e.target.value })}
             />
           </div>
-          <button 
+          <button
             type="submit" disabled={modalLoading}
             className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-slate-800 transition-all disabled:opacity-50"
           >
