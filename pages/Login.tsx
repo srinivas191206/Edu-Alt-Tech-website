@@ -58,7 +58,8 @@ const Login: React.FC = () => {
     } catch (err: any) {
       console.error(err);
       if (err.code !== 'auth/popup-closed-by-user') {
-        setError('Failed to sign in with Google. Please try again.');
+        // Provide more detailed error message
+        setError(`Google Sign-In failed: ${err.message || 'Check your internet or Firebase Authorized Domains'}`);
       }
     } finally {
       setGoogleLoading(false);
