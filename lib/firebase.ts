@@ -3,12 +3,13 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: process.env.API_KEY || "mock-api-key",
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN || "mock-auth-domain",
-    projectId: process.env.FIREBASE_PROJECT_ID || "mock-project-id",
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "mock-storage-bucket",
-    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "mock-sender-id",
-    appId: process.env.FIREBASE_APP_ID || "mock-app-id"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 let authExport: any;
