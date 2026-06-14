@@ -30,6 +30,7 @@ export interface TechTalk {
 }
 
 export const POPULAR_PROBLEMS: LeetCodeProblem[] = [
+  { num: 1, title: 'Two Sum', topic: 'Array', videoUrl: 'https://www.youtube.com/watch?v=BQ2IJ-fouJ4', leetcodeUrl: 'https://leetcode.com/problems/two-sum/', companies: [{ name: 'Amazon', count: 108 }, { name: 'Apple', count: 43 }, { name: 'Google', count: 39 }, { name: 'Facebook', count: 22 }, { name: 'Bloomberg', count: 13 }], difficulty: 'Easy' },
   { num: 2, title: 'Best Time to Buy and Sell Stock', topic: 'Array', videoUrl: 'https://www.youtube.com/watch?v=CCQBvgPages', leetcodeUrl: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/', companies: [{ name: 'Amazon', count: 62 }, { name: 'Microsoft', count: 19 }, { name: 'Bloomberg', count: 15 }, { name: 'Facebook', count: 12 }, { name: 'Google', count: 12 }], difficulty: 'Easy' },
   { num: 3, title: 'Contains Duplicate', topic: 'Array', videoUrl: 'https://www.youtube.com/watch?v=c_q_Pc2yg_0', leetcodeUrl: 'https://leetcode.com/problems/contains-duplicate/', companies: [{ name: 'Apple', count: 15 }, { name: 'Google', count: 8 }, { name: 'Microsoft', count: 6 }, { name: 'Facebook', count: 5 }], difficulty: 'Easy' },
   { num: 4, title: 'Contains Duplicate II', topic: 'Array', videoUrl: 'https://www.youtube.com/watch?v=Te_MCY4uG-M', leetcodeUrl: 'https://leetcode.com/problems/contains-duplicate-ii/', companies: [{ name: 'Amazon', count: 6 }, { name: 'Facebook', count: 5 }, { name: 'Google', count: 2 }, { name: 'Microsoft', count: 2 }, { name: 'Bloomberg', count: 3 }], difficulty: 'Easy' },
