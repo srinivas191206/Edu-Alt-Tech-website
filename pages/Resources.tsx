@@ -19,6 +19,13 @@ const RESOURCES: ResourceItem[] = [
   { title: "OPERATING SYSTEMS", description: "Detailed operating systems study material covering all key topics", type: "pdf", category: "Computer Science", premium: false, downloads: "1.8K", url: "/resources/OPERATING%20SYSTEMS.pdf" },
   { title: "ORGANIZATIONAL BEHAVIOUR", description: "Organizational behaviour notes for management and engineering students", type: "pdf", category: "Management", premium: false, downloads: "1.5K", url: "/resources/ORGANIZATIONAL%20BEHAVIOUR.pdf" },
   { title: "R22 B.Tech CSE Course Structure & Syllabus", description: "Complete R22 regulation B.Tech CSE course structure and syllabus", type: "pdf", category: "Engineering", premium: false, downloads: "3.4K", url: "/resources/R22B.Tech.CSECourseStructureSyllabus.pdf" },
+  { title: "ARTIFICIAL INTELLIGENCE", description: "AI principles, algorithms, and applications study material", type: "pdf", category: "Computer Science", premium: false, downloads: "2.1K", url: "/resources/ARTIFICIAL%20INTELLIGENCE.pdf" },
+  { title: "BIG DATA ANALYTICS", description: "Big data technologies, analytics techniques, and tools", type: "pdf", category: "Computer Science", premium: false, downloads: "1.7K", url: "/resources/BIG%20DATA%20ANALYTICS.pdf" },
+  { title: "CLOUD COMPUTING", description: "Cloud computing concepts, architectures, and service models", type: "pdf", category: "Computer Science", premium: false, downloads: "1.9K", url: "/resources/CLOUD%20COMPUTING.pdf" },
+  { title: "CLOUD COMPUTING - Part 2", description: "Advanced cloud computing topics and case studies", type: "pdf", category: "Computer Science", premium: false, downloads: "1.4K", url: "/resources/CLOUD%20COMPUTING2.pdf" },
+  { title: "COMPILER DESIGN", description: "Compiler design principles, parsing, and code generation", type: "pdf", category: "Computer Science", premium: false, downloads: "1.6K", url: "/resources/COMPILER%20DESIGN.pdf" },
+  { title: "COMPILER DESIGN - Part 2", description: "Advanced compiler optimization and code generation techniques", type: "pdf", category: "Computer Science", premium: false, downloads: "1.2K", url: "/resources/COMPILER%20DESIGN2.pdf" },
+  { title: "COMPILER DESIGN - Part 3", description: "Compiler design advanced topics and implementation", type: "pdf", category: "Computer Science", premium: false, downloads: "1.1K", url: "/resources/COMPILER%20DESIGN3.pdf" },
   { title: "ROBOTICS & AUTOMATION", description: "Robotics and automation study material covering fundamentals to advanced topics", type: "pdf", category: "Engineering", premium: false, downloads: "1.1K", url: "/resources/ROBOTICS%20%26%20AUTOMATION.pdf" },
   { title: "SCRIPTING LANGUAGES", description: "Comprehensive notes on scripting languages including Python, Perl, and shell", type: "pdf", category: "Computer Science", premium: false, downloads: "1.3K", url: "/resources/SCRIPTING%20LANGUAGES.pdf" },
   { title: "SOCIAL MEDIA SECURITY", description: "Social media security principles, threats, and best practices", type: "pdf", category: "Computer Science", premium: false, downloads: "980", url: "/resources/SOCIAL%20MEDIA%20SECURITY.pdf" },
@@ -53,7 +60,7 @@ const typeLabels: Record<string, string> = {
   worksheet: "Worksheet",
 };
 
-const categories = ["All", "Mathematics", "Science", "English", "Social Studies", "Computer Science"];
+const categories = ["All", "Mathematics", "Science", "English", "Social Studies", "Computer Science", "Engineering", "Management"];
 
 const Resources: React.FC = () => {
   const [search, setSearch] = useState('');
