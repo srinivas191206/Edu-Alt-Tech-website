@@ -356,3 +356,32 @@ export const INTERVIEW_EXPERIENCES: InterviewExperience[] = [
 
 export const TECH_TALKS: TechTalk[] = [
 ];
+
+export interface AIProvider {
+  name: string;
+  color: string;
+  courses: string[];
+}
+
+export const AI_COURSES: AIProvider[] = [
+  { name: 'Anthropic', color: '#d97706', courses: ['Claude API Fundamentals', 'Prompt Engineering', 'AI Safety', 'Agent Development'] },
+  { name: 'Google', color: '#2563eb', courses: ['Google AI Essentials', 'Gemini for Developers', 'Generative AI Learning Path'] },
+  { name: 'Meta', color: '#166534', courses: ['Llama Tutorials', 'Responsible AI', 'Open-Source AI Development'] },
+  { name: 'NVIDIA', color: '#76b900', courses: ['Generative AI with LLMs', 'CUDA Programming', 'Deep Learning Institute'] },
+  { name: 'Microsoft', color: '#0078d4', courses: ['AI Fundamentals (AI-900)', 'Azure OpenAI', 'Copilot Development'] },
+  { name: 'OpenAI', color: '#10a37f', courses: ['Prompt Engineering', 'Agents SDK', 'OpenAI API Development'] },
+  { name: 'IBM', color: '#052fad', courses: ['AI Fundamentals', 'Machine Learning', 'Generative AI for Everyone'] },
+  { name: 'AWS', color: '#ff9900', courses: ['Generative AI Essentials', 'Amazon Bedrock', 'ML Engineer Path'] },
+  { name: 'DeepLearning.AI', color: '#7c3aed', courses: ['AI for Everyone', 'LangChain', 'RAG', 'LLM Engineering'] },
+  { name: 'Hugging Face', color: '#fbbf24', courses: ['NLP Course', 'Transformers', 'Agents Course'] },
+  { name: 'FastAI', color: '#0891b2', courses: ['Practical Deep Learning for Coders'] },
+  { name: 'Kaggle Learn', color: '#20beff', courses: ['Python', 'Machine Learning', 'Deep Learning', 'Feature Engineering'] },
+  { name: 'Stanford AI', color: '#8b0000', courses: ['CS231n: CNNs for Visual Recognition'] },
+  { name: 'MIT OpenCourseWare', color: '#a31f34', courses: ['Machine Learning', 'Artificial Intelligence', 'Linear Algebra', 'Probability'] },
+  { name: 'Full Stack Deep Learning', color: '#6366f1', courses: ['LLM Bootcamp', 'ML Systems', 'Production AI'] },
+  { name: 'DeepMind', color: '#008080', courses: ['AI Safety', 'Reinforcement Learning', 'Research Resources'] },
+  { name: 'OpenAI Cookbook', color: '#059669', courses: ['RAG Examples', 'Function Calling', 'Agents', 'API Tutorials'] },
+  { name: 'Papers With Code', color: '#1e40af', courses: ['Research Papers', 'Benchmarks', 'State-of-the-Art Models'] },
+  { name: 'AssemblyAI', color: '#dc2626', courses: ['Speech AI', 'Voice Agents', 'LLM Applications'] },
+  { name: 'Pinecone', color: '#e11d48', courses: ['Vector Databases', 'RAG', 'Semantic Search'] },
+];

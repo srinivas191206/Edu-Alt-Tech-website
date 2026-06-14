@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Youtube, Code2, BookOpen, Briefcase, Users, Sparkles, ExternalLink } from 'lucide-react';
-import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, FULL_COURSES, INTERVIEW_EXPERIENCES, TECH_TALKS } from '../data/problems';
-import type { LeetCodeProblem, CourseLink, InterviewExperience, TechTalk } from '../data/problems';
+import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, FULL_COURSES, INTERVIEW_EXPERIENCES, TECH_TALKS, AI_COURSES } from '../data/problems';
+import type { LeetCodeProblem, CourseLink, InterviewExperience, TechTalk, AIProvider } from '../data/problems';
 
-type Tab = 'problems' | 'courses' | 'interviews' | 'talks';
+type Tab = 'problems' | 'courses' | 'aicourses' | 'interviews' | 'talks';
 type ProblemSet = 'popular' | 'leetcode150';
 
 const difficultyColors: Record<string, string> = {
@@ -16,6 +16,7 @@ const difficultyColors: Record<string, string> = {
 const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
   { key: 'problems', label: 'Problems', icon: <Code2 className="w-4 h-4" /> },
   { key: 'courses', label: 'Full Courses', icon: <BookOpen className="w-4 h-4" /> },
+  { key: 'aicourses', label: 'AI Courses', icon: <Sparkles className="w-4 h-4" /> },
   { key: 'interviews', label: 'Interviews', icon: <Briefcase className="w-4 h-4" /> },
   { key: 'talks', label: 'Tech Talks', icon: <Users className="w-4 h-4" /> },
 ];
@@ -255,6 +256,39 @@ const Practice: React.FC = () => {
             {FULL_COURSES.map(c => (
               <CourseCard key={c.num} course={c} />
             ))}
+          </motion.div>
+        )}
+
+        {/* AI Courses Tab */}
+        {tab === 'aicourses' && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">Free courses and tutorials from top AI companies and universities.</p>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {AI_COURSES.map((provider, i) => (
+                <motion.div
+                  key={provider.name}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.03 }}
+                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:shadow-lg hover:border-emerald-500 transition-all duration-300"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm shrink-0" style={{ backgroundColor: provider.color }}>
+                      {provider.name.charAt(0)}
+                    </div>
+                    <h3 className="font-bold text-slate-900 dark:text-white">{provider.name}</h3>
+                  </div>
+                  <ul className="space-y-1.5">
+                    {provider.courses.map((course, j) => (
+                      <li key={j} className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                        {course}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         )}
 
