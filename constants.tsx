@@ -1,7 +1,5 @@
 
-import React from 'react';
-import { Users, Target, BookOpen, Brain, Zap, Clock, ShieldCheck, HeartHandshake } from 'lucide-react';
-import { StatItem } from './types';
+import { Users, Globe, BookOpen, Brain, Smartphone, ShieldCheck, GraduationCap, HeartHandshake, Target, Zap, Clock } from 'lucide-react';
 
 export const LINKS = {
   enroll: "https://docs.google.com/forms/d/e/1FAIpQLSeQXyJQQjPwLJt-2E1P1PYBKC89z_NsX4UJewQymFPW0C0IIw/viewform",
@@ -19,10 +17,16 @@ export interface TeamMember {
   linkedin?: string;
 }
 
-export interface FeatureCard {
+export interface Service {
   title: string;
   description: string;
   icon: string;
+  features: string[];
+}
+
+export interface StatItem {
+  value: string;
+  label: string;
 }
 
 export const TEAM: TeamMember[] = [
@@ -84,7 +88,6 @@ export const TEAM: TeamMember[] = [
     email: "vksvl2006@gmail.com",
     image: "/images/team/kavya.jpeg"
   },
-  
   {
     name: "Gnana Sri Bathina",
     role: "Human Resources",
@@ -95,33 +98,71 @@ export const TEAM: TeamMember[] = [
   }
 ];
 
-export const HOW_IT_WORKS: FeatureCard[] = [
+export const SERVICES: Service[] = [
   {
-    title: "Peer-to-peer teaching",
-    description: "Learn by teaching others, solidifying your own understanding while helping peers grow.",
-    icon: "Users"
+    title: "School Website Development",
+    description: "Custom, modern, responsive websites designed for schools and educational institutions with integrated portals.",
+    icon: "Globe",
+    features: ["Custom design & branding", "Student/parent portals", "Event calendars & newsletters", "SEO optimized", "Mobile responsive"]
   },
   {
-    title: "Mentor-guided accountability",
-    description: "Get personalized guidance and stay on track with dedicated mentors who care about your success.",
-    icon: "Target"
+    title: "Mobile App Development",
+    description: "Native and cross-platform mobile applications for schools to connect with students, parents, and staff.",
+    icon: "Smartphone",
+    features: ["iOS & Android apps", "Push notifications", "Fee payment integration", "Attendance tracking", "Real-time updates"]
   },
   {
-    title: "Structured planning",
-    description: "Follow a clear, actionable roadmap designed to bridge the gap between learning and doing.",
-    icon: "Calendar"
+    title: "School ERP Solutions",
+    description: "Complete school management system to streamline administration, academics, and communication.",
+    icon: "Brain",
+    features: ["Student information system", "Timetable & attendance", "Exam & grade management", "Fee management", "Staff management"]
   },
   {
-    title: "Assistive AI",
-    description: "Leverage cutting-edge AI tools to enhance your learning experience and boost productivity.",
-    icon: "Zap"
+    title: "AI Solutions for Schools",
+    description: "Cutting-edge AI tools to enhance teaching, learning, and administrative efficiency.",
+    icon: "Zap",
+    features: ["AI tutoring assistants", "Automated grading", "Learning analytics", "Smart content generation", "Behavior insights"]
+  },
+  {
+    title: "Curriculum Support",
+    description: "Digitally-enhanced curriculum materials and resources aligned with educational standards.",
+    icon: "BookOpen",
+    features: ["Digital lesson plans", "Interactive content", "Assessment tools", "Multi-subject coverage", "Regular updates"]
+  },
+  {
+    title: "Teacher Training Programs",
+    description: "Professional development programs to empower educators with modern teaching tools and methodologies.",
+    icon: "GraduationCap",
+    features: ["EdTech certification", "Workshop sessions", "Online & offline modes", "Ongoing support", "Pedagogy training"]
   }
 ];
 
+export const STATS: StatItem[] = [
+  { value: "50+", label: "Schools Partnered" },
+  { value: "10K+", label: "Students Reached" },
+  { value: "98%", label: "Satisfaction Rate" },
+  { value: "24/7", label: "Support Available" }
+];
 
-export const COMPARISON = [
-  { feature: "Primary Focus", traditional: "Content Heavy", altTech: "System Heavy" },
-  { feature: "Accountability", traditional: "Low Accountability", altTech: "High Accountability" },
-  { feature: "Learning Mode", traditional: "Passive Learning", altTech: "Active Participation" },
-  { feature: "Approach", traditional: "AI-First", altTech: "Human-First" }
+export const HOW_IT_WORKS = [
+  {
+    title: "Consult & Assess",
+    description: "We understand your school's unique needs, challenges, and goals through a detailed consultation.",
+    icon: "Target"
+  },
+  {
+    title: "Design & Develop",
+    description: "Our team creates custom solutions tailored to your institution's requirements and vision.",
+    icon: "Brain"
+  },
+  {
+    title: "Deploy & Train",
+    description: "We implement the solution and train your staff to ensure smooth adoption and maximum impact.",
+    icon: "Clock"
+  },
+  {
+    title: "Support & Scale",
+    description: "Ongoing support and continuous improvement to help your school grow and evolve.",
+    icon: "HeartHandshake"
+  }
 ];

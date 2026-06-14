@@ -21,6 +21,8 @@ import PatchNotes from './pages/PatchNotes';
 import Verification from './pages/Verification';
 import FlashcardDeck from './components/FlashcardDeck';
 import BehaviorInsights from './pages/BehaviorInsights';
+import Services from './pages/Services';
+import Resources from './pages/Resources';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from 'react-hot-toast';
 import AIAssistant from './components/AIAssistant';
@@ -59,6 +61,8 @@ const AppContent: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/team" element={<Team />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/resources" element={<Resources />} />
           <Route path="/peer-education" element={<PeerEducation />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:courseId" element={<CourseDetails />} />
