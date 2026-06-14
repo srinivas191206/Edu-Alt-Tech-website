@@ -4,7 +4,6 @@ import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-d
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-import Team from './pages/Team';
 import PeerEducation from './pages/PeerEducation';
 import Courses from './pages/Courses';
 import CourseDetails from './pages/CourseDetails';
@@ -23,6 +22,7 @@ import FlashcardDeck from './components/FlashcardDeck';
 import BehaviorInsights from './pages/BehaviorInsights';
 import Services from './pages/Services';
 import Resources from './pages/Resources';
+import Practice from './pages/Practice';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from 'react-hot-toast';
 import AIAssistant from './components/AIAssistant';
@@ -60,7 +60,6 @@ const AppContent: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/team" element={<Team />} />
           <Route path="/services" element={<Services />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/peer-education" element={<PeerEducation />} />
@@ -78,6 +77,7 @@ const AppContent: React.FC = () => {
           <Route path="/verify" element={<Verification />} />
           <Route path="/flashcards" element={<FlashcardDeck />} />
           <Route path="/admin/behavior" element={<BehaviorInsights />} />
+          <Route path="/practice" element={<Practice />} />
         </Routes>
       </div>
       {!isHideLayout && <Footer />}

@@ -49,7 +49,7 @@ export default function Navbar() {
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
     { name: 'Services', path: '/services' },
-    { name: 'Team', path: '/team' },
+    { name: 'Practice', path: '/practice' },
     { name: 'Resources', path: '/resources' },
     { name: 'Courses', path: '/courses' },
     { name: 'Contact', path: '/contact' },
@@ -58,6 +58,7 @@ export default function Navbar() {
   const studentLinks = [
     { name: 'Home', path: '/' },
     { name: 'Courses', path: '/courses' },
+    { name: 'Practice', path: '/practice' },
     { name: 'Resources', path: '/resources' },
     { name: 'Dashboard', path: '/dashboard' },
   ];
