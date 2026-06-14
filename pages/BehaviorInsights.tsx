@@ -28,7 +28,7 @@ const BehaviorInsights: React.FC = () => {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
       setUser(u);
-      if (u && u.email === 'viranadeep@gmail.com') {
+      if (u && u.email === 'ukkukk97@gmail.com') {
         await loadInsights();
       } else if (u) {
         navigate('/');

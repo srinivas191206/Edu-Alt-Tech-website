@@ -10,9 +10,15 @@ interface ResourceItem {
   category: string;
   premium: boolean;
   downloads: string;
+  url?: string;
 }
 
 const RESOURCES: ResourceItem[] = [
+  { title: "NON-CONVENTIONAL ENERGY SOURCES", description: "Complete notes on non-conventional energy sources for engineering students", type: "pdf", category: "Engineering", premium: false, downloads: "1.2K", url: "/resources/NON-CONVENTIONAL%20ENERGY%20SOURCES.pdf" },
+  { title: "OBJECT ORIENTED PROGRAMMING", description: "Comprehensive OOP concepts and programming notes", type: "pdf", category: "Computer Science", premium: false, downloads: "2.1K", url: "/resources/OBJECT%20ORIENTED%20PROGRAMMING.pdf" },
+  { title: "OPERATING SYSTEMS", description: "Detailed operating systems study material covering all key topics", type: "pdf", category: "Computer Science", premium: false, downloads: "1.8K", url: "/resources/OPERATING%20SYSTEMS.pdf" },
+  { title: "ORGANIZATIONAL BEHAVIOUR", description: "Organizational behaviour notes for management and engineering students", type: "pdf", category: "Management", premium: false, downloads: "1.5K", url: "/resources/ORGANIZATIONAL%20BEHAVIOUR.pdf" },
+  { title: "R22 B.Tech CSE Course Structure & Syllabus", description: "Complete R22 regulation B.Tech CSE course structure and syllabus", type: "pdf", category: "Engineering", premium: false, downloads: "3.4K", url: "/resources/R22B.Tech.CSECourseStructureSyllabus.pdf" },
   { title: "Mathematics Formula Sheet", description: "Complete collection of essential math formulas for grades 9-12", type: "pdf", category: "Mathematics", premium: false, downloads: "2.3K" },
   { title: "Physics Quick Reference", description: "Key physics concepts, laws, and equations summarized", type: "notes", category: "Science", premium: false, downloads: "1.8K" },
   { title: "Chemistry Periodic Table Guide", description: "Interactive periodic table with element properties", type: "pdf", category: "Science", premium: false, downloads: "3.1K" },
@@ -129,13 +135,23 @@ const Resources: React.FC = () => {
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">{item.description}</p>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-slate-400">{item.downloads} downloads</span>
-                <button className={`flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-all ${
-                  item.premium
-                    ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
-                    : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20'
-                }`}>
-                  <Download className="w-3 h-3" /> {item.premium ? 'Unlock' : 'Download'}
-                </button>
+                {item.url ? (
+                  <a href={item.url} download className={`flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-all ${
+                    item.premium
+                      ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
+                      : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20'
+                  }`}>
+                    <Download className="w-3 h-3" /> {item.premium ? 'Unlock' : 'Download'}
+                  </a>
+                ) : (
+                  <button className={`flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-all ${
+                    item.premium
+                      ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
+                      : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20'
+                  }`}>
+                    <Download className="w-3 h-3" /> {item.premium ? 'Unlock' : 'Download'}
+                  </button>
+                )}
               </div>
             </motion.div>
           ))}

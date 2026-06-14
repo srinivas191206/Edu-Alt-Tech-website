@@ -28,7 +28,7 @@ const Login: React.FC = () => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      if (userCredential.user.email === 'viranadeep@gmail.com') {
+      if (userCredential.user.email === 'ukkukk97@gmail.com') {
         navigate('/admin');
       } else {
         navigate('/dashboard');
@@ -80,7 +80,7 @@ const Login: React.FC = () => {
           }
         }
 
-        if (result.user.email === 'viranadeep@gmail.com') {
+        if (result.user.email === 'ukkukk97@gmail.com') {
           navigate('/admin');
         } else {
           navigate('/dashboard');

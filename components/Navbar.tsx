@@ -64,7 +64,7 @@ export default function Navbar() {
 
   const adminLinks = [{ name: 'Admin Portal', path: '/admin' }];
 
-  const isAdmin = userProfile?.role === 'admin' || user?.email === 'viranadeep@gmail.com';
+  const isAdmin = userProfile?.role === 'admin' || user?.email === 'ukkukk97@gmail.com';
   let navLinks = publicLinks;
   if (isAdmin) navLinks = adminLinks;
   else if (user) navLinks = studentLinks;

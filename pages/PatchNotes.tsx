@@ -12,7 +12,7 @@ const PatchNotes: React.FC = () => {
   const [notes, setNotes] = useState<PatchNote[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const ADMIN_EMAIL = 'viranadeep@gmail.com';
+  const ADMIN_EMAIL = 'ukkukk97@gmail.com';
 
   const containerRef = React.useRef<HTMLDivElement>(null);
 

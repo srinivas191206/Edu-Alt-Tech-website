@@ -9,7 +9,7 @@ import { Course, TeacherApplication, PatchNote, UserObject, CourseCategory } fro
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ADMIN_EMAIL = 'viranadeep@gmail.com';
+const ADMIN_EMAILS = ['ukkukk97@gmail.com'];
 
 const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -87,7 +87,7 @@ const AdminDashboard: React.FC = () => {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
-      if (!u || u.email !== ADMIN_EMAIL) {
+      if (!u || !ADMIN_EMAILS.includes(u.email || '')) {
         navigate('/');
       } else {
         fetchData();
@@ -645,11 +645,11 @@ const AdminDashboard: React.FC = () => {
                                 <div>
                                   <div className="font-black text-slate-900 dark:text-white flex items-center gap-2">
                                     {usr.name || 'Unknown Entity'}
-                                    {usr.email === ADMIN_EMAIL && (
-                                      <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500 text-white text-[8px] font-black uppercase rounded-md shadow-lg shadow-emerald-500/20">
-                                        <Database className="w-2.5 h-2.5" /> ROOT
-                                      </div>
-                                    )}
+                    {ADMIN_EMAILS.includes(usr.email) && (
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500 text-white text-[8px] font-black uppercase rounded-md shadow-lg shadow-emerald-500/20">
+                        <Database className="w-2.5 h-2.5" /> ROOT
+                      </div>
+                    )}
                                   </div>
                                   <div className="text-xs text-slate-400 font-bold uppercase tracking-wider mt-0.5">{usr.email || '0X_NOT_FOUND'}</div>
                                 </div>
@@ -676,7 +676,7 @@ const AdminDashboard: React.FC = () => {
                               </div>
                             </td>
                             <td className="px-10 py-6 text-right">
-                              {usr.email !== ADMIN_EMAIL && (
+                              {!ADMIN_EMAILS.includes(usr.email) && (
                                 <button className="p-3 text-slate-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-2xl transition-all group/btn">
                                   <Trash2 className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                                 </button>
