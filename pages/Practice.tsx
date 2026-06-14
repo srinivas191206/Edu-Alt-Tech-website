@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Youtube, Code2, BookOpen, Briefcase, Users, Sparkles, ExternalLink, ChevronDown } from 'lucide-react';
+import { Search, Youtube, Code2, BookOpen, Briefcase, Users, Sparkles, ExternalLink } from 'lucide-react';
 import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, FULL_COURSES, INTERVIEW_EXPERIENCES, TECH_TALKS } from '../data/problems';
 import type { LeetCodeProblem, CourseLink, InterviewExperience, TechTalk } from '../data/problems';
 
@@ -53,15 +53,26 @@ function ProblemCard({ problem }: { problem: LeetCodeProblem }) {
             </div>
           )}
         </div>
-        <a
-          href={problem.videoUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0 p-2 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-colors"
-          title="Watch solution"
-        >
-          <Youtube className="w-5 h-5" />
-        </a>
+        <div className="flex items-center gap-1 shrink-0">
+          <a
+            href={problem.leetcodeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors"
+            title="Solve on LeetCode"
+          >
+            <ExternalLink className="w-5 h-5" />
+          </a>
+          <a
+            href={problem.videoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-colors"
+            title="Watch solution"
+          >
+            <Youtube className="w-5 h-5" />
+          </a>
+        </div>
       </div>
     </motion.div>
   );
