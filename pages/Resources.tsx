@@ -46,6 +46,36 @@ const RESOURCES: ResourceItem[] = [
   { title: "Geography Map Workbook", description: "Printable map exercises and geography activities", type: "worksheet", category: "Social Studies", premium: false, downloads: "670" },
 ];
 
+interface AICourseProvider {
+  name: string;
+  url: string;
+  logo: string;
+  courses: string[];
+}
+
+const AI_COURSES: AICourseProvider[] = [
+  { name: "Anthropic", url: "https://anthropic.skilljar.com", logo: "https://www.anthropic.com/favicon.ico", courses: ["Claude API Fundamentals", "Prompt Engineering", "AI Safety", "Agent Development"] },
+  { name: "Google", url: "https://grow.google/ai", logo: "https://www.google.com/favicon.ico", courses: ["Google AI Essentials", "Gemini for Developers", "Generative AI Learning Path"] },
+  { name: "Meta", url: "https://ai.meta.com/resources", logo: "https://about.meta.com/favicon.ico", courses: ["Llama Tutorials", "Responsible AI", "Open-Source AI Development"] },
+  { name: "NVIDIA", url: "https://developer.nvidia.com/training", logo: "https://developer.nvidia.com/sites/default/files/favicon.ico", courses: ["Generative AI with LLMs", "CUDA Programming", "Deep Learning Institute"] },
+  { name: "Microsoft", url: "https://learn.microsoft.com/training", logo: "https://learn.microsoft.com/favicon.ico", courses: ["AI Fundamentals (AI-900)", "Azure OpenAI", "Copilot Development"] },
+  { name: "OpenAI", url: "https://academy.openai.com", logo: "https://openai.com/favicon.ico", courses: ["Prompt Engineering", "Agents SDK", "OpenAI API Development"] },
+  { name: "IBM", url: "https://skillsbuild.org", logo: "https://www.ibm.com/favicon.ico", courses: ["AI Fundamentals", "Machine Learning", "Generative AI for Everyone"] },
+  { name: "AWS", url: "https://skillbuilder.aws", logo: "https://aws.amazon.com/favicon.ico", courses: ["Generative AI Essentials", "Amazon Bedrock", "ML Engineer Path"] },
+  { name: "DeepLearning.AI", url: "https://www.deeplearning.ai", logo: "https://www.deeplearning.ai/favicon.ico", courses: ["AI for Everyone", "LangChain", "RAG", "LLM Engineering"] },
+  { name: "Hugging Face", url: "https://huggingface.co/learn", logo: "https://huggingface.co/favicon.ico", courses: ["NLP Course", "Transformers", "Agents Course"] },
+  { name: "FastAI", url: "https://course.fast.ai", logo: "https://www.fast.ai/favicon.ico", courses: ["Practical Deep Learning for Coders"] },
+  { name: "Kaggle Learn", url: "https://www.kaggle.com/learn", logo: "https://www.kaggle.com/favicon.ico", courses: ["Python", "Machine Learning", "Deep Learning", "Feature Engineering"] },
+  { name: "Stanford AI", url: "https://cs231n.stanford.edu", logo: "https://www.stanford.edu/favicon.ico", courses: ["CS231n: CNNs for Visual Recognition"] },
+  { name: "MIT OpenCourseWare", url: "https://ocw.mit.edu", logo: "https://ocw.mit.edu/favicon.ico", courses: ["Machine Learning", "Artificial Intelligence", "Linear Algebra", "Probability"] },
+  { name: "Full Stack Deep Learning", url: "https://fullstackdeeplearning.com", logo: "https://fullstackdeeplearning.com/favicon.ico", courses: ["LLM Bootcamp", "ML Systems", "Production AI"] },
+  { name: "DeepMind", url: "https://deepmind.google/learning-resources", logo: "https://deepmind.google/favicon.ico", courses: ["AI Safety", "Reinforcement Learning", "Research Resources"] },
+  { name: "OpenAI Cookbook", url: "https://github.com/openai/openai-cookbook", logo: "https://github.githubassets.com/favicons/favicon.svg", courses: ["RAG Examples", "Function Calling", "Agents", "API Tutorials"] },
+  { name: "Papers With Code", url: "https://paperswithcode.com", logo: "https://paperswithcode.com/favicon.ico", courses: ["Research Papers", "Benchmarks", "State-of-the-Art Models"] },
+  { name: "AssemblyAI", url: "https://www.assemblyai.com/blog", logo: "https://www.assemblyai.com/favicon.ico", courses: ["Speech AI", "Voice Agents", "LLM Applications"] },
+  { name: "Pinecone", url: "https://learn.pinecone.io", logo: "https://www.pinecone.io/favicon.ico", courses: ["Vector Databases", "RAG", "Semantic Search"] },
+];
+
 const typeIcons: Record<string, React.ReactNode> = {
   pdf: <FileText className="w-5 h-5" />,
   notes: <BookOpen className="w-5 h-5" />,
@@ -175,6 +205,54 @@ const Resources: React.FC = () => {
             <p className="text-slate-400 text-lg">No resources found matching your criteria.</p>
           </div>
         )}
+
+        {/* AI Courses Section */}
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-28">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-300 font-bold uppercase tracking-widest text-[10px] mb-6">
+              <Sparkles className="w-4 h-4" />
+              Free AI Courses
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] mb-6">
+              Learn AI from the <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500">Best in the World</span>
+            </h2>
+            <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">
+              Free courses and tutorials from top AI companies and universities.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {AI_COURSES.map((provider, idx) => (
+              <motion.a
+                key={idx}
+                href={provider.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.05 }}
+                className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-emerald-500 hover:-translate-y-2 transition-all duration-500 hover:shadow-xl block"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center p-2">
+                    <img src={provider.logo} alt={provider.name} className="w-full h-full object-contain"
+                      onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2310b981"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>'; }}
+                    />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{provider.name}</h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {provider.courses.map((course, ci) => (
+                    <span key={ci} className="px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+                      {course}
+                    </span>
+                  ))}
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        </motion.div>
 
         {/* CTA */}
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/10 rounded-[2rem] p-12 text-center border border-emerald-100 dark:border-emerald-800/30">
