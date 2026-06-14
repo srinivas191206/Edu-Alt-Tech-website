@@ -47,7 +47,9 @@ export default function Navbar() {
 
   const publicLinks = [
     { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
     { name: 'Services', path: '/services' },
+    { name: 'Team', path: '/team' },
     { name: 'Resources', path: '/resources' },
     { name: 'Courses', path: '/courses' },
     { name: 'Contact', path: '/contact' },
