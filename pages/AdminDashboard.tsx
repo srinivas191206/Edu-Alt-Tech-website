@@ -468,7 +468,7 @@ const AdminDashboard: React.FC = () => {
   );
 
   return (
-    <div className="h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-500/30">
       {/* Mobile Sidebar Toggle */}
       <button 
         onClick={() => setIsSidebarOpen(true)}
@@ -610,7 +610,7 @@ const AdminDashboard: React.FC = () => {
       </AnimatePresence>
 
       {/* Main Content Area */}
-      <main className="h-full overflow-y-auto md:pl-72 pt-20 md:pt-12 pb-24 px-4 sm:px-6 md:px-16">
+      <main className="md:pl-72 pt-20 md:pt-12 pb-24 px-4 sm:px-6 md:px-16">
         <div className="max-w-[1400px] mx-auto">
           {/* Header & Search */}
           <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-16">
@@ -893,6 +893,7 @@ const AdminDashboard: React.FC = () => {
                         );
                       })}
                     </div>
+                    <div className="max-h-[500px] overflow-y-auto custom-scrollbar">
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                       {(() => {
                         const staticPopular = POPULAR_PROBLEMS.map(p => ({ ...p, id: `popular-${p.num}`, _static: true as const }));
@@ -933,6 +934,7 @@ const AdminDashboard: React.FC = () => {
                         </div>
                       );})}
                       {practiceProblems.length === 0 && <p className="text-slate-400 text-sm col-span-full text-center py-12 font-medium">No admin problems yet. Use the form above to add custom problems or import static sets.</p>}
+                    </div>
                     </div>
                   </div>
                 </div>
@@ -1020,6 +1022,7 @@ const AdminDashboard: React.FC = () => {
                   </div>
                   <div className="space-y-4">
                     <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 px-2">Resource List (Static + Admin)</h3>
+                    <div className="max-h-[500px] overflow-y-auto custom-scrollbar">
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                       {[...resourcesList, ...STATIC_RESOURCES.map(r => ({ ...r, id: `static-${r.title}`, _static: true as const }))].map((r: any) => (
                         <div key={r.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all group">
@@ -1043,6 +1046,7 @@ const AdminDashboard: React.FC = () => {
                         </div>
                       ))}
                       {resourcesList.length === 0 && <p className="text-slate-400 text-sm col-span-full text-center py-12 font-medium">No admin resources yet. Use the form above to add custom resources.</p>}
+                    </div>
                     </div>
                   </div>
                 </div>
