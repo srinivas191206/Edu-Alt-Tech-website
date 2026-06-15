@@ -45,6 +45,10 @@ const AdminDashboard: React.FC = () => {
     thumbnailUrl: '', createdAt: null, createdBy: ''
   });
 
+  // Course folders
+  const [courseFolders, setCourseFolders] = useState<string[]>([]);
+  const [newFolderName, setNewFolderName] = useState('');
+
   // Practice problem states
   const [practiceProblems, setPracticeProblems] = useState<any[]>([]);
   const [newProblem, setNewProblem] = useState({ num: '', title: '', topic: '', difficulty: 'Easy', leetcodeUrl: '', videoUrl: '' });
@@ -58,13 +62,14 @@ const AdminDashboard: React.FC = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [uSnap, cSnap, aSnap, pSnap, prSnap, rSnap] = await Promise.all([
+      const [uSnap, cSnap, aSnap, pSnap, prSnap, rSnap, fSnap] = await Promise.all([
         getDocs(collection(db, 'users')),
         getDocs(collection(db, 'courses')),
         getDocs(collection(db, 'teacher_applications')),
         getDocs(query(collection(db, 'patch_notes'), orderBy('createdAt', 'desc'))),
         getDocs(query(collection(db, 'practice_problems'), orderBy('num', 'asc'))),
-        getDocs(collection(db, 'resources'))
+        getDocs(collection(db, 'resources')),
+        getDocs(collection(db, 'course_folders'))
       ]);
 
       const users = uSnap.docs.map(d => ({ uid: d.id, ...d.data() } as UserObject));
@@ -91,6 +96,7 @@ const AdminDashboard: React.FC = () => {
       setPatchNotes(pSnap.docs.map(d => ({ id: d.id, ...d.data() } as PatchNote)));
       setPracticeProblems(prSnap.docs.map(d => ({ id: d.id, ...d.data() })));
       setResourcesList(rSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+      setCourseFolders(fSnap.docs.map(d => d.data().name).filter(Boolean));
 
     } catch (e) {
       console.error("Dashboard data fetch failed", e);
@@ -365,16 +371,71 @@ const AdminDashboard: React.FC = () => {
       {/* Mobile Sidebar Toggle */}
       <button 
         onClick={() => setIsSidebarOpen(true)}
-        className="md:hidden fixed top-6 left-6 z-[60] p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg"
+        className="md:hidden fixed top-4 left-4 z-[60] p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
       >
-        <MoreVertical className="w-6 h-6" />
+        <MoreVertical className="w-5 h-5" />
       </button>
 
-      {/* Sidebar / Navigation */}
+      {/* Desktop Sidebar (always visible on md+) */}
+      <nav className="hidden md:flex fixed left-0 top-0 h-full w-72 bg-white dark:bg-[#0f172a] border-r border-slate-200/50 dark:border-slate-800/50 z-40 flex-col p-8">
+        <div className="mb-12 flex items-center gap-3">
+          <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-xl shadow-emerald-500/20">
+            <LayoutDashboard className="w-7 h-7 text-white" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-black text-xl tracking-tighter leading-none">CORE <span className="text-emerald-500">OPS</span></span>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Admin Terminal</span>
+          </div>
+        </div>
+
+        <div className="flex-1 space-y-3">
+          {[
+            { id: 'courses', label: 'Curricula', icon: ClipboardList, desc: 'Manage courses' },
+            { id: 'practice', label: 'Practice', icon: Code2, desc: 'LeetCode problems' },
+            { id: 'resources', label: 'Resources', icon: BookOpen, desc: 'PDFs & materials' },
+            { id: 'users', label: 'User Base', icon: Users, desc: 'Control access' },
+            { id: 'appointments', label: 'Applications', icon: CalendarClock, desc: 'Mentor review' },
+            { id: 'patchnotes', label: 'Deployments', icon: Database, desc: 'System updates' },
+            { id: 'system', label: 'Settings', icon: Settings, desc: 'Global config' },
+            { id: 'ai', label: 'AI Tools', icon: Sparkles, desc: 'Content generation' },
+            { id: 'behavior', label: 'Behavior', icon: Brain, desc: 'Student behavior analysis' },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => { setActiveTab(item.id as any); }}
+              className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-all relative group overflow-hidden ${
+                activeTab === item.id 
+                ? 'bg-slate-900 dark:bg-emerald-500 text-white shadow-2xl shadow-emerald-500/20' 
+                : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50'
+              }`}
+            >
+              {activeTab === item.id && (
+                <motion.div layoutId="nav-bg" className="absolute inset-0 bg-emerald-500 dark:bg-emerald-600 -z-10" />
+              )}
+              <item.icon className={`w-6 h-6 ${activeTab === item.id ? 'text-white' : 'group-hover:scale-110 transition-transform'}`} />
+              <div className="flex flex-col items-start">
+                <span className="text-sm">{item.label}</span>
+                <span className={`text-[9px] font-medium uppercase tracking-widest ${activeTab === item.id ? 'text-white/60' : 'text-slate-400'}`}>{item.desc}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-auto pt-8 border-t border-slate-100 dark:border-slate-800/50">
+          <button 
+            onClick={() => navigate('/')}
+            className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-200 dark:hover:border-rose-500/20"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Exit Console</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Sidebar (overlay, controlled by state) */}
       <AnimatePresence>
-        {(isSidebarOpen || window.innerWidth >= 768) && (
+        {isSidebarOpen && (
           <>
-            {/* Mobile Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -382,12 +443,11 @@ const AdminDashboard: React.FC = () => {
               onClick={() => setIsSidebarOpen(false)}
               className="md:hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[55]"
             />
-            
             <motion.nav 
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -100, opacity: 0 }}
-              className="fixed left-0 top-0 h-full w-72 max-w-[85vw] bg-white dark:bg-[#0f172a] border-r border-slate-200/50 dark:border-slate-800/50 z-[60] flex flex-col p-6 md:p-8 shadow-2xl md:shadow-none"
+              className="md:hidden fixed left-0 top-0 h-full w-72 max-w-[85vw] bg-white dark:bg-[#0f172a] border-r border-slate-200/50 dark:border-slate-800/50 z-[60] flex flex-col p-6 shadow-2xl"
             >
               <div className="mb-12 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -399,7 +459,7 @@ const AdminDashboard: React.FC = () => {
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Admin Terminal</span>
                   </div>
                 </div>
-                <button onClick={() => setIsSidebarOpen(false)} className="md:hidden p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                <button onClick={() => setIsSidebarOpen(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -425,9 +485,6 @@ const AdminDashboard: React.FC = () => {
                       : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50'
                     }`}
                   >
-                    {activeTab === item.id && (
-                      <motion.div layoutId="nav-bg" className="absolute inset-0 bg-emerald-500 dark:bg-emerald-600 -z-10" />
-                    )}
                     <item.icon className={`w-6 h-6 ${activeTab === item.id ? 'text-white' : 'group-hover:scale-110 transition-transform'}`} />
                     <div className="flex flex-col items-start">
                       <span className="text-sm">{item.label}</span>
@@ -511,10 +568,11 @@ const AdminDashboard: React.FC = () => {
                           <textarea required value={newCourse.description} onChange={e=>setNewCourse({...newCourse, description: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-900 transition-all outline-none font-medium resize-none" rows={4} placeholder="Describe the learning outcome..." />
                         </div>
                         <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Category</label>
+                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Category / Folder</label>
                           <select value={newCourse.category} onChange={e=>setNewCourse({...newCourse, category: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold appearance-none">
                             <option value="education">Core Education</option>
                             <option value="alternative">Alternative Skills</option>
+                            {courseFolders.map(f => <option key={f} value={f}>{f}</option>)}
                           </select>
                         </div>
                         <div>
@@ -554,6 +612,23 @@ const AdminDashboard: React.FC = () => {
                           <span className="text-2xl font-black">{coursesList.length}</span>
                         </div>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Course Folders */}
+                  <div className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-4">Course Folders</h3>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {courseFolders.map(f => (
+                        <span key={f} className="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                          {f}
+                          <button onClick={async () => { if (confirm(`Delete folder "${f}"?`)) { const snap = await getDocs(query(collection(db, 'course_folders'), where('name', '==', f))); snap.forEach(d => deleteDoc(doc(db, 'course_folders', d.id))); fetchData(); toast.success('Folder deleted'); } }} className="hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex gap-2">
+                      <input value={newFolderName} onChange={e => setNewFolderName(e.target.value)} placeholder="New folder name..." className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl outline-none font-bold text-sm" />
+                      <button onClick={async () => { if (!newFolderName.trim()) return; try { await setDoc(doc(collection(db, 'course_folders')), { name: newFolderName.trim() }); setNewFolderName(''); fetchData(); toast.success('Folder created'); } catch (e) { toast.error('Failed'); } }} className="px-5 py-3 bg-emerald-500 text-white font-bold rounded-xl text-sm">Add Folder</button>
                     </div>
                   </div>
 
@@ -697,9 +772,31 @@ const AdminDashboard: React.FC = () => {
                   </div>
                   <div className="space-y-4">
                     <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 px-2">Problem List (Static + Admin)</h3>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {['Popular', 'LeetCode 150', 'Top Interview 150'].map((setName) => {
+                        const setMap: Record<string, LeetCodeProblem[]> = { 'Popular': POPULAR_PROBLEMS, 'LeetCode 150': LEETCODE_150_PROBLEMS, 'Top Interview 150': TOP_INTERVIEW_150 };
+                        const setArr = setMap[setName];
+                        return (
+                          <button key={setName} onClick={async () => {
+                            if (!confirm(`Import all ${setArr.length} problems from "${setName}" to Firestore?`)) return;
+                            try {
+                              for (const p of setArr) {
+                                await setDoc(doc(collection(db, 'practice_problems')), { num: p.num, title: p.title, topic: p.topic, difficulty: p.difficulty, leetcodeUrl: p.leetcodeUrl || '', videoUrl: p.videoUrl || '' });
+                              }
+                              fetchData();
+                              toast.success(`Imported ${setArr.length} problems`);
+                            } catch (e) { toast.error('Import failed'); }
+                          }} className="px-3 py-2 text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl border border-emerald-500/20 hover:bg-emerald-500/20 transition-all uppercase tracking-wider">
+                            Import All {setName} ({setArr.length})
+                          </button>
+                        );
+                      })}
+                    </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                      {[...practiceProblems, ...POPULAR_PROBLEMS.slice(0, 20).map(p => ({ ...p, id: `popular-${p.num}`, _static: true as const })), ...LEETCODE_150_PROBLEMS.slice(0, 20).map(p => ({ ...p, id: `lc150-${p.num}`, _static: true as const })), ...TOP_INTERVIEW_150.slice(0, 20).map(p => ({ ...p, id: `top150-${p.num}`, _static: true as const }))].map((p: any) => (
-                        <div key={p.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all group">
+                      {[...practiceProblems, ...POPULAR_PROBLEMS.map(p => ({ ...p, id: `popular-${p.num}`, _static: true as const })), ...LEETCODE_150_PROBLEMS.map(p => ({ ...p, id: `lc150-${p.num}`, _static: true as const })), ...TOP_INTERVIEW_150.map(p => ({ ...p, id: `top150-${p.num}`, _static: true as const }))].map((p: any) => {
+                        const inFirestore = practiceProblems.some(fp => fp.title === p.title || fp.num === p.num);
+                        return (
+                        <div key={p.id} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all group">
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1">
@@ -712,15 +809,24 @@ const AdminDashboard: React.FC = () => {
                                 {p._static && <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700">Static</span>}
                               </div>
                             </div>
-                            {!p._static && (
-                              <button onClick={async () => { if (confirm('Delete this problem?')) { await deleteDoc(doc(db, 'practice_problems', p.id)); fetchData(); toast.success('Deleted'); } }} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all opacity-0 group-hover:opacity-100">
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            )}
+                            <div className="flex gap-1">
+                              {p._static && !inFirestore && (
+                                <button onClick={async () => {
+                                  try { await setDoc(doc(collection(db, 'practice_problems')), { num: p.num, title: p.title, topic: p.topic, difficulty: p.difficulty, leetcodeUrl: p.leetcodeUrl || '', videoUrl: p.videoUrl || '' }); fetchData(); toast.success('Imported'); } catch (e) { toast.error('Failed'); }
+                                }} className="p-1.5 text-emerald-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-xl transition-all" title="Import to Firestore">
+                                  <DatabaseBackup className="w-3.5 h-3.5" />
+                                </button>
+                              )}
+                              {!p._static && (
+                                <button onClick={async () => { if (confirm('Delete this problem?')) { await deleteDoc(doc(db, 'practice_problems', p.id)); fetchData(); toast.success('Deleted'); } }} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all" title="Delete">
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      ))}
-                      {practiceProblems.length === 0 && <p className="text-slate-400 text-sm col-span-full text-center py-12 font-medium">No admin problems yet. Use the form above to add custom problems.</p>}
+                      );})}
+                      {practiceProblems.length === 0 && <p className="text-slate-400 text-sm col-span-full text-center py-12 font-medium">No admin problems yet. Use the form above to add custom problems or import static sets.</p>}
                     </div>
                   </div>
                 </div>
