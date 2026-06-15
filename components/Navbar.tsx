@@ -99,7 +99,7 @@ export default function Navbar() {
               </div>
               <div>
                 <span className="text-lg font-bold text-slate-900 dark:text-white tracking-tight leading-tight block">EduAltTech</span>
-                <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 tracking-widest uppercase leading-tight block">School Technology Partner</span>
+                <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 tracking-widest uppercase leading-tight block">Education Technology Partner</span>
               </div>
             </Link>
 
