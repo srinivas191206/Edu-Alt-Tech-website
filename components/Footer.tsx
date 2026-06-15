@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
               </div>
               <div>
                 <span className="text-xl font-bold text-white tracking-tight">EduAltTech</span>
-                <span className="text-[10px] font-semibold text-emerald-400 tracking-widest uppercase block">School Technology Partner</span>
+                <span className="text-[10px] font-semibold text-emerald-400 tracking-widest uppercase block">Education Technology Partner</span>
               </div>
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-md">
@@ -81,7 +81,7 @@ const Footer: React.FC = () => {
             &copy; {new Date().getFullYear()} EduAltTech. All rights reserved.
           </p>
           <p className="text-slate-500 text-xs">
-            Your School Technology Partner
+            Your Complete Education Technology Partner
           </p>
         </div>
       </div>
