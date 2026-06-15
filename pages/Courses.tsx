@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Course } from '../types';
 import { Search, Book, Palette, ArrowRight, Compass, Filter, Sparkles, GraduationCap, Globe, ShieldCheck, ExternalLink } from 'lucide-react';
@@ -15,7 +15,7 @@ const Courses: React.FC = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const q = query(collection(db, 'courses'), orderBy('createdAt', 'desc'));
+        const q = query(collection(db, 'courses'));
         const querySnapshot = await getDocs(q);
         const fetchedCourses: Course[] = [];
         querySnapshot.forEach((doc) => {
