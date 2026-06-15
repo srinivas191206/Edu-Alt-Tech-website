@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Youtube, Code2, BookOpen, Briefcase, Users, Sparkles, ExternalLink } from 'lucide-react';
-import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, TECH_TALKS } from '../data/problems';
-import type { LeetCodeProblem, CourseLink, InterviewExperience, TechTalk } from '../data/problems';
+import { Search, Youtube, Code2, BookOpen, Briefcase, Users, Sparkles, ExternalLink, GraduationCap } from 'lucide-react';
+import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, TECH_TALKS, YOUTUBE_CHANNELS } from '../data/problems';
+import type { LeetCodeProblem, CourseLink, InterviewExperience, TechTalk, YouTubeChannel } from '../data/problems';
 
-type Tab = 'problems' | 'courses' | 'interviews' | 'talks';
+type Tab = 'problems' | 'courses' | 'interviews' | 'talks' | 'channels';
 type ProblemSet = 'popular' | 'leetcode150' | 'top150';
 
 const difficultyColors: Record<string, string> = {
@@ -18,6 +18,7 @@ const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
   { key: 'courses', label: 'Full Courses', icon: <BookOpen className="w-4 h-4" /> },
   { key: 'interviews', label: 'Interviews', icon: <Briefcase className="w-4 h-4" /> },
   { key: 'talks', label: 'Tech Talks', icon: <Users className="w-4 h-4" /> },
+  { key: 'channels', label: 'Channels', icon: <GraduationCap className="w-4 h-4" /> },
 ];
 
 function ProblemCard({ problem }: { problem: LeetCodeProblem }) {
@@ -139,12 +140,30 @@ function TalkCard({ talk }: { talk: TechTalk }) {
   );
 }
 
+function ChannelCard({ channel }: { channel: YouTubeChannel }) {
+  return (
+    <a href={channel.url} target="_blank" rel="noopener noreferrer"
+      className="flex items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
+    >
+      <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/20 text-red-500 flex items-center justify-center shrink-0">
+        <Youtube className="w-5 h-5" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <h3 className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">{channel.name}</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{channel.category}</p>
+      </div>
+      <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
+    </a>
+  );
+}
+
 const Practice: React.FC = () => {
   const [tab, setTab] = useState<Tab>('problems');
   const [problemSet, setProblemSet] = useState<ProblemSet>('popular');
   const [search, setSearch] = useState('');
   const [topicFilter, setTopicFilter] = useState('');
   const [diffFilter, setDiffFilter] = useState('');
+  const [channelFilter, setChannelFilter] = useState('');
 
   const currentProblems = problemSet === 'popular' ? POPULAR_PROBLEMS : problemSet === 'leetcode150' ? LEETCODE_150_PROBLEMS : TOP_INTERVIEW_150;
 
@@ -277,6 +296,28 @@ const Practice: React.FC = () => {
               <TalkCard key={t.num} talk={t} />
             ))}
           </motion.div>
+        )}
+
+        {/* Channels Tab */}
+        {tab === 'channels' && (
+          <>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-2 mb-6">
+              {Array.from(new Set(YOUTUBE_CHANNELS.map(c => c.category))).sort().map(cat => (
+                <button key={cat} onClick={() => setChannelFilter(cat === channelFilter ? '' : cat)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                    channelFilter === cat ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {YOUTUBE_CHANNELS.filter(c => !channelFilter || c.category === channelFilter).map(ch => (
+                <ChannelCard key={ch.num} channel={ch} />
+              ))}
+            </motion.div>
+          </>
         )}
       </div>
     </div>

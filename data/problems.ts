@@ -29,6 +29,13 @@ export interface TechTalk {
   url: string;
 }
 
+export interface YouTubeChannel {
+  num: number;
+  name: string;
+  category: string;
+  url: string;
+}
+
 export const POPULAR_PROBLEMS: LeetCodeProblem[] = [
   { num: 1, title: 'Two Sum', topic: 'Array', videoUrl: 'https://www.youtube.com/watch?v=BQ2IJ-fouJ4', leetcodeUrl: 'https://leetcode.com/problems/two-sum/', companies: [{ name: 'Amazon', count: 108 }, { name: 'Apple', count: 43 }, { name: 'Google', count: 39 }, { name: 'Facebook', count: 22 }, { name: 'Bloomberg', count: 13 }], difficulty: 'Easy' },
   { num: 2, title: 'Best Time to Buy and Sell Stock', topic: 'Array', videoUrl: 'https://www.youtube.com/watch?v=CCQBvgPages', leetcodeUrl: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/', companies: [{ name: 'Amazon', count: 62 }, { name: 'Microsoft', count: 19 }, { name: 'Bloomberg', count: 15 }, { name: 'Facebook', count: 12 }, { name: 'Google', count: 12 }], difficulty: 'Easy' },
@@ -508,6 +515,69 @@ export const INTERVIEW_EXPERIENCES: InterviewExperience[] = [
 ];
 
 export const TECH_TALKS: TechTalk[] = [
+];
+
+export const YOUTUBE_CHANNELS: YouTubeChannel[] = [
+  { num: 1, name: 'NeetCode', category: 'DSA & LeetCode', url: 'https://www.youtube.com/@NeetCode' },
+  { num: 2, name: 'takeUforward', category: 'DSA & LeetCode', url: 'https://www.youtube.com/@takeUforward' },
+  { num: 3, name: 'Abdul Bari', category: 'DSA & LeetCode', url: 'https://www.youtube.com/@abdul_bari' },
+  { num: 4, name: 'CodeHelp', category: 'DSA & LeetCode', url: 'https://www.youtube.com/@CodeHelp' },
+  { num: 5, name: 'Apna College', category: 'DSA & LeetCode', url: 'https://www.youtube.com/@ApnaCollegeOfficial' },
+  { num: 6, name: 'ByteByteGo', category: 'System Design', url: 'https://www.youtube.com/@ByteByteGo' },
+  { num: 7, name: 'Gaurav Sen', category: 'System Design', url: 'https://www.youtube.com/@gkcs' },
+  { num: 8, name: 'Concept & Coding', category: 'System Design', url: 'https://www.youtube.com/@ConceptandCoding' },
+  { num: 9, name: 'TechDummies', category: 'System Design', url: 'https://www.youtube.com/@TechDummiesNarendraL' },
+  { num: 10, name: 'Code Karle', category: 'System Design', url: 'https://www.youtube.com/@CodeKarle' },
+  { num: 11, name: 'Traversy Media', category: 'Frontend Development', url: 'https://www.youtube.com/@TraversyMedia' },
+  { num: 12, name: 'Web Dev Simplified', category: 'Frontend Development', url: 'https://www.youtube.com/@WebDevSimplified' },
+  { num: 13, name: 'Net Ninja', category: 'Frontend Development', url: 'https://www.youtube.com/@NetNinja' },
+  { num: 14, name: 'freeCodeCamp', category: 'Frontend Development', url: 'https://www.youtube.com/@freecodecamp' },
+  { num: 15, name: 'Academind', category: 'Frontend Development', url: 'https://www.youtube.com/@academind' },
+  { num: 16, name: 'Programming with Mosh', category: 'Backend Development', url: 'https://www.youtube.com/@programmingwithmosh' },
+  { num: 17, name: 'Telusko', category: 'Backend Development', url: 'https://www.youtube.com/@Telusko' },
+  { num: 18, name: 'Hussein Nasser', category: 'Backend Development', url: 'https://www.youtube.com/@hnasr' },
+  { num: 19, name: 'Piyush Garg', category: 'Backend Development', url: 'https://www.youtube.com/@PiyushGargDev' },
+  { num: 20, name: 'Traversy Media', category: 'Backend Development', url: 'https://www.youtube.com/@TraversyMedia' },
+  { num: 21, name: 'DeepLearning.AI', category: 'AI & Machine Learning', url: 'https://www.youtube.com/@Deeplearningai' },
+  { num: 22, name: '3Blue1Brown', category: 'AI & Machine Learning', url: 'https://www.youtube.com/@3blue1brown' },
+  { num: 23, name: 'StatQuest', category: 'AI & Machine Learning', url: 'https://www.youtube.com/@statquest' },
+  { num: 24, name: 'Krish Naik', category: 'AI & Machine Learning', url: 'https://www.youtube.com/@krishnaik06' },
+  { num: 25, name: 'codebasics', category: 'AI & Machine Learning', url: 'https://www.youtube.com/@codebasics' },
+  { num: 26, name: 'AI Jason', category: 'Generative AI & AI Agents', url: 'https://www.youtube.com/@AIJasonZ' },
+  { num: 27, name: 'Cole Medin', category: 'Generative AI & AI Agents', url: 'https://www.youtube.com/@ColeMedin' },
+  { num: 28, name: 'Mr. eFlow', category: 'Generative AI & AI Agents', url: 'https://www.youtube.com/@mreflow' },
+  { num: 29, name: 'LangChain', category: 'Generative AI & AI Agents', url: 'https://www.youtube.com/@LangChain' },
+  { num: 30, name: 'OpenAI', category: 'Generative AI & AI Agents', url: 'https://www.youtube.com/@OpenAI' },
+  { num: 31, name: 'TechWorld with Nana', category: 'DevOps & Cloud', url: 'https://www.youtube.com/@TechWorldwithNana' },
+  { num: 32, name: 'KodeKloud', category: 'DevOps & Cloud', url: 'https://www.youtube.com/@KodeKloud' },
+  { num: 33, name: 'DevOps Directive', category: 'DevOps & Cloud', url: 'https://www.youtube.com/@DevOpsDirective' },
+  { num: 34, name: 'AWS Training & Certification', category: 'DevOps & Cloud', url: 'https://www.youtube.com/@AWSTrainingandCertification' },
+  { num: 35, name: 'Google Cloud Tech', category: 'DevOps & Cloud', url: 'https://www.youtube.com/@googlecloudtech' },
+  { num: 36, name: 'John Hammond', category: 'Cybersecurity', url: 'https://www.youtube.com/@JohnHammond010' },
+  { num: 37, name: 'NetworkChuck', category: 'Cybersecurity', url: 'https://www.youtube.com/@NetworkChuck' },
+  { num: 38, name: 'TCM Security', category: 'Cybersecurity', url: 'https://www.youtube.com/@TCMSecurityAcademy' },
+  { num: 39, name: 'HackerSploit', category: 'Cybersecurity', url: 'https://www.youtube.com/@HackerSploit' },
+  { num: 40, name: 'LiveOverflow', category: 'Cybersecurity', url: 'https://www.youtube.com/@LiveOverflow' },
+  { num: 41, name: 'codebasics', category: 'Data Science', url: 'https://www.youtube.com/@codebasics' },
+  { num: 42, name: 'Krish Naik', category: 'Data Science', url: 'https://www.youtube.com/@KrishNaik' },
+  { num: 43, name: 'Data School', category: 'Data Science', url: 'https://www.youtube.com/@DataSchool' },
+  { num: 44, name: 'StatQuest', category: 'Data Science', url: 'https://www.youtube.com/@statquest' },
+  { num: 45, name: 'freeCodeCamp', category: 'Data Science', url: 'https://www.youtube.com/@freecodecamp' },
+  { num: 46, name: 'Y Combinator', category: 'Startup & Entrepreneurship', url: 'https://www.youtube.com/@ycombinator' },
+  { num: 47, name: 'Stanford eCorner', category: 'Startup & Entrepreneurship', url: 'https://www.youtube.com/@stanfordecorner' },
+  { num: 48, name: 'Slidebean', category: 'Startup & Entrepreneurship', url: 'https://www.youtube.com/@slidebean' },
+  { num: 49, name: 'Alex Hormozi', category: 'Startup & Entrepreneurship', url: 'https://www.youtube.com/@AlexHormozi' },
+  { num: 50, name: 'MicroConf', category: 'Startup & Entrepreneurship', url: 'https://www.youtube.com/@MicroConf' },
+  { num: 51, name: 'DesignCourse', category: 'UI/UX Design', url: 'https://www.youtube.com/@DesignCourse' },
+  { num: 52, name: 'Flux Academy', category: 'UI/UX Design', url: 'https://www.youtube.com/@FluxAcademy' },
+  { num: 53, name: 'Jesse Showalter', category: 'UI/UX Design', url: 'https://www.youtube.com/@JesseShowalter' },
+  { num: 54, name: 'Figma', category: 'UI/UX Design', url: 'https://www.youtube.com/@Figma' },
+  { num: 55, name: 'Mizko', category: 'UI/UX Design', url: 'https://www.youtube.com/@Mizko' },
+  { num: 56, name: 'Flutter', category: 'Mobile App Development', url: 'https://www.youtube.com/@flutterdev' },
+  { num: 57, name: 'Code With Andrea', category: 'Mobile App Development', url: 'https://www.youtube.com/@CodeWithAndrea' },
+  { num: 58, name: 'React Native School', category: 'Mobile App Development', url: 'https://www.youtube.com/@ReactNativeSchool' },
+  { num: 59, name: 'freeCodeCamp', category: 'Mobile App Development', url: 'https://www.youtube.com/@freecodecamp' },
+  { num: 60, name: 'Coding in Flow', category: 'Mobile App Development', url: 'https://www.youtube.com/@CodinginFlow' },
 ];
 
 
