@@ -9,7 +9,7 @@ import { Course, TeacherApplication, PatchNote, UserObject, CourseCategory } fro
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ADMIN_EMAILS = ['ukkukk97@gmail.com'];
+const ADMIN_EMAILS = ['ukkukk97@gmail.com', 'umakrishnakanthchokkapu15@gmail.com'];
 
 const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);

@@ -12,13 +12,13 @@ const PatchNotes: React.FC = () => {
   const [notes, setNotes] = useState<PatchNote[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const ADMIN_EMAIL = 'ukkukk97@gmail.com';
+  const ADMIN_EMAILS = ['ukkukk97@gmail.com', 'umakrishnakanthchokkapu15@gmail.com'];
 
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setIsAdmin(currentUser?.email === ADMIN_EMAIL);
+      setIsAdmin(!!currentUser?.email && ADMIN_EMAILS.includes(currentUser.email));
     });
     return () => unsubscribe();
   }, []);

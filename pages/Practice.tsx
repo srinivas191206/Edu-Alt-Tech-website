@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Youtube, Code2, BookOpen, Briefcase, Users, Sparkles, ExternalLink, GraduationCap } from 'lucide-react';
-import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, TECH_TALKS, YOUTUBE_CHANNELS } from '../data/problems';
-import type { LeetCodeProblem, CourseLink, InterviewExperience, TechTalk, YouTubeChannel } from '../data/problems';
+import { Search, Youtube, Code2, BookOpen, Briefcase, Sparkles, ExternalLink, GraduationCap } from 'lucide-react';
+import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, YOUTUBE_CHANNELS } from '../data/problems';
+import type { LeetCodeProblem, CourseLink, InterviewExperience, YouTubeChannel } from '../data/problems';
 
-type Tab = 'problems' | 'courses' | 'interviews' | 'talks' | 'channels';
+type Tab = 'problems' | 'courses' | 'interviews' | 'channels';
 type ProblemSet = 'popular' | 'leetcode150' | 'top150';
 
 const difficultyColors: Record<string, string> = {
@@ -17,7 +17,6 @@ const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
   { key: 'problems', label: 'Problems', icon: <Code2 className="w-4 h-4" /> },
   { key: 'courses', label: 'Full Courses', icon: <BookOpen className="w-4 h-4" /> },
   { key: 'interviews', label: 'Interviews', icon: <Briefcase className="w-4 h-4" /> },
-  { key: 'talks', label: 'Tech Talks', icon: <Users className="w-4 h-4" /> },
   { key: 'channels', label: 'Channels', icon: <GraduationCap className="w-4 h-4" /> },
 ];
 
@@ -115,25 +114,6 @@ function InterviewCard({ interview }: { interview: InterviewExperience }) {
         <span className={`shrink-0 text-[10px] font-bold px-2 py-1 rounded-md ${resultColors[interview.result] || ''}`}>
           {interview.result}
         </span>
-        <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
-      </div>
-    </a>
-  );
-}
-
-function TalkCard({ talk }: { talk: TechTalk }) {
-  return (
-    <a href={talk.url} target="_blank" rel="noopener noreferrer"
-      className="block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
-    >
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center shrink-0">
-          <Users className="w-5 h-5" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">{talk.topic}</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{talk.person}</p>
-        </div>
         <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
       </div>
     </a>
@@ -285,15 +265,6 @@ const Practice: React.FC = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2">
             {INTERVIEW_EXPERIENCES.map(i => (
               <InterviewCard key={i.num} interview={i} />
-            ))}
-          </motion.div>
-        )}
-
-        {/* Tech Talks Tab */}
-        {tab === 'talks' && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2">
-            {TECH_TALKS.map(t => (
-              <TalkCard key={t.num} talk={t} />
             ))}
           </motion.div>
         )}

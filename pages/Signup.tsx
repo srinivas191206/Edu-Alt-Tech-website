@@ -82,7 +82,7 @@ const Signup: React.FC = () => {
       // navigate(`/verify?email=${encodeURIComponent(email)}`);
       
       // Auto-login to dashboard instead
-      if (email === 'ukkukk97@gmail.com') {
+      if (email === 'ukkukk97@gmail.com' || email === 'umakrishnakanthchokkapu15@gmail.com') {
         navigate('/admin');
       } else {
         navigate('/dashboard');
