@@ -3,7 +3,7 @@ import { auth, db, storage } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy } from 'firebase/firestore';
-import { Loader2, Plus, Users, CalendarClock, Trash2, Check, Video, FileText, Edit, Save, X, Upload, LayoutDashboard, Database, ClipboardList, Settings, Search, MoreVertical, ExternalLink, ArrowLeft, AlertCircle, Sparkles, Bot, Brain } from 'lucide-react';
+import { Loader2, Plus, Users, CalendarClock, Trash2, Check, Video, FileText, Edit, Save, X, Upload, LayoutDashboard, Database, ClipboardList, Settings, Search, MoreVertical, ExternalLink, ArrowLeft, AlertCircle, Sparkles, Bot, Brain, Code2, BookOpen } from 'lucide-react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Course, TeacherApplication, PatchNote, UserObject, CourseCategory } from '../types';
 import { toast } from 'react-hot-toast';
@@ -13,7 +13,7 @@ const ADMIN_EMAILS = ['ukkukk97@gmail.com', 'umakrishnakanthchokkapu15@gmail.com
 
 const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'courses' | 'users' | 'appointments' | 'patchnotes' | 'system' | 'ai' | 'behavior'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'practice' | 'resources' | 'users' | 'appointments' | 'patchnotes' | 'system' | 'ai' | 'behavior'>('courses');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -41,17 +41,26 @@ const AdminDashboard: React.FC = () => {
     thumbnailUrl: '', createdAt: null, createdBy: ''
   });
 
+  // Practice problem states
+  const [practiceProblems, setPracticeProblems] = useState<any[]>([]);
+  const [newProblem, setNewProblem] = useState({ num: '', title: '', topic: '', difficulty: 'Easy', leetcodeUrl: '', videoUrl: '' });
+  const [creatingProblem, setCreatingProblem] = useState(false);
+
+  // Resource states
+  const [resourcesList, setResourcesList] = useState<any[]>([]);
+  const [newResource, setNewResource] = useState({ title: '', description: '', type: 'pdf', category: 'Computer Science', url: '', premium: false });
 
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Parallel fetching for better performance
-      const [uSnap, cSnap, aSnap, pSnap] = await Promise.all([
+      const [uSnap, cSnap, aSnap, pSnap, prSnap, rSnap] = await Promise.all([
         getDocs(collection(db, 'users')),
         getDocs(collection(db, 'courses')),
         getDocs(collection(db, 'teacher_applications')),
-        getDocs(query(collection(db, 'patch_notes'), orderBy('createdAt', 'desc')))
+        getDocs(query(collection(db, 'patch_notes'), orderBy('createdAt', 'desc'))),
+        getDocs(query(collection(db, 'practice_problems'), orderBy('num', 'asc'))),
+        getDocs(collection(db, 'resources'))
       ]);
 
       const users = uSnap.docs.map(d => ({ uid: d.id, ...d.data() } as UserObject));
@@ -76,6 +85,8 @@ const AdminDashboard: React.FC = () => {
 
       setTeacherApps(rawApps as any);
       setPatchNotes(pSnap.docs.map(d => ({ id: d.id, ...d.data() } as PatchNote)));
+      setPracticeProblems(prSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+      setResourcesList(rSnap.docs.map(d => ({ id: d.id, ...d.data() })));
 
     } catch (e) {
       console.error("Dashboard data fetch failed", e);
@@ -392,6 +403,8 @@ const AdminDashboard: React.FC = () => {
               <div className="flex-1 space-y-3">
                 {[
                   { id: 'courses', label: 'Curricula', icon: ClipboardList, desc: 'Manage courses' },
+                  { id: 'practice', label: 'Practice', icon: Code2, desc: 'LeetCode problems' },
+                  { id: 'resources', label: 'Resources', icon: BookOpen, desc: 'PDFs & materials' },
                   { id: 'users', label: 'User Base', icon: Users, desc: 'Control access' },
                   { id: 'appointments', label: 'Applications', icon: CalendarClock, desc: 'Mentor review' },
                   { id: 'patchnotes', label: 'Deployments', icon: Database, desc: 'System updates' },
@@ -596,6 +609,193 @@ const AdminDashboard: React.FC = () => {
                           )}
                         </motion.div>
                       ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'practice' && (
+                <div className="space-y-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
+                      <h2 className="text-xl font-bold mb-8 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                          <Plus className="w-5 h-5 text-emerald-500" />
+                        </div>
+                        Add Practice Problem
+                      </h2>
+                      <form onSubmit={async (e) => { e.preventDefault(); setCreatingProblem(true); try { await setDoc(doc(collection(db, 'practice_problems')), { num: Number(newProblem.num), title: newProblem.title, topic: newProblem.topic, difficulty: newProblem.difficulty, leetcodeUrl: newProblem.leetcodeUrl, videoUrl: newProblem.videoUrl }); setNewProblem({ num: '', title: '', topic: '', difficulty: 'Easy', leetcodeUrl: '', videoUrl: '' }); fetchData(); toast.success('Problem added'); } catch (e) { toast.error('Failed'); } finally { setCreatingProblem(false); } }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="col-span-1 md:col-span-2">
+                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Title</label>
+                          <input required value={newProblem.title} onChange={e=>setNewProblem({...newProblem, title: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-900 transition-all outline-none font-bold" placeholder="E.g. Two Sum" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Number</label>
+                          <input type="number" required value={newProblem.num} onChange={e=>setNewProblem({...newProblem, num: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold" placeholder="E.g. 1" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Difficulty</label>
+                          <select value={newProblem.difficulty} onChange={e=>setNewProblem({...newProblem, difficulty: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold appearance-none">
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Topic</label>
+                          <input required value={newProblem.topic} onChange={e=>setNewProblem({...newProblem, topic: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold" placeholder="E.g. Array, String" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">LeetCode URL</label>
+                          <input value={newProblem.leetcodeUrl} onChange={e=>setNewProblem({...newProblem, leetcodeUrl: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-medium" placeholder="https://leetcode.com/problems/..." />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Video URL</label>
+                          <input value={newProblem.videoUrl} onChange={e=>setNewProblem({...newProblem, videoUrl: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-medium" placeholder="https://youtube.com/..." />
+                        </div>
+                        <div className="col-span-1 md:col-span-2">
+                          <button type="submit" disabled={creatingProblem} className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+                            {creatingProblem ? <Loader2 className="w-6 h-6 animate-spin"/> : 'ADD PROBLEM'}
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                    <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-[2.5rem] text-white flex flex-col justify-between shadow-xl shadow-emerald-500/20">
+                      <div>
+                        <Code2 className="w-10 h-10 mb-6 opacity-50" />
+                        <h3 className="text-2xl font-black leading-tight mb-4">Practice Problem Vault</h3>
+                        <p className="font-medium text-emerald-50 opacity-80 leading-relaxed">
+                          Add LeetCode-style problems. Students will see them in the Practice page.
+                        </p>
+                      </div>
+                      <div className="mt-8 space-y-4">
+                        <div className="flex items-center justify-between p-4 bg-white/10 backdrop-blur-md rounded-2xl">
+                          <span className="text-sm font-bold">Total Problems</span>
+                          <span className="text-2xl font-black">{practiceProblems.length}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 px-2">Problem List</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {practiceProblems.map((p) => (
+                        <div key={p.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all group">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-xs font-bold text-slate-400 shrink-0">#{p.num}</span>
+                                <h4 className="font-bold text-sm truncate">{p.title}</h4>
+                              </div>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-[10px] font-medium text-slate-500">{p.topic}</span>
+                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${p.difficulty === 'Easy' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : p.difficulty === 'Medium' ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-red-50 text-red-600 border-red-200'}`}>{p.difficulty}</span>
+                              </div>
+                            </div>
+                            <button onClick={async () => { if (confirm('Delete this problem?')) { await deleteDoc(doc(db, 'practice_problems', p.id)); fetchData(); toast.success('Deleted'); } }} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all opacity-0 group-hover:opacity-100">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      {practiceProblems.length === 0 && <p className="text-slate-400 text-sm col-span-full text-center py-12 font-medium">No problems yet. Add your first one above.</p>}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'resources' && (
+                <div className="space-y-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
+                      <h2 className="text-xl font-bold mb-8 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                          <Plus className="w-5 h-5 text-emerald-500" />
+                        </div>
+                        Add Resource
+                      </h2>
+                      <form onSubmit={async (e) => { e.preventDefault(); try { await setDoc(doc(collection(db, 'resources')), { ...newResource, premium: newResource.premium === true, downloads: '0' }); setNewResource({ title: '', description: '', type: 'pdf', category: 'Computer Science', url: '', premium: false }); fetchData(); toast.success('Resource added'); } catch (e) { toast.error('Failed'); } }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="col-span-1 md:col-span-2">
+                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Title</label>
+                          <input required value={newResource.title} onChange={e=>setNewResource({...newResource, title: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-900 transition-all outline-none font-bold" placeholder="E.g. Data Structures Notes" />
+                        </div>
+                        <div className="col-span-1 md:col-span-2">
+                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Description</label>
+                          <input value={newResource.description} onChange={e=>setNewResource({...newResource, description: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-medium" placeholder="Brief description..." />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Type</label>
+                          <select value={newResource.type} onChange={e=>setNewResource({...newResource, type: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold appearance-none">
+                            <option value="pdf">PDF</option>
+                            <option value="notes">Notes</option>
+                            <option value="questions">Questions</option>
+                            <option value="worksheet">Worksheet</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Category</label>
+                          <select value={newResource.category} onChange={e=>setNewResource({...newResource, category: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold appearance-none">
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Management">Management</option>
+                            <option value="Mathematics">Mathematics</option>
+                          </select>
+                        </div>
+                        <div className="col-span-1 md:col-span-2">
+                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">URL (PDF/resource link)</label>
+                          <input value={newResource.url} onChange={e=>setNewResource({...newResource, url: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-medium" placeholder="/resources/filename.pdf or https://..." />
+                        </div>
+                        <div className="col-span-1 md:col-span-2">
+                          <label className="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" checked={newResource.premium === true} onChange={e=>setNewResource({...newResource, premium: e.target.checked})} className="w-5 h-5 rounded accent-emerald-500" />
+                            <span className="text-sm font-bold text-slate-500">Premium (exclusive access)</span>
+                          </label>
+                        </div>
+                        <div className="col-span-1 md:col-span-2">
+                          <button type="submit" className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2">
+                            ADD RESOURCE
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                    <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-[2.5rem] text-white flex flex-col justify-between shadow-xl shadow-emerald-500/20">
+                      <div>
+                        <BookOpen className="w-10 h-10 mb-6 opacity-50" />
+                        <h3 className="text-2xl font-black leading-tight mb-4">Resource Library</h3>
+                        <p className="font-medium text-emerald-50 opacity-80 leading-relaxed">
+                          Upload PDFs, notes, and worksheets for students to download.
+                        </p>
+                      </div>
+                      <div className="mt-8 space-y-4">
+                        <div className="flex items-center justify-between p-4 bg-white/10 backdrop-blur-md rounded-2xl">
+                          <span className="text-sm font-bold">Total Resources</span>
+                          <span className="text-2xl font-black">{resourcesList.length}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 px-2">Resource List</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {resourcesList.map((r) => (
+                        <div key={r.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all group">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-bold text-sm truncate">{r.title}</h4>
+                              <p className="text-xs text-slate-500 mt-0.5 truncate">{r.description}</p>
+                              <div className="flex items-center gap-2 mt-2 flex-wrap">
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 uppercase">{r.type}</span>
+                                <span className="text-[10px] font-medium text-slate-400">{r.category}</span>
+                                {r.premium && <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-700">Premium</span>}
+                              </div>
+                            </div>
+                            <button onClick={async () => { if (confirm('Delete this resource?')) { await deleteDoc(doc(db, 'resources', r.id)); fetchData(); toast.success('Deleted'); } }} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all opacity-0 group-hover:opacity-100">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      {resourcesList.length === 0 && <p className="text-slate-400 text-sm col-span-full text-center py-12 font-medium">No resources yet. Add your first one above.</p>}
                     </div>
                   </div>
                 </div>

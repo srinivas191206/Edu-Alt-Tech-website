@@ -1,11 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Youtube, Code2, BookOpen, Briefcase, Sparkles, ExternalLink, GraduationCap } from 'lucide-react';
 import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, YOUTUBE_CHANNELS } from '../data/problems';
 import type { LeetCodeProblem, CourseLink, InterviewExperience, YouTubeChannel } from '../data/problems';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 type Tab = 'problems' | 'courses' | 'interviews' | 'channels';
-type ProblemSet = 'popular' | 'leetcode150' | 'top150';
+type ProblemSet = 'popular' | 'leetcode150' | 'top150' | 'admin';
 
 const difficultyColors: Record<string, string> = {
   Easy: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
@@ -144,8 +146,23 @@ const Practice: React.FC = () => {
   const [topicFilter, setTopicFilter] = useState('');
   const [diffFilter, setDiffFilter] = useState('');
   const [channelFilter, setChannelFilter] = useState('');
+  const [adminProblems, setAdminProblems] = useState<LeetCodeProblem[]>([]);
 
-  const currentProblems = problemSet === 'popular' ? POPULAR_PROBLEMS : problemSet === 'leetcode150' ? LEETCODE_150_PROBLEMS : TOP_INTERVIEW_150;
+  useEffect(() => {
+    const fetchAdmin = async () => {
+      try {
+        const snap = await getDocs(query(collection(db, 'practice_problems'), orderBy('num', 'asc')));
+        const problems = snap.docs.map(d => {
+          const data = d.data() as any;
+          return { num: data.num, title: data.title, topic: data.topic || '', videoUrl: data.videoUrl || '', leetcodeUrl: data.leetcodeUrl || '', difficulty: data.difficulty || 'Easy' } as LeetCodeProblem;
+        });
+        setAdminProblems(problems);
+      } catch {}
+    };
+    fetchAdmin();
+  }, []);
+
+  const currentProblems = problemSet === 'popular' ? POPULAR_PROBLEMS : problemSet === 'leetcode150' ? LEETCODE_150_PROBLEMS : problemSet === 'top150' ? TOP_INTERVIEW_150 : adminProblems;
 
   const allTopics = useMemo(() => {
     const topics = new Set(currentProblems.map(p => p.topic));
@@ -213,6 +230,9 @@ const Practice: React.FC = () => {
               <button onClick={() => setProblemSet('top150')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 problemSet === 'top150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
               }`}>Top Interview 150 ({TOP_INTERVIEW_150.length})</button>
+              <button onClick={() => setProblemSet('admin')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                problemSet === 'admin' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
+              }`}>Custom ({adminProblems.length})</button>
             </motion.div>
 
             {/* Filters */}

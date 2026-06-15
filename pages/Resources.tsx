@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Download, FileText, BookOpen, Brain, FileSpreadsheet, Lock, Sparkles, ArrowRight, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 interface ResourceItem {
   title: string;
@@ -75,8 +77,25 @@ const Resources: React.FC = () => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('All');
   const [showPremium, setShowPremium] = useState<'all' | 'free' | 'premium'>('all');
+  const [firebaseResources, setFirebaseResources] = useState<ResourceItem[]>([]);
 
-  const filtered = RESOURCES.filter(r => {
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        const snap = await getDocs(collection(db, 'resources'));
+        const items = snap.docs.map(d => {
+          const data = d.data() as any;
+          return { title: data.title || '', description: data.description || '', type: data.type || 'pdf', category: data.category || 'Computer Science', premium: data.premium || false, downloads: data.downloads || '0', url: data.url || '' } as ResourceItem;
+        });
+        setFirebaseResources(items);
+      } catch {}
+    };
+    fetchResources();
+  }, []);
+
+  const allResources = [...RESOURCES, ...firebaseResources.filter(fr => !RESOURCES.find(r => r.title === fr.title))];
+
+  const filtered = allResources.filter(r => {
     const matchSearch = r.title.toLowerCase().includes(search.toLowerCase()) || r.description.toLowerCase().includes(search.toLowerCase());
     const matchCat = filter === 'All' || r.category === filter;
     const matchPremium = showPremium === 'all' || (showPremium === 'free' && !r.premium) || (showPremium === 'premium' && r.premium);
