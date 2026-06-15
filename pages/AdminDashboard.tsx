@@ -367,7 +367,7 @@ const AdminDashboard: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-500/30">
+    <div className="h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-500/30">
       {/* Mobile Sidebar Toggle */}
       <button 
         onClick={() => setIsSidebarOpen(true)}
@@ -509,7 +509,7 @@ const AdminDashboard: React.FC = () => {
       </AnimatePresence>
 
       {/* Main Content Area */}
-      <main className="md:pl-72 pt-20 md:pt-12 pb-24 px-4 sm:px-6 md:px-16">
+      <main className="h-full overflow-y-auto md:pl-72 pt-20 md:pt-12 pb-24 px-4 sm:px-6 md:px-16">
         <div className="max-w-[1400px] mx-auto">
           {/* Header & Search */}
           <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-16">
@@ -793,7 +793,12 @@ const AdminDashboard: React.FC = () => {
                       })}
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                      {[...practiceProblems, ...POPULAR_PROBLEMS.map(p => ({ ...p, id: `popular-${p.num}`, _static: true as const })), ...LEETCODE_150_PROBLEMS.map(p => ({ ...p, id: `lc150-${p.num}`, _static: true as const })), ...TOP_INTERVIEW_150.map(p => ({ ...p, id: `top150-${p.num}`, _static: true as const }))].map((p: any) => {
+                      {(() => {
+                        const staticPopular = POPULAR_PROBLEMS.map(p => ({ ...p, id: `popular-${p.num}`, _static: true as const }));
+                        const static150 = LEETCODE_150_PROBLEMS.map(p => ({ ...p, id: `lc150-${p.num}`, _static: true as const }));
+                        const staticTop = TOP_INTERVIEW_150.map(p => ({ ...p, id: `top150-${p.num}`, _static: true as const }));
+                        return [...practiceProblems, ...staticPopular, ...static150, ...staticTop];
+                      })().map((p: any) => {
                         const inFirestore = practiceProblems.some(fp => fp.title === p.title || fp.num === p.num);
                         return (
                         <div key={p.id} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all group">
