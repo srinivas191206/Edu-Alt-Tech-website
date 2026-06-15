@@ -45,6 +45,8 @@ const AdminDashboard: React.FC = () => {
     thumbnailUrl: '', createdAt: null, createdBy: ''
   });
 
+  const [seeding, setSeeding] = useState(false);
+
   // Course folders
   const [courseFolders, setCourseFolders] = useState<string[]>([]);
   const [newFolderName, setNewFolderName] = useState('');
@@ -241,6 +243,105 @@ const AdminDashboard: React.FC = () => {
       toast.error("Publication failed");
     } finally {
       setCreatingCourse(false);
+    }
+  };
+
+  const seedCourseCatalog = async () => {
+    if (!confirm('Seed the database with the full course catalog (~65 courses across 28 folders)?')) return;
+    setSeeding(true);
+    try {
+      const folders = ['Core Education', 'Alternative Skills', 'Language Skills', 'Music', 'Dance', 'Arts & Creativity', 'Life Skills', 'Mind Sports', 'Technology', 'Finance', 'Entrepreneurship', 'Health & Wellness', 'Future Technologies', 'Career Development', 'Artificial Intelligence', 'Marketing', 'Space Science', 'Robotics', 'Cybersecurity', 'Innovation', 'Creator Economy', 'Blockchain', 'Leadership', 'Psychology', 'Product Management', 'Alternative Education', 'Business Education', 'Bundles'];
+      const courses = [
+        { title: 'AI Tools for Students', description: 'Learn ChatGPT, Gemini, Claude, and AI productivity tools.', category: 'Artificial Intelligence', price: 999 },
+        { title: 'Startup Basics for Beginners', description: 'Learn how to turn ideas into startups and validate business concepts.', category: 'Entrepreneurship', price: 799 },
+        { title: 'Future Careers in AI', description: 'Explore high-demand AI careers and required skills.', category: 'Career Development', price: 599 },
+        { title: 'Personal Branding 101', description: 'Build a professional online presence and portfolio.', category: 'Career Development', price: 699 },
+        { title: 'Digital Marketing Essentials', description: 'Learn SEO, social media marketing, and content strategy.', category: 'Marketing', price: 999 },
+        { title: 'Financial Literacy for Students', description: 'Understand budgeting, saving, investing, and money management.', category: 'Finance', price: 599 },
+        { title: 'Design Thinking Fundamentals', description: 'Solve problems creatively using innovation frameworks.', category: 'Innovation', price: 799 },
+        { title: 'Public Speaking Mastery', description: 'Improve communication, confidence, and presentation skills.', category: 'Life Skills', price: 699 },
+        { title: 'LinkedIn Growth Blueprint', description: 'Build a powerful LinkedIn profile and network effectively.', category: 'Career Development', price: 599 },
+        { title: 'No-Code Website Creation', description: 'Create websites without coding using modern tools.', category: 'Technology', price: 999 },
+        { title: 'Productivity & Time Management', description: 'Learn techniques to maximize focus and efficiency.', category: 'Life Skills', price: 599 },
+        { title: 'Introduction to Robotics', description: 'Understand robotics basics and future applications.', category: 'Robotics', price: 1299 },
+        { title: 'AI Prompt Engineering', description: 'Learn how to write effective prompts for AI systems.', category: 'Artificial Intelligence', price: 999 },
+        { title: 'Cyber Safety & Digital Security', description: 'Protect yourself online and understand cybersecurity basics.', category: 'Cybersecurity', price: 699 },
+        { title: 'Content Creation for Beginners', description: 'Learn video creation, editing, and audience growth.', category: 'Creator Economy', price: 999 },
+        { title: 'Freelancing Fundamentals', description: 'Start earning online through freelancing platforms.', category: 'Career Development', price: 799 },
+        { title: 'Innovation Mindset for Students', description: 'Develop creative thinking and problem-solving abilities.', category: 'Innovation', price: 599 },
+        { title: 'Future Technologies Explained', description: 'Learn about AI, Blockchain, Quantum Computing, and Web3.', category: 'Future Technologies', price: 1199 },
+        { title: 'Entrepreneurship for Teenagers', description: 'Build business thinking and entrepreneurial skills early.', category: 'Entrepreneurship', price: 899 },
+        { title: 'Resume & Interview Mastery', description: 'Create ATS-friendly resumes and ace interviews.', category: 'Career Development', price: 699 },
+        { title: 'Mathematics Mastery Basics', description: 'Improve problem-solving, algebra, and logical thinking skills.', category: 'Core Education', price: 499 },
+        { title: 'Physics Made Simple', description: 'Understand motion, energy, forces, and real-world physics concepts.', category: 'Core Education', price: 499 },
+        { title: 'Chemistry Fundamentals', description: 'Learn atoms, reactions, and chemistry through practical examples.', category: 'Core Education', price: 499 },
+        { title: 'Biology Explorer', description: 'Discover life sciences, human anatomy, and ecosystems.', category: 'Core Education', price: 499 },
+        { title: 'Spoken English Essentials', description: 'Build confidence in speaking, vocabulary, and communication.', category: 'Language Skills', price: 599 },
+        { title: 'Creative Writing Basics', description: 'Learn storytelling, writing techniques, and content creation.', category: 'Language Skills', price: 599 },
+        { title: 'Keyboard for Beginners', description: 'Learn notes, chords, and simple songs on the keyboard.', category: 'Music', price: 799 },
+        { title: 'Guitar Fundamentals', description: 'Master basic chords, strumming, and song playing.', category: 'Music', price: 799 },
+        { title: 'Vocal Music Training', description: 'Improve singing techniques, pitch, and rhythm.', category: 'Music', price: 699 },
+        { title: 'Classical Dance Basics', description: 'Learn fundamental dance movements and expressions.', category: 'Dance', price: 799 },
+        { title: 'Contemporary Dance Foundation', description: 'Build rhythm, coordination, and stage confidence.', category: 'Dance', price: 799 },
+        { title: 'Drawing & Sketching', description: 'Learn shading, perspective, and creative illustration.', category: 'Arts & Creativity', price: 699 },
+        { title: 'Public Speaking for Students', description: 'Improve confidence and presentation skills.', category: 'Life Skills', price: 599 },
+        { title: 'Chess Strategy Basics', description: 'Learn openings, tactics, and strategic thinking.', category: 'Mind Sports', price: 599 },
+        { title: 'Coding for Kids & Beginners', description: 'Learn programming concepts through fun projects.', category: 'Technology', price: 899 },
+        { title: 'AI Basics for Everyone', description: 'Understand AI tools and their practical applications.', category: 'Technology', price: 999 },
+        { title: 'Financial Literacy Basics', description: 'Learn saving, budgeting, and smart money habits.', category: 'Finance', price: 599 },
+        { title: 'Entrepreneurship Starter Class', description: 'Turn ideas into business opportunities.', category: 'Entrepreneurship', price: 799 },
+        { title: 'Yoga & Mindfulness', description: 'Improve focus, flexibility, and mental well-being.', category: 'Health & Wellness', price: 599 },
+        { title: 'Personality Development', description: 'Build confidence, leadership, and communication skills.', category: 'Life Skills', price: 699 },
+        { title: 'Advanced Quantum Computing', description: 'Learn quantum algorithms, qubits, quantum cryptography, and future computing applications.', category: 'Future Technologies', price: 9999 },
+        { title: 'AI Entrepreneur Bootcamp', description: 'Build AI-powered startups from idea validation to product launch and scaling.', category: 'Entrepreneurship', price: 4999 },
+        { title: 'Future Skills for Gen Z', description: 'Master communication, critical thinking, networking, and adaptability for the AI era.', category: 'Life Skills', price: 2499 },
+        { title: 'Startup Launchpad', description: 'Learn fundraising, MVP development, business models, and startup growth strategies.', category: 'Entrepreneurship', price: 5999 },
+        { title: 'Personal Branding Mastery', description: 'Build a strong online presence through LinkedIn, content creation, and networking.', category: 'Career Development', price: 2999 },
+        { title: 'No-Code App Development', description: 'Create mobile and web applications without coding using modern no-code tools.', category: 'Technology', price: 3999 },
+        { title: 'AI Agents Development', description: 'Design, deploy, and automate workflows using autonomous AI agents.', category: 'Artificial Intelligence', price: 6999 },
+        { title: 'Digital Marketing Accelerator', description: 'Master SEO, social media, paid ads, email marketing, and analytics.', category: 'Marketing', price: 3499 },
+        { title: 'Financial Intelligence for Students', description: 'Learn investing, budgeting, taxation, and wealth-building principles.', category: 'Finance', price: 2999 },
+        { title: 'Space Technology & Colonization', description: 'Explore Mars missions, lunar bases, and future space industries.', category: 'Space Science', price: 5999 },
+        { title: 'Robotics & Automation Engineering', description: 'Build intelligent robots using sensors, AI, and automation systems.', category: 'Robotics', price: 7999 },
+        { title: 'Cybersecurity & Ethical Hacking', description: 'Learn penetration testing, security auditing, and cyber defense strategies.', category: 'Cybersecurity', price: 5499 },
+        { title: 'Design Thinking & Innovation', description: 'Solve real-world problems using creative thinking and innovation frameworks.', category: 'Innovation', price: 2999 },
+        { title: 'Future of Work & AI Careers', description: 'Prepare for emerging careers in AI, robotics, blockchain, and space technology.', category: 'Career Development', price: 1999 },
+        { title: 'Content Creator Academy', description: 'Learn video editing, storytelling, branding, and audience growth.', category: 'Creator Economy', price: 2499 },
+        { title: 'Blockchain & Web3 Fundamentals', description: 'Understand smart contracts, decentralized apps, and crypto ecosystems.', category: 'Blockchain', price: 4999 },
+        { title: 'Leadership for Young Founders', description: 'Develop leadership, negotiation, team building, and decision-making skills.', category: 'Leadership', price: 2999 },
+        { title: 'Human Psychology & Influence', description: 'Understand behavior, persuasion, emotional intelligence, and communication.', category: 'Psychology', price: 3499 },
+        { title: 'Product Management Masterclass', description: 'Learn product strategy, user research, roadmap planning, and execution.', category: 'Product Management', price: 4999 },
+        { title: 'Moon Colony Engineering', description: 'Study future lunar habitats, resource extraction, and space infrastructure.', category: 'Future Technologies', price: 8999 },
+        { title: 'Future Founder Degree', description: 'A complete alternative degree covering startups, AI, finance, leadership, and innovation.', category: 'Alternative Education', price: 49999 },
+        { title: 'AI + Startup Incubator', description: 'Build an AI startup with mentorship, projects, and investor pitching.', category: 'Entrepreneurship', price: 29999 },
+        { title: 'Quantum & Space Innovation Program', description: 'Learn quantum computing, space tech, robotics, and future industries.', category: 'Future Technologies', price: 39999 },
+        { title: 'Alternative MBA for Students', description: 'Real-world business, startup creation, leadership, and financial literacy.', category: 'Business Education', price: 24999 },
+        { title: 'AI Career Starter Pack', description: 'Includes: AI Tools + Prompt Engineering + Future AI Careers', category: 'Bundles', price: 1499 },
+        { title: 'Young Entrepreneur Pack', description: 'Includes: Startup Basics + Entrepreneurship + Innovation Mindset', category: 'Bundles', price: 1299 },
+        { title: 'Job Ready Pack', description: 'Includes: Resume Building + LinkedIn Growth + Public Speaking', category: 'Bundles', price: 999 },
+        { title: 'Digital Creator Pack', description: 'Includes: Content Creation + Personal Branding + Digital Marketing', category: 'Bundles', price: 1499 },
+        { title: 'Tech Explorer Pack', description: 'Includes: No-Code Websites + Robotics + Future Technologies', category: 'Bundles', price: 1499 },
+      ];
+
+      for (const name of folders) {
+        const existing = await getDocs(query(collection(db, 'course_folders'), where('name', '==', name)));
+        if (existing.empty) {
+          await setDoc(doc(collection(db, 'course_folders')), { name });
+        }
+      }
+
+      let count = 0;
+      for (const c of courses) {
+        await setDoc(doc(collection(db, 'courses')), { ...c, thumbnailUrl: '', createdBy: 'admin' });
+        count++;
+      }
+
+      fetchData();
+      toast.success(`Seeded ${folders.length} folders and ${count} courses`);
+    } catch (e) {
+      toast.error('Seed failed: ' + (e instanceof Error ? e.message : 'Unknown error'));
+    } finally {
+      setSeeding(false);
     }
   };
 
@@ -1182,18 +1283,35 @@ const AdminDashboard: React.FC = () => {
                                Authorization Required
                              </div>
                            </div>
-                        </section>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          <button className="p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-800 text-left group">
-                            <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Backups</span>
-                            <span className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Snapshot State</span>
-                          </button>
-                          <button className="p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-800 text-left group">
-                            <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Logs</span>
-                            <span className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Audit Console</span>
-                          </button>
-                        </div>
+                         </section>
+
+                         <section className="p-8 border-2 border-dashed border-emerald-500/20 rounded-[2.5rem] bg-emerald-500/5 group hover:bg-emerald-500/10 transition-colors">
+                           <div className="flex items-start gap-4 mb-6">
+                             <Database className="w-8 h-8 text-emerald-500 shrink-0 mt-1" />
+                             <div>
+                               <h4 className="text-xl font-black text-emerald-600 mb-2 uppercase tracking-tighter">Seed Course Catalog</h4>
+                               <p className="text-slate-500 dark:text-slate-400 font-medium text-sm leading-relaxed">Populate the database with the full course catalog — 65+ courses across 28 categories. Only runs once per folder/course to avoid duplicates.</p>
+                             </div>
+                           </div>
+                           <button 
+                             onClick={seedCourseCatalog}
+                             disabled={seeding}
+                             className="px-8 py-5 bg-emerald-600 text-white font-black rounded-2xl shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 active:scale-95 transition-all flex items-center gap-3 uppercase tracking-widest text-xs disabled:opacity-50"
+                           >
+                             {seeding ? <Loader2 className="w-5 h-5 animate-spin" /> : <Database className="w-5 h-5" />} {seeding ? 'Seeding...' : 'Seed Course Catalog'}
+                           </button>
+                         </section>
+                         
+                         <div className="grid grid-cols-2 gap-4">
+                           <button className="p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-800 text-left group">
+                             <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Backups</span>
+                             <span className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Snapshot State</span>
+                           </button>
+                           <button className="p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-800 text-left group">
+                             <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Logs</span>
+                             <span className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Audit Console</span>
+                           </button>
+                         </div>
                       </div>
                     </div>
                  </div>
