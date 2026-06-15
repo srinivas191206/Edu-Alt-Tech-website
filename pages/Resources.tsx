@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
-interface ResourceItem {
+export interface ResourceItem {
   title: string;
   description: string;
   type: 'pdf' | 'notes' | 'questions' | 'worksheet';
@@ -15,7 +15,7 @@ interface ResourceItem {
   url?: string;
 }
 
-const RESOURCES: ResourceItem[] = [
+export const STATIC_RESOURCES: ResourceItem[] = [
   { title: "NON-CONVENTIONAL ENERGY SOURCES", description: "Complete notes on non-conventional energy sources for engineering students", type: "pdf", category: "Engineering", premium: false, downloads: "1.2K", url: "/resources/NON-CONVENTIONAL%20ENERGY%20SOURCES.pdf" },
   { title: "OBJECT ORIENTED PROGRAMMING", description: "Comprehensive OOP concepts and programming notes", type: "pdf", category: "Computer Science", premium: false, downloads: "2.1K", url: "/resources/OBJECT%20ORIENTED%20PROGRAMMING.pdf" },
   { title: "OPERATING SYSTEMS", description: "Detailed operating systems study material covering all key topics", type: "pdf", category: "Computer Science", premium: false, downloads: "1.8K", url: "/resources/OPERATING%20SYSTEMS.pdf" },
@@ -93,7 +93,7 @@ const Resources: React.FC = () => {
     fetchResources();
   }, []);
 
-  const allResources = [...RESOURCES, ...firebaseResources.filter(fr => !RESOURCES.find(r => r.title === fr.title))];
+  const allResources = [...STATIC_RESOURCES, ...firebaseResources.filter(fr => !STATIC_RESOURCES.find(r => r.title === fr.title))];
 
   const filtered = allResources.filter(r => {
     const matchSearch = r.title.toLowerCase().includes(search.toLowerCase()) || r.description.toLowerCase().includes(search.toLowerCase());

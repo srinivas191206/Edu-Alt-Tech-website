@@ -3,11 +3,15 @@ import { auth, db, storage } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy } from 'firebase/firestore';
-import { Loader2, Plus, Users, CalendarClock, Trash2, Check, Video, FileText, Edit, Save, X, Upload, LayoutDashboard, Database, ClipboardList, Settings, Search, MoreVertical, ExternalLink, ArrowLeft, AlertCircle, Sparkles, Bot, Brain, Code2, BookOpen } from 'lucide-react';
+import { Loader2, Plus, Users, CalendarClock, Trash2, Check, Video, FileText, Edit, Save, X, Upload, LayoutDashboard, Database, ClipboardList, Settings, Search, MoreVertical, ExternalLink, ArrowLeft, AlertCircle, Sparkles, Bot, Brain, Code2, BookOpen, DatabaseBackup } from 'lucide-react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Course, TeacherApplication, PatchNote, UserObject, CourseCategory } from '../types';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, YOUTUBE_CHANNELS } from '../data/problems';
+import type { LeetCodeProblem, YouTubeChannel } from '../data/problems';
+import { STATIC_RESOURCES } from './Resources';
+import type { ResourceItem } from './Resources';
 
 const ADMIN_EMAILS = ['ukkukk97@gmail.com', 'umakrishnakanthchokkapu15@gmail.com'];
 
@@ -383,7 +387,7 @@ const AdminDashboard: React.FC = () => {
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -100, opacity: 0 }}
-              className="fixed left-0 top-0 h-full w-72 md:w-72 bg-white dark:bg-[#0f172a] border-r border-slate-200/50 dark:border-slate-800/50 z-[60] flex flex-col p-8 shadow-2xl md:shadow-none"
+              className="fixed left-0 top-0 h-full w-72 max-w-[85vw] bg-white dark:bg-[#0f172a] border-r border-slate-200/50 dark:border-slate-800/50 z-[60] flex flex-col p-6 md:p-8 shadow-2xl md:shadow-none"
             >
               <div className="mb-12 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -448,7 +452,7 @@ const AdminDashboard: React.FC = () => {
       </AnimatePresence>
 
       {/* Main Content Area */}
-      <main className="md:pl-72 pt-32 md:pt-12 pb-24 px-6 md:px-16">
+      <main className="md:pl-72 pt-20 md:pt-12 pb-24 px-4 sm:px-6 md:px-16">
         <div className="max-w-[1400px] mx-auto">
           {/* Header & Search */}
           <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-16">
@@ -616,6 +620,21 @@ const AdminDashboard: React.FC = () => {
 
               {activeTab === 'practice' && (
                 <div className="space-y-8">
+                  {/* Static data overview */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Popular Problems</span>
+                      <p className="text-3xl font-black mt-2 text-slate-900 dark:text-white">{POPULAR_PROBLEMS.length}</p>
+                    </div>
+                    <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">LeetCode 150</span>
+                      <p className="text-3xl font-black mt-2 text-slate-900 dark:text-white">{LEETCODE_150_PROBLEMS.length}</p>
+                    </div>
+                    <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Top Interview 150</span>
+                      <p className="text-3xl font-black mt-2 text-slate-900 dark:text-white">{TOP_INTERVIEW_150.length}</p>
+                    </div>
+                  </div>
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
                       <h2 className="text-xl font-bold mb-8 flex items-center gap-3">
@@ -677,9 +696,9 @@ const AdminDashboard: React.FC = () => {
                     </div>
                   </div>
                   <div className="space-y-4">
-                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 px-2">Problem List</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {practiceProblems.map((p) => (
+                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 px-2">Problem List (Static + Admin)</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                      {[...practiceProblems, ...POPULAR_PROBLEMS.slice(0, 20).map(p => ({ ...p, id: `popular-${p.num}`, _static: true as const })), ...LEETCODE_150_PROBLEMS.slice(0, 20).map(p => ({ ...p, id: `lc150-${p.num}`, _static: true as const })), ...TOP_INTERVIEW_150.slice(0, 20).map(p => ({ ...p, id: `top150-${p.num}`, _static: true as const }))].map((p: any) => (
                         <div key={p.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all group">
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex-1 min-w-0">
@@ -690,15 +709,18 @@ const AdminDashboard: React.FC = () => {
                               <div className="flex items-center gap-2 flex-wrap">
                                 <span className="text-[10px] font-medium text-slate-500">{p.topic}</span>
                                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${p.difficulty === 'Easy' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : p.difficulty === 'Medium' ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-red-50 text-red-600 border-red-200'}`}>{p.difficulty}</span>
+                                {p._static && <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700">Static</span>}
                               </div>
                             </div>
-                            <button onClick={async () => { if (confirm('Delete this problem?')) { await deleteDoc(doc(db, 'practice_problems', p.id)); fetchData(); toast.success('Deleted'); } }} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all opacity-0 group-hover:opacity-100">
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                            {!p._static && (
+                              <button onClick={async () => { if (confirm('Delete this problem?')) { await deleteDoc(doc(db, 'practice_problems', p.id)); fetchData(); toast.success('Deleted'); } }} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all opacity-0 group-hover:opacity-100">
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
                           </div>
                         </div>
                       ))}
-                      {practiceProblems.length === 0 && <p className="text-slate-400 text-sm col-span-full text-center py-12 font-medium">No problems yet. Add your first one above.</p>}
+                      {practiceProblems.length === 0 && <p className="text-slate-400 text-sm col-span-full text-center py-12 font-medium">No admin problems yet. Use the form above to add custom problems.</p>}
                     </div>
                   </div>
                 </div>
@@ -706,6 +728,16 @@ const AdminDashboard: React.FC = () => {
 
               {activeTab === 'resources' && (
                 <div className="space-y-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Static Resources</span>
+                      <p className="text-3xl font-black mt-2 text-slate-900 dark:text-white">{STATIC_RESOURCES.length}</p>
+                    </div>
+                    <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Admin Resources</span>
+                      <p className="text-3xl font-black mt-2 text-slate-900 dark:text-white">{resourcesList.length}</p>
+                    </div>
+                  </div>
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
                       <h2 className="text-xl font-bold mb-8 flex items-center gap-3">
@@ -775,9 +807,9 @@ const AdminDashboard: React.FC = () => {
                     </div>
                   </div>
                   <div className="space-y-4">
-                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 px-2">Resource List</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {resourcesList.map((r) => (
+                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 px-2">Resource List (Static + Admin)</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                      {[...resourcesList, ...STATIC_RESOURCES.map(r => ({ ...r, id: `static-${r.title}`, _static: true as const }))].map((r: any) => (
                         <div key={r.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all group">
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex-1 min-w-0">
@@ -787,15 +819,18 @@ const AdminDashboard: React.FC = () => {
                                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 uppercase">{r.type}</span>
                                 <span className="text-[10px] font-medium text-slate-400">{r.category}</span>
                                 {r.premium && <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-700">Premium</span>}
+                                {r._static && <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700">Static</span>}
                               </div>
                             </div>
-                            <button onClick={async () => { if (confirm('Delete this resource?')) { await deleteDoc(doc(db, 'resources', r.id)); fetchData(); toast.success('Deleted'); } }} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all opacity-0 group-hover:opacity-100">
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                            {!r._static && (
+                              <button onClick={async () => { if (confirm('Delete this resource?')) { await deleteDoc(doc(db, 'resources', r.id)); fetchData(); toast.success('Deleted'); } }} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all opacity-0 group-hover:opacity-100">
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
                           </div>
                         </div>
                       ))}
-                      {resourcesList.length === 0 && <p className="text-slate-400 text-sm col-span-full text-center py-12 font-medium">No resources yet. Add your first one above.</p>}
+                      {resourcesList.length === 0 && <p className="text-slate-400 text-sm col-span-full text-center py-12 font-medium">No admin resources yet. Use the form above to add custom resources.</p>}
                     </div>
                   </div>
                 </div>
@@ -901,8 +936,8 @@ const AdminDashboard: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {teacherApps.length === 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-8">
+                      {teacherApps.length === 0 ? (
                       <div className="col-span-full py-32 text-center bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
                         <CalendarClock className="w-16 h-16 text-slate-200 dark:text-slate-800 mx-auto mb-6" />
                         <h3 className="text-xl font-black text-slate-400">NO PENDING DOSSIERS</h3>
