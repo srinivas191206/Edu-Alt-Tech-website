@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Youtube, Code2, BookOpen, Briefcase, Users, Sparkles, ExternalLink } from 'lucide-react';
-import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, FULL_COURSES, INTERVIEW_EXPERIENCES, TECH_TALKS } from '../data/problems';
+import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, TECH_TALKS } from '../data/problems';
 import type { LeetCodeProblem, CourseLink, InterviewExperience, TechTalk } from '../data/problems';
 
 type Tab = 'problems' | 'courses' | 'interviews' | 'talks';
-type ProblemSet = 'popular' | 'leetcode150';
+type ProblemSet = 'popular' | 'leetcode150' | 'top150';
 
 const difficultyColors: Record<string, string> = {
   Easy: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
@@ -146,7 +146,7 @@ const Practice: React.FC = () => {
   const [topicFilter, setTopicFilter] = useState('');
   const [diffFilter, setDiffFilter] = useState('');
 
-  const currentProblems = problemSet === 'popular' ? POPULAR_PROBLEMS : LEETCODE_150_PROBLEMS;
+  const currentProblems = problemSet === 'popular' ? POPULAR_PROBLEMS : problemSet === 'leetcode150' ? LEETCODE_150_PROBLEMS : TOP_INTERVIEW_150;
 
   const allTopics = useMemo(() => {
     const topics = new Set(currentProblems.map(p => p.topic));
@@ -181,7 +181,7 @@ const Practice: React.FC = () => {
             Master Coding<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500">Interviews</span>
           </h1>
           <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl font-medium">
-            280+ handpicked LeetCode problems with video solutions, full courses, interview experiences, and tech talks.
+            460+ handpicked LeetCode problems with video solutions, full courses, interview experiences, and tech talks.
           </p>
         </motion.div>
 
@@ -211,6 +211,9 @@ const Practice: React.FC = () => {
               <button onClick={() => setProblemSet('leetcode150')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 problemSet === 'leetcode150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
               }`}>LeetCode 150 ({LEETCODE_150_PROBLEMS.length})</button>
+              <button onClick={() => setProblemSet('top150')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                problemSet === 'top150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
+              }`}>Top Interview 150 ({TOP_INTERVIEW_150.length})</button>
             </motion.div>
 
             {/* Filters */}
