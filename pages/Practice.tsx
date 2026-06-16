@@ -3,7 +3,9 @@ import { motion } from 'framer-motion';
 import { Search, Youtube, Code2, BookOpen, Briefcase, Sparkles, ExternalLink, GraduationCap } from 'lucide-react';
 import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, YOUTUBE_CHANNELS } from '../data/problems';
 import type { LeetCodeProblem, CourseLink, InterviewExperience, YouTubeChannel } from '../data/problems';
-import { db, collection, getDocs, query, orderBy } from '../lib/firebase';
+import { auth, onAuthStateChanged, db, collection, getDocs, query, orderBy } from '../lib/firebase';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 type Tab = 'problems' | 'courses' | 'interviews' | 'channels';
 type ProblemSet = 'popular' | 'leetcode150' | 'top150' | 'admin';
@@ -146,6 +148,17 @@ const Practice: React.FC = () => {
   const [diffFilter, setDiffFilter] = useState('');
   const [channelFilter, setChannelFilter] = useState('');
   const [adminProblems, setAdminProblems] = useState<LeetCodeProblem[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        toast.error("Please login to access practice problems.");
+        navigate('/login');
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
 
   useEffect(() => {
     const fetchAdmin = async () => {

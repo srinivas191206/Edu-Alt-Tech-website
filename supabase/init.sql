@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS courses (
   category TEXT,
   duration TEXT,
   level TEXT,
+  class_level TEXT,
   instructor TEXT,
   syllabus JSONB,
   prerequisites TEXT[] DEFAULT '{}',
@@ -97,6 +98,7 @@ CREATE TABLE IF NOT EXISTS resources (
   url TEXT,
   description TEXT,
   type TEXT,
+  class_level TEXT,
   topics TEXT[] DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT now()
 );

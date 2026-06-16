@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { db, collection, getDocs, query } from '../lib/firebase';
+import { auth, onAuthStateChanged, db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
 import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const FOLDER_MAP: Record<string, 'education' | 'alternative'> = {
@@ -79,6 +80,19 @@ const Courses: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'education' | 'alternative'>('all');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        toast.error("Please login to access courses.");
+        navigate('/login');
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
+
+  const [activeClass, setActiveClass] = useState<string>('All');
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -99,6 +113,7 @@ const Courses: React.FC = () => {
             folder,
             duration: data.duration,
             level: data.level,
+            classLevel: data.class_level || 'General',
             createdAt: data.created_at,
             createdBy: '',
           } as Course);
@@ -116,6 +131,7 @@ const Courses: React.FC = () => {
               folder: 'Artificial Intelligence',
               duration: 'Self-paced',
               level: 'beginner',
+              classLevel: 'General',
               createdAt: new Date().toISOString(),
               createdBy: 'provider',
               externalUrl: provider.url,
@@ -135,10 +151,20 @@ const Courses: React.FC = () => {
   const filteredCourses = useMemo(() => courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           (course.description || '').toLowerCase().includes(searchTerm.toLowerCase());
-    if (activeFilter === 'all') return matchesSearch;
-    if (activeFilter === 'education') return matchesSearch && EDUCATION_FOLDERS.has((course as any).folder || '');
-    return matchesSearch && !EDUCATION_FOLDERS.has((course as any).folder || '');
-  }), [courses, searchTerm, activeFilter]);
+    
+    // Category filter
+    let matchesCategory = true;
+    if (activeFilter === 'education') {
+      matchesCategory = EDUCATION_FOLDERS.has(course.folder || '');
+    } else if (activeFilter === 'alternative') {
+      matchesCategory = !EDUCATION_FOLDERS.has(course.folder || '');
+    }
+    
+    // Class level filter
+    const matchesClass = activeClass === 'All' || course.classLevel === activeClass;
+    
+    return matchesSearch && matchesCategory && matchesClass;
+  }), [courses, searchTerm, activeFilter, activeClass]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#020617] selection:bg-emerald-500/30">
@@ -186,6 +212,21 @@ const Courses: React.FC = () => {
           ))}
         </motion.div>
 
+        {/* Class Level Filters */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
+          className="flex flex-wrap gap-2 mb-10 pb-6 border-b border-slate-200/60 dark:border-slate-800/60">
+          {['All', 'Class 6-8', 'Class 9-10', 'Class 11-12', 'College/Professional', 'General'].map((lvl) => (
+            <button key={lvl} onClick={() => setActiveClass(lvl)}
+              className={`px-5 py-2.5 rounded-full text-xs font-extrabold transition-colors ${
+                activeClass === lvl
+                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25'
+                  : 'bg-white dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/50'
+              }`}>
+              {lvl}
+            </button>
+          ))}
+        </motion.div>
+
         {loading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-4">
             <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} style={{ willChange: 'transform' }}>
@@ -202,8 +243,15 @@ const Courses: React.FC = () => {
                   <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
                     <img src={course.thumbnailUrl} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
-                    <div className="absolute top-4 left-4 px-3 py-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white border border-slate-200/50 dark:border-slate-700/50">
-                      {course.folder || course.category}
+                    <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
+                      <div className="px-3 py-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white border border-slate-200/50 dark:border-slate-700/50">
+                        {course.folder || course.category}
+                      </div>
+                      {course.classLevel && (
+                        <div className="px-3 py-1.5 bg-indigo-600/90 dark:bg-indigo-500/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-white border border-indigo-500/20">
+                          {course.classLevel}
+                        </div>
+                      )}
                     </div>
                     <div className="absolute top-4 right-4 px-3 py-1.5 bg-emerald-500/90 backdrop-blur-md rounded-full text-[10px] font-black text-white uppercase tracking-wider">
                       {course.price === 0 ? 'Free' : `₹${course.price}`}
