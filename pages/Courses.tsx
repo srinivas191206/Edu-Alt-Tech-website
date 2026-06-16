@@ -138,7 +138,15 @@ const Courses: React.FC = () => {
             } as Course);
           });
         });
-        setCourses(fetchedCourses);
+        // Sort: Google free courses first, NVIDIA second, one paid course third, then the rest
+        const googleCourses = fetchedCourses.filter(c => c.title?.includes('— Google'));
+        const nvidiaCourses = fetchedCourses.filter(c => c.title?.includes('— NVIDIA'));
+        const paidCourse = fetchedCourses.find(c => c.price && c.price > 0 && c.id && !c.id.startsWith('ai-'));
+        const rest = fetchedCourses.filter(c =>
+          !c.title?.includes('— Google') && !c.title?.includes('— NVIDIA') &&
+          !(paidCourse && c.id === paidCourse.id)
+        );
+        setCourses([...googleCourses, ...nvidiaCourses, ...(paidCourse ? [paidCourse] : []), ...rest]);
       } catch (err) {
         console.error("Failed to fetch courses", err);
       } finally {
