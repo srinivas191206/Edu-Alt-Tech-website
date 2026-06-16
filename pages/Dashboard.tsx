@@ -359,16 +359,7 @@ const Dashboard: React.FC = () => {
                             <p className="text-sm text-slate-500 dark:text-slate-400">
                               Applied {new Date(app.appliedAt?.toDate?.() || Date.now()).toLocaleDateString()}
                             </p>
-                            {meetingLink && (
-                              <a
-                                href={meetingLink}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl font-bold text-sm hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
-                              >
-                                <Video className="w-4 h-4" /> Join Interview
-                              </a>
-                            )}
+
                           </div>
                           <div className="shrink-0">
                             {app.status === 'pending' && <CalendarCheck className="w-8 h-8 text-amber-400" />}
