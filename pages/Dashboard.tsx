@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db, onAuthStateChanged, doc, onSnapshot, collection, query, where, getDocs, getDoc } from '../lib/firebase';
-import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, ArrowRight, Clock, Star, TrendingUp, CheckCircle, Library, Sparkles } from 'lucide-react';
+import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, ArrowRight, Clock, Star, TrendingUp, CheckCircle, Library, Sparkles, Video, CalendarCheck, AlertCircle, Users, Lightbulb, Target } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserObject, CourseEnrollment, Course } from '../types';
+import { UserObject, CourseEnrollment, Course, TeacherApplication } from '../types';
 import { motion } from 'framer-motion';
 
 const getGreeting = () => {
@@ -10,10 +10,18 @@ const getGreeting = () => {
   return h < 12 ? 'Good Morning' : h < 18 ? 'Good Afternoon' : 'Good Evening';
 };
 
+const extractMeetingLink = (message: string | undefined): string | null => {
+  if (!message) return null;
+  const match = message.match(/\[Interview Link:\s*(https?:\/\/[^\]]+)\]/);
+  return match ? match[1] : null;
+};
+
 const Dashboard: React.FC = () => {
   const [user, setUser] = useState(auth.currentUser);
   const [userProfile, setUserProfile] = useState<UserObject | null>(null);
   const [enrollments, setEnrollments] = useState<(CourseEnrollment & { courseData?: Course })[]>([]);
+  const [teachingEnrollments, setTeachingEnrollments] = useState<(CourseEnrollment & { courseData?: Course })[]>([]);
+  const [myApplications, setMyApplications] = useState<(TeacherApplication & { courseTitle?: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -27,26 +35,72 @@ const Dashboard: React.FC = () => {
       });
 
       try {
-        const q = query(collection(db, 'enrollments'), where('userId', '==', u.uid), where('role', '==', 'student'));
-        const snap = await getDocs(q);
-        const enrollments: any[] = [];
-        for (const ds of snap.docs) {
+        // Fetch all courses for lookups
+        const coursesSnap = await getDocs(collection(db, 'courses'));
+        const coursesMap = new Map<string, Course>();
+        coursesSnap.docs.forEach(d => coursesMap.set(d.id, { id: d.id, ...d.data() } as Course));
+
+        // Student enrollments
+        const sq = query(collection(db, 'enrollments'), where('userId', '==', u.uid), where('role', '==', 'student'));
+        const sSnap = await getDocs(sq);
+        const studentEnr: any[] = [];
+        sSnap.docs.forEach(ds => {
           const data = ds.data();
-          try {
-            const cDoc = await getDoc(doc(db, 'courses', data.courseId));
-            if (cDoc.exists()) enrollments.push({ id: ds.id, ...data, courseData: { id: cDoc.id, ...cDoc.data() } });
-          } catch (e) {}
-        }
-        setEnrollments(enrollments);
+          const course = coursesMap.get(data.courseId);
+          if (course) studentEnr.push({ id: ds.id, ...data, courseData: course });
+        });
+        setEnrollments(studentEnr);
+
+        // Teaching enrollments (role=teacher)
+        const tq = query(collection(db, 'enrollments'), where('userId', '==', u.uid), where('role', '==', 'teacher'));
+        const tSnap = await getDocs(tq);
+        const teacherEnr: any[] = [];
+        tSnap.docs.forEach(ds => {
+          const data = ds.data();
+          const course = coursesMap.get(data.courseId);
+          if (course) teacherEnr.push({ id: ds.id, ...data, courseData: course });
+        });
+        setTeachingEnrollments(teacherEnr);
+
+        // Teacher applications for this user
+        const appQ = query(collection(db, 'teacher_applications'), where('userId', '==', u.uid));
+        const appSnap = await getDocs(appQ);
+        const apps = appSnap.docs.map(d => {
+          const data = d.data() as TeacherApplication;
+          const courseIdVal = data.qualification || '';
+          const course = coursesMap.get(courseIdVal);
+          return {
+            ...data,
+            id: d.id,
+            courseTitle: course?.title || 'Unknown Course',
+            userName: data.name || 'Unknown',
+            userEmail: data.email || ''
+          };
+        });
+        setMyApplications(apps);
       } catch (err) { console.error(err); }
       setLoading(false);
     });
     return () => unsubscribeAuth();
   }, []);
 
+  const nextSteps: string[] = [];
+  if (enrollments.length === 0 && myApplications.length === 0) nextSteps.push('Browse courses and enroll to start learning');
+  if (myApplications.some(a => a.status === 'pending')) nextSteps.push('Your teacher application is pending review — the admin will reach out');
+  const scheduledApp = myApplications.find(a => a.status === 'scheduled');
+  if (scheduledApp && extractMeetingLink(scheduledApp.message)) nextSteps.push('You have an interview scheduled! Join using the meeting link below');
+  if (myApplications.some(a => a.status === 'approved') && teachingEnrollments.length === 0) nextSteps.push('Your application was approved! The admin will assign you as a teacher shortly');
+  if (teachingEnrollments.length > 0) nextSteps.push('Go to your classroom to manage your course modules and students');
+  if (enrollments.length > 0) nextSteps.push('Continue your learning — pick up where you left off in My Courses');
+
   if (loading) {
     return <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>;
   }
+
+  const totalTeaching = teachingEnrollments.length;
+  const totalApplications = myApplications.length;
+  const pendingApps = myApplications.filter(a => a.status === 'pending').length;
+  const approvedApps = myApplications.filter(a => a.status === 'approved').length;
 
   return (
     <div className="min-h-screen pt-32 pb-24 px-6 bg-slate-50 dark:bg-slate-950">
@@ -57,21 +111,26 @@ const Dashboard: React.FC = () => {
             {getGreeting()}, {userProfile?.name || 'Learner'}!
           </h1>
           <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">
-            Welcome to your school technology learning dashboard.
+            Your learning command center.
           </p>
         </motion.div>
 
         {/* Quick Stats */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
             <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center mb-3"><BookOpen className="w-5 h-5" /></div>
             <div className="text-2xl font-black text-slate-900 dark:text-white">{enrollments.length}</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Enrolled Courses</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Learning</div>
           </div>
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-500 flex items-center justify-center mb-3"><Award className="w-5 h-5" /></div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white">0</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Certificates</div>
+            <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center mb-3"><Users className="w-5 h-5" /></div>
+            <div className="text-2xl font-black text-slate-900 dark:text-white">{totalTeaching}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Teaching</div>
+          </div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-500 flex items-center justify-center mb-3"><FileText className="w-5 h-5" /></div>
+            <div className="text-2xl font-black text-slate-900 dark:text-white">{totalApplications}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Applications</div>
           </div>
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
             <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-3"><Download className="w-5 h-5" /></div>
@@ -80,18 +139,42 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
             <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center mb-3"><Star className="w-5 h-5" /></div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white">0%</div>
+            <div className="text-2xl font-black text-slate-900 dark:text-white">{enrollments.length > 0 ? 'In Progress' : '0%'}</div>
             <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Progress</div>
           </div>
         </motion.div>
 
+        {/* Next Step Assistant Card */}
+        {nextSteps.length > 0 && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-10">
+            <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-[2rem] p-8 text-white shadow-2xl shadow-emerald-500/20 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-6 opacity-10"><Target className="w-32 h-32" /></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <Lightbulb className="w-7 h-7 text-emerald-200" />
+                  <h2 className="text-xl font-black tracking-tight">Next Step</h2>
+                </div>
+                <ul className="space-y-3">
+                  {nextSteps.slice(0, 3).map((step, i) => (
+                    <li key={i} className="flex items-start gap-3 text-emerald-50">
+                      <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs font-black shrink-0 mt-0.5">{i + 1}</span>
+                      <span className="font-medium">{step}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* My Courses */}
-          <div className="lg:col-span-2">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-10">
+            {/* My Learning */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                  <GraduationCap className="w-6 h-6 text-emerald-500" /> My Courses
+                  <GraduationCap className="w-6 h-6 text-emerald-500" /> My Learning
                 </h2>
                 <Link to="/courses" className="text-sm font-bold text-emerald-600 hover:text-emerald-500 transition-colors">Browse All</Link>
               </div>
@@ -132,6 +215,101 @@ const Dashboard: React.FC = () => {
                 </div>
               )}
             </motion.div>
+
+            {/* My Teaching */}
+            {totalTeaching > 0 && (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+                    <Users className="w-6 h-6 text-purple-500" /> My Teaching
+                  </h2>
+                </div>
+                <div className="grid gap-4">
+                  {teachingEnrollments.map((enr, idx) => (
+                    <motion.div
+                      key={enr.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="bg-white dark:bg-slate-900 border-2 border-purple-200 dark:border-purple-800/50 rounded-2xl p-6 hover:border-purple-500 transition-colors duration-300 shadow-sm"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-[10px] font-bold uppercase tracking-wider">Teacher</span>
+                          </div>
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{enr.courseData?.title || 'Unknown Course'}</h3>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">{enr.courseData?.description}</p>
+                        </div>
+                        <Link to={`/classroom/${enr.courseId}`} className="shrink-0 px-5 py-2.5 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-xl font-bold text-sm hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors">
+                          Manage
+                        </Link>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Applications */}
+            {totalApplications > 0 && (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+                    <FileText className="w-6 h-6 text-amber-500" /> Teacher Applications
+                  </h2>
+                </div>
+                <div className="grid gap-4">
+                  {myApplications.map((app, idx) => {
+                    const meetingLink = extractMeetingLink(app.message);
+                    return (
+                      <motion.div
+                        key={app.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.05 }}
+                        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm"
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
+                                app.status === 'approved' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' :
+                                app.status === 'scheduled' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
+                                app.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' :
+                                'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                              }`}>
+                                {app.status === 'scheduled' ? 'Interview Scheduled' : app.status}
+                              </span>
+                            </div>
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{app.courseTitle}</h3>
+                            <p className="text-sm text-slate-500 dark:text-slate-400">
+                              Applied {new Date(app.appliedAt?.toDate?.() || Date.now()).toLocaleDateString()}
+                            </p>
+                            {meetingLink && (
+                              <a
+                                href={meetingLink}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl font-bold text-sm hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                              >
+                                <Video className="w-4 h-4" /> Join Interview
+                              </a>
+                            )}
+                          </div>
+                          <div className="shrink-0">
+                            {app.status === 'pending' && <CalendarCheck className="w-8 h-8 text-amber-400" />}
+                            {app.status === 'scheduled' && <Clock className="w-8 h-8 text-blue-400" />}
+                            {app.status === 'approved' && <CheckCircle className="w-8 h-8 text-emerald-400" />}
+                            {app.status === 'rejected' && <AlertCircle className="w-8 h-8 text-red-400" />}
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
           </div>
 
           {/* Sidebar */}
@@ -171,6 +349,33 @@ const Dashboard: React.FC = () => {
                 ))}
               </div>
             </motion.div>
+
+            {/* Application Status Summary */}
+            {totalApplications > 0 && (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+                <h3 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"><FileText className="w-4 h-4 text-amber-500" /> Application Status</h3>
+                <div className="space-y-3">
+                  {pendingApps > 0 && (
+                    <div className="flex items-center justify-between p-3 bg-amber-50 dark:bg-amber-900/10 rounded-xl">
+                      <span className="text-sm font-medium text-amber-700 dark:text-amber-300">Pending Review</span>
+                      <span className="text-lg font-black text-amber-600 dark:text-amber-400">{pendingApps}</span>
+                    </div>
+                  )}
+                  {approvedApps > 0 && (
+                    <div className="flex items-center justify-between p-3 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl">
+                      <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">Approved</span>
+                      <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">{approvedApps}</span>
+                    </div>
+                  )}
+                  {scheduledApp && (
+                    <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl">
+                      <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Interview Scheduled</span>
+                      <span className="text-lg font-black text-blue-600 dark:text-blue-400">1</span>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
 
             {/* Resources Card */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl p-6 text-white shadow-xl shadow-emerald-500/20">
