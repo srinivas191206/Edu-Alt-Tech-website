@@ -162,6 +162,11 @@ CREATE POLICY "Authenticated users can insert teacher_applications"
   ON teacher_applications FOR INSERT
   WITH CHECK (auth.role() = 'authenticated');
 
+CREATE POLICY "Admin can update teacher_applications"
+  ON teacher_applications FOR UPDATE
+  USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
+
 -- Patch Notes
 CREATE TABLE IF NOT EXISTS patch_notes (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,

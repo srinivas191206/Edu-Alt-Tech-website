@@ -198,7 +198,8 @@ const AdminDashboard: React.FC = () => {
       setSelectedApp(null);
       fetchData();
       toast.success("Interview scheduled");
-    } catch (e) {
+    } catch (e: any) {
+      console.error("Schedule error:", e?.message || e);
       toast.error("Scheduling failed");
     }
   };

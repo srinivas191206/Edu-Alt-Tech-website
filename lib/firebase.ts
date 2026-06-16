@@ -185,8 +185,9 @@ export async function setDoc(ref: DocRef, data: any, options?: { merge?: boolean
 
 export async function updateDoc(ref: DocRef, data: any): Promise<void> {
   const snakeData = convertKeys(data, camelToSnake);
-  const { error } = await supabase.from(ref.table).update(snakeData).eq('id', ref.id);
+  const { error, count } = await supabase.from(ref.table).update(snakeData).eq('id', ref.id).select('id', { count: 'exact', head: true });
   if (error) throw new Error(`updateDoc failed: ${error.message}`);
+  if (count === 0) throw new Error(`updateDoc failed: no rows matched (RLS or missing doc)`);
 }
 
 export async function deleteDoc(ref: DocRef): Promise<void> {
