@@ -77,10 +77,11 @@ const CourseDetails: React.FC = () => {
           // --- AUTO REDIRECT TO CLASSROOM ---
           const isApprovedMentor = loadedMentors.some(m => m.userId === currentUser.uid);
           const isActiveStudent = enrData?.studentStatus === 'active';
+          const hasEnrollment = !!enrData;
           
-          if (isApprovedMentor || isActiveStudent) {
+          if ((isApprovedMentor && hasEnrollment) || isActiveStudent) {
              navigate(`/classroom/${courseId}`);
-             return; // Stop rendering course details page
+             return;
           }
         } else {
           // For guests, just fetch mentors to show who is teaching
