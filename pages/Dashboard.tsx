@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db, onAuthStateChanged, doc, onSnapshot, collection, query, where, getDocs, getDoc } from '../lib/firebase';
-import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, ArrowRight, Clock, Star, TrendingUp, CheckCircle, Library, Sparkles, Video, CalendarCheck, AlertCircle, Users, Lightbulb, Target } from 'lucide-react';
+import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, ArrowRight, Clock, Star, TrendingUp, CheckCircle, Library, Sparkles, Video, CalendarCheck, AlertCircle, Users, Lightbulb, Target, MessageSquare, Send } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserObject, CourseEnrollment, Course, TeacherApplication } from '../types';
 import { motion } from 'framer-motion';
@@ -22,6 +22,9 @@ const Dashboard: React.FC = () => {
   const [enrollments, setEnrollments] = useState<(CourseEnrollment & { courseData?: Course })[]>([]);
   const [teachingEnrollments, setTeachingEnrollments] = useState<(CourseEnrollment & { courseData?: Course })[]>([]);
   const [myApplications, setMyApplications] = useState<(TeacherApplication & { courseTitle?: string })[]>([]);
+  const [chatMessages, setChatMessages] = useState<{ id: string; content: string; role: string; created_at: string }[]>([]);
+  const [chatInput, setChatInput] = useState('');
+  const [sendingMessage, setSendingMessage] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -78,6 +81,10 @@ const Dashboard: React.FC = () => {
           };
         });
         setMyApplications(apps);
+
+        // Fetch chat messages for this user
+        const { data: chatData, error: chatErr } = await db.from('chat_messages').select('*').eq('user_id', u.uid).order('created_at', { ascending: true });
+        if (!chatErr && chatData) setChatMessages(chatData);
       } catch (err) { console.error(err); }
       setLoading(false);
     });
@@ -92,6 +99,31 @@ const Dashboard: React.FC = () => {
   if (myApplications.some(a => a.status === 'approved') && teachingEnrollments.length === 0) nextSteps.push('Your application was approved! The admin will assign you as a teacher shortly');
   if (teachingEnrollments.length > 0) nextSteps.push('Go to your classroom to manage your course modules and students');
   if (enrollments.length > 0) nextSteps.push('Continue your learning — pick up where you left off in My Courses');
+
+  const loadChatMessages = async () => {
+    if (!user) return;
+    const { data } = await db.from('chat_messages').select('*').eq('user_id', user.uid).order('created_at', { ascending: true });
+    if (data) setChatMessages(data);
+  };
+
+  const handleSendMessage = async () => {
+    if (!chatInput.trim() || !user) return;
+    setSendingMessage(true);
+    try {
+      await db.from('chat_messages').insert({
+        user_id: user.uid,
+        content: chatInput,
+        role: 'user',
+        created_at: new Date().toISOString()
+      });
+      setChatInput('');
+      await loadChatMessages();
+    } catch (e) {
+      console.error("Failed to send message", e);
+    } finally {
+      setSendingMessage(false);
+    }
+  };
 
   if (loading) {
     return <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>;
@@ -311,6 +343,59 @@ const Dashboard: React.FC = () => {
               </motion.div>
             )}
           </div>
+
+            {/* Messages */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <MessageSquare className="w-6 h-6 text-blue-500" /> Messages
+                </h2>
+              </div>
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] overflow-hidden shadow-sm">
+                <div className="h-72 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+                  {chatMessages.length === 0 ? (
+                    <div className="text-center py-10">
+                      <MessageSquare className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+                      <p className="text-slate-400 font-medium text-sm">No messages yet</p>
+                      <p className="text-xs text-slate-500 mt-1">Reach out to the admin team below</p>
+                    </div>
+                  ) : (
+                    chatMessages.map((msg) => (
+                      <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`max-w-[80%] p-4 rounded-2xl ${
+                          msg.role === 'user'
+                            ? 'bg-emerald-500 text-white rounded-br-md'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-bl-md'
+                        }`}>
+                          <p className="text-sm font-medium leading-relaxed">{msg.content}</p>
+                          <p className={`text-[10px] mt-1 ${msg.role === 'user' ? 'text-emerald-200' : 'text-slate-400'}`}>
+                            {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+                <div className="p-4 border-t border-slate-100 dark:border-slate-800">
+                  <div className="flex gap-3">
+                    <input
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
+                      placeholder="Type a message to admin..."
+                      className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl outline-none font-medium text-sm border border-transparent focus:border-emerald-500 transition-colors"
+                    />
+                    <button
+                      onClick={handleSendMessage}
+                      disabled={sendingMessage || !chatInput.trim()}
+                      className="px-5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold rounded-xl transition-colors flex items-center gap-2 text-sm"
+                    >
+                      {sendingMessage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
 
           {/* Sidebar */}
           <div className="space-y-6">
