@@ -50,9 +50,17 @@ const CourseDetails: React.FC = () => {
           // Fetch current user's application status
           const myAppQ = query(collection(db, 'teacher_applications'), where('user_id', '==', currentUser.uid));
           const myAppSnap = await getDocs(myAppQ);
-          const myCourseApp = myAppSnap.docs.find(d => d.data().qualification === courseId);
-          if (myCourseApp) {
-            setMyAppStatus(myCourseApp.data().status);
+          const courseApps = myAppSnap.docs
+            .map(d => ({ id: d.id, ...d.data() }))
+            .filter((app: any) => app.qualification === courseId);
+          
+          if (courseApps.length > 0) {
+            courseApps.sort((a: any, b: any) => {
+              const dateA = a.appliedAt ? new Date(a.appliedAt).getTime() : 0;
+              const dateB = b.appliedAt ? new Date(b.appliedAt).getTime() : 0;
+              return dateB - dateA;
+            });
+            setMyAppStatus(courseApps[0].status);
           }
 
           const loadedMentors = approvedForCourse.map(doc => {
@@ -457,8 +465,11 @@ const CourseDetails: React.FC = () => {
                        Application Under Review
                      </button>
                   ) : myAppStatus === 'rejected' ? (
-                     <button disabled className="w-full max-w-xs bg-slate-200 dark:bg-slate-800 text-rose-500 dark:text-rose-400 font-bold py-3 px-8 rounded-xl cursor-not-allowed border border-rose-200 dark:border-rose-900/50">
-                       Application Rejected
+                     <button 
+                       onClick={handleApplyToTeach}
+                       className="w-full max-w-xs bg-white dark:bg-transparent text-purple-600 dark:text-purple-400 border-2 border-purple-200 dark:border-purple-800 hover:border-purple-500 dark:hover:border-purple-500 font-bold py-3 px-8 rounded-xl transition-colors shadow-sm"
+                     >
+                       Re-apply to Teach
                      </button>
                   ) : myAppStatus === 'approved' ? (
                      <button disabled className="w-full max-w-xs bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-bold py-3 px-8 rounded-xl cursor-not-allowed border border-emerald-200 dark:border-emerald-800">

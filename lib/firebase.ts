@@ -386,6 +386,25 @@ export async function getDownloadURL(storageRef: { path: string; bucket: string 
   return data.publicUrl;
 }
 
+// ── RPC helpers (bypass RLS via SECURITY DEFINER) ────────────────────────
+
+export async function createEnrollment(enrollment: {
+  id: string;
+  userId: string;
+  courseId: string;
+  role?: string;
+  studentStatus?: string;
+}): Promise<void> {
+  const { error } = await supabase.rpc('create_enrollment', {
+    p_id: enrollment.id,
+    p_user_id: enrollment.userId,
+    p_course_id: enrollment.courseId,
+    p_role: enrollment.role || 'teacher',
+    p_student_status: enrollment.studentStatus || 'active',
+  });
+  if (error) throw new Error(`createEnrollment failed: ${error.message}`);
+}
+
 // ── Bare db export (for any direct supabase access) ──────────────────────
 
 export const db = supabase;

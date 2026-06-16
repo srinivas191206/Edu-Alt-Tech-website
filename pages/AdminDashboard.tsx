@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL } from '../lib/firebase';
+import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL, createEnrollment } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical, Calendar, Video } from 'lucide-react';
 import { TeacherApplication } from '../types';
@@ -152,12 +152,12 @@ const AdminDashboard: React.FC = () => {
           const data = appDoc.data();
           const courseIdVal = data.qualification || appId;
           const enrollmentId = crypto.randomUUID();
-          await setDoc(doc(db, 'enrollments', enrollmentId), {
+          await createEnrollment({
+            id: enrollmentId,
             userId: data.userId,
             courseId: courseIdVal,
             role: 'teacher',
             studentStatus: 'active',
-            createdAt: serverTimestamp()
           });
         }
       }
