@@ -92,7 +92,7 @@ const Courses: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  const [activeClass, setActiveClass] = useState<string>('All');
+
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -160,11 +160,8 @@ const Courses: React.FC = () => {
       matchesCategory = !EDUCATION_FOLDERS.has(course.folder || '');
     }
     
-    // Class level filter
-    const matchesClass = activeClass === 'All' || course.classLevel === activeClass;
-    
-    return matchesSearch && matchesCategory && matchesClass;
-  }), [courses, searchTerm, activeFilter, activeClass]);
+    return matchesSearch && matchesCategory;
+  }), [courses, searchTerm, activeFilter]);
 
   const displayedCourses = useMemo(() => {
     return !user ? filteredCourses.slice(0, 3) : filteredCourses;
@@ -216,20 +213,7 @@ const Courses: React.FC = () => {
           ))}
         </motion.div>
 
-        {/* Class Level Filters */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
-          className="flex flex-wrap gap-2 mb-10 pb-6 border-b border-slate-200/60 dark:border-slate-800/60">
-          {['All', 'Class 6-8', 'Class 9-10', 'Class 11-12', 'College/Professional', 'General'].map((lvl) => (
-            <button key={lvl} onClick={() => setActiveClass(lvl)}
-              className={`px-5 py-2.5 rounded-full text-xs font-extrabold transition-colors ${
-                activeClass === lvl
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25'
-                  : 'bg-white dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/50'
-              }`}>
-              {lvl}
-            </button>
-          ))}
-        </motion.div>
+
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-4">
