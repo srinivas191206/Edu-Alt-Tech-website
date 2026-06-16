@@ -209,36 +209,6 @@ const AdminDashboard: React.FC = () => {
     await loadChatMessages(contact.id);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center gap-4">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          style={{ willChange: 'transform' }}
-        >
-          <Loader2 className="w-12 h-12 text-emerald-500" />
-        </motion.div>
-        <p className="text-slate-500 font-bold animate-pulse uppercase tracking-widest text-xs">Syncing Core Systems...</p>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center gap-4">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          style={{ willChange: 'transform' }}
-        >
-          <Loader2 className="w-12 h-12 text-emerald-500" />
-        </motion.div>
-        <p className="text-slate-500 font-bold animate-pulse uppercase tracking-widest text-xs">Syncing Core Systems...</p>
-      </div>
-    );
-  }
-
   const activeCount = useMemo(() => enrollments.filter((e: any) => e.status === 'active').length, [enrollments]);
   const enrollmentCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -248,6 +218,21 @@ const AdminDashboard: React.FC = () => {
     });
     return counts;
   }, [enrollments]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center gap-4">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          style={{ willChange: 'transform' }}
+        >
+          <Loader2 className="w-12 h-12 text-emerald-500" />
+        </motion.div>
+        <p className="text-slate-500 font-bold animate-pulse uppercase tracking-widest text-xs">Syncing Core Systems...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-500/30">
