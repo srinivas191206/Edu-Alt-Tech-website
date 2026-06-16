@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Download, FileText, BookOpen, Brain, FileSpreadsheet, Lock, Sparkles, ArrowRight, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { db, collection, getDocs } from '../lib/firebase';
+import { auth, db, collection, getDocs } from '../lib/firebase';
 
 export interface ResourceItem {
   title: string;
@@ -94,6 +94,19 @@ const Resources: React.FC = () => {
 
   const allResources = useMemo(() => [...STATIC_RESOURCES, ...firebaseResources.filter(fr => !STATIC_RESOURCES.find(r => r.title === fr.title))], [firebaseResources]);
 
+  const trackDownload = async (item: ResourceItem) => {
+    if (!auth.currentUser) return;
+    try {
+      await db.from('user_downloads').insert({
+        user_id: auth.currentUser.uid,
+        resource_title: item.title,
+        resource_url: item.url || '',
+        resource_type: item.type,
+        downloaded_at: new Date().toISOString()
+      });
+    } catch (e) { console.error("Download track failed", e); }
+  };
+
   const filtered = useMemo(() => allResources.filter(r => {
     const matchSearch = r.title.toLowerCase().includes(search.toLowerCase()) || r.description.toLowerCase().includes(search.toLowerCase());
     const matchCat = filter === 'All' || r.category === filter;
@@ -176,7 +189,7 @@ const Resources: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-xs text-slate-400">{item.downloads} downloads</span>
                 {item.url ? (
-                  <a href={item.url} download className={`flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-colors ${
+                  <a href={item.url} download onClick={() => trackDownload(item)} className={`flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-colors ${
                     item.premium
                       ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
                       : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20'

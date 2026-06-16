@@ -540,7 +540,12 @@ const CourseClassroom: React.FC = () => {
                         key={res.id} 
                         href={res.url} 
                         target="_blank" 
-                        rel="noreferrer" 
+                        rel="noreferrer"
+                        onClick={() => {
+                          if (user) {
+                            (async () => { try { await db.from('user_downloads').insert({ user_id: user.uid, resource_title: res.title, resource_url: res.url, resource_type: 'link', course_id: courseId, downloaded_at: new Date().toISOString() }); } catch {} })();
+                          }
+                        }}
                         className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-transparent hover:border-purple-500/30 hover:bg-white dark:hover:bg-slate-800 transition-colors group"
                       >
                         <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform">

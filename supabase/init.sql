@@ -317,3 +317,24 @@ CREATE POLICY "Users can read own enrollments"
 CREATE POLICY "Users can insert own enrollments"
   ON enrollments FOR INSERT
   WITH CHECK (auth.uid()::text = user_id);
+
+-- User Downloads tracking
+CREATE TABLE IF NOT EXISTS user_downloads (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL,
+  resource_title TEXT NOT NULL,
+  resource_url TEXT NOT NULL,
+  resource_type TEXT DEFAULT 'pdf',
+  course_id TEXT,
+  downloaded_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE user_downloads ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own downloads"
+  ON user_downloads FOR SELECT
+  USING (auth.uid()::text = user_id);
+
+CREATE POLICY "Users can insert own downloads"
+  ON user_downloads FOR INSERT
+  WITH CHECK (auth.uid()::text = user_id);

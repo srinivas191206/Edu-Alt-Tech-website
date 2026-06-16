@@ -23,6 +23,7 @@ const Dashboard: React.FC = () => {
   const [teachingEnrollments, setTeachingEnrollments] = useState<(CourseEnrollment & { courseData?: Course })[]>([]);
   const [myApplications, setMyApplications] = useState<(TeacherApplication & { courseTitle?: string })[]>([]);
   const [chatMessages, setChatMessages] = useState<{ id: string; content: string; role: string; created_at: string }[]>([]);
+  const [resourceCount, setResourceCount] = useState(0);
   const [chatInput, setChatInput] = useState('');
   const [sendingMessage, setSendingMessage] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -85,6 +86,18 @@ const Dashboard: React.FC = () => {
         // Fetch chat messages for this user
         const { data: chatData, error: chatErr } = await db.from('chat_messages').select('*').eq('user_id', u.uid).order('created_at', { ascending: true });
         if (!chatErr && chatData) setChatMessages(chatData);
+
+        // Count resources: user_downloads + resources from enrolled courses
+        try {
+          const { count: dlCount } = await db.from('user_downloads').select('id', { count: 'exact', head: true }).eq('user_id', u.uid);
+          const enrolledCourseIds = [...new Set([...studentEnr.map(e => e.courseId), ...teacherEnr.map(e => e.courseId)])];
+          let courseResCount = 0;
+          if (enrolledCourseIds.length > 0) {
+            const { count: crCount } = await db.from('resources').select('id', { count: 'exact', head: true }).in('course_id', enrolledCourseIds);
+            courseResCount = crCount || 0;
+          }
+          setResourceCount((dlCount || 0) + courseResCount);
+        } catch (e) { console.error("Resource count failed", e); }
       } catch (err) { console.error(err); }
       setLoading(false);
     });
@@ -166,7 +179,7 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
             <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-3"><Download className="w-5 h-5" /></div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white">0</div>
+            <div className="text-2xl font-black text-slate-900 dark:text-white">{resourceCount}</div>
             <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Resources</div>
           </div>
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
