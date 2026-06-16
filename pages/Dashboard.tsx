@@ -17,6 +17,13 @@ const extractMeetingLink = (message: string | undefined, explicitLink?: string):
   return match ? match[1] : null;
 };
 
+const extractMeetingDate = (message: string | undefined, explicitDate?: any): string | null => {
+  if (explicitDate) return typeof explicitDate === 'string' ? explicitDate : explicitDate?.toISOString?.() || null;
+  if (!message) return null;
+  const match = message.match(/\[Interview Date:\s*([^\]]+)\]/);
+  return match ? match[1] : null;
+};
+
 const Dashboard: React.FC = () => {
   const [user, setUser] = useState(auth.currentUser);
   const [userProfile, setUserProfile] = useState<UserObject | null>(null);
@@ -208,6 +215,7 @@ const Dashboard: React.FC = () => {
         {/* Interview Scheduled — prominent banner */}
         {scheduledApp && extractMeetingLink(scheduledApp.message, scheduledApp.meetingLink) && (() => {
           const mLink = extractMeetingLink(scheduledApp.message, scheduledApp.meetingLink)!;
+          const mDate = extractMeetingDate(scheduledApp.message, scheduledApp.meetingDate);
           return (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }} className="mb-10">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-[2rem] p-8 md:p-10 text-white shadow-2xl shadow-blue-500/30 relative overflow-hidden">
@@ -220,7 +228,7 @@ const Dashboard: React.FC = () => {
                   <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-2">Interview Scheduled</h2>
                   <p className="text-blue-100 text-lg font-medium">
                     {scheduledApp.courseTitle} — Click the link below to join your interview.
-                    {scheduledApp.meetingDate && <><br />Scheduled for: <strong>{new Date(scheduledApp.meetingDate).toLocaleString()}</strong></>}
+                    {mDate && <><br />Scheduled for: <strong>{new Date(mDate).toLocaleString()}</strong></>}
                   </p>
                 </div>
                 <a
@@ -357,6 +365,7 @@ const Dashboard: React.FC = () => {
                   {myApplications.map((app, idx) => {
                     const meetingLink = extractMeetingLink(app.message, app.meetingLink);
                     const formattedMeetingLink = meetingLink ? (meetingLink.startsWith('http') ? meetingLink : `https://${meetingLink}`) : '';
+                    const meetingDateVal = extractMeetingDate(app.message, app.meetingDate);
                     return (
                       <motion.div
                         key={app.id}
@@ -378,9 +387,9 @@ const Dashboard: React.FC = () => {
                               <div className="flex justify-between items-start mb-4">
                                 <div>
                                   <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Your Interview</p>
-                                  {app.meetingDate && (
+                                  {meetingDateVal && (
                                     <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                                      {new Date(app.meetingDate).toLocaleString()}
+                                      {new Date(meetingDateVal).toLocaleString()}
                                     </p>
                                   )}
                                 </div>

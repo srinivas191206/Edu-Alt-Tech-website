@@ -191,7 +191,7 @@ const AdminDashboard: React.FC = () => {
     try {
       const existingApp = await getDoc(doc(db, 'teacher_applications', appId));
       const existingMsg = existingApp.exists() ? existingApp.data().message || '' : '';
-      const updatedMsg = existingMsg + `\n[Interview Link: ${meetLink}]`;
+      const updatedMsg = existingMsg + `\n[Interview Link: ${meetLink}]` + (meetDate ? `\n[Interview Date: ${new Date(meetDate).toISOString()}]` : '');
 
       const updateData: any = {
         status: 'scheduled',
@@ -202,7 +202,15 @@ const AdminDashboard: React.FC = () => {
         updateData.meetingDate = new Date(meetDate).toISOString();
       }
 
-      await updateDoc(doc(db, 'teacher_applications', appId), updateData);
+      try {
+        await updateDoc(doc(db, 'teacher_applications', appId), updateData);
+      } catch (dbErr: any) {
+        console.warn("DB update with explicit columns failed, falling back to message-only storage", dbErr);
+        await updateDoc(doc(db, 'teacher_applications', appId), {
+          status: 'scheduled',
+          message: updatedMsg,
+        });
+      }
 
       if (emailStr) {
         try {
@@ -779,18 +787,32 @@ const AdminDashboard: React.FC = () => {
                     <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
                       <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-[2rem] mb-6">
                         <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Schedule Interview</label>
-                        <div className="flex gap-4">
-                          <input
-                            value={meetLink}
-                            onChange={e => setMeetLink(e.target.value)}
-                            placeholder="Paste Google Meet / Zoom Link..."
-                            className="flex-1 p-4 bg-white dark:bg-slate-900 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors"
-                          />
+                        <div className="flex flex-col gap-4">
+                          <div className="flex flex-col sm:flex-row gap-4">
+                            <div className="flex-1">
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2">Interview Date & Time</label>
+                              <input
+                                type="datetime-local"
+                                value={meetDate}
+                                onChange={e => setMeetDate(e.target.value)}
+                                className="w-full p-4 bg-white dark:bg-slate-900 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors"
+                              />
+                            </div>
+                            <div className="flex-1">
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2">Google Meet / Zoom Link</label>
+                              <input
+                                value={meetLink}
+                                onChange={e => setMeetLink(e.target.value)}
+                                placeholder="Paste Link..."
+                                className="w-full p-4 bg-white dark:bg-slate-900 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors"
+                              />
+                            </div>
+                          </div>
                           <button
                             onClick={() => handleApproveApp(selectedApp.id, selectedApp.userEmail)}
-                            className="px-8 bg-emerald-500 text-white font-black rounded-2xl hover:scale-[1.02] transition-transform"
+                            className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl transition-colors shadow-lg shadow-emerald-500/20"
                           >
-                            SEND
+                            Schedule Interview & Send Link
                           </button>
                         </div>
                       </div>
@@ -817,13 +839,27 @@ const AdminDashboard: React.FC = () => {
                       <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-[2rem] mb-6 border border-blue-200 dark:border-blue-800">
                         <label className="block text-xs font-black text-blue-600 uppercase tracking-widest mb-2">Scheduled Interview Link</label>
                         {(() => {
-                          const link = selectedApp.message?.match(/\[Interview Link:\s*(https?:\/\/[^\]]+)\]/);
-                          const meetingUrl = link ? link[1] : null;
-                          return meetingUrl ? (
-                            <a href={meetingUrl} target="_blank" rel="noreferrer" className="block w-full p-4 bg-white dark:bg-slate-900 rounded-2xl font-bold text-blue-600 hover:underline truncate">
+                          const linkMatch = selectedApp.message?.match(/\[Interview Link:\s*([^\]\n]+)\]/);
+                          const meetingUrl = linkMatch ? linkMatch[1] : selectedApp.meetingLink;
+                          const formattedUrl = meetingUrl ? (meetingUrl.startsWith('http') ? meetingUrl : `https://${meetingUrl}`) : null;
+                          return formattedUrl ? (
+                            <a href={formattedUrl} target="_blank" rel="noreferrer" className="block w-full p-4 bg-white dark:bg-slate-900 rounded-2xl font-bold text-blue-600 hover:underline truncate">
                               {meetingUrl}
                             </a>
                           ) : <p className="text-sm text-slate-500">No meeting link found.</p>;
+                        })()}
+
+                        {(() => {
+                          const dateMatch = selectedApp.message?.match(/\[Interview Date:\s*([^\]\n]+)\]/);
+                          const meetingDateVal = dateMatch ? dateMatch[1] : selectedApp.meetingDate;
+                          return meetingDateVal ? (
+                            <div className="mt-4">
+                              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Interview Date & Time</label>
+                              <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                                {new Date(meetingDateVal).toLocaleString()}
+                              </p>
+                            </div>
+                          ) : null;
                         })()}
                       </div>
 

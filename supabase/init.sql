@@ -149,6 +149,8 @@ CREATE TABLE IF NOT EXISTS teacher_applications (
   experience TEXT,
   message TEXT,
   status TEXT DEFAULT 'pending',
+  meeting_link TEXT,
+  meeting_date TIMESTAMPTZ,
   applied_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -396,3 +398,7 @@ CREATE POLICY "Authenticated users can insert notifications"
 CREATE POLICY "Users can update own notifications"
   ON notifications FOR UPDATE
   USING (auth.uid()::text = user_id OR auth.role() = 'authenticated');
+
+-- Safe migration statements to ensure existing DB tables get the new columns
+ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS meeting_link TEXT;
+ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS meeting_date TIMESTAMPTZ;
