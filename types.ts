@@ -47,6 +47,7 @@ export interface Course {
   folder?: string;
   duration?: string;
   level?: string;
+  externalUrl?: string; // external link for provider courses
   createdAt: any;
   createdBy: string; // admin or system
 }
