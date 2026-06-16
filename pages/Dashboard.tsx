@@ -30,15 +30,17 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let cancelled = false;
     const unsubscribeAuth = onAuthStateChanged(auth, async (u) => {
-      setUser(u);
-      if (!u) { navigate('/login'); return; }
-
-      const unsubProfile = onSnapshot(doc(db, 'users', u.uid), (docObj) => {
-        if (docObj.exists()) setUserProfile({ uid: docObj.id, ...docObj.data() } as UserObject);
-      });
-
       try {
+        setUser(u);
+        if (!u) { navigate('/login'); return; }
+
+        try {
+          const docObj = await getDoc(doc(db, 'users', u.uid));
+          if (docObj.exists() && !cancelled) setUserProfile({ uid: docObj.id, ...docObj.data() } as UserObject);
+        } catch (_) {}
+
         // Fetch all courses for lookups
         const coursesSnap = await getDocs(collection(db, 'courses'));
         const coursesMap = new Map<string, Course>();
@@ -53,7 +55,7 @@ const Dashboard: React.FC = () => {
           const course = coursesMap.get(data.courseId);
           if (course) studentEnr.push({ id: ds.id, ...data, courseData: course });
         });
-        setEnrollments(studentEnr);
+        if (!cancelled) setEnrollments(studentEnr);
 
         // Teaching enrollments (role=teacher)
         const tq = query(collection(db, 'enrollments'), where('userId', '==', u.uid), where('role', '==', 'teacher'));
@@ -64,7 +66,7 @@ const Dashboard: React.FC = () => {
           const course = coursesMap.get(data.courseId);
           if (course) teacherEnr.push({ id: ds.id, ...data, courseData: course });
         });
-        setTeachingEnrollments(teacherEnr);
+        if (!cancelled) setTeachingEnrollments(teacherEnr);
 
         // Teacher applications for this user
         const appQ = query(collection(db, 'teacher_applications'), where('userId', '==', u.uid));
@@ -81,13 +83,15 @@ const Dashboard: React.FC = () => {
             userEmail: data.email || ''
           };
         });
-        setMyApplications(apps);
+        if (!cancelled) setMyApplications(apps);
 
         // Fetch chat messages for this user
-        const { data: chatData, error: chatErr } = await db.from('chat_messages').select('*').eq('user_id', u.uid).order('created_at', { ascending: true });
-        if (!chatErr && chatData) setChatMessages(chatData);
+        try {
+          const { data: chatData } = await db.from('chat_messages').select('*').eq('user_id', u.uid).order('created_at', { ascending: true });
+          if (chatData && !cancelled) setChatMessages(chatData);
+        } catch (_) {}
 
-        // Count resources: user_downloads + resources from enrolled courses
+        // Count resources
         try {
           const { count: dlCount } = await db.from('user_downloads').select('id', { count: 'exact', head: true }).eq('user_id', u.uid);
           const enrolledCourseIds = [...new Set([...studentEnr.map(e => e.courseId), ...teacherEnr.map(e => e.courseId)])];
@@ -96,12 +100,12 @@ const Dashboard: React.FC = () => {
             const { count: crCount } = await db.from('resources').select('id', { count: 'exact', head: true }).in('course_id', enrolledCourseIds);
             courseResCount = crCount || 0;
           }
-          setResourceCount((dlCount || 0) + courseResCount);
-        } catch (e) { console.error("Resource count failed", e); }
-      } catch (err) { console.error(err); }
-      setLoading(false);
+          if (!cancelled) setResourceCount((dlCount || 0) + courseResCount);
+        } catch (_) {}
+      } catch (err) { console.error("Dashboard init error", err); }
+      if (!cancelled) setLoading(false);
     });
-    return () => unsubscribeAuth();
+    return () => { cancelled = true; unsubscribeAuth(); };
   }, []);
 
   const nextSteps: string[] = [];
