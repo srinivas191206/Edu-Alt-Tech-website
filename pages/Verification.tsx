@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Mail, ArrowLeft, CheckCircle2, Loader2, RefreshCw } from 'lucide-react';
-import { sendEmailVerification } from 'firebase/auth';
-import { auth } from '../lib/firebase';
+import { auth, sendEmailVerification } from '../lib/firebase';
 
 const Verification: React.FC = () => {
   const location = useLocation();

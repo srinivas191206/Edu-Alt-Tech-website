@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { auth, db, storage } from '../lib/firebase';
+import { auth, db, storage, onAuthStateChanged, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword, doc, onSnapshot, setDoc, ref, uploadBytes, getDownloadURL } from '../lib/firebase';
 import { Loader2, Camera, X, Check, LogOut, ArrowLeft, Building2, MapPin, Tag, Edit3, Save } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
-import { onAuthStateChanged, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
-import { doc, onSnapshot, setDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { UserObject } from '../types';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -117,7 +114,7 @@ const Profile: React.FC = () => {
     try {
       const credential = EmailAuthProvider.credential(user.email, oldPassword);
       await reauthenticateWithCredential(user, credential);
-      await updatePassword(user, newPassword);
+      await updatePassword(newPassword);
       toast.success("Password updated successfully!");
       setShowPasswordSection(false);
       setOldPassword('');

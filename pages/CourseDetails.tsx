@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
-import { auth, db } from '../lib/firebase';
+import { auth, db, doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs, onAuthStateChanged } from '../lib/firebase';
 import { Course, CourseEnrollment } from '../types';
 import { ArrowLeft, CheckCircle2, Clock, Users, BookOpen, AlertCircle, Loader2, ArrowRight, Sparkles } from 'lucide-react';
-import { onAuthStateChanged } from 'firebase/auth';
-import type { User as FirebaseUser } from 'firebase/auth';
+import type { User } from '../lib/firebase';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
@@ -14,7 +12,7 @@ const CourseDetails: React.FC = () => {
   const navigate = useNavigate();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [enrollment, setEnrollment] = useState<CourseEnrollment | null>(null);
   const [enrollLoading, setEnrollLoading] = useState(false);
   const [mentors, setMentors] = useState<any[]>([]);
@@ -24,7 +22,7 @@ const CourseDetails: React.FC = () => {
   const contentRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const fetchCourseAndEnrollment = async (currentUser: FirebaseUser | null) => {
+    const fetchCourseAndEnrollment = async (currentUser: User | null) => {
       if (!courseId) return;
       try {
         const courseDoc = await getDoc(doc(db, 'courses', courseId));

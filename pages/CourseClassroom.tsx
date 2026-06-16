@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { doc, getDoc, collection, query, where, getDocs, addDoc, updateDoc, serverTimestamp, orderBy, arrayUnion, arrayRemove } from 'firebase/firestore';
-import { auth, db, storage } from '../lib/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { auth, db, storage, doc, getDoc, collection, query, where, getDocs, addDoc, updateDoc, serverTimestamp, orderBy, arrayUnion, arrayRemove, ref, uploadBytes, getDownloadURL, onAuthStateChanged } from '../lib/firebase';
 import { Course, CourseEnrollment, CourseModule, ModuleLecture, CourseResource } from '../types';
 import { ArrowLeft, BookOpen, Video, FileText, Plus, Link as LinkIcon, Loader2, PlayCircle, CheckCircle2, Circle, ChevronRight, Clock, Award, Layout, Zap, X, Upload, ExternalLink, MessageCircle, Target } from 'lucide-react';
-import { onAuthStateChanged } from 'firebase/auth';
-import type { User as FirebaseUser } from 'firebase/auth';
+import type { User } from '../lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import CourseChat from '../components/CourseChat';
@@ -19,7 +16,7 @@ const CourseClassroom: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const navigate = useNavigate();
   const [course, setCourse] = useState<Course | null>(null);
-  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<'student' | 'teacher' | null>(null);
   const [enrollment, setEnrollment] = useState<CourseEnrollment | null>(null);
   const [loading, setLoading] = useState(true);
@@ -68,7 +65,7 @@ const CourseClassroom: React.FC = () => {
   };
 
   useEffect(() => {
-    const init = async (currentUser: FirebaseUser | null) => {
+    const init = async (currentUser: User | null) => {
       if (!courseId) return;
       if (!currentUser) {
         navigate('/login');

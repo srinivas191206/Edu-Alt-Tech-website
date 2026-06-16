@@ -1,5 +1,4 @@
-import { db } from './firebase';
-import { collection, addDoc, serverTimestamp, query, where, orderBy, getDocs, limit } from 'firebase/firestore';
+import { db, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs, limit } from './firebase';
 import type { ActivityType, UserActivity } from '../types';
 
 export async function trackActivity(

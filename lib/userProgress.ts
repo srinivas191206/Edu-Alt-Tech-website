@@ -1,5 +1,4 @@
-import { db } from './firebase';
-import { doc, setDoc, getDoc, updateDoc, increment, serverTimestamp, collection, addDoc, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
+import { db, doc, setDoc, getDoc, updateDoc, increment, serverTimestamp, collection, addDoc, query, where, getDocs, orderBy, limit } from './firebase';
 import type { QuizAttempt, UserMetrics, AdaptiveLevel } from '../types';
 import { trackActivity } from './analytics';
 

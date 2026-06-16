@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { onAuthStateChanged, type User } from 'firebase/auth';
-import { auth } from '../../lib/firebase';
+import { auth, onAuthStateChanged } from '../../lib/firebase';
+import type { User } from '../../lib/firebase';
 import { toast } from 'react-hot-toast';
 
 const plans = [

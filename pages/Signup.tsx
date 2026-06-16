@@ -1,11 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
-// Fix modular imports for Firebase Auth
-import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
-
-import { auth, db } from '../lib/firebase';
+import { auth, db, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut, doc, setDoc, serverTimestamp, collection, query, where, getDocs } from '../lib/firebase';
 import { motion } from 'framer-motion';
 
 const Signup: React.FC = () => {
@@ -49,6 +45,7 @@ const Signup: React.FC = () => {
         return;
       }
 
+      if (!userCredential.user) return;
       // Save additional user info to Firestore
       await setDoc(doc(db, 'users', userCredential.user.uid), {
         name,

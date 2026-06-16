@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Brain, TrendingUp, TrendingDown, Users, Activity, Clock, ArrowLeft, AlertTriangle, BarChart3, Target } from 'lucide-react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '../lib/firebase';
-import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
-import type { User as FirebaseUser } from 'firebase/auth';
+import { auth, db, onAuthStateChanged, collection, getDocs, query, orderBy, limit } from '../lib/firebase';
+import type { User } from '../lib/firebase';
 import type { UserMetrics, UserActivity } from '../types';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,7 +17,7 @@ interface StudentInsight {
 }
 
 const BehaviorInsights: React.FC = () => {
-  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [students, setStudents] = useState<StudentInsight[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'risk' | 'engagement' | 'activity'>('risk');

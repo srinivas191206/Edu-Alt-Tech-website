@@ -1,11 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Lock, Mail, Loader2, Eye, EyeOff } from 'lucide-react';
-// Fix modular imports for Firebase Auth
-import { signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
-
-import { auth, db } from '../lib/firebase';
-import { doc, getDoc, setDoc, serverTimestamp, collection } from 'firebase/firestore';
+import { auth, db, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, doc, getDoc, setDoc, serverTimestamp, collection } from '../lib/firebase';
 import { motion } from 'framer-motion';
 
 const Login: React.FC = () => {
@@ -28,6 +24,7 @@ const Login: React.FC = () => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      if (!userCredential.user) return;
       if (userCredential.user.email === 'ukkukk97@gmail.com' || userCredential.user.email === 'umakrishnakanthchokkapu15@gmail.com') {
         navigate('/admin');
       } else {

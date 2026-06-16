@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db, storage } from '../lib/firebase';
+import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy } from 'firebase/firestore';
 import { Loader2, Plus, Users, CalendarClock, Trash2, Check, Video, FileText, Edit, Save, X, Upload, LayoutDashboard, Database, ClipboardList, Settings, Search, MoreVertical, ExternalLink, ArrowLeft, AlertCircle, Sparkles, Bot, Brain, Code2, BookOpen, DatabaseBackup } from 'lucide-react';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Course, TeacherApplication, PatchNote, UserObject, CourseCategory } from '../types';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';

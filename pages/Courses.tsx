@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, query } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
 import { Search, Book, Palette, ArrowRight, Compass, Filter, Sparkles, GraduationCap, Globe, ShieldCheck, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';

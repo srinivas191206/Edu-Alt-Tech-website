@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
-import { doc, getDoc, collection, setDoc, serverTimestamp } from 'firebase/firestore';
-import { auth, db } from '../lib/firebase';
+import { auth, db, doc, getDoc, collection, setDoc, serverTimestamp, onAuthStateChanged } from '../lib/firebase';
 import { Course, TeacherApplication as TeacherAppType } from '../types';
 import { ArrowLeft, Loader2, Calendar } from 'lucide-react';
-import { onAuthStateChanged } from 'firebase/auth';
-import type { User as FirebaseUser } from 'firebase/auth';
+import type { User } from '../lib/firebase';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
@@ -15,7 +13,7 @@ const TeacherApplication: React.FC = () => {
   const navigate = useNavigate();
   
   const [course, setCourse] = useState<Course | null>(null);
-  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [preferredDate, setPreferredDate] = useState('');
@@ -25,7 +23,7 @@ const TeacherApplication: React.FC = () => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    const fetchCourse = async (currentUser: FirebaseUser | null) => {
+    const fetchCourse = async (currentUser: User | null) => {
       if (!courseId) {
         setLoading(false);
         return;

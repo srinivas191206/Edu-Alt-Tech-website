@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { db, auth } from '../lib/firebase';
-import { collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, getDocs, doc, getDoc, limit } from 'firebase/firestore';
+import { db, auth, collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, getDocs, doc, getDoc, limit } from '../lib/firebase';
 import { Send, Hash, MessageCircle, User, Loader2, Search } from 'lucide-react';
 import { Course, UserObject } from '../types';
 
@@ -118,7 +117,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
     );
 
     const unsubscribe = onSnapshot(msgQ, (snap) => {
-      const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() } as Message));
+      const msgs = snap.docs.map((d: any) => ({ id: d.id, ...d.data() } as Message));
       setMessages(msgs);
       setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
     });

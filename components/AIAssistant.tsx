@@ -1,10 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Bot, X, Send, Loader2, MessageCircle, BookOpen, Shield, ChevronDown, Sparkles, GraduationCap, UserCheck, Lightbulb } from 'lucide-react';
 import { sendAIChat, AIMode } from '../lib/ai';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '../lib/firebase';
-import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
-import type { User as FirebaseUser } from 'firebase/auth';
+import { auth, db, onAuthStateChanged, collection, query, where, getDocs, orderBy, limit } from '../lib/firebase';
 
 type ModeOption = {
   id: AIMode;

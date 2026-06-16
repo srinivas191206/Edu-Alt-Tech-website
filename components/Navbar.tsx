@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ChevronDown, User, LogOut, Sun, Moon, GraduationCap, BookOpen, Wrench, LayoutDashboard, Library } from 'lucide-react';
+import { Menu, X, ChevronDown, User as LucideUser, LogOut, Sun, Moon, GraduationCap, BookOpen, Wrench, LayoutDashboard, Library } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import type { User as FirebaseUser } from 'firebase/auth';
-import { auth, db } from '../lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { auth, db, onAuthStateChanged, signOut, doc, getDoc } from '../lib/firebase';
+import type { User as FirebaseUser } from '../lib/firebase';
 import { UserObject } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -233,7 +231,7 @@ export default function Navbar() {
                     onClick={() => setIsOpen(false)}
                     className="bg-emerald-500 text-white px-4 py-6 rounded-[2rem] font-black text-2xl flex items-center justify-center gap-3 shadow-xl shadow-emerald-500/20"
                   >
-                    <User className="w-8 h-8" /> View Profile
+                    <LucideUser className="w-8 h-8" /> View Profile
                   </Link>
                 )}
               </motion.div>

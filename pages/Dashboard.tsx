@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db } from '../lib/firebase';
+import { auth, db, onAuthStateChanged, doc, onSnapshot, collection, query, where, getDocs, getDoc } from '../lib/firebase';
 import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, ArrowRight, Clock, Star, TrendingUp, CheckCircle, Library, Sparkles } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import { doc, onSnapshot, collection, query, where, getDocs, getDoc } from 'firebase/firestore';
 import { UserObject, CourseEnrollment, Course } from '../types';
 import { motion } from 'framer-motion';
 

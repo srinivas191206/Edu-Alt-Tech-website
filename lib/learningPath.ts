@@ -1,5 +1,4 @@
-import { db } from './firebase';
-import { doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
+import { db, doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, query, where, getDocs } from './firebase';
 import type { LearningPath, LearningPathModule, UserMetrics, AdaptiveLevel } from '../types';
 import { sendAIChat } from './ai';
 import { extractJSON } from './jsonUtils';

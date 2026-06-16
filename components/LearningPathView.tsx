@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, Sparkles, ChevronRight, Clock, Target, CheckCircle2, Circle, BookOpen, RotateCw } from 'lucide-react';
 import { getLearningPath, generateLearningPath, updateModuleStatus } from '../lib/learningPath';
-import { auth } from '../lib/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import type { User as FirebaseUser } from 'firebase/auth';
+import { auth, onAuthStateChanged } from '../lib/firebase';
+import type { User } from '../lib/firebase';
 import type { LearningPath, AdaptiveLevel } from '../types';
 import { trackActivity } from '../lib/analytics';
 
@@ -21,7 +20,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ courseId, courseTit
   const [goal, setGoal] = useState('');
   const [level, setLevel] = useState<AdaptiveLevel>('beginner');
   const [showSetup, setShowSetup] = useState(true);
-  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {

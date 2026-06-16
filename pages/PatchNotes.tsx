@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
-import { db, auth } from '../lib/firebase';
+import { db, auth, collection, getDocs, query, orderBy, doc, deleteDoc, onAuthStateChanged } from '../lib/firebase';
 import { PatchNote } from '../types';
 import { Loader2, FileText, ArrowLeft, Terminal, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 

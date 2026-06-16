@@ -3,8 +3,7 @@ import { motion } from 'framer-motion';
 import { Search, Youtube, Code2, BookOpen, Briefcase, Sparkles, ExternalLink, GraduationCap } from 'lucide-react';
 import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, YOUTUBE_CHANNELS } from '../data/problems';
 import type { LeetCodeProblem, CourseLink, InterviewExperience, YouTubeChannel } from '../data/problems';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { db, collection, getDocs, query, orderBy } from '../lib/firebase';
 
 type Tab = 'problems' | 'courses' | 'interviews' | 'channels';
 type ProblemSet = 'popular' | 'leetcode150' | 'top150' | 'admin';

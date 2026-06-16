@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User } from 'firebase/auth';
-import { db } from '../lib/firebase';
-import {
-  collection, query, orderBy, onSnapshot, addDoc,
-  serverTimestamp, getDocs, where, doc, getDoc
-} from 'firebase/firestore';
+import type { User } from '../lib/firebase';
+import { db, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, getDocs, where, doc, getDoc } from '../lib/firebase';
 import { Loader2, Send, MessageCircle, ArrowLeft } from 'lucide-react';
 import { UserObject } from '../types';
 
@@ -101,7 +97,7 @@ const Chat: React.FC<Props> = ({ user, role }) => {
       orderBy('createdAt', 'asc')
     );
     const unsub = onSnapshot(q, (snap) => {
-      setMessages(snap.docs.map(d => ({ id: d.id, ...d.data() } as Message)));
+      setMessages(snap.docs.map((d: any) => ({ id: d.id, ...d.data() } as Message)));
       setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
     });
     return () => unsub();
