@@ -23,6 +23,7 @@ import BehaviorInsights from './pages/BehaviorInsights';
 import Services from './pages/Services';
 import Resources from './pages/Resources';
 import Practice from './pages/Practice';
+import TeacherPanel from './pages/TeacherPanel';
 import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from 'react-hot-toast';
 import AIAssistant from './components/AIAssistant';
@@ -50,7 +51,8 @@ const AppContent: React.FC = () => {
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith('/admin');
   const isClassroomPath = location.pathname.startsWith('/classroom');
-  const isHideLayout = isAdminPath || isClassroomPath;
+  const isTeacherPath = location.pathname.startsWith('/teacher-panel');
+  const isHideLayout = isAdminPath || isClassroomPath || isTeacherPath;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -78,6 +80,7 @@ const AppContent: React.FC = () => {
           <Route path="/flashcards" element={<FlashcardDeck />} />
           <Route path="/admin/behavior" element={<BehaviorInsights />} />
           <Route path="/practice" element={<Practice />} />
+          <Route path="/teacher-panel" element={<TeacherPanel />} />
         </Routes>
       </div>
       {!isHideLayout && <Footer />}

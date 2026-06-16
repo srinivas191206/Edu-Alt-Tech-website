@@ -296,6 +296,7 @@ const Dashboard: React.FC = () => {
                   <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
                     <Users className="w-6 h-6 text-purple-500" /> My Teaching
                   </h2>
+                  <Link to="/teacher-panel" className="text-sm font-bold text-purple-600 hover:text-purple-500 transition-colors">Manage All →</Link>
                 </div>
                 <div className="grid gap-4">
                   {teachingEnrollments.map((enr, idx) => (
