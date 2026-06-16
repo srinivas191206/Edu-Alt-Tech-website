@@ -43,27 +43,29 @@ const CourseDetails: React.FC = () => {
           }
 
           // Fetch Approved Mentors for this course
-          const appsQ = query(collection(db, 'teacher_applications'), where('courseId', '==', courseId), where('status', '==', 'approved'));
+          const appsQ = query(collection(db, 'teacher_applications'), where('status', '==', 'approved'));
           const appsSnap = await getDocs(appsQ);
+          const approvedForCourse = appsSnap.docs.filter(d => d.data().qualification === courseId);
 
           // Fetch current user's application status
-          const myAppQ = query(collection(db, 'teacher_applications'), where('courseId', '==', courseId), where('userId', '==', currentUser.uid));
+          const myAppQ = query(collection(db, 'teacher_applications'), where('user_id', '==', currentUser.uid));
           const myAppSnap = await getDocs(myAppQ);
-          if (!myAppSnap.empty) {
-            setMyAppStatus(myAppSnap.docs[0].data().status);
+          const myCourseApp = myAppSnap.docs.find(d => d.data().qualification === courseId);
+          if (myCourseApp) {
+            setMyAppStatus(myCourseApp.data().status);
           }
 
-          const loadedMentors = appsSnap.docs.map(doc => {
+          const loadedMentors = approvedForCourse.map(doc => {
             const data = doc.data();
             return {
               appId: doc.id,
               userId: data.userId,
-              name: data.userName || 'Mentor',
-              email: data.userEmail || '',
+              name: data.name || 'Mentor',
+              email: data.email || '',
               experience: data.experience || 'Experienced Professional',
-              skills: data.skills || 'Course Expert',
-              message: data.message || '',
-              proposedPath: data.proposedPath || []
+              skills: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n')[0].replace('Skills: ', '') : 'Course Expert',
+              message: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n').slice(1).join('\n').trim() : (data.message || ''),
+              proposedPath: []
             };
           });
           setMentors(loadedMentors);
@@ -82,19 +84,20 @@ const CourseDetails: React.FC = () => {
           }
         } else {
           // For guests, just fetch mentors to show who is teaching
-          const appsQ = query(collection(db, 'teacher_applications'), where('courseId', '==', courseId), where('status', '==', 'approved'));
+          const appsQ = query(collection(db, 'teacher_applications'), where('status', '==', 'approved'));
           const appsSnap = await getDocs(appsQ);
-          const loadedMentors = appsSnap.docs.map(doc => {
+          const approvedForCourse = appsSnap.docs.filter(d => d.data().qualification === courseId);
+          const loadedMentors = approvedForCourse.map(doc => {
             const data = doc.data();
             return {
               appId: doc.id,
               userId: data.userId,
-              name: data.userName || 'Mentor',
-              email: data.userEmail || '',
+              name: data.name || 'Mentor',
+              email: data.email || '',
               experience: data.experience || 'Experienced Professional',
-              skills: data.skills || 'Course Expert',
-              message: data.message || '',
-              proposedPath: data.proposedPath || []
+              skills: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n')[0].replace('Skills: ', '') : 'Course Expert',
+              message: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n').slice(1).join('\n').trim() : (data.message || ''),
+              proposedPath: []
             };
           });
           setMentors(loadedMentors);
@@ -227,7 +230,7 @@ const CourseDetails: React.FC = () => {
 
       // 3. Open Checkout
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_SUbr4cftio73uJ",
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_T2D67OLLpfRjtJ",
         amount: amountInPaise,
         currency: "INR",
         name: "Edu Alt Tech",

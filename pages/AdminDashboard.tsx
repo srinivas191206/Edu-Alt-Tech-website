@@ -47,13 +47,17 @@ const AdminDashboard: React.FC = () => {
 
       const rawApps = aSnap.docs.map((d) => {
         const data = d.data() as TeacherApplication;
-        const cFind = courses.find((c: any) => c.id === data.courseId);
+        const courseIdVal = data.qualification || '';
+        const cFind = courses.find((c: any) => c.id === courseIdVal);
         return {
           ...data,
           id: d.id,
           courseTitle: cFind?.title || 'Unknown Course',
-          userName: data.userName || 'Unknown',
-          userEmail: data.userEmail || 'No Email'
+          userName: data.name || 'Unknown',
+          userEmail: data.email || 'No Email',
+          courseId: courseIdVal,
+          skills: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n')[0].replace('Skills: ', '') : 'Course Expert',
+          message: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n').slice(1).join('\n').trim() : (data.message || '')
         };
       });
 
@@ -122,18 +126,18 @@ const AdminDashboard: React.FC = () => {
   const handleFinalVerdictTeacher = async (appId: string, emailStr: string | undefined, verdict: 'approved' | 'rejected') => {
     try {
       await updateDoc(doc(db, 'teacher_applications', appId), {
-        status: verdict,
-        updatedAt: serverTimestamp()
+        status: verdict
       });
 
       if (verdict === 'approved') {
         const appDoc = await getDoc(doc(db, 'teacher_applications', appId));
         if (appDoc.exists()) {
           const data = appDoc.data();
-          const enrollmentId = `${data.userId}_${data.courseId}`;
+          const courseIdVal = data.qualification || appId;
+          const enrollmentId = `${data.userId}_${courseIdVal}`;
           await setDoc(doc(db, 'enrollments', enrollmentId), {
             userId: data.userId,
-            courseId: data.courseId,
+            courseId: courseIdVal,
             role: 'teacher',
             studentStatus: 'active',
             createdAt: serverTimestamp()
@@ -142,15 +146,18 @@ const AdminDashboard: React.FC = () => {
       }
 
       if (emailStr && (verdict === 'approved' || verdict === 'rejected')) {
-        await setDoc(doc(collection(db, 'mail')), {
-          to: emailStr,
-          message: {
+        try {
+          const { error: mailErr } = await db.from('mail').insert({
+            to: emailStr,
             subject: `Teacher Application ${verdict === 'approved' ? 'Approved' : 'Rejected'}`,
             text: verdict === 'approved' 
-              ? 'Congratulations! You have been approved to teach this course. Take a look at your course classroom to start building!'
-              : 'Thank you for your interest, but we are unable to proceed with your application at this time.'
-          }
-        });
+              ? 'Congratulations! You have been approved to teach this course.'
+              : 'Thank you for your interest, but we are unable to proceed.'
+          });
+          if (mailErr) console.warn("Mail insert warning:", mailErr);
+        } catch(mailErr) {
+          console.warn("Mail send failed (non-blocking)", mailErr);
+        }
       }
       setSelectedApp(null);
       fetchData();
@@ -164,20 +171,26 @@ const AdminDashboard: React.FC = () => {
   const handleApproveApp = async (appId: string, emailStr?: string) => {
     if(!meetLink) { toast.error("Provide a meet link"); return; }
     try {
+      const existingApp = await getDoc(doc(db, 'teacher_applications', appId));
+      const existingMsg = existingApp.exists() ? existingApp.data().message || '' : '';
+      const updatedMsg = existingMsg + `\n[Interview Link: ${meetLink}]`;
+
       await updateDoc(doc(db, 'teacher_applications', appId), {
         status: 'scheduled',
-        meetingLink: meetLink,
-        updatedAt: serverTimestamp()
+        message: updatedMsg
       });
 
       if (emailStr) {
-        await setDoc(doc(collection(db, 'mail')), {
-          to: emailStr,
-          message: {
+        try {
+          const { error: mailErr } = await db.from('mail').insert({
+            to: emailStr,
             subject: 'Interview Scheduled: Teacher Application',
             text: `Your application has been reviewed. Join the interview here: ${meetLink}`
-          }
-        });
+          });
+          if (mailErr) console.warn("Mail insert warning:", mailErr);
+        } catch(mailErr) {
+          console.warn("Mail send failed (non-blocking)", mailErr);
+        }
       }
 
       setSchedulingId(null);

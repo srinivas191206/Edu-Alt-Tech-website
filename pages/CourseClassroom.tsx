@@ -87,9 +87,10 @@ const CourseClassroom: React.FC = () => {
         setEnrollment(enrollData);
         
         if (enrollData.role === 'teacher') {
-          const tQ = query(collection(db, 'teacher_applications'), where('userId', '==', currentUser.uid), where('courseId', '==', courseId), where('status', '==', 'approved'));
+          const tQ = query(collection(db, 'teacher_applications'), where('userId', '==', currentUser.uid), where('status', '==', 'approved'));
           const tSnap = await getDocs(tQ);
-          if (tSnap.empty) {
+          const isApprovedForCourse = tSnap.docs.some(d => (d.data().qualification || '') === courseId);
+          if (!isApprovedForCourse) {
             navigate(`/courses/${courseId}`);
             return;
           }

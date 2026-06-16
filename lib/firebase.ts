@@ -54,6 +54,24 @@ function createAuth() {
 
 export const auth = createAuth();
 
+// ── Key conversion (camelCase ↔ snake_case) ─────────────────────────────
+
+function camelToSnake(str: string): string {
+  return str.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
+}
+
+function snakeToCamel(str: string): string {
+  return str.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+}
+
+function convertKeys<T>(obj: T, converter: (s: string) => string): T {
+  if (obj && typeof obj === 'object' && !(obj instanceof Date) && !(obj instanceof Blob) && !Array.isArray(obj)) {
+    const entries = Object.entries(obj).map(([k, v]) => [converter(k), v]);
+    return Object.fromEntries(entries);
+  }
+  return obj;
+}
+
 // ── Firestore compatibility ──────────────────────────────────────────────
 
 type SupabaseFilter = { field: string; op: string; value: any };
@@ -114,7 +132,8 @@ export function doc(db: any, path?: string, ...pathSegments: string[]): DocRef {
 export async function getDoc(ref: DocRef): Promise<{ data: () => any; exists: () => boolean; id: string }> {
   const { data, error } = await supabase.from(ref.table).select('*').eq('id', ref.id).maybeSingle();
   if (error || !data) return { data: () => null, exists: () => false, id: ref.id };
-  return { data: () => data, exists: () => true, id: data.id || ref.id };
+  const camelData = convertKeys(data, snakeToCamel);
+  return { data: () => camelData, exists: () => true, id: data.id || ref.id };
 }
 
 export async function getDocs(ref: CollectionRef | DocRef): Promise<{
@@ -131,38 +150,42 @@ export async function getDocs(ref: CollectionRef | DocRef): Promise<{
 
   let query = supabase.from(ref.table).select('*');
   for (const f of ref.filters || []) {
-    if (f.op === '==') query = query.eq(f.field, f.value);
-    else if (f.op === '>') query = query.gt(f.field, f.value);
-    else if (f.op === '>=') query = query.gte(f.field, f.value);
-    else if (f.op === '<') query = query.lt(f.field, f.value);
-    else if (f.op === '<=') query = query.lte(f.field, f.value);
-    else if (f.op === '!=') query = query.neq(f.field, f.value);
-    else if (f.op === 'in') query = query.in(f.field, f.value);
-    else if (f.op === 'array-contains') query = query.contains(f.field, f.value);
+    const field = camelToSnake(f.field);
+    if (f.op === '==') query = query.eq(field, f.value);
+    else if (f.op === '>') query = query.gt(field, f.value);
+    else if (f.op === '>=') query = query.gte(field, f.value);
+    else if (f.op === '<') query = query.lt(field, f.value);
+    else if (f.op === '<=') query = query.lte(field, f.value);
+    else if (f.op === '!=') query = query.neq(field, f.value);
+    else if (f.op === 'in') query = query.in(field, f.value);
+    else if (f.op === 'array-contains') query = query.contains(field, f.value);
   }
   for (const o of ref.orders || []) {
-    query = query.order(o.field, { ascending: o.dir !== 'desc' });
+    query = query.order(camelToSnake(o.field), { ascending: o.dir !== 'desc' });
   }
   if (ref.limitCount) query = query.limit(ref.limitCount);
 
   const { data, error } = await query;
-  const docs = (data || []).map((d: any) => ({ data: () => d, id: d.id }));
+  const docs = (data || []).map((d: any) => ({ data: () => convertKeys(d, snakeToCamel), id: d.id }));
   return { docs, forEach: (cb: any) => docs.forEach(cb), empty: docs.length === 0, size: docs.length };
 }
 
 export async function addDoc(ref: CollectionRef, data: any): Promise<{ id: string }> {
-  const { data: inserted, error } = await supabase.from(ref.table).insert({ ...data }).select('id').single();
+  const snakeData = convertKeys(data, camelToSnake);
+  const { data: inserted, error } = await supabase.from(ref.table).insert(snakeData).select('id').single();
   if (error) throw new Error(`addDoc failed: ${error.message}`);
   return { id: inserted?.id };
 }
 
 export async function setDoc(ref: DocRef, data: any, options?: { merge?: boolean }): Promise<void> {
-  const { error } = await supabase.from(ref.table).upsert({ id: ref.id, ...data }).eq('id', ref.id);
+  const snakeData = convertKeys(data, camelToSnake);
+  const { error } = await supabase.from(ref.table).upsert({ id: ref.id, ...snakeData }).eq('id', ref.id);
   if (error) throw new Error(`setDoc failed: ${error.message}`);
 }
 
 export async function updateDoc(ref: DocRef, data: any): Promise<void> {
-  const { error } = await supabase.from(ref.table).update(data).eq('id', ref.id);
+  const snakeData = convertKeys(data, camelToSnake);
+  const { error } = await supabase.from(ref.table).update(snakeData).eq('id', ref.id);
   if (error) throw new Error(`updateDoc failed: ${error.message}`);
 }
 

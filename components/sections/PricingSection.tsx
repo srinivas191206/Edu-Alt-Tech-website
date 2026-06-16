@@ -100,7 +100,7 @@ const PricingSection: React.FC = () => {
 
       // 3. Open checkout with secure Order ID
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_SUbr4cftio73uJ", 
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_T2D67OLLpfRjtJ", 
         amount: amountInPaise,
         currency: "INR",
         name: "Edu Alt Tech",
