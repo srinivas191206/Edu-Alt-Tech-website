@@ -204,6 +204,24 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const handleRemoveTeacher = async (appId: string, teacherUserId: string | undefined, courseId: string | undefined) => {
+    if (!teacherUserId || !courseId) { toast.error("Missing teacher or course info"); return; }
+    if (!confirm("Remove this teacher from the course? This will delete their enrollment.")) return;
+    try {
+      const eq = query(collection(db, 'enrollments'), where('userId', '==', teacherUserId), where('courseId', '==', courseId), where('role', '==', 'teacher'));
+      const eSnap = await getDocs(eq);
+      for (const d of eSnap.docs) {
+        await deleteDoc(doc(db, 'enrollments', d.id));
+      }
+      await updateDoc(doc(db, 'teacher_applications', appId), { status: 'rejected' });
+      setSelectedApp(null);
+      fetchData();
+      toast.success("Teacher removed from course");
+    } catch (e) {
+      toast.error("Failed to remove teacher");
+    }
+  };
+
   const selectChatContact = async (contact: { id: string; name: string; email: string }) => {
     setSelectedContact(contact);
     await loadChatMessages(contact.id);
@@ -754,15 +772,29 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
                          </button>
                        </div>
                      </div>
-                   )}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
+                    )}
+                    {selectedApp.status === 'approved' && (
+                      <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
+                        <div className="bg-rose-50 dark:bg-rose-900/20 p-6 rounded-[2rem] border border-rose-200 dark:border-rose-800">
+                          <label className="block text-xs font-black text-rose-600 uppercase tracking-widest mb-2">Active Mentor</label>
+                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 font-medium">This mentor is currently assigned to teach this course.</p>
+                          <button 
+                            onClick={() => handleRemoveTeacher(selectedApp.id, selectedApp.userId, selectedApp.courseId || selectedApp.qualification)}
+                            className="w-full py-4 bg-rose-500 text-white font-black rounded-2xl hover:bg-rose-600 transition-colors"
+                          >
+                            REMOVE TEACHER
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                 </div>
+               </div>
+             </motion.div>
+           </div>
+         )}
+       </AnimatePresence>
+     </div>
+   );
 };
 
 export default AdminDashboard;
