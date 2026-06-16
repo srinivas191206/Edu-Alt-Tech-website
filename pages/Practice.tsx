@@ -6,6 +6,7 @@ import type { LeetCodeProblem, CourseLink, InterviewExperience, YouTubeChannel }
 import { auth, onAuthStateChanged, db, collection, getDocs, query, orderBy } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import LoginModal from '../components/LoginModal';
 
 type Tab = 'problems' | 'courses' | 'interviews' | 'channels';
 type ProblemSet = 'popular' | 'leetcode150' | 'top150' | 'admin';
@@ -23,7 +24,14 @@ const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
   { key: 'channels', label: 'Channels', icon: <GraduationCap className="w-4 h-4" /> },
 ];
 
-function ProblemCard({ problem }: { problem: LeetCodeProblem }) {
+function ProblemCard({ problem, user, onLockedClick }: { problem: LeetCodeProblem; user: any; onLockedClick: () => void }) {
+  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (!user) {
+      e.preventDefault();
+      onLockedClick();
+    }
+  };
+
   return (
     <motion.div
       layout
@@ -61,6 +69,7 @@ function ProblemCard({ problem }: { problem: LeetCodeProblem }) {
             href={problem.leetcodeUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={handleAction}
             className="p-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors"
             title="Solve on LeetCode"
           >
@@ -70,6 +79,7 @@ function ProblemCard({ problem }: { problem: LeetCodeProblem }) {
             href={problem.videoUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={handleAction}
             className="p-2 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-colors"
             title="Watch solution"
           >
@@ -81,9 +91,16 @@ function ProblemCard({ problem }: { problem: LeetCodeProblem }) {
   );
 }
 
-function CourseCard({ course }: { course: CourseLink }) {
+function CourseCard({ course, user, onLockedClick }: { course: CourseLink; user: any; onLockedClick: () => void }) {
+  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (!user) {
+      e.preventDefault();
+      onLockedClick();
+    }
+  };
+
   return (
-    <a href={course.url} target="_blank" rel="noopener noreferrer"
+    <a href={course.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
       className="block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
     >
       <div className="flex items-center gap-3">
@@ -99,14 +116,21 @@ function CourseCard({ course }: { course: CourseLink }) {
   );
 }
 
-function InterviewCard({ interview }: { interview: InterviewExperience }) {
+function InterviewCard({ interview, user, onLockedClick }: { interview: InterviewExperience; user: any; onLockedClick: () => void }) {
   const resultColors: Record<string, string> = {
     Hired: 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/20',
     Selected: 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/20',
     Rejected: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/20',
   };
+  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (!user) {
+      e.preventDefault();
+      onLockedClick();
+    }
+  };
+
   return (
-    <a href={interview.url} target="_blank" rel="noopener noreferrer"
+    <a href={interview.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
       className="block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
     >
       <div className="flex items-center justify-between gap-3">
@@ -123,9 +147,16 @@ function InterviewCard({ interview }: { interview: InterviewExperience }) {
   );
 }
 
-function ChannelCard({ channel }: { channel: YouTubeChannel }) {
+function ChannelCard({ channel, user, onLockedClick }: { channel: YouTubeChannel; user: any; onLockedClick: () => void }) {
+  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (!user) {
+      e.preventDefault();
+      onLockedClick();
+    }
+  };
+
   return (
-    <a href={channel.url} target="_blank" rel="noopener noreferrer"
+    <a href={channel.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
       className="flex items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
     >
       <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/20 text-red-500 flex items-center justify-center shrink-0">
@@ -148,17 +179,16 @@ const Practice: React.FC = () => {
   const [diffFilter, setDiffFilter] = useState('');
   const [channelFilter, setChannelFilter] = useState('');
   const [adminProblems, setAdminProblems] = useState<LeetCodeProblem[]>([]);
+  const [user, setUser] = useState<any>(auth.currentUser);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        toast.error("Please login to access practice problems.");
-        navigate('/login');
-      }
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      setUser(u);
     });
     return () => unsubscribe();
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     const fetchAdmin = async () => {
@@ -195,6 +225,26 @@ const Practice: React.FC = () => {
       return matchSearch && matchTopic && matchDiff;
     });
   }, [currentProblems, search, topicFilter, diffFilter]);
+
+  const displayedProblems = useMemo(() => {
+    return !user ? filteredProblems.slice(0, 3) : filteredProblems;
+  }, [filteredProblems, user]);
+
+  const displayedCourses = useMemo(() => {
+    return !user ? FULL_COURSES.slice(0, 3) : FULL_COURSES;
+  }, [user]);
+
+  const displayedInterviews = useMemo(() => {
+    return !user ? INTERVIEW_EXPERIENCES.slice(0, 3) : INTERVIEW_EXPERIENCES;
+  }, [user]);
+
+  const filteredChannels = useMemo(() => {
+    return YOUTUBE_CHANNELS.filter(c => !channelFilter || c.category === channelFilter);
+  }, [channelFilter]);
+
+  const displayedChannels = useMemo(() => {
+    return !user ? filteredChannels.slice(0, 3) : filteredChannels;
+  }, [filteredChannels, user]);
 
   return (
     <div className="min-h-screen pt-32 pb-32 px-6 bg-white dark:bg-slate-950 relative overflow-hidden">
@@ -273,11 +323,11 @@ const Practice: React.FC = () => {
 
             {/* Problem Grid */}
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredProblems.map((p, i) => (
-                <ProblemCard key={`${problemSet}-${p.num}`} problem={p} />
+              {displayedProblems.map((p, i) => (
+                <ProblemCard key={`${problemSet}-${p.num}`} problem={p} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
               ))}
             </div>
-            {filteredProblems.length === 0 && (
+            {displayedProblems.length === 0 && (
               <p className="text-center text-slate-400 py-12 font-medium">No problems match your filters.</p>
             )}
           </>
@@ -286,8 +336,8 @@ const Practice: React.FC = () => {
         {/* Full Courses Tab */}
         {tab === 'courses' && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {FULL_COURSES.map(c => (
-              <CourseCard key={c.num} course={c} />
+            {displayedCourses.map(c => (
+              <CourseCard key={c.num} course={c} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
             ))}
           </motion.div>
         )}
@@ -295,8 +345,8 @@ const Practice: React.FC = () => {
         {/* Interview Experiences Tab */}
         {tab === 'interviews' && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2">
-            {INTERVIEW_EXPERIENCES.map(i => (
-              <InterviewCard key={i.num} interview={i} />
+            {displayedInterviews.map(i => (
+              <InterviewCard key={i.num} interview={i} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
             ))}
           </motion.div>
         )}
@@ -316,13 +366,40 @@ const Practice: React.FC = () => {
               ))}
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {YOUTUBE_CHANNELS.filter(c => !channelFilter || c.category === channelFilter).map(ch => (
-                <ChannelCard key={ch.num} channel={ch} />
+              {displayedChannels.map(ch => (
+                <ChannelCard key={ch.num} channel={ch} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
               ))}
             </motion.div>
           </>
         )}
+
+        {/* Guest Lock Overlay */}
+        {!user && (
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+            className="relative mt-12 py-16 px-8 rounded-3xl bg-white/20 dark:bg-slate-900/20 border border-slate-200/50 dark:border-slate-800/50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
+            <div className="relative z-10 max-w-md mx-auto">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-indigo-500 text-white mb-6 shadow-xl shadow-emerald-500/20">
+                <Code2 className="w-8 h-8" />
+              </div>
+              <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
+                Unlock 450+ More Practice Items
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 mb-8 font-medium leading-relaxed">
+                Join our community of developers to access complete LeetCode patterns, full video courses, real interview experiences, and premium channels.
+              </p>
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className="px-8 py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 hover:from-emerald-600 hover:via-teal-600 hover:to-indigo-600 text-white rounded-2xl font-extrabold tracking-wide shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Unlock Practice Platform
+              </button>
+            </div>
+          </motion.div>
+        )}
       </div>
+      <LoginModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </div>
   );
 };

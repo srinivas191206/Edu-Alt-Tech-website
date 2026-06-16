@@ -5,6 +5,7 @@ import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink } f
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import LoginModal from '../components/LoginModal';
 
 const FOLDER_MAP: Record<string, 'education' | 'alternative'> = {
   'Core Education': 'education',
@@ -80,17 +81,16 @@ const Courses: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'education' | 'alternative'>('all');
+  const [user, setUser] = useState<any>(auth.currentUser);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        toast.error("Please login to access courses.");
-        navigate('/login');
-      }
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      setUser(u);
     });
     return () => unsubscribe();
-  }, [navigate]);
+  }, []);
 
   const [activeClass, setActiveClass] = useState<string>('All');
 
@@ -166,6 +166,10 @@ const Courses: React.FC = () => {
     return matchesSearch && matchesCategory && matchesClass;
   }), [courses, searchTerm, activeFilter, activeClass]);
 
+  const displayedCourses = useMemo(() => {
+    return !user ? filteredCourses.slice(0, 3) : filteredCourses;
+  }, [filteredCourses, user]);
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#020617] selection:bg-emerald-500/30">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -235,51 +239,84 @@ const Courses: React.FC = () => {
             <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Loading courses...</p>
           </div>
         ) : filteredCourses.length > 0 ? (
-          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <AnimatePresence mode="popLayout">
-              {filteredCourses.map((course) => (
-                <motion.div layout key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
-                  className="group bg-white dark:bg-slate-900/40 backdrop-blur-xl rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-colors transition-shadow duration-500 flex flex-col">
-                  <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
-                    <img src={course.thumbnailUrl} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
-                    <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
-                      <div className="px-3 py-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white border border-slate-200/50 dark:border-slate-700/50">
-                        {course.folder || course.category}
-                      </div>
-                      {course.classLevel && (
-                        <div className="px-3 py-1.5 bg-indigo-600/90 dark:bg-indigo-500/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-white border border-indigo-500/20">
-                          {course.classLevel}
+          <>
+            <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <AnimatePresence mode="popLayout">
+                {displayedCourses.map((course) => (
+                  <motion.div layout key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+                    className="group bg-white dark:bg-slate-900/40 backdrop-blur-xl rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-colors transition-shadow duration-500 flex flex-col">
+                    <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                      <img src={course.thumbnailUrl} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                      <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
+                        <div className="px-3 py-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white border border-slate-200/50 dark:border-slate-700/50">
+                          {course.folder || course.category}
                         </div>
+                        {course.classLevel && (
+                          <div className="px-3 py-1.5 bg-indigo-600/90 dark:bg-indigo-500/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-white border border-indigo-500/20">
+                            {course.classLevel}
+                          </div>
+                        )}
+                      </div>
+                      <div className="absolute top-4 right-4 px-3 py-1.5 bg-emerald-500/90 backdrop-blur-md rounded-full text-[10px] font-black text-white uppercase tracking-wider">
+                        {course.price === 0 ? 'Free' : `₹${course.price}`}
+                      </div>
+                    </div>
+                    <div className="p-6 flex flex-col flex-1">
+                      <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 tracking-tight leading-tight group-hover:text-emerald-500 transition-colors line-clamp-2">
+                        {course.title}
+                      </h3>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mb-5 font-medium leading-relaxed line-clamp-2 flex-1">
+                        {course.description}
+                      </p>
+                      {!user ? (
+                        <button onClick={() => setIsAuthModalOpen(true)}
+                          className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white transition-colors transition-transform active:scale-[0.98]">
+                          Explore Course →
+                        </button>
+                      ) : course.externalUrl ? (
+                        <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold text-sm tracking-wide hover:from-emerald-600 hover:to-teal-600 transition-colors transition-transform active:scale-[0.98]">
+                          Start Free <ExternalLink className="w-4 h-4" />
+                        </a>
+                      ) : (
+                        <Link to={`/courses/${course.id}`}
+                          className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white transition-colors transition-transform active:scale-[0.98]">
+                          Explore Course →
+                        </Link>
                       )}
                     </div>
-                    <div className="absolute top-4 right-4 px-3 py-1.5 bg-emerald-500/90 backdrop-blur-md rounded-full text-[10px] font-black text-white uppercase tracking-wider">
-                      {course.price === 0 ? 'Free' : `₹${course.price}`}
-                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Guest Lock Overlay */}
+            {!user && filteredCourses.length > 3 && (
+              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+                className="relative mt-12 py-16 px-8 rounded-3xl bg-white/20 dark:bg-slate-900/20 border border-slate-200/50 dark:border-slate-800/50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
+                <div className="relative z-10 max-w-md mx-auto">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-indigo-500 text-white mb-6 shadow-xl shadow-emerald-500/20">
+                    <Book className="w-8 h-8" />
                   </div>
-                  <div className="p-6 flex flex-col flex-1">
-                    <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 tracking-tight leading-tight group-hover:text-emerald-500 transition-colors line-clamp-2">
-                      {course.title}
-                    </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-5 font-medium leading-relaxed line-clamp-2 flex-1">
-                      {course.description}
-                    </p>
-                    {course.externalUrl ? (
-                      <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold text-sm tracking-wide hover:from-emerald-600 hover:to-teal-600 transition-colors transition-transform active:scale-[0.98]">
-                        Start Free <ExternalLink className="w-4 h-4" />
-                      </a>
-                    ) : (
-                      <Link to={`/courses/${course.id}`}
-                        className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white transition-colors transition-transform active:scale-[0.98]">
-                        Explore Course →
-                      </Link>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
+                  <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
+                    Unlock {filteredCourses.length - 3} More Courses
+                  </h2>
+                  <p className="text-slate-500 dark:text-slate-400 mb-8 font-medium leading-relaxed">
+                    Join our premium community to gain full access to all curricular pathways, practice materials, and advanced resources.
+                  </p>
+                  <button
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="px-8 py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 hover:from-emerald-600 hover:via-teal-600 hover:to-indigo-600 text-white rounded-2xl font-extrabold tracking-wide shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    Unlock All Content
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </>
         ) : (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-24 bg-white dark:bg-slate-900/50 backdrop-blur-xl rounded-3xl border border-slate-200 dark:border-slate-800">
             <Search className="w-12 h-12 text-slate-300 mx-auto mb-6" />
@@ -289,6 +326,7 @@ const Courses: React.FC = () => {
               className="px-8 py-3.5 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:-translate-y-0.5 transition-transform">Reset Filters</button>
           </motion.div>
         )}
+        <LoginModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
       </div>
     </div>
   );

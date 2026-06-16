@@ -4,6 +4,7 @@ import { Search, Download, FileText, BookOpen, Brain, FileSpreadsheet, Lock, Spa
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, onAuthStateChanged, db, collection, getDocs } from '../lib/firebase';
 import { toast } from 'react-hot-toast';
+import LoginModal from '../components/LoginModal';
 
 export interface ResourceItem {
   title: string;
@@ -88,17 +89,16 @@ const Resources: React.FC = () => {
   const [showPremium, setShowPremium] = useState<'all' | 'free' | 'premium'>('all');
   const [classFilter, setClassFilter] = useState('All');
   const [firebaseResources, setFirebaseResources] = useState<ResourceItem[]>([]);
+  const [user, setUser] = useState<any>(auth.currentUser);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        toast.error("Please login to access resources.");
-        navigate('/login');
-      }
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      setUser(u);
     });
     return () => unsubscribe();
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -136,6 +136,10 @@ const Resources: React.FC = () => {
     const matchClass = classFilter === 'All' || r.classLevel === classFilter;
     return matchSearch && matchCat && matchPremium && matchClass;
   }), [allResources, search, filter, showPremium, classFilter]);
+
+  const displayedResources = useMemo(() => {
+    return !user ? filtered.slice(0, 3) : filtered;
+  }, [filtered, user]);
 
   return (
     <div className="min-h-screen pt-32 pb-32 px-6 bg-white dark:bg-slate-950 relative overflow-hidden">
@@ -193,7 +197,7 @@ const Resources: React.FC = () => {
 
         {/* Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((item, idx) => (
+          {displayedResources.map((item, idx) => (
             <motion.div
               key={idx} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}
               className={`group bg-white dark:bg-slate-900 border rounded-2xl p-6 transition-transform duration-500 hover:-translate-y-2 ${
@@ -228,7 +232,11 @@ const Resources: React.FC = () => {
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">{item.description}</p>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-slate-400">{item.downloads} downloads</span>
-                {item.url ? (
+                {!user ? (
+                  <button onClick={() => setIsAuthModalOpen(true)} className="flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-colors bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20">
+                    <Download className="w-3 h-3" /> Download
+                  </button>
+                ) : item.url ? (
                   <a href={item.url} download onClick={() => trackDownload(item)} className={`flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-colors ${
                     item.premium
                       ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
@@ -250,7 +258,33 @@ const Resources: React.FC = () => {
           ))}
         </div>
 
-        {filtered.length === 0 && (
+        {/* Guest Lock Overlay */}
+        {!user && filtered.length > 3 && (
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+            className="relative mt-12 py-16 px-8 rounded-3xl bg-white/20 dark:bg-slate-900/20 border border-slate-200/50 dark:border-slate-800/50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
+            <div className="relative z-10 max-w-md mx-auto">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-indigo-500 text-white mb-6 shadow-xl shadow-emerald-500/20">
+                <FileText className="w-8 h-8" />
+              </div>
+              <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
+                Unlock {filtered.length - 3} More Resources
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 mb-8 font-medium leading-relaxed">
+                Join our premium community to gain full access to all worksheets, revision notes, question banks, and learning materials.
+              </p>
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className="px-8 py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 hover:from-emerald-600 hover:via-teal-600 hover:to-indigo-600 text-white rounded-2xl font-extrabold tracking-wide shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Unlock All Resources
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {displayedResources.length === 0 && (
           <div className="text-center py-20">
             <p className="text-slate-400 text-lg">No resources found matching your criteria.</p>
           </div>
@@ -265,6 +299,7 @@ const Resources: React.FC = () => {
           </Link>
         </motion.div>
       </div>
+      <LoginModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </div>
   );
 };
