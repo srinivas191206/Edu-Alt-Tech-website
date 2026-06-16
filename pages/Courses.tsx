@@ -138,16 +138,15 @@ const Courses: React.FC = () => {
             } as Course);
           });
         });
-        // One Google free, one NVIDIA, one paid course at top. Then all remaining courses.
-        const googleCourse = fetchedCourses.find(c => c.title?.includes('— Google'));
-        const nvidiaCourse = fetchedCourses.find(c => c.title?.includes('— NVIDIA'));
+        // All Google free courses first, all NVIDIA second, one paid third, then all remaining courses.
+        const googleCourses = fetchedCourses.filter(c => c.title?.includes('— Google'));
+        const nvidiaCourses = fetchedCourses.filter(c => c.title?.includes('— NVIDIA'));
         const paidCourse = fetchedCourses.find(c => c.price && c.price > 0 && c.id && !c.id.startsWith('ai-'));
         const rest = fetchedCourses.filter(c =>
-          !(googleCourse && c.id === googleCourse.id) &&
-          !(nvidiaCourse && c.id === nvidiaCourse.id) &&
+          !c.title?.includes('— Google') && !c.title?.includes('— NVIDIA') &&
           !(paidCourse && c.id === paidCourse.id)
         );
-        setCourses([...(googleCourse ? [googleCourse] : []), ...(nvidiaCourse ? [nvidiaCourse] : []), ...(paidCourse ? [paidCourse] : []), ...rest]);
+        setCourses([...googleCourses, ...nvidiaCourses, ...(paidCourse ? [paidCourse] : []), ...rest]);
       } catch (err) {
         console.error("Failed to fetch courses", err);
       } finally {
