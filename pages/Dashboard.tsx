@@ -28,6 +28,7 @@ const Dashboard: React.FC = () => {
   const [chatInput, setChatInput] = useState('');
   const [sendingMessage, setSendingMessage] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [rejectionCounts, setRejectionCounts] = useState<Record<string, number>>({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,6 +86,16 @@ const Dashboard: React.FC = () => {
           };
         });
         if (!cancelled) setMyApplications(apps);
+
+        // Count rejections per course
+        const rejectMap: Record<string, number> = {};
+        apps.forEach(a => {
+          if (a.status === 'rejected') {
+            const key = a.qualification || '';
+            rejectMap[key] = (rejectMap[key] || 0) + 1;
+          }
+        });
+        if (!cancelled) setRejectionCounts(rejectMap);
 
         // Fetch chat messages for this user
         try {
@@ -400,7 +411,9 @@ const Dashboard: React.FC = () => {
                                   app.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' :
                                   'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
                                 }`}>
-                                  {app.status}
+                                  {app.status === 'rejected' && rejectionCounts[app.qualification || ''] > 1
+                                    ? `Rejected (${rejectionCounts[app.qualification || '']}x)`
+                                    : app.status}
                                 </span>
                               </div>
                               <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{app.courseTitle}</h3>

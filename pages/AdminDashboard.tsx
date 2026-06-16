@@ -176,184 +176,6 @@ const AdminDashboard: React.FC = () => {
           console.warn("Mail send failed (non-blocking)", mailErr);
         }
       }
-import React, { useState, useEffect, useMemo } from 'react';
-import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL } from '../lib/firebase';
-import { useNavigate } from 'react-router-dom';
-import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical, Calendar, Video } from 'lucide-react';
-import { TeacherApplication } from '../types';
-import { toast } from 'react-hot-toast';
-import { motion, AnimatePresence } from 'framer-motion';
-
-const ADMIN_EMAILS = ['ukkukk97@gmail.com', 'umakrishnakanthchokkapu15@gmail.com'];
-
-const AdminDashboard: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'applications' | 'chat' | 'stats' | 'classes'>('applications');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const navigate = useNavigate();
-
-  // Data states
-  const [teacherApps, setTeacherApps] = useState<(TeacherApplication & { userName?: string, userEmail?: string, courseTitle?: string })[]>([]);
-  const [selectedApp, setSelectedApp] = useState<(TeacherApplication & { userName?: string, userEmail?: string, courseTitle?: string }) | null>(null);
-
-  // Chat states
-  const [chatContacts, setChatContacts] = useState<{ id: string; name: string; email: string }[]>([]);
-  const [selectedContact, setSelectedContact] = useState<{ id: string; name: string; email: string } | null>(null);
-  const [chatMessages, setChatMessages] = useState<{ id: string; user_id: string; content: string; role: string; created_at: string }[]>([]);
-  const [chatInput, setChatInput] = useState('');
-  const [sendingMessage, setSendingMessage] = useState(false);
-
-  // Stats states
-  const [coursesList, setCoursesList] = useState<any[]>([]);
-  const [enrollments, setEnrollments] = useState<any[]>([]);
-
-  // Scheduled classes
-  const [scheduledClasses, setScheduledClasses] = useState<any[]>([]);
-  const [loadingClasses, setLoadingClasses] = useState(false);
-
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const [cSnap, aSnap, eSnap] = await Promise.all([
-        getDocs(collection(db, 'courses')),
-        getDocs(collection(db, 'teacher_applications')),
-        getDocs(collection(db, 'enrollments'))
-      ]);
-
-      const courses = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-      setCoursesList(courses);
-
-      const enrollmentsData = eSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-      setEnrollments(enrollmentsData);
-
-      const rawApps = aSnap.docs.map((d) => {
-        const data = d.data() as TeacherApplication;
-        const courseIdVal = data.qualification || '';
-        const cFind = courses.find((c: any) => c.id === courseIdVal);
-        return {
-          ...data,
-          id: d.id,
-          courseTitle: cFind?.title || 'Unknown Course',
-          userName: data.name || 'Unknown',
-          userEmail: data.email || 'No Email',
-          courseId: courseIdVal,
-          skills: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n')[0].replace('Skills: ', '') : 'Course Expert',
-          message: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n').slice(1).join('\n').trim() : (data.message || '')
-        };
-      });
-
-      setTeacherApps(rawApps as any);
-    } catch (e) {
-      console.error("Dashboard data fetch failed", e);
-      toast.error("Failed to sync dashboard data");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchScheduledClasses = async () => {
-    setLoadingClasses(true);
-    try {
-      const { data, error } = await db.from('scheduled_classes').select('*, users:teacher_id (display_name, email)').order('scheduled_at', { ascending: false });
-      if (!error) setScheduledClasses(data || []);
-    } catch (e) {
-      console.error("Failed to load scheduled classes", e);
-    } finally {
-      setLoadingClasses(false);
-    }
-  };
-
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      if (!u || !ADMIN_EMAILS.includes(u.email || '')) {
-        navigate('/');
-      } else {
-        fetchData();
-        fetchScheduledClasses();
-      }
-    });
-    return () => unsub();
-  }, [navigate]);
-
-  // Build chat contacts from teacher_applications
-  useEffect(() => {
-    if (teacherApps.length > 0) {
-      const map = new Map<string, { id: string; name: string; email: string }>();
-      teacherApps.forEach(app => {
-        const id = app.userId || app.id;
-        if (!map.has(id)) {
-          map.set(id, { id, name: app.userName || 'Unknown', email: app.userEmail || 'No Email' });
-        }
-      });
-      setChatContacts(Array.from(map.values()));
-    }
-  }, [teacherApps]);
-
-  const loadChatMessages = async (userId: string) => {
-    try {
-      const { data, error } = await db.from('chat_messages').select('*').eq('user_id', userId).order('created_at', { ascending: true });
-      if (!error && data) setChatMessages(data);
-    } catch (e) {
-      console.error("Failed to load messages", e);
-    }
-  };
-
-  const handleSendMessage = async () => {
-    if (!chatInput.trim() || !selectedContact) return;
-    setSendingMessage(true);
-    try {
-      await db.from('chat_messages').insert({
-        user_id: selectedContact.id,
-        content: chatInput,
-        role: 'admin',
-        created_at: new Date().toISOString()
-      });
-      setChatInput('');
-      await loadChatMessages(selectedContact.id);
-    } catch (e) {
-      toast.error("Failed to send message");
-    } finally {
-      setSendingMessage(false);
-    }
-  };
-
-  const handleFinalVerdictTeacher = async (appId: string, emailStr: string | undefined, verdict: 'approved' | 'rejected') => {
-    try {
-      await updateDoc(doc(db, 'teacher_applications', appId), {
-        status: verdict
-      });
-
-      if (verdict === 'approved') {
-        const appDoc = await getDoc(doc(db, 'teacher_applications', appId));
-        if (appDoc.exists()) {
-          const data = appDoc.data();
-          const courseIdVal = data.qualification || appId;
-          const enrollmentId = crypto.randomUUID();
-          await setDoc(doc(db, 'enrollments', enrollmentId), {
-            userId: data.userId,
-            courseId: courseIdVal,
-            role: 'teacher',
-            studentStatus: 'active',
-            createdAt: serverTimestamp()
-          });
-        }
-      }
-
-      if (emailStr && (verdict === 'approved' || verdict === 'rejected')) {
-        try {
-          const { error: mailErr } = await db.from('mail').insert({
-            to: emailStr,
-            subject: `Teacher Application ${verdict === 'approved' ? 'Approved' : 'Rejected'}`,
-            text: verdict === 'approved' 
-              ? 'Congratulations! You have been approved to teach this course.'
-              : 'Thank you for your interest, but we are unable to proceed.'
-          });
-          if (mailErr) console.warn("Mail insert warning:", mailErr);
-        } catch(mailErr) {
-          console.warn("Mail send failed (non-blocking)", mailErr);
-        }
-      }
       setSelectedApp(null);
       fetchData();
       toast.success(`Application ${verdict}`);
@@ -902,40 +724,148 @@ const AdminDashboard: React.FC = () => {
           </AnimatePresence>
         </div>
       </main>
-                         >
-                           APPROVE MENTOR NOW
-                         </button>
-                         <button 
-                           onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
-                           className="flex-1 py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform"
-                         >
-                           REJECT APPLICATION
-                         </button>
-                       </div>
-                     </div>
-                    )}
-                    {selectedApp.status === 'approved' && (
-                      <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
-                        <div className="bg-rose-50 dark:bg-rose-900/20 p-6 rounded-[2rem] border border-rose-200 dark:border-rose-800">
-                          <label className="block text-xs font-black text-rose-600 uppercase tracking-widest mb-2">Active Mentor</label>
-                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 font-medium">This mentor is currently assigned to teach this course.</p>
-                          <button 
-                            onClick={() => handleRemoveTeacher(selectedApp.id, selectedApp.userId, selectedApp.courseId || selectedApp.qualification)}
-                            className="w-full py-4 bg-rose-500 text-white font-black rounded-2xl hover:bg-rose-600 transition-colors"
+
+      {/* Premium Application Modal */}
+      <AnimatePresence>
+        {selectedApp && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedApp(null)}
+              className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden"
+            >
+              <div className="p-10">
+                <div className="flex justify-between items-start mb-10">
+                  <div>
+                    <h2 className="text-3xl font-black tracking-tight mb-2">Mentor Review</h2>
+                    <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Application Dossier #{selectedApp.id.slice(0, 8)}</p>
+                  </div>
+                  <button onClick={() => setSelectedApp(null)} className="p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                <div className="space-y-8 max-h-[60vh] overflow-y-auto pr-4 custom-scrollbar">
+                  <section>
+                    <label className="block text-xs font-black text-emerald-500 uppercase tracking-widest mb-4">Applicant Profile</label>
+                    <div className="grid grid-cols-2 gap-8">
+                      <div>
+                        <p className="text-sm font-black text-slate-400 uppercase mb-1">Name</p>
+                        <p className="font-bold text-lg">{selectedApp.userName}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-slate-400 uppercase mb-1">Target Curriculum</p>
+                        <p className="font-bold text-lg">{selectedApp.courseTitle}</p>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section>
+                    <label className="block text-xs font-black text-emerald-500 uppercase tracking-widest mb-4">Professional Experience</label>
+                    <p className="text-slate-600 dark:text-slate-300 font-medium leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-6 rounded-[2rem]">
+                      {selectedApp.experience || 'No experience provided.'}
+                    </p>
+                  </section>
+
+                  {selectedApp.status === 'pending' && (
+                    <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
+                      <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-[2rem] mb-6">
+                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Schedule Interview</label>
+                        <div className="flex gap-4">
+                          <input
+                            value={meetLink}
+                            onChange={e => setMeetLink(e.target.value)}
+                            placeholder="Paste Google Meet / Zoom Link..."
+                            className="flex-1 p-4 bg-white dark:bg-slate-900 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors"
+                          />
+                          <button
+                            onClick={() => handleApproveApp(selectedApp.id, selectedApp.userEmail)}
+                            className="px-8 bg-emerald-500 text-white font-black rounded-2xl hover:scale-[1.02] transition-transform"
                           >
-                            REMOVE TEACHER
+                            SEND
                           </button>
                         </div>
                       </div>
-                    )}
-                 </div>
-               </div>
-             </motion.div>
-           </div>
-         )}
-       </AnimatePresence>
-     </div>
-   );
+
+                      <div className="flex gap-4">
+                        <button
+                          onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'approved')}
+                          className="flex-1 py-5 bg-emerald-500 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform"
+                        >
+                          APPROVE MENTOR NOW
+                        </button>
+                        <button
+                          onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
+                          className="flex-1 py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform"
+                        >
+                          REJECT APPLICATION
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedApp.status === 'scheduled' && (
+                    <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
+                      <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-[2rem] mb-6 border border-blue-200 dark:border-blue-800">
+                        <label className="block text-xs font-black text-blue-600 uppercase tracking-widest mb-2">Scheduled Interview Link</label>
+                        {(() => {
+                          const link = selectedApp.message?.match(/\[Interview Link:\s*(https?:\/\/[^\]]+)\]/);
+                          const meetingUrl = link ? link[1] : null;
+                          return meetingUrl ? (
+                            <a href={meetingUrl} target="_blank" rel="noreferrer" className="block w-full p-4 bg-white dark:bg-slate-900 rounded-2xl font-bold text-blue-600 hover:underline truncate">
+                              {meetingUrl}
+                            </a>
+                          ) : <p className="text-sm text-slate-500">No meeting link found.</p>;
+                        })()}
+                      </div>
+
+                      <div className="flex gap-4">
+                        <button
+                          onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'approved')}
+                          className="flex-1 py-5 bg-emerald-500 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform"
+                        >
+                          APPROVE MENTOR NOW
+                        </button>
+                        <button
+                          onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
+                          className="flex-1 py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform"
+                        >
+                          REJECT APPLICATION
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedApp.status === 'approved' && (
+                    <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
+                      <div className="bg-rose-50 dark:bg-rose-900/20 p-6 rounded-[2rem] border border-rose-200 dark:border-rose-800">
+                        <label className="block text-xs font-black text-rose-600 uppercase tracking-widest mb-2">Active Mentor</label>
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 font-medium">This mentor is currently assigned to teach this course.</p>
+                        <button
+                          onClick={() => handleRemoveTeacher(selectedApp.id, selectedApp.userId, selectedApp.courseId || selectedApp.qualification)}
+                          className="w-full py-4 bg-rose-500 text-white font-black rounded-2xl hover:bg-rose-600 transition-colors"
+                        >
+                          REMOVE TEACHER
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      </div>
+    );
 };
 
 export default AdminDashboard;
