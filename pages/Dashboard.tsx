@@ -10,9 +10,10 @@ const getGreeting = () => {
   return h < 12 ? 'Good Morning' : h < 18 ? 'Good Afternoon' : 'Good Evening';
 };
 
-const extractMeetingLink = (message: string | undefined): string | null => {
+const extractMeetingLink = (message: string | undefined, explicitLink?: string): string | null => {
+  if (explicitLink) return explicitLink;
   if (!message) return null;
-  const match = message.match(/\[Interview Link:\s*(https?:\/\/[^\]]+)\]/);
+  const match = message.match(/\[Interview Link:\s*([^\]]+)\]/);
   return match ? match[1] : null;
 };
 
@@ -112,7 +113,7 @@ const Dashboard: React.FC = () => {
   if (enrollments.length === 0 && myApplications.length === 0) nextSteps.push('Browse courses and enroll to start learning');
   if (myApplications.some(a => a.status === 'pending')) nextSteps.push('Your teacher application is pending review — the admin will reach out');
   const scheduledApp = myApplications.find(a => a.status === 'scheduled');
-  if (scheduledApp && extractMeetingLink(scheduledApp.message)) nextSteps.push('You have an interview scheduled! Join using the meeting link below');
+  if (scheduledApp && extractMeetingLink(scheduledApp.message, scheduledApp.meetingLink)) nextSteps.push('You have an interview scheduled! Join using the meeting link below');
   if (myApplications.some(a => a.status === 'approved') && teachingEnrollments.length === 0) nextSteps.push('Your application was approved! The admin will assign you as a teacher shortly');
   if (teachingEnrollments.length > 0) nextSteps.push('Go to your classroom to manage your course modules and students');
   if (enrollments.length > 0) nextSteps.push('Continue your learning — pick up where you left off in My Courses');
@@ -194,7 +195,9 @@ const Dashboard: React.FC = () => {
         </motion.div>
 
         {/* Interview Scheduled — prominent banner */}
-        {scheduledApp && extractMeetingLink(scheduledApp.message) && (
+        {scheduledApp && extractMeetingLink(scheduledApp.message, scheduledApp.meetingLink) && (() => {
+          const mLink = extractMeetingLink(scheduledApp.message, scheduledApp.meetingLink)!;
+          return (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }} className="mb-10">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-[2rem] p-8 md:p-10 text-white shadow-2xl shadow-blue-500/30 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4 opacity-10"><Video className="w-40 h-40" /></div>
@@ -206,10 +209,11 @@ const Dashboard: React.FC = () => {
                   <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-2">Interview Scheduled</h2>
                   <p className="text-blue-100 text-lg font-medium">
                     {scheduledApp.courseTitle} — Click the link below to join your interview.
+                    {scheduledApp.meetingDate && <><br />Scheduled for: <strong>{new Date(scheduledApp.meetingDate).toLocaleString()}</strong></>}
                   </p>
                 </div>
                 <a
-                  href={extractMeetingLink(scheduledApp.message)!}
+                  href={mLink.startsWith('http') ? mLink : `https://${mLink}`}
                   target="_blank"
                   rel="noreferrer"
                   className="shrink-0 inline-flex items-center gap-3 px-8 py-5 bg-white text-blue-700 font-black rounded-2xl hover:bg-blue-50 transition-colors shadow-xl text-lg"
@@ -219,7 +223,8 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </motion.div>
-        )}
+          )
+        })()}
 
         {/* Next Step Assistant Card (hidden if interview banner is shown) */}
         {!scheduledApp && nextSteps.length > 0 && (
@@ -339,7 +344,8 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div className="grid gap-4">
                   {myApplications.map((app, idx) => {
-                    const meetingLink = extractMeetingLink(app.message);
+                    const meetingLink = extractMeetingLink(app.message, app.meetingLink);
+                    const formattedMeetingLink = meetingLink ? (meetingLink.startsWith('http') ? meetingLink : `https://${meetingLink}`) : '';
                     return (
                       <motion.div
                         key={app.id}
@@ -358,8 +364,17 @@ const Dashboard: React.FC = () => {
                               Applied {new Date(app.appliedAt?.toDate?.() || Date.now()).toLocaleDateString()}
                             </p>
                             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-5 border border-blue-200 dark:border-blue-800">
-                              <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-2">Your Interview</p>
-                              <a href={meetingLink} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-colors text-sm shadow-lg shadow-blue-600/20">
+                              <div className="flex justify-between items-start mb-4">
+                                <div>
+                                  <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Your Interview</p>
+                                  {app.meetingDate && (
+                                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                                      {new Date(app.meetingDate).toLocaleString()}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                              <a href={formattedMeetingLink} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-colors text-sm shadow-lg shadow-blue-600/20">
                                 <Video className="w-5 h-5" /> Join Interview Now
                               </a>
                             </div>
@@ -393,7 +408,7 @@ const Dashboard: React.FC = () => {
                                 Applied {new Date(app.appliedAt?.toDate?.() || Date.now()).toLocaleDateString()}
                               </p>
                               {meetingLink && (
-                                <a href={meetingLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors text-sm">
+                                <a href={formattedMeetingLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors text-sm">
                                   <Video className="w-4 h-4" /> Join Interview
                                 </a>
                               )}
