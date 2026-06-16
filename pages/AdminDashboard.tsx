@@ -705,43 +705,56 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
                     </section>
                   )}
                    {(selectedApp.status === 'pending' || selectedApp.status === 'scheduled') && (
-                    <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
-                      {selectedApp.status === 'pending' && (
-                        <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-[2rem] mb-6">
-                          <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Schedule Interview</label>
-                          <div className="flex gap-4">
-                            <input 
-                              value={meetLink}
-                              onChange={e => setMeetLink(e.target.value)}
-                              placeholder="Paste Google Meet / Zoom Link..." 
-                              className="flex-1 p-4 bg-white dark:bg-slate-900 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" 
-                            />
-                            <button 
-                              onClick={() => handleApproveApp(selectedApp.id, selectedApp.userEmail)}
-                              className="px-8 bg-emerald-500 text-white font-black rounded-2xl hover:scale-[1.02] transition-transform"
-                            >
-                              SEND
-                            </button>
-                          </div>
-                        </div>
-                      )}
+                     <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
+                       {selectedApp.status === 'pending' && (
+                         <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-[2rem] mb-6">
+                           <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Schedule Interview</label>
+                           <div className="flex gap-4">
+                             <input 
+                               value={meetLink}
+                               onChange={e => setMeetLink(e.target.value)}
+                               placeholder="Paste Google Meet / Zoom Link..." 
+                               className="flex-1 p-4 bg-white dark:bg-slate-900 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" 
+                             />
+                             <button 
+                               onClick={() => handleApproveApp(selectedApp.id, selectedApp.userEmail)}
+                               className="px-8 bg-emerald-500 text-white font-black rounded-2xl hover:scale-[1.02] transition-transform"
+                             >
+                               SEND
+                             </button>
+                           </div>
+                         </div>
+                       )}
 
-                      <div className="flex gap-4">
-                        <button 
-                          onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'approved')}
-                          className="flex-1 py-5 bg-emerald-500 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform"
-                        >
-                          APPROVE MENTOR NOW
-                        </button>
-                        <button 
-                          onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
-                          className="flex-1 py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform"
-                        >
-                          REJECT APPLICATION
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                       {selectedApp.status === 'scheduled' && selectedApp.message && (() => {
+                         const link = selectedApp.message.match(/\[Interview Link:\s*(https?:\/\/[^\]]+)\]/);
+                         const meetingUrl = link ? link[1] : null;
+                         return meetingUrl ? (
+                           <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-[2rem] mb-6 border border-blue-200 dark:border-blue-800">
+                             <label className="block text-xs font-black text-blue-600 uppercase tracking-widest mb-2">Scheduled Interview Link</label>
+                             <a href={meetingUrl} target="_blank" rel="noreferrer" className="block w-full p-4 bg-white dark:bg-slate-900 rounded-2xl font-bold text-blue-600 hover:underline truncate">
+                               {meetingUrl}
+                             </a>
+                           </div>
+                         ) : null;
+                       })()}
+
+                       <div className="flex gap-4">
+                         <button 
+                           onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'approved')}
+                           className="flex-1 py-5 bg-emerald-500 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform"
+                         >
+                           APPROVE MENTOR NOW
+                         </button>
+                         <button 
+                           onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
+                           className="flex-1 py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform"
+                         >
+                           REJECT APPLICATION
+                         </button>
+                       </div>
+                     </div>
+                   )}
                 </div>
               </div>
             </motion.div>

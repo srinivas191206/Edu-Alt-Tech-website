@@ -321,7 +321,7 @@ CREATE POLICY "Users can insert own enrollments"
 -- User Downloads tracking
 CREATE TABLE IF NOT EXISTS user_downloads (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL,
+  user_id TEXT NOT NULL,
   resource_title TEXT NOT NULL,
   resource_url TEXT NOT NULL,
   resource_type TEXT DEFAULT 'pdf',
