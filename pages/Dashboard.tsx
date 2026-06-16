@@ -348,35 +348,62 @@ const Dashboard: React.FC = () => {
                         transition={{ delay: idx * 0.05 }}
                         className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm"
                       >
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
-                                app.status === 'approved' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' :
-                                app.status === 'scheduled' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
-                                app.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' :
-                                'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
-                              }`}>
-                                {app.status === 'scheduled' ? 'Interview Scheduled' : app.status}
-                              </span>
+                        {app.status === 'scheduled' && meetingLink ? (
+                          <div>
+                            <div className="flex items-center gap-2 mb-3">
+                              <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">Interview Scheduled</span>
                             </div>
                             <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{app.courseTitle}</h3>
-                            <p className="text-sm text-slate-500 dark:text-slate-400">
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
                               Applied {new Date(app.appliedAt?.toDate?.() || Date.now()).toLocaleDateString()}
                             </p>
-                            {meetingLink && (
-                              <a href={meetingLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors text-sm">
-                                <Video className="w-4 h-4" /> Join Interview
+                            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-5 border border-blue-200 dark:border-blue-800">
+                              <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-2">Your Interview</p>
+                              <a href={meetingLink} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-colors text-sm shadow-lg shadow-blue-600/20">
+                                <Video className="w-5 h-5" /> Join Interview Now
                               </a>
-                            )}
+                            </div>
                           </div>
-                          <div className="shrink-0">
-                            {app.status === 'pending' && <CalendarCheck className="w-8 h-8 text-amber-400" />}
-                            {app.status === 'scheduled' && <Clock className="w-8 h-8 text-blue-400" />}
-                            {app.status === 'approved' && <CheckCircle className="w-8 h-8 text-emerald-400" />}
-                            {app.status === 'rejected' && <AlertCircle className="w-8 h-8 text-red-400" />}
+                        ) : app.status === 'approved' ? (
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">Approved</span>
+                              </div>
+                              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{app.courseTitle}</h3>
+                              <p className="text-sm text-slate-500 dark:text-slate-400">You are approved to teach this course.</p>
+                            </div>
+                            <Link to="/teacher-panel" className="shrink-0 px-6 py-3.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-2xl transition-colors text-sm shadow-lg shadow-purple-600/20">
+                              Teacher Panel →
+                            </Link>
                           </div>
-                        </div>
+                        ) : (
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
+                                  app.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' :
+                                  'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                                }`}>
+                                  {app.status}
+                                </span>
+                              </div>
+                              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{app.courseTitle}</h3>
+                              <p className="text-sm text-slate-500 dark:text-slate-400">
+                                Applied {new Date(app.appliedAt?.toDate?.() || Date.now()).toLocaleDateString()}
+                              </p>
+                              {meetingLink && (
+                                <a href={meetingLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors text-sm">
+                                  <Video className="w-4 h-4" /> Join Interview
+                                </a>
+                              )}
+                            </div>
+                            <div className="shrink-0">
+                              {app.status === 'pending' && <CalendarCheck className="w-8 h-8 text-amber-400" />}
+                              {app.status === 'rejected' && <AlertCircle className="w-8 h-8 text-red-400" />}
+                            </div>
+                          </div>
+                        )}
                       </motion.div>
                     );
                   })}
