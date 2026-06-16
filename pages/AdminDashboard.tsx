@@ -33,6 +33,8 @@ const AdminDashboard: React.FC = () => {
   const [scheduledClasses, setScheduledClasses] = useState<any[]>([]);
   const [loadingClasses, setLoadingClasses] = useState(false);
 
+  const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
+
 
   const fetchData = async () => {
     setLoading(true);
@@ -646,20 +648,34 @@ const AdminDashboard: React.FC = () => {
 
                   {/* Course enrollment table */}
                   <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden">
-                    <div className="p-8 border-b border-slate-100 dark:border-slate-800">
+                    <div className="p-4 sm:p-8 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <h3 className="text-xl font-black tracking-tight">Enrollments by Course</h3>
+                      <div className="flex gap-2">
+                        {(['all', 'free', 'paid'] as const).map(f => (
+                          <button key={f} onClick={() => setPriceFilter(f)}
+                            className={`px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors ${
+                              priceFilter === f ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            {f === 'free' ? '₹0 (Free)' : f === 'paid' ? 'Paid' : 'All'}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                     <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
                       <table className="w-full text-left border-collapse">
                         <thead>
                           <tr className="bg-slate-50/50 dark:bg-slate-800/30 sticky top-0 backdrop-blur-md">
                             <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Course</th>
+                            <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Price</th>
                             <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Category</th>
                             <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Enrollments</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
-                          {coursesList.map((course: any) => {
+                          {coursesList
+                            .filter(c => priceFilter === 'all' || (priceFilter === 'free' ? (!c.price || c.price === 0) : (c.price && c.price > 0)))
+                            .map((course: any) => {
                             const count = enrollmentCounts[course.id] || 0;
                             return (
                               <tr key={course.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
@@ -675,6 +691,11 @@ const AdminDashboard: React.FC = () => {
                                   </div>
                                 </td>
                                 <td className="px-4 sm:px-8 py-4 sm:py-5 hidden sm:table-cell">
+                                  <span className={`text-xs font-bold ${!course.price || course.price === 0 ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-300'}`}>
+                                    {!course.price || course.price === 0 ? 'Free' : `₹${course.price}`}
+                                  </span>
+                                </td>
+                                <td className="px-4 sm:px-8 py-4 sm:py-5 hidden sm:table-cell">
                                   <span className="text-xs font-medium text-slate-500">{course.category || 'Uncategorized'}</span>
                                 </td>
                                 <td className="px-4 sm:px-8 py-4 sm:py-5 text-right">
@@ -687,10 +708,10 @@ const AdminDashboard: React.FC = () => {
                               </tr>
                             );
                           })}
-                          {coursesList.length === 0 && (
+                          {coursesList.filter(c => priceFilter === 'all' || (priceFilter === 'free' ? (!c.price || c.price === 0) : (c.price && c.price > 0))).length === 0 && (
                             <tr>
-                              <td colSpan={3} className="px-8 py-16 text-center">
-                                <p className="text-slate-400 font-medium">No courses found</p>
+                              <td colSpan={4} className="px-8 py-16 text-center">
+                                <p className="text-slate-400 font-medium">No {priceFilter === 'free' ? 'free' : priceFilter === 'paid' ? 'paid' : ''} courses found</p>
                               </td>
                             </tr>
                           )}
