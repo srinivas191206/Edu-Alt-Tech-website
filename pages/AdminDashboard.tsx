@@ -134,7 +134,7 @@ const AdminDashboard: React.FC = () => {
         if (appDoc.exists()) {
           const data = appDoc.data();
           const courseIdVal = data.qualification || appId;
-          const enrollmentId = `${data.userId}_${courseIdVal}`;
+          const enrollmentId = crypto.randomUUID();
           await setDoc(doc(db, 'enrollments', enrollmentId), {
             userId: data.userId,
             courseId: courseIdVal,
