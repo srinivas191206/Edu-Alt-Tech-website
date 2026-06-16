@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { auth, db, storage, doc, getDoc, collection, query, where, getDocs, addDoc, updateDoc, serverTimestamp, orderBy, arrayUnion, arrayRemove, ref, uploadBytes, getDownloadURL, onAuthStateChanged } from '../lib/firebase';
 import { Course, CourseEnrollment, CourseModule, ModuleLecture, CourseResource } from '../types';
-import { ArrowLeft, BookOpen, Video, FileText, Plus, Link as LinkIcon, Loader2, PlayCircle, CheckCircle2, Circle, ChevronRight, Clock, Award, Layout, Zap, X, Upload, ExternalLink, MessageCircle, Target } from 'lucide-react';
+import { ArrowLeft, BookOpen, Video, FileText, Plus, Link as LinkIcon, Loader2, PlayCircle, CheckCircle2, Circle, ChevronRight, Clock, Award, Layout, Zap, X, Upload, ExternalLink, MessageCircle, Target, Calendar } from 'lucide-react';
 import type { User } from '../lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -24,10 +24,26 @@ const CourseClassroom: React.FC = () => {
   // Classroom Data
   const [modules, setModules] = useState<CourseModule[]>([]);
   const [resources, setResources] = useState<CourseResource[]>([]);
-  const [activeTab, setActiveTab] = useState<'roadmap' | 'chat' | 'path'>('roadmap');
+  const [activeTab, setActiveTab] = useState<'roadmap' | 'chat' | 'path' | 'live'>('roadmap');
 
   // Active Expand States
   const [expandedModules, setExpandedModules] = useState<string[]>([]);
+
+  // Live Classes
+  const [liveClasses, setLiveClasses] = useState<any[]>([]);
+  const [loadingLiveClasses, setLoadingLiveClasses] = useState(false);
+
+  const fetchLiveClasses = async (courseIdStr: string) => {
+    setLoadingLiveClasses(true);
+    try {
+      const { data, error } = await db.from('scheduled_classes').select('*').eq('course_id', courseIdStr).order('scheduled_at', { ascending: false });
+      if (!error) setLiveClasses(data || []);
+    } catch (e) {
+      console.error("Failed to load live classes", e);
+    } finally {
+      setLoadingLiveClasses(false);
+    }
+  };
 
   // Teacher Modals
   const [showModuleModal, setShowModuleModal] = useState(false);
@@ -59,6 +75,7 @@ const CourseClassroom: React.FC = () => {
       const rQ = query(collection(db, 'resources'), where('courseId', '==', courseIdStr));
       const rSnap = await getDocs(rQ);
       setResources(rSnap.docs.map(d => ({ id: d.id, ...d.data() } as CourseResource)));
+      await fetchLiveClasses(courseIdStr);
     } catch (e) {
       console.error("Failed to load classroom items", e);
     }
@@ -312,6 +329,12 @@ const CourseClassroom: React.FC = () => {
                   <Target className="w-4 h-4" /> AI Roadmap
                 </button>
               )}
+              <button 
+                onClick={() => setActiveTab('live')}
+                className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'live' ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+              >
+                <Calendar className="w-4 h-4" /> Live Classes
+              </button>
             </div>
 
             {activeTab === 'roadmap' ? (
@@ -474,6 +497,47 @@ const CourseClassroom: React.FC = () => {
               </div>
               )}
               </>
+            ) : activeTab === 'live' ? (
+              <div>
+                <h2 className="text-2xl font-black tracking-tight flex items-center gap-3 mb-8">
+                  <Calendar className="w-6 h-6 text-rose-500" />
+                  Upcoming Live Classes
+                </h2>
+                {loadingLiveClasses ? (
+                  <div className="flex justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-rose-500" /></div>
+                ) : liveClasses.length === 0 ? (
+                  <div className="py-24 text-center bg-white/50 dark:bg-slate-900/50 backdrop-blur rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
+                    <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                    <p className="text-slate-500 font-bold">No live classes scheduled yet</p>
+                    <p className="text-sm text-slate-400 mt-1">Your teacher will schedule live classes here.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {liveClasses.map((lc) => (
+                      <div key={lc.id} className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-lg transition-shadow">
+                        <div className="flex items-start gap-4">
+                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-400 to-orange-500 flex items-center justify-center font-black text-white shrink-0">
+                            <Calendar className="w-6 h-6" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-black text-lg text-slate-900 dark:text-white">{lc.title}</h3>
+                            {lc.description && <p className="text-sm text-slate-500 mt-1">{lc.description}</p>}
+                            <div className="flex items-center gap-4 mt-3">
+                              <span className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                                <Clock className="w-3.5 h-3.5" />
+                                {lc.scheduled_at ? new Date(lc.scheduled_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'No date set'}
+                              </span>
+                            </div>
+                          </div>
+                          <a href={lc.meeting_link} target="_blank" rel="noreferrer" className="px-6 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl transition-colors text-sm flex items-center gap-2 shrink-0 shadow-lg shadow-rose-500/20">
+                            <Video className="w-4 h-4" /> Join Now
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             ) : activeTab === 'path' ? (
               <LearningPathView courseId={courseId!} courseTitle={course.title} courseDescription={course.description} />
             ) : (

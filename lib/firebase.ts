@@ -179,7 +179,7 @@ export async function addDoc(ref: CollectionRef, data: any): Promise<{ id: strin
 
 export async function setDoc(ref: DocRef, data: any, options?: { merge?: boolean }): Promise<void> {
   const snakeData = convertKeys(data, camelToSnake);
-  const { error } = await supabase.from(ref.table).upsert({ id: ref.id, ...snakeData }).eq('id', ref.id);
+  const { error } = await supabase.from(ref.table).upsert({ id: ref.id, ...snakeData }, { onConflict: 'id' });
   if (error) throw new Error(`setDoc failed: ${error.message}`);
 }
 

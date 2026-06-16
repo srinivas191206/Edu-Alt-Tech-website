@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical } from 'lucide-react';
+import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical, Calendar, Video } from 'lucide-react';
 import { TeacherApplication } from '../types';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,7 +10,7 @@ const ADMIN_EMAILS = ['ukkukk97@gmail.com', 'umakrishnakanthchokkapu15@gmail.com
 
 const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'applications' | 'chat' | 'stats'>('applications');
+  const [activeTab, setActiveTab] = useState<'applications' | 'chat' | 'stats' | 'classes'>('applications');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -28,6 +28,10 @@ const AdminDashboard: React.FC = () => {
   // Stats states
   const [coursesList, setCoursesList] = useState<any[]>([]);
   const [enrollments, setEnrollments] = useState<any[]>([]);
+
+  // Scheduled classes
+  const [scheduledClasses, setScheduledClasses] = useState<any[]>([]);
+  const [loadingClasses, setLoadingClasses] = useState(false);
 
 
   const fetchData = async () => {
@@ -70,12 +74,25 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const fetchScheduledClasses = async () => {
+    setLoadingClasses(true);
+    try {
+      const { data, error } = await db.from('scheduled_classes').select('*, users:teacher_id (display_name, email)').order('scheduled_at', { ascending: false });
+      if (!error) setScheduledClasses(data || []);
+    } catch (e) {
+      console.error("Failed to load scheduled classes", e);
+    } finally {
+      setLoadingClasses(false);
+    }
+  };
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
       if (!u || !ADMIN_EMAILS.includes(u.email || '')) {
         navigate('/');
       } else {
         fetchData();
+        fetchScheduledClasses();
       }
     });
     return () => unsub();
@@ -162,7 +179,7 @@ const AdminDashboard: React.FC = () => {
       setSelectedApp(null);
       fetchData();
       toast.success(`Application ${verdict}`);
-    } catch(e) { toast.error("Verdict update failed"); }
+    } catch(e: any) { toast.error(e?.message || "Verdict update failed"); console.error(e); }
   };
 
   const [schedulingId, setSchedulingId] = useState<string | null>(null);
@@ -349,6 +366,7 @@ const AdminDashboard: React.FC = () => {
                   { id: 'applications', label: 'Applications', icon: Users, desc: 'Provider review' },
                   { id: 'chat', label: 'Provider Chat', icon: MessageSquare, desc: 'Direct messaging' },
                   { id: 'stats', label: 'Course Stats', icon: BarChart3, desc: 'Enrollment analytics' },
+                  { id: 'classes', label: 'Scheduled Classes', icon: Calendar, desc: 'Teacher-scheduled classes' },
                 ].map((item) => (
                   <button
                     key={item.id}
@@ -389,10 +407,10 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
           <header className="mb-16">
             <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Admin Console</span>
             <h1 className="text-5xl font-black tracking-tight text-slate-900 dark:text-white">
-              {activeTab === 'applications' ? 'Provider Applications' : activeTab === 'chat' ? 'Provider Chat' : 'Course Statistics'}
+              {activeTab === 'applications' ? 'Provider Applications' : activeTab === 'chat' ? 'Provider Chat' : activeTab === 'stats' ? 'Course Statistics' : 'Scheduled Classes'}
             </h1>
             <p className="text-slate-500 font-medium mt-2">
-              {activeTab === 'applications' ? 'Review and manage teacher/provider applications' : activeTab === 'chat' ? 'Direct messaging with providers' : 'Enrollment analytics per course'}
+              {activeTab === 'applications' ? 'Review and manage teacher/provider applications' : activeTab === 'chat' ? 'Direct messaging with providers' : activeTab === 'stats' ? 'Enrollment analytics per course' : 'Live classes scheduled by teachers'}
             </p>
           </header>
 
@@ -652,6 +670,45 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
                       </table>
                     </div>
                   </div>
+                </div>
+              )}
+              {activeTab === 'classes' && (
+                <div className="space-y-6">
+                  {loadingClasses ? (
+                    <div className="flex justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>
+                  ) : scheduledClasses.length === 0 ? (
+                    <div className="text-center py-24 bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
+                      <Calendar className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-6" />
+                      <h3 className="text-xl font-black text-slate-400">No Scheduled Classes</h3>
+                      <p className="text-slate-500 text-sm font-medium mt-2">Teachers have not scheduled any live classes yet.</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {scheduledClasses.map((sc) => (
+                        <div key={sc.id} className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center font-black text-white">
+                              <Calendar className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-black text-slate-900 dark:text-white truncate">{sc.title}</p>
+                              <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                                {sc.scheduled_at ? new Date(sc.scheduled_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'No date'}
+                              </p>
+                            </div>
+                          </div>
+                          <p className="text-xs font-medium text-slate-500 mb-4 line-clamp-2">{sc.description || 'No description'}</p>
+                          <div className="flex items-center gap-3 mb-4">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Teacher:</span>
+                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{sc.users?.display_name || sc.teacher_id?.slice(0, 8) || 'Unknown'}</span>
+                          </div>
+                          <a href={sc.meeting_link} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl transition-colors text-sm">
+                            <Video className="w-4 h-4" /> Join Class
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </motion.div>
