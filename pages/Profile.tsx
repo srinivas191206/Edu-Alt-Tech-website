@@ -178,9 +178,9 @@ const Profile: React.FC = () => {
              <div className="relative group">
                 <div className="w-32 h-32 rounded-full border-4 border-slate-100 dark:border-slate-800 flex items-center justify-center overflow-hidden bg-emerald-50 dark:bg-emerald-900/10">
                    {selectedFile ? (
-                      <img src={URL.createObjectURL(selectedFile)} alt="preview" className="w-full h-full object-cover" />
+                      <img src={URL.createObjectURL(selectedFile)} loading="lazy" decoding="async" alt="preview" className="w-full h-full object-cover" />
                    ) : userProfile.profilePic ? (
-                      <img src={userProfile.profilePic} alt="current" className="w-full h-full object-cover" />
+                      <img src={userProfile.profilePic} loading="lazy" decoding="async" alt="current" className="w-full h-full object-cover" />
                    ) : (
                       <span className="text-4xl text-emerald-600 font-bold uppercase">
                         {(userProfile.name || user?.email || 'U').charAt(0)}
@@ -214,7 +214,7 @@ const Profile: React.FC = () => {
                      <Building2 className="w-4 h-4 text-emerald-500"/> Education
                    </label>
                    {isEditing ? (
-                      <input type="text" value={editClass} onChange={(e) => {setEditClass(e.target.value); setSuccessMsg('');}} placeholder="e.g. B.Tech / High School" className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none text-slate-900 dark:text-white transition-all" />
+                       <input type="text" value={editClass} onChange={(e) => {setEditClass(e.target.value); setSuccessMsg('');}} placeholder="e.g. B.Tech / High School" className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none text-slate-900 dark:text-white transition-colors transition-shadow" />
                    ) : (
                       <p className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/80 rounded-2xl text-slate-800 dark:text-slate-200 font-medium">
                         {userProfile.classYear || <span className="text-slate-400 italic">Not specified</span>}
@@ -227,7 +227,7 @@ const Profile: React.FC = () => {
                      <MapPin className="w-4 h-4 text-blue-500"/> Location
                    </label>
                    {isEditing ? (
-                      <input type="text" value={editLocation} onChange={(e) => {setEditLocation(e.target.value); setSuccessMsg('');}} placeholder="e.g. Bangalore" className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none text-slate-900 dark:text-white transition-all" />
+                       <input type="text" value={editLocation} onChange={(e) => {setEditLocation(e.target.value); setSuccessMsg('');}} placeholder="e.g. Bangalore" className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none text-slate-900 dark:text-white transition-colors transition-shadow" />
                    ) : (
                       <p className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/80 rounded-2xl text-slate-800 dark:text-slate-200 font-medium">
                         {userProfile.location || <span className="text-slate-400 italic">Not specified</span>}
@@ -241,7 +241,7 @@ const Profile: React.FC = () => {
                   <Tag className="w-4 h-4 text-purple-500"/> Interests & Preferences
                 </label>
                 {isEditing ? (
-                   <input type="text" value={editInterests} onChange={(e) => {setEditInterests(e.target.value); setSuccessMsg('');}} placeholder="e.g. Math, Coding, Art (comma-separated)" className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none text-slate-900 dark:text-white transition-all" />
+                   <input type="text" value={editInterests} onChange={(e) => {setEditInterests(e.target.value); setSuccessMsg('');}} placeholder="e.g. Math, Coding, Art (comma-separated)" className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none text-slate-900 dark:text-white transition-colors transition-shadow" />
                 ) : (
                    <div className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/80 rounded-2xl min-h-[56px] flex flex-wrap gap-2">
                      {userProfile.preferences && userProfile.preferences.length > 0 ? (
@@ -285,7 +285,7 @@ const Profile: React.FC = () => {
                       <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Old Password</label>
                       <input 
                         type="password" required value={oldPassword} onChange={e => setOldPassword(e.target.value)}
-                        className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 transition-all font-medium dark:text-white"
+                        className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 transition-shadow font-medium dark:text-white"
                       />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -293,20 +293,20 @@ const Profile: React.FC = () => {
                         <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">New Password</label>
                         <input 
                           type="password" required value={newPassword} onChange={e => setNewPassword(e.target.value)}
-                          className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 transition-all font-medium dark:text-white"
+                          className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 transition-shadow font-medium dark:text-white"
                         />
                       </div>
                       <div>
                         <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Confirm New Password</label>
                         <input 
                           type="password" required value={confirmNewPassword} onChange={e => setConfirmNewPassword(e.target.value)}
-                          className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 transition-all font-medium dark:text-white"
+                          className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 transition-shadow font-medium dark:text-white"
                         />
                       </div>
                     </div>
                     <button 
                       type="submit" disabled={passwordLoading}
-                      className="w-full py-4 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold rounded-2xl shadow-lg hover:scale-[1.01] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full py-4 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold rounded-2xl shadow-lg hover:scale-[1.01] transition-transform disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {passwordLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Update Password'}
                     </button>
@@ -317,16 +317,16 @@ const Profile: React.FC = () => {
               <div className="pt-6 flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-100 dark:border-slate-800">
                  {isEditing ? (
                     <>
-                       <button onClick={() => { setIsEditing(false); setSuccessMsg(''); }} disabled={saving} className="w-full sm:w-auto hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold py-4 px-8 rounded-2xl transition-all">
+                       <button onClick={() => { setIsEditing(false); setSuccessMsg(''); }} disabled={saving} className="w-full sm:w-auto hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold py-4 px-8 rounded-2xl transition-colors">
                           Cancel
                        </button>
-                       <button onClick={handleSaveProfile} disabled={saving} className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50">
+                       <button onClick={handleSaveProfile} disabled={saving} className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-2xl transition-colors transition-transform shadow-lg hover:shadow-xl flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50">
                           {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                           Save Changes
                        </button>
                     </>
                  ) : (
-                    <button onClick={handleLogout} className="w-full sm:w-auto bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-red-600 font-bold py-4 px-8 rounded-2xl transition-all flex items-center justify-center gap-2 active:scale-95">
+                    <button onClick={handleLogout} className="w-full sm:w-auto bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-red-600 font-bold py-4 px-8 rounded-2xl transition-colors transition-transform flex items-center justify-center gap-2 active:scale-95">
                        <LogOut className="w-5 h-5" />
                        Logout Account
                     </button>

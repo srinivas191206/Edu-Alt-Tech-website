@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Brain, TrendingUp, TrendingDown, Users, Activity, Clock, ArrowLeft, AlertTriangle, BarChart3, Target } from 'lucide-react';
 import { auth, db, onAuthStateChanged, collection, getDocs, query, orderBy, limit } from '../lib/firebase';
@@ -76,27 +76,31 @@ const BehaviorInsights: React.FC = () => {
         };
       });
 
-      if (sortBy === 'risk') studentList.sort((a, b) => { const order = { high: 0, medium: 1, low: 2 }; return order[a.risk] - order[b.risk]; });
-      else if (sortBy === 'activity') studentList.sort((a, b) => b.activityCount - a.activityCount);
-      else studentList.sort((a, b) => {
-        const aEng = a.metrics.reduce((s, m) => s + (m.engagementScore || 0), 0) / (a.metrics.length || 1);
-        const bEng = b.metrics.reduce((s, m) => s + (m.engagementScore || 0), 0) / (b.metrics.length || 1);
-        return bEng - aEng;
-      });
-
       setStudents(studentList);
     } catch (e) {
       console.error('Failed to load insights', e);
     }
   };
 
-  const atRiskCount = students.filter(s => s.risk === 'high').length;
-  const stableCount = students.filter(s => s.risk === 'low').length;
+  const atRiskCount = useMemo(() => students.filter(s => s.risk === 'high').length, [students]);
+  const stableCount = useMemo(() => students.filter(s => s.risk === 'low').length, [students]);
+
+  const sortedStudents = useMemo(() => {
+    const list = [...students];
+    if (sortBy === 'risk') list.sort((a, b) => { const order = { high: 0, medium: 1, low: 2 }; return order[a.risk] - order[b.risk]; });
+    else if (sortBy === 'activity') list.sort((a, b) => b.activityCount - a.activityCount);
+    else list.sort((a, b) => {
+      const aEng = a.metrics.reduce((s, m) => s + (m.engagementScore || 0), 0) / (a.metrics.length || 1);
+      const bEng = b.metrics.reduce((s, m) => s + (m.engagementScore || 0), 0) / (b.metrics.length || 1);
+      return bEng - aEng;
+    });
+    return list;
+  }, [students, sortBy]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-[#020617] flex items-center justify-center">
-        <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
+        <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} style={{ willChange: 'transform' }}>
           <Brain className="w-12 h-12 text-emerald-500" />
         </motion.div>
       </div>
@@ -156,7 +160,7 @@ const BehaviorInsights: React.FC = () => {
             { key: 'activity', label: 'Activity', icon: Clock },
           ].map(s => (
             <button key={s.key} onClick={() => setSortBy(s.key as any)}
-              className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-bold text-sm transition-all ${
+              className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${
                 sortBy === s.key ? 'bg-amber-500 text-white shadow-lg' : 'bg-white dark:bg-slate-900 text-slate-500 border border-slate-200 dark:border-slate-800'
               }`}
             ><s.icon className="w-4 h-4" /> {s.label}</button>
@@ -177,7 +181,7 @@ const BehaviorInsights: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {students.map((s, i) => {
+                {sortedStudents.map((s, i) => {
                   const avgScore = s.metrics.length ? Math.round(s.metrics.reduce((sum, m) => sum + (m.avgScore || 0), 0) / s.metrics.length) : 0;
                   const avgEngagement = s.metrics.length ? Math.round(s.metrics.reduce((sum, m) => sum + (m.engagementScore || 0), 0) / s.metrics.length) : 0;
                   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
 import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink } from 'lucide-react';
@@ -132,13 +132,13 @@ const Courses: React.FC = () => {
     fetchCourses();
   }, []);
 
-  const filteredCourses = courses.filter(course => {
+  const filteredCourses = useMemo(() => courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           (course.description || '').toLowerCase().includes(searchTerm.toLowerCase());
     if (activeFilter === 'all') return matchesSearch;
     if (activeFilter === 'education') return matchesSearch && EDUCATION_FOLDERS.has((course as any).folder || '');
     return matchesSearch && !EDUCATION_FOLDERS.has((course as any).folder || '');
-  });
+  }), [courses, searchTerm, activeFilter]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#020617] selection:bg-emerald-500/30">
@@ -164,7 +164,7 @@ const Courses: React.FC = () => {
           <div className="relative max-w-md">
             <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input type="text" placeholder="Search courses..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-14 pr-6 py-4 bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 dark:text-white transition-all font-medium placeholder:text-slate-400" />
+              className="w-full pl-14 pr-6 py-4 bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 dark:text-white transition-shadow font-medium placeholder:text-slate-400" />
           </div>
         </motion.div>
 
@@ -176,7 +176,7 @@ const Courses: React.FC = () => {
             { id: 'alternative', label: 'Alternative', icon: Sparkles },
           ].map((f) => (
             <button key={f.id} onClick={() => setActiveFilter(f.id as any)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all ${
+              className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-colors ${
                 activeFilter === f.id
                   ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25'
                   : 'bg-white dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50'
@@ -188,7 +188,7 @@ const Courses: React.FC = () => {
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-4">
-            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
+            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} style={{ willChange: 'transform' }}>
               <Sparkles className="w-12 h-12 text-emerald-500" />
             </motion.div>
             <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Loading courses...</p>
@@ -198,9 +198,9 @@ const Courses: React.FC = () => {
             <AnimatePresence mode="popLayout">
               {filteredCourses.map((course) => (
                 <motion.div layout key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
-                  className="group bg-white dark:bg-slate-900/40 backdrop-blur-xl rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-all duration-500 flex flex-col">
+                  className="group bg-white dark:bg-slate-900/40 backdrop-blur-xl rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-colors transition-shadow duration-500 flex flex-col">
                   <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
-                    <img src={course.thumbnailUrl} alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                    <img src={course.thumbnailUrl} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                     <div className="absolute top-4 left-4 px-3 py-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white border border-slate-200/50 dark:border-slate-700/50">
                       {course.folder || course.category}
@@ -218,12 +218,12 @@ const Courses: React.FC = () => {
                     </p>
                     {course.externalUrl ? (
                       <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold text-sm tracking-wide hover:from-emerald-600 hover:to-teal-600 transition-all active:scale-[0.98]">
+                        className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold text-sm tracking-wide hover:from-emerald-600 hover:to-teal-600 transition-colors transition-transform active:scale-[0.98]">
                         Start Free <ExternalLink className="w-4 h-4" />
                       </a>
                     ) : (
                       <Link to={`/courses/${course.id}`}
-                        className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white transition-all active:scale-[0.98]">
+                        className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white transition-colors transition-transform active:scale-[0.98]">
                         Explore Course →
                       </Link>
                     )}
@@ -238,7 +238,7 @@ const Courses: React.FC = () => {
             <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">No courses found</h3>
             <p className="text-slate-500 dark:text-slate-400 mb-6">Try a different search or filter.</p>
             <button onClick={() => { setSearchTerm(''); setActiveFilter('all'); }}
-              className="px-8 py-3.5 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:-translate-y-0.5 transition-all">Reset Filters</button>
+              className="px-8 py-3.5 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:-translate-y-0.5 transition-transform">Reset Filters</button>
           </motion.div>
         )}
       </div>

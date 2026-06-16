@@ -138,7 +138,7 @@ const AIAssistant: React.FC = () => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl shadow-2xl shadow-emerald-500/30 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl shadow-2xl shadow-emerald-500/30 flex items-center justify-center transition-transform duration-300 hover:scale-110 active:scale-95"
       >
         {isOpen ? <X className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
       </button>
@@ -233,12 +233,12 @@ const AIAssistant: React.FC = () => {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask EduAI anything..."
                 disabled={loading}
-                className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-medium text-sm border border-transparent focus:border-emerald-500 transition-all disabled:opacity-50"
+                className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-medium text-sm border border-transparent focus:border-emerald-500 transition-colors disabled:opacity-50"
               />
               <button
                 onClick={handleSend}
                 disabled={loading || !input.trim()}
-                className="p-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="p-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
               </button>

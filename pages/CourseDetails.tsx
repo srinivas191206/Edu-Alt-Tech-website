@@ -43,27 +43,29 @@ const CourseDetails: React.FC = () => {
           }
 
           // Fetch Approved Mentors for this course
-          const appsQ = query(collection(db, 'teacher_applications'), where('courseId', '==', courseId), where('status', '==', 'approved'));
+          const appsQ = query(collection(db, 'teacher_applications'), where('status', '==', 'approved'));
           const appsSnap = await getDocs(appsQ);
+          const approvedForCourse = appsSnap.docs.filter(d => d.data().qualification === courseId);
 
           // Fetch current user's application status
-          const myAppQ = query(collection(db, 'teacher_applications'), where('courseId', '==', courseId), where('userId', '==', currentUser.uid));
+          const myAppQ = query(collection(db, 'teacher_applications'), where('user_id', '==', currentUser.uid));
           const myAppSnap = await getDocs(myAppQ);
-          if (!myAppSnap.empty) {
-            setMyAppStatus(myAppSnap.docs[0].data().status);
+          const myCourseApp = myAppSnap.docs.find(d => d.data().qualification === courseId);
+          if (myCourseApp) {
+            setMyAppStatus(myCourseApp.data().status);
           }
 
-          const loadedMentors = appsSnap.docs.map(doc => {
+          const loadedMentors = approvedForCourse.map(doc => {
             const data = doc.data();
             return {
               appId: doc.id,
               userId: data.userId,
-              name: data.userName || 'Mentor',
-              email: data.userEmail || '',
+              name: data.name || 'Mentor',
+              email: data.email || '',
               experience: data.experience || 'Experienced Professional',
-              skills: data.skills || 'Course Expert',
-              message: data.message || '',
-              proposedPath: data.proposedPath || []
+              skills: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n')[0].replace('Skills: ', '') : 'Course Expert',
+              message: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n').slice(1).join('\n').trim() : (data.message || ''),
+              proposedPath: []
             };
           });
           setMentors(loadedMentors);
@@ -82,19 +84,20 @@ const CourseDetails: React.FC = () => {
           }
         } else {
           // For guests, just fetch mentors to show who is teaching
-          const appsQ = query(collection(db, 'teacher_applications'), where('courseId', '==', courseId), where('status', '==', 'approved'));
+          const appsQ = query(collection(db, 'teacher_applications'), where('status', '==', 'approved'));
           const appsSnap = await getDocs(appsQ);
-          const loadedMentors = appsSnap.docs.map(doc => {
+          const approvedForCourse = appsSnap.docs.filter(d => d.data().qualification === courseId);
+          const loadedMentors = approvedForCourse.map(doc => {
             const data = doc.data();
             return {
               appId: doc.id,
               userId: data.userId,
-              name: data.userName || 'Mentor',
-              email: data.userEmail || '',
+              name: data.name || 'Mentor',
+              email: data.email || '',
               experience: data.experience || 'Experienced Professional',
-              skills: data.skills || 'Course Expert',
-              message: data.message || '',
-              proposedPath: data.proposedPath || []
+              skills: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n')[0].replace('Skills: ', '') : 'Course Expert',
+              message: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n').slice(1).join('\n').trim() : (data.message || ''),
+              proposedPath: []
             };
           });
           setMentors(loadedMentors);
@@ -227,7 +230,7 @@ const CourseDetails: React.FC = () => {
 
       // 3. Open Checkout
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_SUbr4cftio73uJ",
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_T2D67OLLpfRjtJ",
         amount: amountInPaise,
         currency: "INR",
         name: "Edu Alt Tech",
@@ -337,7 +340,7 @@ const CourseDetails: React.FC = () => {
           {/* AI Course Assistant Button */}
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('openaichat', { detail: { mode: 'course' } }))}
-            className="w-full mb-6 p-5 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/5 dark:to-teal-500/5 border border-emerald-200/50 dark:border-emerald-800/30 rounded-2xl flex items-center justify-between group hover:from-emerald-500/20 hover:to-teal-500/20 transition-all"
+            className="w-full mb-6 p-5 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/5 dark:to-teal-500/5 border border-emerald-200/50 dark:border-emerald-800/30 rounded-2xl flex items-center justify-between group hover:from-emerald-500/20 hover:to-teal-500/20 transition-colors"
           >
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -363,7 +366,7 @@ const CourseDetails: React.FC = () => {
                         <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto mb-6">
                           A mentor is ready to teach you. Please complete the payment to start learning.
                         </p>
-                        <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-all w-full md:w-auto">
+                        <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-colors w-full md:w-auto">
                           Pay ₹{course.price || 0} Now
                         </button>
                      </>
@@ -404,7 +407,7 @@ const CourseDetails: React.FC = () => {
                         <div 
                            key={m.userId}
                            onClick={() => setSelectedMentor(m.userId)}
-                           className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${selectedMentor === m.userId ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}`}
+                           className={`p-4 border-2 rounded-xl cursor-pointer transition-colors ${selectedMentor === m.userId ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}`}
                         >
                            <div className="flex justify-between items-start mb-2">
                              <p className="font-bold text-slate-900 dark:text-white text-lg">{m.name}</p>
@@ -429,7 +432,7 @@ const CourseDetails: React.FC = () => {
                       <button 
                         onClick={handleJoinAsStudent}
                         disabled={enrollLoading || !selectedMentor}
-                        className="w-full bg-slate-900 dark:bg-emerald-600 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 dark:hover:bg-emerald-500 transition-all shadow-md disabled:opacity-50 mt-4 flex justify-center items-center gap-2"
+                        className="w-full bg-slate-900 dark:bg-emerald-600 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 dark:hover:bg-emerald-500 transition-colors shadow-md disabled:opacity-50 mt-4 flex justify-center items-center gap-2"
                       >
                         {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 
                           (!course?.price || course.price === 0 ? 
@@ -463,7 +466,7 @@ const CourseDetails: React.FC = () => {
                   ) : (
                      <button 
                        onClick={handleApplyToTeach}
-                       className="w-full max-w-xs bg-white dark:bg-transparent text-purple-600 dark:text-purple-400 border-2 border-purple-200 dark:border-purple-800 hover:border-purple-500 dark:hover:border-purple-500 font-bold py-3 px-8 rounded-xl transition-all shadow-sm"
+                       className="w-full max-w-xs bg-white dark:bg-transparent text-purple-600 dark:text-purple-400 border-2 border-purple-200 dark:border-purple-800 hover:border-purple-500 dark:hover:border-purple-500 font-bold py-3 px-8 rounded-xl transition-colors shadow-sm"
                      >
                        Apply to Teach
                      </button>

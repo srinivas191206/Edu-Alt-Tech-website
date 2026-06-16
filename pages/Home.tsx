@@ -38,10 +38,10 @@ const Home: React.FC = () => {
                 From websites and mobile apps to AI tools and ERP systems — we provide end-to-end technology solutions that empower schools to deliver exceptional education.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to="/services" className="group px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold transition-all shadow-xl shadow-emerald-600/25 hover:shadow-emerald-500/30 hover:-translate-y-1 inline-flex items-center gap-2">
+                <Link to="/services" className="group px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold transition-colors transition-transform shadow-xl shadow-emerald-600/25 hover:shadow-emerald-500/30 hover:-translate-y-1 inline-flex items-center gap-2">
                   Explore Services <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link to="/contact" className="px-8 py-4 bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl font-bold transition-all hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 hover:-translate-y-1">
+                <Link to="/contact" className="px-8 py-4 bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl font-bold hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 hover:-translate-y-1 transition-colors transition-transform">
                   Get a Free Consultation
                 </Link>
               </div>
@@ -61,7 +61,7 @@ const Home: React.FC = () => {
                 <div className="w-full aspect-square rounded-[3rem] bg-gradient-to-br from-emerald-400/20 via-teal-400/10 to-blue-400/20 dark:from-emerald-500/10 dark:via-teal-500/5 dark:to-blue-500/10 border border-emerald-200/50 dark:border-emerald-800/30 backdrop-blur-sm p-12 flex items-center justify-center">
                   <div className="grid grid-cols-2 gap-6 w-full">
                     {['Website Dev', 'Mobile Apps', 'School ERP', 'AI Tools', 'Curriculum', 'Training'].map((item, i) => (
-                      <div key={i} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
+                      <div key={i} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-shadow transition-transform">
                         <div className="text-emerald-500 mb-3">{iconMap[['Globe', 'Smartphone', 'Brain', 'Zap', 'BookOpen', 'GraduationCap'][i]]}</div>
                         <div className="font-bold text-slate-900 dark:text-white text-sm">{item}</div>
                       </div>
@@ -100,7 +100,7 @@ const Home: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.08, duration: 0.5 }}
-                className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 hover:border-emerald-500 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
+                className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 hover:border-emerald-500 hover:shadow-2xl hover:-translate-y-2 transition-colors transition-shadow transition-transform duration-500"
               >
                 <div className="text-emerald-500 mb-6 bg-emerald-50 dark:bg-emerald-900/20 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
                   {iconMap[service.icon]}
@@ -120,7 +120,7 @@ const Home: React.FC = () => {
           </div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mt-12">
-            <Link to="/services" className="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all hover:-translate-y-1">
+            <Link to="/services" className="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors transition-transform hover:-translate-y-1">
               View All Services <ArrowRight className="w-5 h-5" />
             </Link>
           </motion.div>
@@ -154,7 +154,7 @@ const Home: React.FC = () => {
             ].map((item, i) => (
               <motion.div
                 key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-emerald-500 hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl text-center"
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-emerald-500 hover:-translate-y-2 transition-colors transition-transform duration-500 shadow-sm hover:shadow-xl text-center"
               >
                 <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center text-emerald-500 mx-auto mb-5">{item.icon}</div>
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{item.title}</h3>
@@ -215,10 +215,10 @@ const Home: React.FC = () => {
                 Partner with EduAltTech and bring world-class technology solutions to your institution. From digital infrastructure to AI-powered learning tools — we've got you covered.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Link to="/contact" className="px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black transition-all shadow-xl shadow-emerald-500/30 hover:-translate-y-1">
+                <Link to="/contact" className="px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black transition-colors transition-transform shadow-xl shadow-emerald-500/30 hover:-translate-y-1">
                   Get Started Today
                 </Link>
-                <Link to="/resources" className="px-10 py-5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl font-bold transition-all backdrop-blur-sm hover:-translate-y-1">
+                <Link to="/resources" className="px-10 py-5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl font-bold transition-colors transition-transform backdrop-blur-sm hover:-translate-y-1">
                   Explore Free Resources
                 </Link>
               </div>

@@ -79,7 +79,7 @@ export default function Navbar() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className={`fixed w-full z-50 transition-all duration-300 ${
+        className={`fixed w-full z-50 transition-colors duration-300 ${
           isScrolled
             ? 'bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border-b border-slate-200/60 dark:border-slate-800/60 shadow-xl shadow-slate-200/20 py-3'
             : 'bg-transparent py-5'
@@ -89,7 +89,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2 group">
               <div className="w-10 h-10 flex items-center justify-center transform group-hover:scale-105 transition-transform overflow-hidden rounded-xl">
-                <img src="/edulogo.png" alt="EduAltTech Logo" className="w-full h-full object-cover"
+                <img src="/edulogo.png" loading="lazy" decoding="async" alt="EduAltTech Logo" className="w-full h-full object-cover"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23ddd" width="100" height="100"/><text fill="%23999" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="14">LOGO</text></svg>';
                   }}
@@ -137,7 +137,7 @@ export default function Navbar() {
                   >
                     <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg flex items-center justify-center font-bold text-sm overflow-hidden">
                       {userProfile?.profilePic ? (
-                        <img src={userProfile.profilePic} alt="Avatar" className="w-full h-full object-cover" />
+                        <img src={userProfile.profilePic} loading="lazy" decoding="async" alt="Avatar" className="w-full h-full object-cover" />
                       ) : (
                         userProfile?.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()
                       )}
@@ -171,7 +171,7 @@ export default function Navbar() {
             <div className="flex items-center justify-between px-6 py-6 border-b border-slate-200 dark:border-slate-800">
               <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
                 <div className="w-10 h-10 overflow-hidden rounded-xl">
-                  <img src="/edulogo.png" alt="EduAltTech Logo" className="w-full h-full object-cover" />
+                  <img src="/edulogo.png" loading="lazy" decoding="async" alt="EduAltTech Logo" className="w-full h-full object-cover" />
                 </div>
                 <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">EduAltTech</span>
               </Link>
@@ -191,7 +191,7 @@ export default function Navbar() {
                   <Link
                     to={link.path}
                     onClick={() => setIsOpen(false)}
-                    className={`text-3xl font-black px-4 py-4 rounded-2xl transition-all block ${
+                    className={`text-3xl font-black px-4 py-4 rounded-2xl transition-colors block ${
                       location.pathname === link.path
                         ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20'
                         : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900'

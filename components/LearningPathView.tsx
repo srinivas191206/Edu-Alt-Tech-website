@@ -92,21 +92,21 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ courseId, courseTit
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Your Learning Goal</label>
-                <input value={goal} onChange={e => setGoal(e.target.value)} placeholder="e.g. Master the basics and build a project" className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-all" />
+                <input value={goal} onChange={e => setGoal(e.target.value)} placeholder="e.g. Master the basics and build a project" className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors transition-shadow" />
               </div>
               <div>
                 <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Current Level</label>
                 <div className="flex gap-2">
                   {(['beginner', 'intermediate', 'advanced'] as AdaptiveLevel[]).map(l => (
                     <button key={l} onClick={() => setLevel(l)}
-                      className={`flex-1 p-4 rounded-2xl font-bold text-sm capitalize transition-all ${
+                      className={`flex-1 p-4 rounded-2xl font-bold text-sm capitalize transition-colors ${
                         level === l ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-50 dark:bg-slate-800 text-slate-500 hover:bg-slate-100'
                       }`}
                     >{l}</button>
                   ))}
                 </div>
               </div>
-              <button onClick={handleGenerate} disabled={generating} className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+              <button onClick={handleGenerate} disabled={generating} className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                 {generating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
                 {generating ? 'Generating...' : 'Generate My Roadmap'}
               </button>
@@ -133,10 +133,10 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ courseId, courseTit
             <div className="p-4 space-y-2 max-h-[400px] overflow-y-auto">
               {path.modules.map((mod, i) => (
                 <motion.div key={mod.moduleId} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
-                  className="group flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all cursor-pointer"
+                  className="group flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
                   onClick={() => toggleModuleStatus(mod.moduleId, mod.status)}
                 >
-                  <div className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${
+                  <div className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
                     mod.status === 'completed' ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20' :
                     mod.status === 'in_progress' ? 'bg-emerald-500/20 text-emerald-500 border-2 border-emerald-500' :
                     'bg-slate-100 dark:bg-slate-800 text-slate-400'

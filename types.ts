@@ -79,8 +79,11 @@ export type TeacherAppStatus = 'pending' | 'approved_for_interview' | 'scheduled
 
 export interface TeacherApplication {
   id: string; // Document ID
-  userId: string;
-  courseId: string;
+  userId: string; // from user_id column
+  name?: string; // from name column (userName mapped in code)
+  email?: string; // from email column (userEmail mapped in code)
+  qualification?: string; // stores courseId
+  courseId?: string; // mapped from qualification
   status: TeacherAppStatus;
   meetingLink?: string;
   meetingDate?: any;

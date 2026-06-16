@@ -101,7 +101,7 @@ const Dashboard: React.FC = () => {
                   <BookOpen className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No Enrollments Yet</h3>
                   <p className="text-slate-500 dark:text-slate-400 mb-6">Start your learning journey by enrolling in a course.</p>
-                  <Link to="/courses" className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-emerald-600/20">
+                  <Link to="/courses" className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-colors shadow-lg shadow-emerald-600/20">
                     Browse Courses <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -113,7 +113,7 @@ const Dashboard: React.FC = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.05 }}
-                      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-emerald-500 transition-all duration-300 shadow-sm"
+                      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-emerald-500 transition-colors duration-300 shadow-sm"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
@@ -140,7 +140,7 @@ const Dashboard: React.FC = () => {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center font-black text-xl overflow-hidden">
-                  {userProfile?.profilePic ? <img src={userProfile.profilePic} alt="" className="w-full h-full object-cover" /> : (userProfile?.name?.charAt(0) || 'U')}
+                  {userProfile?.profilePic ? <img src={userProfile.profilePic} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover" /> : (userProfile?.name?.charAt(0) || 'U')}
                 </div>
                 <div>
                   <h3 className="font-bold text-slate-900 dark:text-white">{userProfile?.name || 'User'}</h3>
@@ -164,7 +164,7 @@ const Dashboard: React.FC = () => {
                   { icon: <FileText className="w-4 h-4" />, label: 'Flashcards', path: '/flashcards' },
                   { icon: <GraduationCap className="w-4 h-4" />, label: 'All Courses', path: '/courses' },
                 ].map((link, i) => (
-                  <Link key={i} to={link.path} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all">
+                  <Link key={i} to={link.path} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
                     <span className="text-emerald-500">{link.icon}</span>
                     {link.label}
                   </Link>
@@ -177,7 +177,7 @@ const Dashboard: React.FC = () => {
               <Download className="w-8 h-8 mb-3 text-emerald-200" />
               <h3 className="font-black text-lg mb-1">Free Resources</h3>
               <p className="text-sm text-emerald-100 mb-4">Download PDFs, notes, and worksheets.</p>
-              <Link to="/resources" className="inline-flex items-center gap-1 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-bold transition-all backdrop-blur-sm">
+              <Link to="/resources" className="inline-flex items-center gap-1 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-bold transition-colors backdrop-blur-sm">
                 Explore <ArrowRight className="w-4 h-4" />
               </Link>
             </motion.div>

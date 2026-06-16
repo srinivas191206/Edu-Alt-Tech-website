@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
-import { auth, db, doc, getDoc, collection, setDoc, serverTimestamp, onAuthStateChanged } from '../lib/firebase';
-import { Course, TeacherApplication as TeacherAppType } from '../types';
+import { auth, db, doc, getDoc, onAuthStateChanged } from '../lib/firebase';
+import { Course } from '../types';
 import { ArrowLeft, Loader2, Calendar } from 'lucide-react';
 import type { User } from '../lib/firebase';
 import { toast } from 'react-hot-toast';
@@ -58,21 +58,6 @@ const TeacherApplication: React.FC = () => {
     
     setSubmitLoading(true);
     try {
-      const appRef = doc(collection(db, 'teacher_applications'));
-      const application: TeacherAppType = {
-        id: appRef.id,
-        userId: user.uid,
-        userName: user.displayName || 'Teacher',
-        userEmail: user.email || '',
-        courseId: courseId,
-        status: 'pending',
-        experience,
-        skills,
-        message,
-        proposedPath: proposedPath.split('\n').map(s => s.trim()).filter(s => s.length > 0),
-        appliedAt: serverTimestamp()
-      };
-      // Validate experience is numeric
       const yearsExp = parseInt(experience);
       if (isNaN(yearsExp) || yearsExp < 0) {
         toast.error("Please enter a valid number of years for experience");
@@ -80,10 +65,18 @@ const TeacherApplication: React.FC = () => {
         return;
       }
 
-      await setDoc(appRef, {
-        ...application,
-        experience: yearsExp, // Store as number
-      } as any);
+      const { error } = await db.from('teacher_applications').insert({
+        user_id: user.uid,
+        name: user.displayName || 'Teacher',
+        email: user.email || '',
+        qualification: courseId,
+        experience: yearsExp,
+        message: skills ? `Skills: ${skills}\n\n${message}` : message,
+        status: 'pending',
+        applied_at: new Date().toISOString()
+      });
+
+      if (error) throw error;
 
       toast.success("Application submitted successfully! The admin will review and schedule an appointment with you.");
       navigate(`/courses/${courseId}`);
@@ -203,7 +196,7 @@ const TeacherApplication: React.FC = () => {
             <button 
               type="submit"
               disabled={submitLoading}
-              className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
+              className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors shadow-lg flex items-center justify-center gap-2"
             >
               {submitLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit Application'}
             </button>

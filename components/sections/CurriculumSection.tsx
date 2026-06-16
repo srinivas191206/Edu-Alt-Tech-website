@@ -98,7 +98,7 @@ const CurriculumSection: React.FC = () => {
                   transition={{ delay: idx * 0.15, duration: 0.6 }}
                   className="flex gap-6 items-start group"
                 >
-                  <div className={`bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl ${feat.color} shadow-sm border border-slate-100 dark:border-slate-700 group-hover:scale-110 ${feat.hoverBg} group-hover:text-white transition-all duration-300 flex-shrink-0`}>
+                  <div className={`bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl ${feat.color} shadow-sm border border-slate-100 dark:border-slate-700 group-hover:scale-110 ${feat.hoverBg} group-hover:text-white transition-transform duration-300 flex-shrink-0`}>
                     {feat.icon}
                   </div>
                   <div>

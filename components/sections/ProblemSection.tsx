@@ -27,7 +27,7 @@ const Card = ({ problem, index }: { problem: any, index: number }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 p-10 md:p-14 rounded-[2.5rem] shadow-xl shadow-slate-200/20 dark:shadow-none hover:shadow-2xl transition-all duration-500 group"
+      className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 p-10 md:p-14 rounded-[2.5rem] shadow-xl shadow-slate-200/20 dark:shadow-none hover:shadow-2xl transition-shadow duration-500 group"
     >
       <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-[1.5rem] flex items-center justify-center mb-8 ring-1 ring-slate-100 dark:ring-slate-700 group-hover:scale-110 transition-transform duration-500 shadow-sm">
         {problem.icon}

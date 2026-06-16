@@ -150,13 +150,13 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
       <div className="flex bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 p-3">
         <button 
           onClick={() => setActiveTab('community')}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all ${activeTab === 'community' ? 'bg-white dark:bg-slate-800 text-emerald-600 shadow-md' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-900'}`}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'community' ? 'bg-white dark:bg-slate-800 text-emerald-600 shadow-md' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-900'}`}
         >
           <Hash className="w-4 h-4" /> Course Channel
         </button>
         <button 
           onClick={() => setActiveTab('direct')}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all ${activeTab === 'direct' ? 'bg-white dark:bg-slate-800 text-purple-600 shadow-md' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-900'}`}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'direct' ? 'bg-white dark:bg-slate-800 text-purple-600 shadow-md' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-900'}`}
         >
           <MessageCircle className="w-4 h-4" /> {role === 'teacher' ? 'Private DMs' : 'DM Mentor'}
         </button>
@@ -173,7 +173,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
                      <button 
                        key={s.uid}
                        onClick={() => setSelectedStudentId(s.uid)}
-                       className={`w-full text-left p-3 rounded-xl transition-all flex items-center gap-2 ${selectedStudentId === s.uid ? 'bg-white dark:bg-slate-800 text-purple-600 shadow-sm' : 'text-slate-500 hover:bg-white dark:hover:bg-slate-800'}`}
+                       className={`w-full text-left p-3 rounded-xl transition-colors flex items-center gap-2 ${selectedStudentId === s.uid ? 'bg-white dark:bg-slate-800 text-purple-600 shadow-sm' : 'text-slate-500 hover:bg-white dark:hover:bg-slate-800'}`}
                      >
                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
                        <span className="text-xs font-bold truncate">{s.name}</span>
@@ -255,12 +255,12 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type a message..."
-                className="flex-1 bg-slate-50 dark:bg-slate-800 px-6 py-4 rounded-2xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:text-white text-sm transition-all"
+                className="flex-1 bg-slate-50 dark:bg-slate-800 px-6 py-4 rounded-2xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:text-white text-sm transition-colors transition-shadow"
               />
               <button 
                 type="submit"
                 disabled={!newMessage.trim()}
-                className="bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 disabled:opacity-50 text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all active:scale-95"
+                className="bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 disabled:opacity-50 text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-colors transition-transform active:scale-95"
               >
                 <Send className="w-5 h-5" />
               </button>

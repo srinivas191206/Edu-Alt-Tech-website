@@ -216,7 +216,7 @@ const Chat: React.FC<Props> = ({ user, role }) => {
         <input
           type="text" value={text} onChange={e => setText(e.target.value)}
           placeholder="Type a message..."
-          className="flex-1 px-5 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-50 dark:focus:ring-emerald-900/40 transition-all font-medium dark:text-white dark:placeholder-slate-500"
+          className="flex-1 px-5 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-50 dark:focus:ring-emerald-900/40 transition-colors transition-shadow font-medium dark:text-white dark:placeholder-slate-500"
         />
         <button type="submit" disabled={sending || !text.trim()}
           className="px-6 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-2xl flex items-center gap-2 transition-colors disabled:opacity-50 shadow-lg"
