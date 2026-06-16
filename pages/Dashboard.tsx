@@ -189,8 +189,36 @@ const Dashboard: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Next Step Assistant Card */}
-        {nextSteps.length > 0 && (
+        {/* Interview Scheduled — prominent banner */}
+        {scheduledApp && extractMeetingLink(scheduledApp.message) && (
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }} className="mb-10">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-[2rem] p-8 md:p-10 text-white shadow-2xl shadow-blue-500/30 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10"><Video className="w-40 h-40" /></div>
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="px-3 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest">Action Required</span>
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-2">Interview Scheduled</h2>
+                  <p className="text-blue-100 text-lg font-medium">
+                    {scheduledApp.courseTitle} — Click the link below to join your interview.
+                  </p>
+                </div>
+                <a
+                  href={extractMeetingLink(scheduledApp.message)!}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="shrink-0 inline-flex items-center gap-3 px-8 py-5 bg-white text-blue-700 font-black rounded-2xl hover:bg-blue-50 transition-colors shadow-xl text-lg"
+                >
+                  <Video className="w-6 h-6" /> Join Interview Now
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Next Step Assistant Card (hidden if interview banner is shown) */}
+        {!scheduledApp && nextSteps.length > 0 && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-10">
             <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-[2rem] p-8 text-white shadow-2xl shadow-emerald-500/20 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-6 opacity-10"><Target className="w-32 h-32" /></div>
