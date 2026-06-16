@@ -418,12 +418,12 @@ const AdminDashboard: React.FC = () => {
       </AnimatePresence>
 
       {/* Main Content Area */}
-      <main className="md:pl-72 pt-20 md:pt-12 pb-24 px-4 sm:px-6 md:px-16">
+      <main className="md:pl-72 pt-20 md:pt-12 pb-12 sm:pb-24 px-4 sm:px-6 md:px-16">
         <div className="max-w-[1400px] mx-auto">
           {/* Header */}
           <header className="mb-16">
             <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Admin Console</span>
-            <h1 className="text-5xl font-black tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
               {activeTab === 'applications' ? 'Provider Applications' : activeTab === 'chat' ? 'Provider Chat' : activeTab === 'stats' ? 'Course Statistics' : 'Scheduled Classes'}
             </h1>
             <p className="text-slate-500 font-medium mt-2">
@@ -441,7 +441,7 @@ const AdminDashboard: React.FC = () => {
             >
               {activeTab === 'applications' && (
                 <div className="space-y-8">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
                     {teacherApps.length === 0 ? (
                       <div className="col-span-full py-32 text-center bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
                         <CalendarClock className="w-16 h-16 text-slate-200 dark:text-slate-800 mx-auto mb-6" />
@@ -453,7 +453,7 @@ const AdminDashboard: React.FC = () => {
                         <motion.div 
                           layout
                           key={app.id} 
-                          className="group bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200/50 dark:border-slate-800/50 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] transition-shadow duration-500 relative overflow-hidden"
+                          className="group bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[2.5rem] border border-slate-200/50 dark:border-slate-800/50 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] transition-shadow duration-500 relative overflow-hidden"
                         >
                           <div className="absolute top-0 right-0 p-6 flex items-center gap-2">
                              <div className={`w-2 h-2 rounded-full animate-pulse ${
@@ -517,7 +517,7 @@ const AdminDashboard: React.FC = () => {
               )}
 
               {activeTab === 'chat' && (
-                <div className="flex flex-col lg:flex-row gap-8 h-[calc(100vh-280px)] min-h-[500px]">
+                <div className="flex flex-col lg:flex-row gap-8 h-[calc(100vh-320px)] sm:h-[calc(100vh-280px)] min-h-[400px] sm:min-h-[500px]">
                   {/* Contacts sidebar */}
                   <div className="lg:w-80 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col shrink-0">
                     <div className="p-6 border-b border-slate-100 dark:border-slate-800">
@@ -632,15 +632,15 @@ const AdminDashboard: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Courses</span>
-                      <p className="text-4xl font-black mt-2 text-slate-900 dark:text-white">{coursesList.length}</p>
+                      <p className="text-3xl sm:text-4xl font-black mt-2 text-slate-900 dark:text-white">{coursesList.length}</p>
                     </div>
                     <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Enrollments</span>
-                      <p className="text-4xl font-black mt-2 text-emerald-500">{enrollments.length}</p>
+                      <p className="text-3xl sm:text-4xl font-black mt-2 text-emerald-500">{enrollments.length}</p>
                     </div>
                     <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Active Enrollments</span>
-                      <p className="text-4xl font-black mt-2 text-blue-500">{activeCount}</p>
+                      <p className="text-3xl sm:text-4xl font-black mt-2 text-blue-500">{activeCount}</p>
                     </div>
                   </div>
 
@@ -653,9 +653,9 @@ const AdminDashboard: React.FC = () => {
                       <table className="w-full text-left border-collapse">
                         <thead>
                           <tr className="bg-slate-50/50 dark:bg-slate-800/30 sticky top-0 backdrop-blur-md">
-                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Course</th>
-                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Category</th>
-                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Enrollments</th>
+                            <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Course</th>
+                            <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Category</th>
+                            <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Enrollments</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
@@ -663,21 +663,21 @@ const AdminDashboard: React.FC = () => {
                             const count = enrollmentCounts[course.id] || 0;
                             return (
                               <tr key={course.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
-                                <td className="px-8 py-5">
-                                  <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm">
+                                <td className="px-4 sm:px-8 py-4 sm:py-5">
+                                  <div className="flex items-center gap-3 sm:gap-4">
+                                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
                                       {course.title?.charAt(0) || 'C'}
                                     </div>
-                                    <div>
-                                      <p className="font-bold text-slate-900 dark:text-white">{course.title || 'Untitled'}</p>
-                                      <p className="text-[10px] text-slate-400 font-medium">{course.id?.slice(0, 8)}...</p>
+                                    <div className="min-w-0">
+                                      <p className="font-bold text-sm sm:text-base text-slate-900 dark:text-white truncate">{course.title || 'Untitled'}</p>
+                                      <p className="text-[10px] text-slate-400 font-medium hidden sm:block">{course.id?.slice(0, 8)}...</p>
                                     </div>
                                   </div>
                                 </td>
-                                <td className="px-8 py-5">
+                                <td className="px-4 sm:px-8 py-4 sm:py-5 hidden sm:table-cell">
                                   <span className="text-xs font-medium text-slate-500">{course.category || 'Uncategorized'}</span>
                                 </td>
-                                <td className="px-8 py-5 text-right">
+                                <td className="px-4 sm:px-8 py-4 sm:py-5 text-right">
                                   <span className={`inline-flex items-center justify-center w-12 h-12 rounded-xl font-black text-lg ${
                                     count > 0 ? 'bg-emerald-500/10 text-emerald-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                                   }`}>
@@ -711,11 +711,11 @@ const AdminDashboard: React.FC = () => {
                       <p className="text-slate-500 text-sm font-medium mt-2">Teachers have not scheduled any live classes yet.</p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                       {scheduledClasses.map((sc) => (
-                        <div key={sc.id} className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div key={sc.id} className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
                           <div className="flex items-center gap-3 mb-4">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center font-black text-white">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center font-black text-white shrink-0">
                               <Calendar className="w-5 h-5" />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -759,12 +759,12 @@ const AdminDashboard: React.FC = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden"
+              className="relative w-full max-w-2xl mx-2 sm:mx-0 bg-white dark:bg-slate-900 rounded-[2rem] sm:rounded-[3rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden"
             >
-              <div className="p-10">
+              <div className="p-6 sm:p-10">
                 <div className="flex justify-between items-start mb-10">
                   <div>
-                    <h2 className="text-3xl font-black tracking-tight mb-2">Mentor Review</h2>
+                    <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-2">Mentor Review</h2>
                     <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Application Dossier #{selectedApp.id.slice(0, 8)}</p>
                   </div>
                   <button onClick={() => setSelectedApp(null)} className="p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
@@ -775,14 +775,14 @@ const AdminDashboard: React.FC = () => {
                 <div className="space-y-8 max-h-[60vh] overflow-y-auto pr-4 custom-scrollbar">
                   <section>
                     <label className="block text-xs font-black text-emerald-500 uppercase tracking-widest mb-4">Applicant Profile</label>
-                    <div className="grid grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                       <div>
                         <p className="text-sm font-black text-slate-400 uppercase mb-1">Name</p>
-                        <p className="font-bold text-lg">{selectedApp.userName}</p>
+                        <p className="font-bold text-base sm:text-lg">{selectedApp.userName}</p>
                       </div>
                       <div>
                         <p className="text-sm font-black text-slate-400 uppercase mb-1">Target Curriculum</p>
-                        <p className="font-bold text-lg">{selectedApp.courseTitle}</p>
+                        <p className="font-bold text-base sm:text-lg">{selectedApp.courseTitle}</p>
                       </div>
                     </div>
                   </section>
@@ -796,7 +796,7 @@ const AdminDashboard: React.FC = () => {
 
                   {selectedApp.status === 'pending' && (
                     <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
-                      <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-[2rem] mb-6">
+                      <div className="bg-slate-50 dark:bg-slate-800/50 p-4 sm:p-6 rounded-[2rem] mb-6">
                         <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Schedule Interview</label>
                         <div className="flex flex-col gap-4">
                           <div className="flex flex-col sm:flex-row gap-4">
@@ -828,16 +828,16 @@ const AdminDashboard: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="flex gap-4">
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                         <button
                           onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'approved')}
-                          className="flex-1 py-5 bg-emerald-500 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform"
+                          className="flex-1 py-4 sm:py-5 bg-emerald-500 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
                         >
                           APPROVE MENTOR NOW
                         </button>
                         <button
                           onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
-                          className="flex-1 py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform"
+                          className="flex-1 py-4 sm:py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
                         >
                           REJECT APPLICATION
                         </button>
@@ -847,7 +847,7 @@ const AdminDashboard: React.FC = () => {
 
                   {selectedApp.status === 'scheduled' && (
                     <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
-                      <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-[2rem] mb-6 border border-blue-200 dark:border-blue-800">
+                      <div className="bg-blue-50 dark:bg-blue-900/20 p-4 sm:p-6 rounded-[2rem] mb-6 border border-blue-200 dark:border-blue-800">
                         <label className="block text-xs font-black text-blue-600 uppercase tracking-widest mb-2">Scheduled Interview Link</label>
                         {(() => {
                           const linkMatch = selectedApp.message?.match(/\[Interview Link:\s*([^\]\n]+)\]/);
@@ -874,16 +874,16 @@ const AdminDashboard: React.FC = () => {
                         })()}
                       </div>
 
-                      <div className="flex gap-4">
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                         <button
                           onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'approved')}
-                          className="flex-1 py-5 bg-emerald-500 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform"
+                          className="flex-1 py-4 sm:py-5 bg-emerald-500 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
                         >
                           APPROVE MENTOR NOW
                         </button>
                         <button
                           onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
-                          className="flex-1 py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform"
+                          className="flex-1 py-4 sm:py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
                         >
                           REJECT APPLICATION
                         </button>
