@@ -1,102 +1,63 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Plus, Users, CalendarClock, Trash2, Check, Video, FileText, Edit, Save, X, Upload, LayoutDashboard, Database, ClipboardList, Settings, Search, MoreVertical, ExternalLink, ArrowLeft, AlertCircle, Sparkles, Bot, Brain, Code2, BookOpen, DatabaseBackup } from 'lucide-react';
-import { Course, TeacherApplication, PatchNote, UserObject, CourseCategory } from '../types';
+import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical } from 'lucide-react';
+import { TeacherApplication } from '../types';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, YOUTUBE_CHANNELS } from '../data/problems';
-import type { LeetCodeProblem, YouTubeChannel } from '../data/problems';
-import { STATIC_RESOURCES } from './Resources';
-import type { ResourceItem } from './Resources';
 
 const ADMIN_EMAILS = ['ukkukk97@gmail.com', 'umakrishnakanthchokkapu15@gmail.com'];
 
 const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'courses' | 'practice' | 'resources' | 'users' | 'appointments' | 'patchnotes' | 'system' | 'ai' | 'behavior'>('courses');
+  const [activeTab, setActiveTab] = useState<'applications' | 'chat' | 'stats'>('applications');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   // Data states
-  const [usersList, setUsersList] = useState<UserObject[]>([]);
-  const [coursesList, setCoursesList] = useState<Course[]>([]);
   const [teacherApps, setTeacherApps] = useState<(TeacherApplication & { userName?: string, userEmail?: string, courseTitle?: string })[]>([]);
-  const [patchNotes, setPatchNotes] = useState<PatchNote[]>([]);
-
-  // UI states
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedApp, setSelectedApp] = useState<(TeacherApplication & { userName?: string, userEmail?: string, courseTitle?: string }) | null>(null);
 
-  // Create course states
-  const [newCourse, setNewCourse] = useState({ title: '', description: '', category: 'education', price: 0, thumbnailUrl: '' });
-  const [thumbnailUrlFile, setThumbnailFile] = useState<File | null>(null);
-  const [creatingCourse, setCreatingCourse] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  // Chat states
+  const [chatContacts, setChatContacts] = useState<{ id: string; name: string; email: string }[]>([]);
+  const [selectedContact, setSelectedContact] = useState<{ id: string; name: string; email: string } | null>(null);
+  const [chatMessages, setChatMessages] = useState<{ id: string; user_id: string; content: string; role: string; created_at: string }[]>([]);
+  const [chatInput, setChatInput] = useState('');
+  const [sendingMessage, setSendingMessage] = useState(false);
 
-
-  // Edit course states
-  const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
-  const [editCourseData, setEditCourseData] = useState<Course>({
-    id: '', title: '', description: '', category: 'education', price: 0, 
-    thumbnailUrl: '', createdAt: null, createdBy: ''
-  });
-
-  const [seeding, setSeeding] = useState(false);
-
-  // Course folders
-  const [courseFolders, setCourseFolders] = useState<string[]>([]);
-  const [newFolderName, setNewFolderName] = useState('');
-
-  // Practice problem states
-  const [practiceProblems, setPracticeProblems] = useState<any[]>([]);
-  const [newProblem, setNewProblem] = useState({ num: '', title: '', topic: '', difficulty: 'Easy', leetcodeUrl: '', videoUrl: '' });
-  const [creatingProblem, setCreatingProblem] = useState(false);
-
-  // Resource states
-  const [resourcesList, setResourcesList] = useState<any[]>([]);
-  const [newResource, setNewResource] = useState({ title: '', description: '', type: 'pdf', category: 'Computer Science', url: '', premium: false });
+  // Stats states
+  const [coursesList, setCoursesList] = useState<any[]>([]);
+  const [enrollments, setEnrollments] = useState<any[]>([]);
 
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [uSnap, cSnap, aSnap, pSnap, prSnap, rSnap, fSnap] = await Promise.all([
-        getDocs(collection(db, 'users')),
+      const [cSnap, aSnap, eSnap] = await Promise.all([
         getDocs(collection(db, 'courses')),
         getDocs(collection(db, 'teacher_applications')),
-        getDocs(query(collection(db, 'patch_notes'), orderBy('createdAt', 'desc'))),
-        getDocs(query(collection(db, 'practice_problems'), orderBy('num', 'asc'))),
-        getDocs(collection(db, 'resources')),
-        getDocs(collection(db, 'course_folders'))
+        getDocs(collection(db, 'enrollments'))
       ]);
 
-      const users = uSnap.docs.map(d => ({ uid: d.id, ...d.data() } as UserObject));
-      setUsersList(users);
-
-      const courses = cSnap.docs.map(d => ({ id: d.id, ...d.data() } as Course));
+      const courses = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
       setCoursesList(courses);
+
+      const enrollmentsData = eSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setEnrollments(enrollmentsData);
 
       const rawApps = aSnap.docs.map((d) => {
         const data = d.data() as TeacherApplication;
-        const cFind = courses.find(c => c.id === data.courseId);
-        const uFind = users.find(u => u.uid === data.userId);
-
+        const cFind = courses.find((c: any) => c.id === data.courseId);
         return {
           ...data,
           id: d.id,
           courseTitle: cFind?.title || 'Unknown Course',
-          userName: uFind?.name || data.userName || 'Dangling Applicant',
-          userEmail: uFind?.email || data.userEmail || 'No Email'
+          userName: data.userName || 'Unknown',
+          userEmail: data.userEmail || 'No Email'
         };
       });
 
       setTeacherApps(rawApps as any);
-      setPatchNotes(pSnap.docs.map(d => ({ id: d.id, ...d.data() } as PatchNote)));
-      setPracticeProblems(prSnap.docs.map(d => ({ id: d.id, ...d.data() })));
-      setResourcesList(rSnap.docs.map(d => ({ id: d.id, ...d.data() })));
-      setCourseFolders(fSnap.docs.map(d => d.data().name).filter(Boolean));
-
     } catch (e) {
       console.error("Dashboard data fetch failed", e);
       toast.error("Failed to sync dashboard data");
@@ -116,256 +77,45 @@ const AdminDashboard: React.FC = () => {
     return () => unsub();
   }, [navigate]);
 
-  const handleDeleteCourse = (id: string, title: string) => {
-    toast((t) => (
-      <div className="flex flex-col gap-4 p-4 bg-white dark:bg-slate-900 rounded-2xl">
-        <div className="flex items-center gap-3 text-red-500">
-          <Trash2 className="w-6 h-6" />
-          <p className="font-bold text-lg">Confirm Deletion</p>
-        </div>
-        <p className="text-slate-600 dark:text-slate-400">Are you sure you want to permanently delete <span className="font-bold text-slate-900 dark:text-white">"{title}"</span>? This action cannot be undone.</p>
-        <div className="flex gap-2 justify-end mt-2">
-          <button className="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" onClick={() => toast.dismiss(t.id)}>Cancel</button>
-          <button className="px-4 py-2 rounded-xl text-sm font-bold bg-red-500 hover:bg-red-600 text-white transition-all shadow-lg shadow-red-500/20" onClick={async () => {
-            toast.dismiss(t.id);
-            try {
-              const eSnap = await getDocs(query(collection(db, 'enrollments'), where('courseId', '==', id)));
-              const allAppsSnap = await getDocs(query(collection(db, 'teacher_applications'), where('courseId', '==', id)));
-
-              await deleteDoc(doc(db, 'courses', id));
-
-              const userIdsToNotify = new Set<string>();
-              eSnap.forEach(d => userIdsToNotify.add((d.data() as any).userId));
-              allAppsSnap.forEach(d => {
-                userIdsToNotify.add((d.data() as any).userId);
-                deleteDoc(doc(db, 'teacher_applications', d.id));
-              });
-
-              for (const uid of Array.from(userIdsToNotify)) {
-                // Fetch user email for the mail trigger
-                const uDoc = await getDoc(doc(db, 'users', uid));
-                const uData = uDoc.data();
-                
-                // 1. In-app Notification
-                await setDoc(doc(collection(db, 'notifications')), {
-                  userId: uid,
-                  title: 'Course Deleted',
-                  message: `The course "${title}" has been removed.`,
-                  isRead: false,
-                  createdAt: serverTimestamp(),
-                  type: 'course_deleted'
-                });
-
-                // 2. Email Notification
-                if (uData?.email) {
-                  await setDoc(doc(collection(db, 'mail')), {
-                    to: uData.email,
-                    message: {
-                      subject: `Important Update: Course "${title}" Removed`,
-                      text: `Hi ${uData.name || 'Student'},\n\nWe wanted to inform you that the course "${title}" has been removed from the platform. If you were enrolled or had an active application, it has been cancelled.\n\nBest,\nThe Edu-Alt-Tech Team`
-                    }
-                  });
-                }
-              }
-              fetchData();
-              toast.success("Course deleted successfully");
-            } catch (e) {
-              toast.error("Deletion failed");
-            }
-          }}>Delete Course</button>
-        </div>
-      </div>
-    ), { duration: Infinity, position: 'bottom-center' });
-  };
-
-  const handleUpdateCourse = async () => {
-    if (!editingCourseId) return;
-    try {
-      await updateDoc(doc(db, 'courses', editingCourseId), {
-        title: editCourseData.title,
-        description: editCourseData.description,
-        category: editCourseData.category,
-        price: editCourseData.price,
-        thumbnailUrl: editCourseData.thumbnailUrl || ''
-      });
-      setEditingCourseId(null);
-      fetchData();
-      toast.success("Course updated");
-    } catch (e) {
-      toast.error("Update failed");
-    }
-  };
-
-
-  const uploadImage = async (file: File, courseId: string) => {
-    const storageRef = ref(storage, `course_thumbnailUrls/${courseId}/${file.name}`);
-    const snapshot = await uploadBytes(storageRef, file);
-    return await getDownloadURL(snapshot.ref);
-  };
-
-  const handleCreateCourse = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setCreatingCourse(true);
-    try {
-      let finalThumbnailUrl = newCourse.thumbnailUrl;
-      if (thumbnailUrlFile) {
-        const fileRef = ref(storage, `course_thumbnailUrls/${Date.now()}_${thumbnailUrlFile.name}`);
-        const snap = await uploadBytes(fileRef, thumbnailUrlFile);
-        finalThumbnailUrl = await getDownloadURL(snap.ref);
-      }
-
-      const cRef = doc(collection(db, 'courses'));
-      let thumbnailUrl = newCourse.thumbnailUrl;
-
-      if (selectedFile) {
-        thumbnailUrl = await uploadImage(selectedFile, cRef.id);
-      }
-
-      const courseObj: Course = {
-        id: cRef.id,
-        title: newCourse.title,
-        description: newCourse.description,
-        category: newCourse.category as CourseCategory,
-        price: Number(newCourse.price),
-        thumbnailUrl: finalThumbnailUrl,
-        createdBy: 'admin',
-        createdAt: serverTimestamp()
-      };
-      await setDoc(cRef, courseObj as any);
-      setNewCourse({ title: '', description: '', category: 'education', price: 0, thumbnailUrl: '' });
-      setThumbnailFile(null);
-      fetchData();
-      toast.success("New course published!");
-    } catch (e) {
-      toast.error("Publication failed");
-    } finally {
-      setCreatingCourse(false);
-    }
-  };
-
-  const seedCourseCatalog = async () => {
-    if (!confirm('Seed the database with the full course catalog (~65 courses across 28 folders)?')) return;
-    setSeeding(true);
-    try {
-      const folders = ['Core Education', 'Alternative Skills', 'Language Skills', 'Music', 'Dance', 'Arts & Creativity', 'Life Skills', 'Mind Sports', 'Technology', 'Finance', 'Entrepreneurship', 'Health & Wellness', 'Future Technologies', 'Career Development', 'Artificial Intelligence', 'Marketing', 'Space Science', 'Robotics', 'Cybersecurity', 'Innovation', 'Creator Economy', 'Blockchain', 'Leadership', 'Psychology', 'Product Management', 'Alternative Education', 'Business Education', 'Bundles'];
-      const courses = [
-        { title: 'AI Tools for Students', description: 'Learn ChatGPT, Gemini, Claude, and AI productivity tools.', category: 'Artificial Intelligence', price: 999 },
-        { title: 'Startup Basics for Beginners', description: 'Learn how to turn ideas into startups and validate business concepts.', category: 'Entrepreneurship', price: 799 },
-        { title: 'Future Careers in AI', description: 'Explore high-demand AI careers and required skills.', category: 'Career Development', price: 599 },
-        { title: 'Personal Branding 101', description: 'Build a professional online presence and portfolio.', category: 'Career Development', price: 699 },
-        { title: 'Digital Marketing Essentials', description: 'Learn SEO, social media marketing, and content strategy.', category: 'Marketing', price: 999 },
-        { title: 'Financial Literacy for Students', description: 'Understand budgeting, saving, investing, and money management.', category: 'Finance', price: 599 },
-        { title: 'Design Thinking Fundamentals', description: 'Solve problems creatively using innovation frameworks.', category: 'Innovation', price: 799 },
-        { title: 'Public Speaking Mastery', description: 'Improve communication, confidence, and presentation skills.', category: 'Life Skills', price: 699 },
-        { title: 'LinkedIn Growth Blueprint', description: 'Build a powerful LinkedIn profile and network effectively.', category: 'Career Development', price: 599 },
-        { title: 'No-Code Website Creation', description: 'Create websites without coding using modern tools.', category: 'Technology', price: 999 },
-        { title: 'Productivity & Time Management', description: 'Learn techniques to maximize focus and efficiency.', category: 'Life Skills', price: 599 },
-        { title: 'Introduction to Robotics', description: 'Understand robotics basics and future applications.', category: 'Robotics', price: 1299 },
-        { title: 'AI Prompt Engineering', description: 'Learn how to write effective prompts for AI systems.', category: 'Artificial Intelligence', price: 999 },
-        { title: 'Cyber Safety & Digital Security', description: 'Protect yourself online and understand cybersecurity basics.', category: 'Cybersecurity', price: 699 },
-        { title: 'Content Creation for Beginners', description: 'Learn video creation, editing, and audience growth.', category: 'Creator Economy', price: 999 },
-        { title: 'Freelancing Fundamentals', description: 'Start earning online through freelancing platforms.', category: 'Career Development', price: 799 },
-        { title: 'Innovation Mindset for Students', description: 'Develop creative thinking and problem-solving abilities.', category: 'Innovation', price: 599 },
-        { title: 'Future Technologies Explained', description: 'Learn about AI, Blockchain, Quantum Computing, and Web3.', category: 'Future Technologies', price: 1199 },
-        { title: 'Entrepreneurship for Teenagers', description: 'Build business thinking and entrepreneurial skills early.', category: 'Entrepreneurship', price: 899 },
-        { title: 'Resume & Interview Mastery', description: 'Create ATS-friendly resumes and ace interviews.', category: 'Career Development', price: 699 },
-        { title: 'Mathematics Mastery Basics', description: 'Improve problem-solving, algebra, and logical thinking skills.', category: 'Core Education', price: 499 },
-        { title: 'Physics Made Simple', description: 'Understand motion, energy, forces, and real-world physics concepts.', category: 'Core Education', price: 499 },
-        { title: 'Chemistry Fundamentals', description: 'Learn atoms, reactions, and chemistry through practical examples.', category: 'Core Education', price: 499 },
-        { title: 'Biology Explorer', description: 'Discover life sciences, human anatomy, and ecosystems.', category: 'Core Education', price: 499 },
-        { title: 'Spoken English Essentials', description: 'Build confidence in speaking, vocabulary, and communication.', category: 'Language Skills', price: 599 },
-        { title: 'Creative Writing Basics', description: 'Learn storytelling, writing techniques, and content creation.', category: 'Language Skills', price: 599 },
-        { title: 'Keyboard for Beginners', description: 'Learn notes, chords, and simple songs on the keyboard.', category: 'Music', price: 799 },
-        { title: 'Guitar Fundamentals', description: 'Master basic chords, strumming, and song playing.', category: 'Music', price: 799 },
-        { title: 'Vocal Music Training', description: 'Improve singing techniques, pitch, and rhythm.', category: 'Music', price: 699 },
-        { title: 'Classical Dance Basics', description: 'Learn fundamental dance movements and expressions.', category: 'Dance', price: 799 },
-        { title: 'Contemporary Dance Foundation', description: 'Build rhythm, coordination, and stage confidence.', category: 'Dance', price: 799 },
-        { title: 'Drawing & Sketching', description: 'Learn shading, perspective, and creative illustration.', category: 'Arts & Creativity', price: 699 },
-        { title: 'Public Speaking for Students', description: 'Improve confidence and presentation skills.', category: 'Life Skills', price: 599 },
-        { title: 'Chess Strategy Basics', description: 'Learn openings, tactics, and strategic thinking.', category: 'Mind Sports', price: 599 },
-        { title: 'Coding for Kids & Beginners', description: 'Learn programming concepts through fun projects.', category: 'Technology', price: 899 },
-        { title: 'AI Basics for Everyone', description: 'Understand AI tools and their practical applications.', category: 'Technology', price: 999 },
-        { title: 'Financial Literacy Basics', description: 'Learn saving, budgeting, and smart money habits.', category: 'Finance', price: 599 },
-        { title: 'Entrepreneurship Starter Class', description: 'Turn ideas into business opportunities.', category: 'Entrepreneurship', price: 799 },
-        { title: 'Yoga & Mindfulness', description: 'Improve focus, flexibility, and mental well-being.', category: 'Health & Wellness', price: 599 },
-        { title: 'Personality Development', description: 'Build confidence, leadership, and communication skills.', category: 'Life Skills', price: 699 },
-        { title: 'Advanced Quantum Computing', description: 'Learn quantum algorithms, qubits, quantum cryptography, and future computing applications.', category: 'Future Technologies', price: 9999 },
-        { title: 'AI Entrepreneur Bootcamp', description: 'Build AI-powered startups from idea validation to product launch and scaling.', category: 'Entrepreneurship', price: 4999 },
-        { title: 'Future Skills for Gen Z', description: 'Master communication, critical thinking, networking, and adaptability for the AI era.', category: 'Life Skills', price: 2499 },
-        { title: 'Startup Launchpad', description: 'Learn fundraising, MVP development, business models, and startup growth strategies.', category: 'Entrepreneurship', price: 5999 },
-        { title: 'Personal Branding Mastery', description: 'Build a strong online presence through LinkedIn, content creation, and networking.', category: 'Career Development', price: 2999 },
-        { title: 'No-Code App Development', description: 'Create mobile and web applications without coding using modern no-code tools.', category: 'Technology', price: 3999 },
-        { title: 'AI Agents Development', description: 'Design, deploy, and automate workflows using autonomous AI agents.', category: 'Artificial Intelligence', price: 6999 },
-        { title: 'Digital Marketing Accelerator', description: 'Master SEO, social media, paid ads, email marketing, and analytics.', category: 'Marketing', price: 3499 },
-        { title: 'Financial Intelligence for Students', description: 'Learn investing, budgeting, taxation, and wealth-building principles.', category: 'Finance', price: 2999 },
-        { title: 'Space Technology & Colonization', description: 'Explore Mars missions, lunar bases, and future space industries.', category: 'Space Science', price: 5999 },
-        { title: 'Robotics & Automation Engineering', description: 'Build intelligent robots using sensors, AI, and automation systems.', category: 'Robotics', price: 7999 },
-        { title: 'Cybersecurity & Ethical Hacking', description: 'Learn penetration testing, security auditing, and cyber defense strategies.', category: 'Cybersecurity', price: 5499 },
-        { title: 'Design Thinking & Innovation', description: 'Solve real-world problems using creative thinking and innovation frameworks.', category: 'Innovation', price: 2999 },
-        { title: 'Future of Work & AI Careers', description: 'Prepare for emerging careers in AI, robotics, blockchain, and space technology.', category: 'Career Development', price: 1999 },
-        { title: 'Content Creator Academy', description: 'Learn video editing, storytelling, branding, and audience growth.', category: 'Creator Economy', price: 2499 },
-        { title: 'Blockchain & Web3 Fundamentals', description: 'Understand smart contracts, decentralized apps, and crypto ecosystems.', category: 'Blockchain', price: 4999 },
-        { title: 'Leadership for Young Founders', description: 'Develop leadership, negotiation, team building, and decision-making skills.', category: 'Leadership', price: 2999 },
-        { title: 'Human Psychology & Influence', description: 'Understand behavior, persuasion, emotional intelligence, and communication.', category: 'Psychology', price: 3499 },
-        { title: 'Product Management Masterclass', description: 'Learn product strategy, user research, roadmap planning, and execution.', category: 'Product Management', price: 4999 },
-        { title: 'Moon Colony Engineering', description: 'Study future lunar habitats, resource extraction, and space infrastructure.', category: 'Future Technologies', price: 8999 },
-        { title: 'Future Founder Degree', description: 'A complete alternative degree covering startups, AI, finance, leadership, and innovation.', category: 'Alternative Education', price: 49999 },
-        { title: 'AI + Startup Incubator', description: 'Build an AI startup with mentorship, projects, and investor pitching.', category: 'Entrepreneurship', price: 29999 },
-        { title: 'Quantum & Space Innovation Program', description: 'Learn quantum computing, space tech, robotics, and future industries.', category: 'Future Technologies', price: 39999 },
-        { title: 'Alternative MBA for Students', description: 'Real-world business, startup creation, leadership, and financial literacy.', category: 'Business Education', price: 24999 },
-        { title: 'AI Career Starter Pack', description: 'Includes: AI Tools + Prompt Engineering + Future AI Careers', category: 'Bundles', price: 1499 },
-        { title: 'Young Entrepreneur Pack', description: 'Includes: Startup Basics + Entrepreneurship + Innovation Mindset', category: 'Bundles', price: 1299 },
-        { title: 'Job Ready Pack', description: 'Includes: Resume Building + LinkedIn Growth + Public Speaking', category: 'Bundles', price: 999 },
-        { title: 'Digital Creator Pack', description: 'Includes: Content Creation + Personal Branding + Digital Marketing', category: 'Bundles', price: 1499 },
-        { title: 'Tech Explorer Pack', description: 'Includes: No-Code Websites + Robotics + Future Technologies', category: 'Bundles', price: 1499 },
-      ];
-
-      for (const name of folders) {
-        const existing = await getDocs(query(collection(db, 'course_folders'), where('name', '==', name)));
-        if (existing.empty) {
-          await setDoc(doc(collection(db, 'course_folders')), { name });
+  // Build chat contacts from teacher_applications
+  useEffect(() => {
+    if (teacherApps.length > 0) {
+      const map = new Map<string, { id: string; name: string; email: string }>();
+      teacherApps.forEach(app => {
+        const id = app.userId || app.id;
+        if (!map.has(id)) {
+          map.set(id, { id, name: app.userName || 'Unknown', email: app.userEmail || 'No Email' });
         }
-      }
+      });
+      setChatContacts(Array.from(map.values()));
+    }
+  }, [teacherApps]);
 
-      let count = 0;
-      for (const c of courses) {
-        await setDoc(doc(collection(db, 'courses')), { ...c, thumbnailUrl: '', createdBy: 'admin' });
-        count++;
-      }
-
-      fetchData();
-      toast.success(`Seeded ${folders.length} folders and ${count} courses`);
+  const loadChatMessages = async (userId: string) => {
+    try {
+      const { data, error } = await db.from('chat_messages').select('*').eq('user_id', userId).order('created_at', { ascending: true });
+      if (!error && data) setChatMessages(data);
     } catch (e) {
-      toast.error('Seed failed: ' + (e instanceof Error ? e.message : 'Unknown error'));
-    } finally {
-      setSeeding(false);
+      console.error("Failed to load messages", e);
     }
   };
 
-  const wipeAllData = async () => {
-    if (!window.confirm("CRITICAL WARNING: This will PERMANENTLY DELETE all data nodes in the database (Courses, Chats, Registries, etc.). NOTE: Actual Firebase Authentication user emails/passwords must be manually deleted from the Firebase Console to fully wipe user accounts. Proceed?")) return;
-    
-    setLoading(true);
+  const handleSendMessage = async () => {
+    if (!chatInput.trim() || !selectedContact) return;
+    setSendingMessage(true);
     try {
-      const collections = [
-        'users', 'courses', 'enrollments', 'chats', 'teacher_applications', 
-        'resources', 'course_modules', 'patch_notes', 'notifications', 'mail',
-        'user_activities', 'user_metrics', 'quiz_attempts', 'learning_paths'
-      ];
-
-      for (const colName of collections) {
-         const snap = await getDocs(collection(db, colName));
-         for (const d of snap.docs) {
-            await deleteDoc(doc(db, colName, d.id));
-         }
-      }
-      toast.success("Database Wiped Successfully");
-      fetchData();
-    } catch (err) {
-      console.error("Wipe failed", err);
-      toast.error("Wipe failed: Check permissions");
+      await db.from('chat_messages').insert({
+        user_id: selectedContact.id,
+        content: chatInput,
+        role: 'admin',
+        created_at: new Date().toISOString()
+      });
+      setChatInput('');
+      await loadChatMessages(selectedContact.id);
+    } catch (e) {
+      toast.error("Failed to send message");
     } finally {
-      setLoading(false);
+      setSendingMessage(false);
     }
   };
 
@@ -377,7 +127,6 @@ const AdminDashboard: React.FC = () => {
       });
 
       if (verdict === 'approved') {
-        // Create the specific course enrollment for this mentor
         const appDoc = await getDoc(doc(db, 'teacher_applications', appId));
         if (appDoc.exists()) {
           const data = appDoc.data();
@@ -386,7 +135,7 @@ const AdminDashboard: React.FC = () => {
             userId: data.userId,
             courseId: data.courseId,
             role: 'teacher',
-            studentStatus: 'active', // So they aren't blocked by status checks
+            studentStatus: 'active',
             createdAt: serverTimestamp()
           });
         }
@@ -441,12 +190,18 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const selectChatContact = async (contact: { id: string; name: string; email: string }) => {
+    setSelectedContact(contact);
+    await loadChatMessages(contact.id);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center gap-4">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          style={{ willChange: 'transform' }}
         >
           <Loader2 className="w-12 h-12 text-emerald-500" />
         </motion.div>
@@ -455,14 +210,30 @@ const AdminDashboard: React.FC = () => {
     );
   }
 
-  const filteredUsers = usersList.filter(u => 
-    (u.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
-    (u.email || '').toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center gap-4">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          style={{ willChange: 'transform' }}
+        >
+          <Loader2 className="w-12 h-12 text-emerald-500" />
+        </motion.div>
+        <p className="text-slate-500 font-bold animate-pulse uppercase tracking-widest text-xs">Syncing Core Systems...</p>
+      </div>
+    );
+  }
 
-  const filteredCourses = coursesList.filter(c => 
-    c.title?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const activeCount = useMemo(() => enrollments.filter((e: any) => e.status === 'active').length, [enrollments]);
+  const enrollmentCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    enrollments.forEach((e: any) => {
+      const id = e.course_id || e.courseId;
+      counts[id] = (counts[id] || 0) + 1;
+    });
+    return counts;
+  }, [enrollments]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-500/30">
@@ -488,20 +259,14 @@ const AdminDashboard: React.FC = () => {
 
         <div className="flex-1 space-y-3">
           {[
-            { id: 'courses', label: 'Curricula', icon: ClipboardList, desc: 'Manage courses' },
-            { id: 'practice', label: 'Practice', icon: Code2, desc: 'LeetCode problems' },
-            { id: 'resources', label: 'Resources', icon: BookOpen, desc: 'PDFs & materials' },
-            { id: 'users', label: 'User Base', icon: Users, desc: 'Control access' },
-            { id: 'appointments', label: 'Applications', icon: CalendarClock, desc: 'Mentor review' },
-            { id: 'patchnotes', label: 'Deployments', icon: Database, desc: 'System updates' },
-            { id: 'system', label: 'Settings', icon: Settings, desc: 'Global config' },
-            { id: 'ai', label: 'AI Tools', icon: Sparkles, desc: 'Content generation' },
-            { id: 'behavior', label: 'Behavior', icon: Brain, desc: 'Student behavior analysis' },
+            { id: 'applications', label: 'Applications', icon: Users, desc: 'Provider review' },
+            { id: 'chat', label: 'Provider Chat', icon: MessageSquare, desc: 'Direct messaging' },
+            { id: 'stats', label: 'Course Stats', icon: BarChart3, desc: 'Enrollment analytics' },
           ].map((item) => (
             <button
               key={item.id}
               onClick={() => { setActiveTab(item.id as any); }}
-              className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-all relative group overflow-hidden ${
+              className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-colors relative group overflow-hidden ${
                 activeTab === item.id 
                 ? 'bg-slate-900 dark:bg-emerald-500 text-white shadow-2xl shadow-emerald-500/20' 
                 : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50'
@@ -522,7 +287,7 @@ const AdminDashboard: React.FC = () => {
         <div className="mt-auto pt-8 border-t border-slate-100 dark:border-slate-800/50">
           <button 
             onClick={() => navigate('/')}
-            className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-200 dark:hover:border-rose-500/20"
+            className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors border border-transparent hover:border-rose-200 dark:hover:border-rose-500/20"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Exit Console</span>
@@ -564,20 +329,14 @@ const AdminDashboard: React.FC = () => {
 
               <div className="flex-1 space-y-3">
                 {[
-                  { id: 'courses', label: 'Curricula', icon: ClipboardList, desc: 'Manage courses' },
-                  { id: 'practice', label: 'Practice', icon: Code2, desc: 'LeetCode problems' },
-                  { id: 'resources', label: 'Resources', icon: BookOpen, desc: 'PDFs & materials' },
-                  { id: 'users', label: 'User Base', icon: Users, desc: 'Control access' },
-                  { id: 'appointments', label: 'Applications', icon: CalendarClock, desc: 'Mentor review' },
-                  { id: 'patchnotes', label: 'Deployments', icon: Database, desc: 'System updates' },
-                  { id: 'system', label: 'Settings', icon: Settings, desc: 'Global config' },
-                  { id: 'ai', label: 'AI Tools', icon: Sparkles, desc: 'Content generation' },
-                  { id: 'behavior', label: 'Behavior', icon: Brain, desc: 'Student behavior analysis' },
+                  { id: 'applications', label: 'Applications', icon: Users, desc: 'Provider review' },
+                  { id: 'chat', label: 'Provider Chat', icon: MessageSquare, desc: 'Direct messaging' },
+                  { id: 'stats', label: 'Course Stats', icon: BarChart3, desc: 'Enrollment analytics' },
                 ].map((item) => (
                   <button
                     key={item.id}
                     onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                    className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-all relative group overflow-hidden ${
+className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-colors relative group overflow-hidden ${
                       activeTab === item.id 
                       ? 'bg-slate-900 dark:bg-emerald-500 text-white shadow-2xl shadow-emerald-500/20' 
                       : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50'
@@ -595,7 +354,7 @@ const AdminDashboard: React.FC = () => {
               <div className="mt-auto pt-8 border-t border-slate-100 dark:border-slate-800/50">
                 <button 
                   onClick={() => navigate('/')}
-                  className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-200 dark:hover:border-rose-500/20"
+className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors border border-transparent hover:border-rose-200 dark:hover:border-rose-500/20"
                 >
                   <ArrowLeft className="w-5 h-5" />
                   <span>Exit Console</span>
@@ -609,32 +368,15 @@ const AdminDashboard: React.FC = () => {
       {/* Main Content Area */}
       <main className="md:pl-72 pt-20 md:pt-12 pb-24 px-4 sm:px-6 md:px-16">
         <div className="max-w-[1400px] mx-auto">
-          {/* Header & Search */}
-          <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-16">
-            <div className="relative">
-              <span className="absolute -top-6 left-0 text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Operational Overview</span>
-              <h1 className="text-5xl font-black tracking-tight text-slate-900 dark:text-white">
-                {activeTab.charAt(0).toUpperCase() + activeTab.slice(1).replace('_', ' ')}
-              </h1>
-              <p className="text-slate-500 font-medium mt-2">Manage the underlying infrastructure of Edu-Alt.</p>
-            </div>
-            
-            <div className="relative group w-full lg:w-96">
-              <div className="absolute inset-0 bg-emerald-500/20 rounded-2xl blur-xl group-focus-within:bg-emerald-500/30 transition-all duration-500 opacity-0 group-focus-within:opacity-100"></div>
-              <div className="relative flex items-center">
-                <Search className="absolute left-5 w-5 h-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
-                <input 
-                  type="text" 
-                  placeholder="Global database query..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-14 pr-6 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 dark:focus:ring-emerald-500/5 focus:border-emerald-500 transition-all font-bold dark:placeholder:text-slate-600"
-                />
-                <div className="absolute right-4 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-black text-slate-400 border border-slate-200 dark:border-slate-700 pointer-events-none">
-                  ⌘ K
-                </div>
-              </div>
-            </div>
+          {/* Header */}
+          <header className="mb-16">
+            <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Admin Console</span>
+            <h1 className="text-5xl font-black tracking-tight text-slate-900 dark:text-white">
+              {activeTab === 'applications' ? 'Provider Applications' : activeTab === 'chat' ? 'Provider Chat' : 'Course Statistics'}
+            </h1>
+            <p className="text-slate-500 font-medium mt-2">
+              {activeTab === 'applications' ? 'Review and manage teacher/provider applications' : activeTab === 'chat' ? 'Direct messaging with providers' : 'Enrollment analytics per course'}
+            </p>
           </header>
 
           <AnimatePresence mode="wait">
@@ -645,512 +387,10 @@ const AdminDashboard: React.FC = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3, ease: "circOut" }}
             >
-              {activeTab === 'courses' && (
+              {activeTab === 'applications' && (
                 <div className="space-y-8">
-                  {/* Create Course Bento Section */}
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
-                      <h2 className="text-xl font-bold mb-8 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                          <Plus className="w-5 h-5 text-emerald-500" />
-                        </div>
-                        Draft New Curriculum
-                      </h2>
-                      <form onSubmit={handleCreateCourse} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="col-span-1 md:col-span-2">
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Title</label>
-                          <input required value={newCourse.title} onChange={e=>setNewCourse({...newCourse, title: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-900 transition-all outline-none font-bold" placeholder="E.g. Advanced Quantum Computing" />
-                        </div>
-                        <div className="col-span-1 md:col-span-2">
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Overview</label>
-                          <textarea required value={newCourse.description} onChange={e=>setNewCourse({...newCourse, description: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-900 transition-all outline-none font-medium resize-none" rows={4} placeholder="Describe the learning outcome..." />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Category / Folder</label>
-                          <select value={newCourse.category} onChange={e=>setNewCourse({...newCourse, category: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold appearance-none">
-                            <option value="education">Core Education</option>
-                            <option value="alternative">Alternative Skills</option>
-                            {courseFolders.map(f => <option key={f} value={f}>{f}</option>)}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Price (INR)</label>
-                          <input type="number" required value={newCourse.price} onChange={e=>setNewCourse({...newCourse, price: e.target.value as any})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold" />
-                        </div>
-                        <div className="col-span-1 md:col-span-2">
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Media Assets</label>
-                          <div className="flex flex-col md:flex-row gap-4">
-                            <label className="flex-1 flex items-center justify-center gap-3 p-4 bg-slate-50 dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:border-emerald-500 transition-colors">
-                              <Upload className="w-5 h-5 text-slate-400" />
-                              <span className="text-sm font-bold text-slate-500">{thumbnailUrlFile ? thumbnailUrlFile.name : 'Upload Thumbnail'}</span>
-                              <input type="file" className="hidden" accept="image/*" onChange={e => e.target.files && setThumbnailFile(e.target.files[0])} />
-                            </label>
-                            <input type="url" value={newCourse.thumbnailUrl} onChange={e=>setNewCourse({...newCourse, thumbnailUrl: e.target.value})} placeholder="Or paste image URL..." className="flex-1 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none text-sm font-medium" />
-                          </div>
-                        </div>
-                        <div className="col-span-1 md:col-span-2">
-                          <button type="submit" disabled={creatingCourse} className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-                            {creatingCourse ? <Loader2 className="w-6 h-6 animate-spin"/> : 'PUBLISH TO DIRECTORY'}
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-[2.5rem] text-white flex flex-col justify-between shadow-xl shadow-emerald-500/20">
-                      <div>
-                        <Settings className="w-10 h-10 mb-6 opacity-50" />
-                        <h3 className="text-2xl font-black leading-tight mb-4">Curriculum Control Center</h3>
-                        <p className="font-medium text-emerald-50 opacity-80 leading-relaxed">
-                          Publishing a course instantly makes it available in the student directory. Ensure all descriptions are clear and pricing is accurate.
-                        </p>
-                      </div>
-                      <div className="mt-8 space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-white/10 backdrop-blur-md rounded-2xl">
-                          <span className="text-sm font-bold">Total Courses</span>
-                          <span className="text-2xl font-black">{coursesList.length}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Course Folders */}
-                  <div className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
-                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-4">Course Folders</h3>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {courseFolders.map(f => (
-                        <span key={f} className="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 flex items-center gap-2">
-                          {f}
-                          <button onClick={async () => { if (confirm(`Delete folder "${f}"?`)) { const snap = await getDocs(query(collection(db, 'course_folders'), where('name', '==', f))); snap.forEach(d => deleteDoc(doc(db, 'course_folders', d.id))); fetchData(); toast.success('Folder deleted'); } }} className="hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
-                        </span>
-                      ))}
-                    </div>
-                    <div className="flex gap-2">
-                      <input value={newFolderName} onChange={e => setNewFolderName(e.target.value)} placeholder="New folder name..." className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl outline-none font-bold text-sm" />
-                      <button onClick={async () => { if (!newFolderName.trim()) return; try { await setDoc(doc(collection(db, 'course_folders')), { name: newFolderName.trim() }); setNewFolderName(''); fetchData(); toast.success('Folder created'); } catch (e) { toast.error('Failed'); } }} className="px-5 py-3 bg-emerald-500 text-white font-bold rounded-xl text-sm">Add Folder</button>
-                    </div>
-                  </div>
-
-                  {/* Existing Courses Grid */}
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 px-2">Published Curricula</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {filteredCourses.map(c => (
-                        <motion.div 
-                          layout
-                          key={c.id} 
-                          className="group bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-all duration-300"
-                        >
-                          {editingCourseId === c.id ? (
-                            <form onSubmit={(e) => { e.preventDefault(); handleUpdateCourse(); }} className="space-y-4">
-                              <input value={editCourseData.title} onChange={e=>setEditCourseData({...editCourseData, title: e.target.value})} className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 font-bold" required />
-                              <textarea value={editCourseData.description} onChange={e=>setEditCourseData({...editCourseData, description: e.target.value})} className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 font-medium" required rows={3} />
-                              <div className="flex gap-2">
-                                <button type="submit" className="flex-1 bg-emerald-500 text-white p-3 rounded-xl font-bold">Save Changes</button>
-                                <button type="button" onClick={()=>setEditingCourseId(null)} className="p-3 bg-slate-100 dark:bg-slate-800 rounded-xl font-bold">Cancel</button>
-                              </div>
-                            </form>
-                          ) : (
-                            <div className="flex items-start gap-6">
-                              <div className="w-20 h-20 rounded-2xl bg-slate-100 dark:bg-slate-800 overflow-hidden flex-shrink-0">
-                                {c.thumbnailUrl ? (
-                                  <img src={c.thumbnailUrl} className="w-full h-full object-cover" alt="" />
-                                ) : (
-                                  <div className="w-full h-full flex items-center justify-center">
-                                    <ClipboardList className="w-8 h-8 text-slate-400" />
-                                  </div>
-                                )}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex justify-between items-start mb-1">
-                                  <h4 className="font-bold text-lg truncate pr-4">{c.title}</h4>
-                                  <div className="flex gap-1">
-                                    <button onClick={() => { setEditingCourseId(c.id); setEditCourseData(c); }} className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 rounded-xl transition-all">
-                                      <Edit className="w-5 h-5"/>
-                                    </button>
-                                    <button onClick={() => handleDeleteCourse(c.id, c.title)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-all">
-                                      <Trash2 className="w-5 h-5"/>
-                                    </button>
-                                  </div>
-                                </div>
-                                <p className="text-sm text-slate-500 font-medium mb-3 line-clamp-1">{c.description}</p>
-                                <div className="flex items-center gap-3">
-                                  <span className="text-xs font-black uppercase tracking-wider px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500">
-                                    {c.category}
-                                  </span>
-                                  <span className="text-sm font-black text-emerald-500">
-                                    ₹{c.price || 'Free'}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'practice' && (
-                <div className="space-y-8">
-                  {/* Static data overview */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Popular Problems</span>
-                      <p className="text-3xl font-black mt-2 text-slate-900 dark:text-white">{POPULAR_PROBLEMS.length}</p>
-                    </div>
-                    <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">LeetCode 150</span>
-                      <p className="text-3xl font-black mt-2 text-slate-900 dark:text-white">{LEETCODE_150_PROBLEMS.length}</p>
-                    </div>
-                    <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Top Interview 150</span>
-                      <p className="text-3xl font-black mt-2 text-slate-900 dark:text-white">{TOP_INTERVIEW_150.length}</p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
-                      <h2 className="text-xl font-bold mb-8 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                          <Plus className="w-5 h-5 text-emerald-500" />
-                        </div>
-                        Add Practice Problem
-                      </h2>
-                      <form onSubmit={async (e) => { e.preventDefault(); setCreatingProblem(true); try { await setDoc(doc(collection(db, 'practice_problems')), { num: Number(newProblem.num), title: newProblem.title, topic: newProblem.topic, difficulty: newProblem.difficulty, leetcodeUrl: newProblem.leetcodeUrl, videoUrl: newProblem.videoUrl }); setNewProblem({ num: '', title: '', topic: '', difficulty: 'Easy', leetcodeUrl: '', videoUrl: '' }); fetchData(); toast.success('Problem added'); } catch (e) { toast.error('Failed'); } finally { setCreatingProblem(false); } }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="col-span-1 md:col-span-2">
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Title</label>
-                          <input required value={newProblem.title} onChange={e=>setNewProblem({...newProblem, title: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-900 transition-all outline-none font-bold" placeholder="E.g. Two Sum" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Number</label>
-                          <input type="number" required value={newProblem.num} onChange={e=>setNewProblem({...newProblem, num: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold" placeholder="E.g. 1" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Difficulty</label>
-                          <select value={newProblem.difficulty} onChange={e=>setNewProblem({...newProblem, difficulty: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold appearance-none">
-                            <option value="Easy">Easy</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Hard">Hard</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Topic</label>
-                          <input required value={newProblem.topic} onChange={e=>setNewProblem({...newProblem, topic: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold" placeholder="E.g. Array, String" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">LeetCode URL</label>
-                          <input value={newProblem.leetcodeUrl} onChange={e=>setNewProblem({...newProblem, leetcodeUrl: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-medium" placeholder="https://leetcode.com/problems/..." />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Video URL</label>
-                          <input value={newProblem.videoUrl} onChange={e=>setNewProblem({...newProblem, videoUrl: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-medium" placeholder="https://youtube.com/..." />
-                        </div>
-                        <div className="col-span-1 md:col-span-2">
-                          <button type="submit" disabled={creatingProblem} className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-                            {creatingProblem ? <Loader2 className="w-6 h-6 animate-spin"/> : 'ADD PROBLEM'}
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                    <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-[2.5rem] text-white flex flex-col justify-between shadow-xl shadow-emerald-500/20">
-                      <div>
-                        <Code2 className="w-10 h-10 mb-6 opacity-50" />
-                        <h3 className="text-2xl font-black leading-tight mb-4">Practice Problem Vault</h3>
-                        <p className="font-medium text-emerald-50 opacity-80 leading-relaxed">
-                          Add LeetCode-style problems. Students will see them in the Practice page.
-                        </p>
-                      </div>
-                      <div className="mt-8 space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-white/10 backdrop-blur-md rounded-2xl">
-                          <span className="text-sm font-bold">Total Problems</span>
-                          <span className="text-2xl font-black">{practiceProblems.length}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 px-2">Problem List (Static + Admin)</h3>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {['Popular', 'LeetCode 150', 'Top Interview 150'].map((setName) => {
-                        const setMap: Record<string, LeetCodeProblem[]> = { 'Popular': POPULAR_PROBLEMS, 'LeetCode 150': LEETCODE_150_PROBLEMS, 'Top Interview 150': TOP_INTERVIEW_150 };
-                        const setArr = setMap[setName];
-                        return (
-                          <button key={setName} onClick={async () => {
-                            if (!confirm(`Import all ${setArr.length} problems from "${setName}" to Firestore?`)) return;
-                            try {
-                              for (const p of setArr) {
-                                await setDoc(doc(collection(db, 'practice_problems')), { num: p.num, title: p.title, topic: p.topic, difficulty: p.difficulty, leetcodeUrl: p.leetcodeUrl || '', videoUrl: p.videoUrl || '' });
-                              }
-                              fetchData();
-                              toast.success(`Imported ${setArr.length} problems`);
-                            } catch (e) { toast.error('Import failed'); }
-                          }} className="px-3 py-2 text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl border border-emerald-500/20 hover:bg-emerald-500/20 transition-all uppercase tracking-wider">
-                            Import All {setName} ({setArr.length})
-                          </button>
-                        );
-                      })}
-                    </div>
-                    <div className="max-h-[500px] overflow-y-auto custom-scrollbar">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                      {(() => {
-                        const staticPopular = POPULAR_PROBLEMS.map(p => ({ ...p, id: `popular-${p.num}`, _static: true as const }));
-                        const static150 = LEETCODE_150_PROBLEMS.map(p => ({ ...p, id: `lc150-${p.num}`, _static: true as const }));
-                        const staticTop = TOP_INTERVIEW_150.map(p => ({ ...p, id: `top150-${p.num}`, _static: true as const }));
-                        return [...practiceProblems, ...staticPopular, ...static150, ...staticTop];
-                      })().map((p: any) => {
-                        const inFirestore = practiceProblems.some(fp => fp.title === p.title || fp.num === p.num);
-                        return (
-                        <div key={p.id} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all group">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-bold text-slate-400 shrink-0">#{p.num}</span>
-                                <h4 className="font-bold text-sm truncate">{p.title}</h4>
-                              </div>
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-[10px] font-medium text-slate-500">{p.topic}</span>
-                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${p.difficulty === 'Easy' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : p.difficulty === 'Medium' ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-red-50 text-red-600 border-red-200'}`}>{p.difficulty}</span>
-                                {p._static && <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700">Static</span>}
-                              </div>
-                            </div>
-                            <div className="flex gap-1">
-                              {p._static && !inFirestore && (
-                                <button onClick={async () => {
-                                  try { await setDoc(doc(collection(db, 'practice_problems')), { num: p.num, title: p.title, topic: p.topic, difficulty: p.difficulty, leetcodeUrl: p.leetcodeUrl || '', videoUrl: p.videoUrl || '' }); fetchData(); toast.success('Imported'); } catch (e) { toast.error('Failed'); }
-                                }} className="p-1.5 text-emerald-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-xl transition-all" title="Import to Firestore">
-                                  <DatabaseBackup className="w-3.5 h-3.5" />
-                                </button>
-                              )}
-                              {!p._static && (
-                                <button onClick={async () => { if (confirm('Delete this problem?')) { await deleteDoc(doc(db, 'practice_problems', p.id)); fetchData(); toast.success('Deleted'); } }} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all" title="Delete">
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );})}
-                      {practiceProblems.length === 0 && <p className="text-slate-400 text-sm col-span-full text-center py-12 font-medium">No admin problems yet. Use the form above to add custom problems or import static sets.</p>}
-                    </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'resources' && (
-                <div className="space-y-8">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Static Resources</span>
-                      <p className="text-3xl font-black mt-2 text-slate-900 dark:text-white">{STATIC_RESOURCES.length}</p>
-                    </div>
-                    <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Admin Resources</span>
-                      <p className="text-3xl font-black mt-2 text-slate-900 dark:text-white">{resourcesList.length}</p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
-                      <h2 className="text-xl font-bold mb-8 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                          <Plus className="w-5 h-5 text-emerald-500" />
-                        </div>
-                        Add Resource
-                      </h2>
-                      <form onSubmit={async (e) => { e.preventDefault(); try { await setDoc(doc(collection(db, 'resources')), { ...newResource, premium: newResource.premium === true, downloads: '0' }); setNewResource({ title: '', description: '', type: 'pdf', category: 'Computer Science', url: '', premium: false }); fetchData(); toast.success('Resource added'); } catch (e) { toast.error('Failed'); } }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="col-span-1 md:col-span-2">
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Title</label>
-                          <input required value={newResource.title} onChange={e=>setNewResource({...newResource, title: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-900 transition-all outline-none font-bold" placeholder="E.g. Data Structures Notes" />
-                        </div>
-                        <div className="col-span-1 md:col-span-2">
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Description</label>
-                          <input value={newResource.description} onChange={e=>setNewResource({...newResource, description: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-medium" placeholder="Brief description..." />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Type</label>
-                          <select value={newResource.type} onChange={e=>setNewResource({...newResource, type: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold appearance-none">
-                            <option value="pdf">PDF</option>
-                            <option value="notes">Notes</option>
-                            <option value="questions">Questions</option>
-                            <option value="worksheet">Worksheet</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Category</label>
-                          <select value={newResource.category} onChange={e=>setNewResource({...newResource, category: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-bold appearance-none">
-                            <option value="Computer Science">Computer Science</option>
-                            <option value="Engineering">Engineering</option>
-                            <option value="Management">Management</option>
-                            <option value="Mathematics">Mathematics</option>
-                          </select>
-                        </div>
-                        <div className="col-span-1 md:col-span-2">
-                          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">URL (PDF/resource link)</label>
-                          <input value={newResource.url} onChange={e=>setNewResource({...newResource, url: e.target.value})} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-transparent focus:border-emerald-500 transition-all outline-none font-medium" placeholder="/resources/filename.pdf or https://..." />
-                        </div>
-                        <div className="col-span-1 md:col-span-2">
-                          <label className="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" checked={newResource.premium === true} onChange={e=>setNewResource({...newResource, premium: e.target.checked})} className="w-5 h-5 rounded accent-emerald-500" />
-                            <span className="text-sm font-bold text-slate-500">Premium (exclusive access)</span>
-                          </label>
-                        </div>
-                        <div className="col-span-1 md:col-span-2">
-                          <button type="submit" className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2">
-                            ADD RESOURCE
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                    <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-[2.5rem] text-white flex flex-col justify-between shadow-xl shadow-emerald-500/20">
-                      <div>
-                        <BookOpen className="w-10 h-10 mb-6 opacity-50" />
-                        <h3 className="text-2xl font-black leading-tight mb-4">Resource Library</h3>
-                        <p className="font-medium text-emerald-50 opacity-80 leading-relaxed">
-                          Upload PDFs, notes, and worksheets for students to download.
-                        </p>
-                      </div>
-                      <div className="mt-8 space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-white/10 backdrop-blur-md rounded-2xl">
-                          <span className="text-sm font-bold">Total Resources</span>
-                          <span className="text-2xl font-black">{resourcesList.length}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 px-2">Resource List (Static + Admin)</h3>
-                    <div className="max-h-[500px] overflow-y-auto custom-scrollbar">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                      {[...resourcesList, ...STATIC_RESOURCES.map(r => ({ ...r, id: `static-${r.title}`, _static: true as const }))].map((r: any) => (
-                        <div key={r.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all group">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-bold text-sm truncate">{r.title}</h4>
-                              <p className="text-xs text-slate-500 mt-0.5 truncate">{r.description}</p>
-                              <div className="flex items-center gap-2 mt-2 flex-wrap">
-                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 uppercase">{r.type}</span>
-                                <span className="text-[10px] font-medium text-slate-400">{r.category}</span>
-                                {r.premium && <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-700">Premium</span>}
-                                {r._static && <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700">Static</span>}
-                              </div>
-                            </div>
-                            {!r._static && (
-                              <button onClick={async () => { if (confirm('Delete this resource?')) { await deleteDoc(doc(db, 'resources', r.id)); fetchData(); toast.success('Deleted'); } }} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all opacity-0 group-hover:opacity-100">
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                      {resourcesList.length === 0 && <p className="text-slate-400 text-sm col-span-full text-center py-12 font-medium">No admin resources yet. Use the form above to add custom resources.</p>}
-                    </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'users' && (
-                <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-2xl">
-                  <div className="p-10 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div>
-                      <h2 className="text-2xl font-black tracking-tight">System Registry</h2>
-                      <p className="text-slate-500 font-medium text-sm">Active personnel and authenticated entities.</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex -space-x-3">
-                        {usersList.slice(0, 5).map((u, i) => (
-                          <div key={i} className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-white dark:border-slate-900 flex items-center justify-center text-[10px] font-black text-slate-500">
-                            {(u.name || 'U').charAt(0)}
-                          </div>
-                        ))}
-                      </div>
-                      <span className="px-4 py-2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-500/20">
-                        {filteredUsers.length} ENTITIES
-                      </span>
-                    </div>
-                  </div>
-                  <div className="overflow-x-auto overflow-y-auto max-h-[600px] custom-scrollbar">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-slate-50/50 dark:bg-slate-800/30 sticky top-0 z-10 backdrop-blur-md">
-                          <th className="px-10 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Biological ID</th>
-                          <th className="px-10 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Access Level</th>
-                          <th className="px-10 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Node Status</th>
-                          <th className="px-10 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Ops</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
-                        {filteredUsers.map((usr) => (
-                          <tr key={usr.uid} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors group">
-                            <td className="px-10 py-6">
-                              <div className="flex items-center gap-5">
-                                <div className="relative">
-                                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center font-black text-slate-500 text-lg group-hover:scale-110 transition-transform">
-                                    {(usr.name || 'U').charAt(0).toUpperCase()}
-                                  </div>
-                                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full" />
-                                </div>
-                                <div>
-                                  <div className="font-black text-slate-900 dark:text-white flex items-center gap-2">
-                                    {usr.name || 'Unknown Entity'}
-                    {ADMIN_EMAILS.includes(usr.email) && (
-                      <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500 text-white text-[8px] font-black uppercase rounded-md shadow-lg shadow-emerald-500/20">
-                        <Database className="w-2.5 h-2.5" /> ROOT
-                      </div>
-                    )}
-                                  </div>
-                                  <div className="text-xs text-slate-400 font-bold uppercase tracking-wider mt-0.5">{usr.email || '0X_NOT_FOUND'}</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-10 py-6">
-                              <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
-                                usr.role === 'admin' 
-                                ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
-                                : usr.role === 'teacher'
-                                ? 'bg-blue-500/10 text-blue-500 border-blue-500/20'
-                                : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
-                              }`}>
-                                {usr.role || 'Personnel'}
-                              </span>
-                            </td>
-                            <td className="px-10 py-6">
-                              <div className="flex items-center gap-2.5">
-                                <span className="flex h-2 w-2">
-                                  <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                </span>
-                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Linked</span>
-                              </div>
-                            </td>
-                            <td className="px-10 py-6 text-right">
-                              {!ADMIN_EMAILS.includes(usr.email) && (
-                                <button className="p-3 text-slate-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-2xl transition-all group/btn">
-                                  <Trash2 className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'appointments' && (
-                <div className="space-y-8">
-                  <div className="flex items-center justify-between px-2">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                        <CalendarClock className="w-6 h-6 text-blue-500" />
-                      </div>
-                      <h2 className="text-2xl font-black tracking-tight">Active Recruitment</h2>
-                    </div>
-                  </div>
-                  
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-8">
-                      {teacherApps.length === 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-8">
+                    {teacherApps.length === 0 ? (
                       <div className="col-span-full py-32 text-center bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
                         <CalendarClock className="w-16 h-16 text-slate-200 dark:text-slate-800 mx-auto mb-6" />
                         <h3 className="text-xl font-black text-slate-400">NO PENDING DOSSIERS</h3>
@@ -1161,7 +401,7 @@ const AdminDashboard: React.FC = () => {
                         <motion.div 
                           layout
                           key={app.id} 
-                          className="group bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200/50 dark:border-slate-800/50 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] transition-all duration-500 relative overflow-hidden"
+                          className="group bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200/50 dark:border-slate-800/50 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] transition-shadow duration-500 relative overflow-hidden"
                         >
                           <div className="absolute top-0 right-0 p-6 flex items-center gap-2">
                              <div className={`w-2 h-2 rounded-full animate-pulse ${
@@ -1202,7 +442,7 @@ const AdminDashboard: React.FC = () => {
 
                           <button 
                             onClick={() => setSelectedApp(app)}
-                            className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl group-hover:bg-emerald-500 group-hover:text-white"
+                            className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-transform transition-colors shadow-xl group-hover:bg-emerald-500 group-hover:text-white"
                           >
                             REVIEW DOSSIER
                           </button>
@@ -1213,191 +453,192 @@ const AdminDashboard: React.FC = () => {
                 </div>
               )}
 
-              {activeTab === 'patchnotes' && (
-                <div className="max-w-3xl mx-auto space-y-8">
-                  <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800">
-                    <h2 className="text-xl font-bold mb-6">Deploy System Update</h2>
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <input placeholder="Version (e.g. 1.2.0)" className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold" />
-                        <input placeholder="Update Title" className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold" />
-                      </div>
-                      <textarea placeholder="Describe the changes..." className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-medium resize-none" rows={4} />
-                      <button className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black rounded-2xl">
-                        PUBLISH PATCH NOTES
-                      </button>
+              {activeTab === 'chat' && (
+                <div className="flex flex-col lg:flex-row gap-8 h-[calc(100vh-280px)] min-h-[500px]">
+                  {/* Contacts sidebar */}
+                  <div className="lg:w-80 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col shrink-0">
+                    <div className="p-6 border-b border-slate-100 dark:border-slate-800">
+                      <h3 className="font-black text-lg">Provider Contacts</h3>
+                      <p className="text-xs text-slate-400 font-medium mt-1">{chatContacts.length} providers</p>
+                    </div>
+                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+                      {chatContacts.length === 0 ? (
+                        <div className="p-8 text-center">
+                          <MessageSquare className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
+                          <p className="text-sm font-medium text-slate-400">No provider contacts yet</p>
+                          <p className="text-xs text-slate-500 mt-1">Applications will appear here</p>
+                        </div>
+                      ) : (
+                        chatContacts.map(contact => (
+                          <button
+                            key={contact.id}
+                            onClick={() => selectChatContact(contact)}
+                            className={`w-full p-5 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border-b border-slate-100 dark:border-slate-800/50 text-left ${
+                              selectedContact?.id === contact.id ? 'bg-emerald-500/5 dark:bg-emerald-500/10' : ''
+                            }`}
+                          >
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center font-black text-white text-lg shrink-0">
+                              {contact.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-bold text-sm truncate">{contact.name}</p>
+                              <p className="text-[10px] text-slate-400 font-medium truncate">{contact.email}</p>
+                            </div>
+                          </button>
+                        ))
+                      )}
                     </div>
                   </div>
 
-                  <div className="space-y-6">
-                    {patchNotes.map(note => (
-                      <div key={note.id} className="p-6 bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-black text-emerald-500 uppercase tracking-widest">{note.version}</span>
-                          <span className="text-xs font-medium text-slate-400">{new Date(note.createdAt?.seconds * 1000).toLocaleDateString()}</span>
+                  {/* Chat area */}
+                  <div className="flex-1 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden">
+                    {!selectedContact ? (
+                      <div className="flex-1 flex items-center justify-center">
+                        <div className="text-center">
+                          <MessageSquare className="w-16 h-16 text-slate-200 dark:text-slate-800 mx-auto mb-4" />
+                          <h3 className="text-xl font-black text-slate-400">Select a Contact</h3>
+                          <p className="text-sm text-slate-500 mt-1">Choose a provider from the sidebar to start chatting</p>
                         </div>
-                        <h4 className="font-bold text-lg mb-2">{note.title}</h4>
-                        <p className="text-slate-500 text-sm leading-relaxed">{note.content}</p>
                       </div>
-                    ))}
+                    ) : (
+                      <>
+                        {/* Chat header */}
+                        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center font-black text-white">
+                            {selectedContact.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-bold">{selectedContact.name}</p>
+                            <p className="text-[10px] text-slate-400 font-medium">{selectedContact.email}</p>
+                          </div>
+                        </div>
+
+                        {/* Messages */}
+                        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-4">
+                          {chatMessages.length === 0 ? (
+                            <div className="text-center py-12">
+                              <p className="text-slate-400 font-medium">No messages yet</p>
+                              <p className="text-xs text-slate-500 mt-1">Send a message to start the conversation</p>
+                            </div>
+                          ) : (
+                            chatMessages.map((msg) => (
+                              <div key={msg.id} className={`flex ${msg.role === 'admin' ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`max-w-[80%] p-4 rounded-2xl ${
+                                  msg.role === 'admin' 
+                                    ? 'bg-emerald-500 text-white rounded-br-md' 
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-bl-md'
+                                }`}>
+                                  <p className="text-sm font-medium leading-relaxed">{msg.content}</p>
+                                  <p className={`text-[10px] mt-1 ${msg.role === 'admin' ? 'text-emerald-200' : 'text-slate-400'}`}>
+                                    {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                  </p>
+                                </div>
+                              </div>
+                            ))
+                          )}
+                        </div>
+
+                        {/* Input */}
+                        <div className="p-6 border-t border-slate-100 dark:border-slate-800">
+                          <div className="flex gap-4">
+                            <input
+                              value={chatInput}
+                              onChange={(e) => setChatInput(e.target.value)}
+                              onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
+                              placeholder="Type a message..."
+                              className="flex-1 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors"
+                            />
+                            <button
+                              onClick={handleSendMessage}
+                              disabled={sendingMessage || !chatInput.trim()}
+                              className="px-6 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl transition-colors disabled:opacity-50 flex items-center gap-2"
+                            >
+                              {sendingMessage ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'stats' && (
+                <div className="space-y-8">
+                  {/* Summary cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Courses</span>
+                      <p className="text-4xl font-black mt-2 text-slate-900 dark:text-white">{coursesList.length}</p>
+                    </div>
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Enrollments</span>
+                      <p className="text-4xl font-black mt-2 text-emerald-500">{enrollments.length}</p>
+                    </div>
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Active Enrollments</span>
+                      <p className="text-4xl font-black mt-2 text-blue-500">{activeCount}</p>
+                    </div>
+                  </div>
+
+                  {/* Course enrollment table */}
+                  <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <div className="p-8 border-b border-slate-100 dark:border-slate-800">
+                      <h3 className="text-xl font-black tracking-tight">Enrollments by Course</h3>
+                    </div>
+                    <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-slate-50/50 dark:bg-slate-800/30 sticky top-0 backdrop-blur-md">
+                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Course</th>
+                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Category</th>
+                            <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Enrollments</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
+                          {coursesList.map((course: any) => {
+                            const count = enrollmentCounts[course.id] || 0;
+                            return (
+                              <tr key={course.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                                <td className="px-8 py-5">
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm">
+                                      {course.title?.charAt(0) || 'C'}
+                                    </div>
+                                    <div>
+                                      <p className="font-bold text-slate-900 dark:text-white">{course.title || 'Untitled'}</p>
+                                      <p className="text-[10px] text-slate-400 font-medium">{course.id?.slice(0, 8)}...</p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-8 py-5">
+                                  <span className="text-xs font-medium text-slate-500">{course.category || 'Uncategorized'}</span>
+                                </td>
+                                <td className="px-8 py-5 text-right">
+                                  <span className={`inline-flex items-center justify-center w-12 h-12 rounded-xl font-black text-lg ${
+                                    count > 0 ? 'bg-emerald-500/10 text-emerald-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                                  }`}>
+                                    {count}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                          {coursesList.length === 0 && (
+                            <tr>
+                              <td colSpan={3} className="px-8 py-16 text-center">
+                                <p className="text-slate-400 font-medium">No courses found</p>
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               )}
             </motion.div>
-             {/* System Management Tab */}
-             {activeTab === 'system' && (
-               <div className="max-w-3xl mx-auto">
-                 <div className="bg-white dark:bg-slate-900 p-12 rounded-[3.5rem] border border-slate-200 dark:border-slate-800 shadow-3xl relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-10 opacity-5">
-                      <Settings className="w-64 h-64" />
-                    </div>
-                    
-                    <div className="relative z-10">
-                      <div className="flex items-center gap-5 mb-12">
-                         <span className="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-3xl flex items-center justify-center border border-rose-500/20 shadow-xl shadow-rose-500/10">
-                            <Database className="w-8 h-8" />
-                         </span>
-                         <div>
-                            <h3 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Admin Subsystems</h3>
-                            <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Critical Infrastructure Control</p>
-                         </div>
-                      </div>
-
-                      <div className="space-y-8">
-                        <section className="p-8 border-2 border-dashed border-rose-500/20 rounded-[2.5rem] bg-rose-500/5 group hover:bg-rose-500/10 transition-colors">
-                           <div className="flex items-start gap-4 mb-6">
-                             <AlertCircle className="w-8 h-8 text-rose-500 shrink-0 mt-1" />
-                             <div>
-                                <h4 className="text-xl font-black text-rose-600 mb-2 uppercase tracking-tighter">Hard System Purge</h4>
-                                <p className="text-slate-500 dark:text-slate-400 font-medium text-sm leading-relaxed">This operation protocols a complete erasure of all Firestore nodes (Curricula, Users, Logs). Access keys and Auth profiles will persist, but all relational data will be nullified.</p>
-                             </div>
-                           </div>
-                           
-                           <div className="flex items-center gap-4">
-                             <button 
-                               onClick={wipeAllData}
-                               className="px-8 py-5 bg-rose-600 text-white font-black rounded-2xl shadow-2xl shadow-rose-600/30 hover:bg-rose-700 active:scale-95 transition-all flex items-center gap-3 uppercase tracking-widest text-xs"
-                             >
-                               <Trash2 className="w-5 h-5" /> Execute Data Wipe
-                             </button>
-                             <div className="text-[10px] font-black text-rose-500/60 uppercase tracking-[0.2em] animate-pulse">
-                               Authorization Required
-                             </div>
-                           </div>
-                         </section>
-
-                         <section className="p-8 border-2 border-dashed border-emerald-500/20 rounded-[2.5rem] bg-emerald-500/5 group hover:bg-emerald-500/10 transition-colors">
-                           <div className="flex items-start gap-4 mb-6">
-                             <Database className="w-8 h-8 text-emerald-500 shrink-0 mt-1" />
-                             <div>
-                               <h4 className="text-xl font-black text-emerald-600 mb-2 uppercase tracking-tighter">Seed Course Catalog</h4>
-                               <p className="text-slate-500 dark:text-slate-400 font-medium text-sm leading-relaxed">Populate the database with the full course catalog — 65+ courses across 28 categories. Only runs once per folder/course to avoid duplicates.</p>
-                             </div>
-                           </div>
-                           <button 
-                             onClick={seedCourseCatalog}
-                             disabled={seeding}
-                             className="px-8 py-5 bg-emerald-600 text-white font-black rounded-2xl shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 active:scale-95 transition-all flex items-center gap-3 uppercase tracking-widest text-xs disabled:opacity-50"
-                           >
-                             {seeding ? <Loader2 className="w-5 h-5 animate-spin" /> : <Database className="w-5 h-5" />} {seeding ? 'Seeding...' : 'Seed Course Catalog'}
-                           </button>
-                         </section>
-                         
-                         <div className="grid grid-cols-2 gap-4">
-                           <button className="p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-800 text-left group">
-                             <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Backups</span>
-                             <span className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Snapshot State</span>
-                           </button>
-                           <button className="p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-800 text-left group">
-                             <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Logs</span>
-                             <span className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Audit Console</span>
-                           </button>
-                         </div>
-                      </div>
-                    </div>
-                 </div>
-               </div>
-             )}
-              {activeTab === 'behavior' && (
-                <div className="bg-white dark:bg-slate-900 p-10 rounded-[3rem] border border-slate-200 dark:border-slate-800 shadow-xl">
-                  <div className="flex items-center gap-4 mb-8">
-                    <div className="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center shadow-xl shadow-amber-500/20">
-                      <Brain className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-black tracking-tight">Behavior Analysis Console</h2>
-                      <p className="text-slate-500 font-medium text-sm">Student engagement patterns and dropout risk detection</p>
-                    </div>
-                  </div>
-                  <iframe src={`#/admin/behavior`} className="w-full h-[600px] rounded-2xl border border-slate-200 dark:border-slate-800" title="Behavior Dashboard" />
-                </div>
-              )}
-              {activeTab === 'ai' && (
-               <div className="max-w-3xl mx-auto space-y-8">
-                 {/* AI Chat Section */}
-                 <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800">
-                   <div className="flex items-center gap-4 mb-8">
-                     <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
-                       <Bot className="w-6 h-6 text-white" />
-                     </div>
-                     <div>
-                       <h2 className="text-2xl font-black tracking-tight">AI Content Studio</h2>
-                       <p className="text-slate-500 font-medium text-sm">Generate course descriptions, patch notes, and more</p>
-                     </div>
-                   </div>
-
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <button
-                       onClick={() => window.dispatchEvent(new CustomEvent('openaichat', { detail: { mode: 'admin' } }))}
-                       className="p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-left group hover:border-emerald-500/50 transition-all"
-                     >
-                       <Sparkles className="w-8 h-8 text-emerald-500 mb-4" />
-                       <span className="block font-bold text-slate-900 dark:text-white mb-1">Open AI Assistant</span>
-                       <span className="block text-sm text-slate-500 font-medium">Chat with EduAI in admin mode for instant help</span>
-                     </button>
-
-                     <div className="p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
-                       <Sparkles className="w-8 h-8 text-emerald-500 mb-4" />
-                       <span className="block font-bold text-slate-900 dark:text-white mb-3">Quick Generate</span>
-                       <div className="space-y-3">
-                         <button
-                           onClick={() => {
-                             const title = prompt('Enter course title:');
-                             if (title) {
-                               const cat = prompt('Category (education/alternative):') || 'education';
-                               window.dispatchEvent(new CustomEvent('openaichat', {
-                                 detail: { mode: 'admin' }
-                               }));
-                             }
-                           }}
-                           className="w-full p-3 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold rounded-xl text-sm hover:bg-emerald-500/20 transition-all text-left"
-                         >
-                           Generate Course Description
-                         </button>
-                         <button
-                           onClick={() => {
-                             window.dispatchEvent(new CustomEvent('openaichat', {
-                               detail: { mode: 'admin' }
-                             }));
-                           }}
-                           className="w-full p-3 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold rounded-xl text-sm hover:bg-emerald-500/20 transition-all text-left"
-                         >
-                           Draft Patch Notes
-                         </button>
-                         <a
-                           href="/admin"
-                           onClick={(e) => { e.preventDefault(); window.dispatchEvent(new CustomEvent('openaichat', { detail: { mode: 'admin' } })); }}
-                           className="block w-full p-3 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold rounded-xl text-sm hover:bg-slate-300 dark:hover:bg-slate-600 transition-all text-center"
-                         >
-                           Open AI Assistant
-                         </a>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-             )}
-             </AnimatePresence>
+          </AnimatePresence>
         </div>
       </main>
 
@@ -1474,11 +715,11 @@ const AdminDashboard: React.FC = () => {
                               value={meetLink}
                               onChange={e => setMeetLink(e.target.value)}
                               placeholder="Paste Google Meet / Zoom Link..." 
-                              className="flex-1 p-4 bg-white dark:bg-slate-900 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-all" 
+                              className="flex-1 p-4 bg-white dark:bg-slate-900 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" 
                             />
                             <button 
                               onClick={() => handleApproveApp(selectedApp.id, selectedApp.userEmail)}
-                              className="px-8 bg-emerald-500 text-white font-black rounded-2xl hover:scale-[1.02] transition-all"
+                              className="px-8 bg-emerald-500 text-white font-black rounded-2xl hover:scale-[1.02] transition-transform"
                             >
                               SEND
                             </button>
@@ -1489,13 +730,13 @@ const AdminDashboard: React.FC = () => {
                       <div className="flex gap-4">
                         <button 
                           onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'approved')}
-                          className="flex-1 py-5 bg-emerald-500 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-all"
+                          className="flex-1 py-5 bg-emerald-500 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform"
                         >
                           APPROVE MENTOR NOW
                         </button>
                         <button 
                           onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
-                          className="flex-1 py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-all"
+                          className="flex-1 py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform"
                         >
                           REJECT APPLICATION
                         </button>

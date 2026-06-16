@@ -50,7 +50,7 @@ const DoubtSolver: React.FC<DoubtSolverProps> = ({ courseId, courseTitle, module
   return (
     <>
       <button onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 z-50 w-14 h-14 bg-indigo-500 hover:bg-indigo-600 text-white rounded-2xl shadow-2xl shadow-indigo-500/30 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95"
+        className="fixed bottom-6 left-6 z-50 w-14 h-14 bg-indigo-500 hover:bg-indigo-600 text-white rounded-2xl shadow-2xl shadow-indigo-500/30 flex items-center justify-center transition-transform duration-300 hover:scale-110 active:scale-95"
       >
         {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
       </button>
@@ -112,10 +112,10 @@ const DoubtSolver: React.FC<DoubtSolverProps> = ({ courseId, courseTitle, module
                 <input value={question} onChange={e => setQuestion(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') handleAsk(); }}
                   placeholder="Type your doubt..." disabled={loading}
-                  className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-medium text-sm border border-transparent focus:border-indigo-500 transition-all"
+                  className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-medium text-sm border border-transparent focus:border-indigo-500 transition-colors"
                 />
                 <button onClick={handleAsk} disabled={loading || !question.trim()}
-                  className="p-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-2xl transition-all disabled:opacity-50"
+                  className="p-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-2xl transition-colors disabled:opacity-50"
                 >
                   <Send className="w-5 h-5" />
                 </button>

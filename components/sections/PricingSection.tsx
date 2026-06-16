@@ -227,7 +227,7 @@ const PricingSection: React.FC = () => {
                 <button
                   onClick={() => handlePayment(plan)}
                   disabled={processingPlan === plan.name}
-                  className={`w-full py-5 rounded-2xl font-black text-center transition-all hover:-translate-y-1 ${
+                  className={`w-full py-5 rounded-2xl font-black text-center transition-colors transition-transform hover:-translate-y-1 ${
                     plan.popular
                       ? 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/30'
                       : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white'

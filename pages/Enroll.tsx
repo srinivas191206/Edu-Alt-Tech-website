@@ -74,11 +74,11 @@ const Enroll: React.FC = () => {
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <a href={LINKS.enroll} target="_blank" rel="noopener noreferrer"
-              className="w-full sm:w-auto px-8 py-5 bg-slate-900 dark:bg-emerald-600 text-white font-black rounded-2xl hover:bg-slate-800 dark:hover:bg-emerald-500 transition-all shadow-xl flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-5 bg-slate-900 dark:bg-emerald-600 text-white font-black rounded-2xl hover:bg-slate-800 dark:hover:bg-emerald-500 transition-colors shadow-xl flex items-center justify-center gap-2"
             >
               Didn't open? Click here <ExternalLink className="w-4 h-4" />
             </a>
-            <Link to="/" className="w-full sm:w-auto px-8 py-5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all flex items-center justify-center gap-2">
+            <Link to="/" className="w-full sm:w-auto px-8 py-5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors flex items-center justify-center gap-2">
               <Home className="w-4 h-4" /> Back to Home
             </Link>
           </div>
@@ -125,34 +125,34 @@ const Enroll: React.FC = () => {
               <div>
                 <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
                 <input type="text" required placeholder="Enter your full name"
-                  className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none transition-all"
+                  className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none transition-colors transition-shadow"
                   value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
                 <input type="email" required placeholder="name@example.com"
-                  className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none transition-all"
+                  className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none transition-colors transition-shadow"
                   value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Phone Number</label>
                 <input type="tel" required placeholder="+91 XXXXX XXXXX"
-                  className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none transition-all"
+                  className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none transition-colors transition-shadow"
                   value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Main Goal in Learning</label>
                 <textarea required placeholder="What is your biggest execution hurdle?"
-                  className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none transition-all h-32 resize-none"
+                  className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 rounded-2xl border border-slate-200 dark:border-slate-700 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none transition-colors transition-shadow h-32 resize-none"
                   value={formData.goal} onChange={e => setFormData({ ...formData, goal: e.target.value })}
                 />
               </div>
             </div>
             <button type="submit" disabled={isSubmitting}
-              className="w-full py-5 bg-slate-900 dark:bg-emerald-600 text-white font-bold rounded-2xl hover:bg-slate-800 dark:hover:bg-emerald-500 transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-2 group text-lg"
+              className="w-full py-5 bg-slate-900 dark:bg-emerald-600 text-white font-bold rounded-2xl hover:bg-slate-800 dark:hover:bg-emerald-500 transition-colors shadow-xl disabled:opacity-50 flex items-center justify-center gap-2 group text-lg"
             >
               {isSubmitting ? (<><Loader2 className="w-6 h-6 animate-spin" />Processing...</>) : (<>Proceed to Enrollment <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></>)}
             </button>

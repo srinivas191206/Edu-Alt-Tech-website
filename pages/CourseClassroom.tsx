@@ -228,7 +228,7 @@ const CourseClassroom: React.FC = () => {
 
   if (loading) return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#020617] flex flex-col items-center justify-center gap-4">
-      <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
+      <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} style={{ willChange: 'transform' }}>
         <Loader2 className="w-12 h-12 text-purple-500" />
       </motion.div>
       <p className="text-slate-500 font-black uppercase tracking-widest text-xs animate-pulse">Entering Virtual Environment...</p>
@@ -274,10 +274,10 @@ const CourseClassroom: React.FC = () => {
 
             {role === 'teacher' && (
               <div className="flex gap-3">
-                <button onClick={()=>setShowResourceModal(true)} className="px-6 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">
+                <button onClick={()=>setShowResourceModal(true)} className="px-6 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-colors shadow-sm">
                   Add Resource
                 </button>
-                <button onClick={()=>setShowModuleModal(true)} className="px-6 py-4 bg-purple-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-purple-700 transition-all shadow-xl shadow-purple-600/20 flex items-center gap-2">
+                <button onClick={()=>setShowModuleModal(true)} className="px-6 py-4 bg-purple-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-purple-700 transition-colors shadow-xl shadow-purple-600/20 flex items-center gap-2">
                   <Plus className="w-4 h-4" /> New Module
                 </button>
               </div>
@@ -293,20 +293,20 @@ const CourseClassroom: React.FC = () => {
             <div className="flex items-center gap-4 p-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 w-fit">
               <button 
                 onClick={() => setActiveTab('roadmap')}
-                className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all ${activeTab === 'roadmap' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'roadmap' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
               >
                 <Layout className="w-4 h-4" /> Curriculum Roadmap
               </button>
               <button 
                 onClick={() => setActiveTab('chat')}
-                className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all ${activeTab === 'chat' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'chat' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
               >
                 <MessageCircle className="w-4 h-4" /> Intelligence Exchange
               </button>
               {role === 'student' && (
                 <button 
                   onClick={() => setActiveTab('path')}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all ${activeTab === 'path' ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'path' ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
                 >
                   <Target className="w-4 h-4" /> AI Roadmap
                 </button>
@@ -347,11 +347,11 @@ const CourseClassroom: React.FC = () => {
                       className="relative md:pl-20"
                     >
                       {/* Milestone Marker */}
-                      <div className={`absolute left-[30px] top-10 w-5 h-5 rounded-full border-4 border-slate-50 dark:border-[#020617] z-20 transition-all duration-500 hidden md:flex items-center justify-center ${
+                      <div className={`absolute left-[30px] top-10 w-5 h-5 rounded-full border-4 border-slate-50 dark:border-[#020617] z-20 transition-transform transition-colors duration-500 hidden md:flex items-center justify-center ${
                         isCompleted ? 'bg-emerald-500 scale-125 shadow-[0_0_20px_rgba(16,185,129,0.5)]' : 'bg-slate-300 dark:bg-slate-800'
                       }`} />
 
-                      <div className={`group bg-white dark:bg-slate-900/80 backdrop-blur-xl border-2 rounded-[2.5rem] transition-all duration-500 overflow-hidden ${
+                      <div className={`group bg-white dark:bg-slate-900/80 backdrop-blur-xl border-2 rounded-[2.5rem] transition-transform transition-colors duration-500 overflow-hidden ${
                         isCompleted ? 'border-emerald-500/20 shadow-emerald-500/5' : 'border-slate-200/50 dark:border-slate-800 shadow-xl'
                       } ${isExpanded ? 'shadow-2xl border-purple-500/30' : 'hover:-translate-y-1 hover:border-purple-500/30'}`}>
                         
@@ -359,7 +359,7 @@ const CourseClassroom: React.FC = () => {
                           <div className="flex flex-col md:flex-row gap-8 items-start">
                             <div className={`w-20 h-20 md:w-24 md:h-24 rounded-3xl overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-800 flex items-center justify-center ${isCompleted ? 'ring-4 ring-emerald-500/20' : ''}`}>
                               {mod.thumbnailUrl ? (
-                                <img src={mod.thumbnailUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+                                <img src={mod.thumbnailUrl} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
                               ) : (
                                 <span className="text-3xl font-black text-slate-300 dark:text-slate-700">{idx + 1}</span>
                               )}
@@ -400,10 +400,10 @@ const CourseClassroom: React.FC = () => {
                         <AnimatePresence>
                           {isExpanded && (
                             <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              className="overflow-hidden"
+                              initial={{ maxHeight: 0, opacity: 0 }}
+                              animate={{ maxHeight: "1000px", opacity: 1 }}
+                              exit={{ maxHeight: 0, opacity: 0 }}
+                              className="overflow-hidden max-h-[1000px]"
                             >
                               <div className="px-8 pb-10 md:px-10 space-y-6">
                                 <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
@@ -412,19 +412,19 @@ const CourseClassroom: React.FC = () => {
                                   ) : (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                       {mod.lectures.map((lec, lIdx) => (
-                                        <div key={lec.id} className="p-5 bg-slate-50/50 dark:bg-slate-800/30 rounded-3xl border border-transparent hover:border-purple-500/20 hover:bg-white dark:hover:bg-slate-800 transition-all group/lec">
+                                        <div key={lec.id} className="p-5 bg-slate-50/50 dark:bg-slate-800/30 rounded-3xl border border-transparent hover:border-purple-500/20 hover:bg-white dark:hover:bg-slate-800 transition-colors group/lec">
                                           <div className="flex justify-between items-start mb-4">
                                             <span className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xs font-black">
                                               {lIdx + 1}
                                             </span>
                                             <div className="flex gap-2">
                                               {lec.meetingLink && (
-                                                <a href={lec.meetingLink} target="_blank" rel="noreferrer" className="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition-all">
+                                                <a href={lec.meetingLink} target="_blank" rel="noreferrer" className="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
                                                   <Video className="w-4 h-4" />
                                                 </a>
                                               )}
                                               {lec.recordedLink && (
-                                                <a href={lec.recordedLink} target="_blank" rel="noreferrer" className="p-2 bg-rose-500/10 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-all">
+                                                <a href={lec.recordedLink} target="_blank" rel="noreferrer" className="p-2 bg-rose-500/10 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-colors">
                                                   <PlayCircle className="w-4 h-4" />
                                                 </a>
                                               )}
@@ -444,14 +444,14 @@ const CourseClassroom: React.FC = () => {
 
                                 <div className="flex items-center justify-between pt-8 border-t border-slate-100 dark:border-slate-800">
                                   {role === 'teacher' && (
-                                    <button onClick={() => setShowLectureModal(mod.id)} className="flex items-center gap-2 px-6 py-3 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-purple-500 hover:text-white transition-all">
+                                    <button onClick={() => setShowLectureModal(mod.id)} className="flex items-center gap-2 px-6 py-3 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-purple-500 hover:text-white transition-colors">
                                       <Plus className="w-4 h-4" /> Add Lecture
                                     </button>
                                   )}
                                   {role === 'student' && (
                                     <button 
                                       onClick={() => handleToggleComplete(mod.id)}
-                                      className={`ml-auto flex items-center gap-2 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${
+                                      className={`ml-auto flex items-center gap-2 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-transform ${
                                         isCompleted 
                                         ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' 
                                         : 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:scale-105 active:scale-95'
@@ -540,7 +540,7 @@ const CourseClassroom: React.FC = () => {
                         href={res.url} 
                         target="_blank" 
                         rel="noreferrer" 
-                        className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-transparent hover:border-purple-500/30 hover:bg-white dark:hover:bg-slate-800 transition-all group"
+                        className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-transparent hover:border-purple-500/30 hover:bg-white dark:hover:bg-slate-800 transition-colors group"
                       >
                         <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform">
                           <LinkIcon className="w-4 h-4" />
@@ -549,7 +549,7 @@ const CourseClassroom: React.FC = () => {
                           <p className="font-bold text-sm text-slate-800 dark:text-slate-200 truncate group-hover:text-purple-500 transition-colors">{res.title}</p>
                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">External Asset</p>
                         </div>
-                        <ExternalLink className="w-4 h-4 text-slate-300 opacity-0 group-hover:opacity-100 transition-all" />
+                        <ExternalLink className="w-4 h-4 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </motion.a>
                     ))}
                   </div>
@@ -612,11 +612,11 @@ const CourseClassroom: React.FC = () => {
                     <div className="space-y-4">
                       <div>
                         <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Module Title</label>
-                        <input required placeholder="E.g. Foundational Theory" value={mTitle} onChange={e=>setMTitle(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-all" />
+                        <input required placeholder="E.g. Foundational Theory" value={mTitle} onChange={e=>setMTitle(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-colors" />
                       </div>
                       <div>
                         <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Mission Description</label>
-                        <textarea required placeholder="What's the core objective?" value={mDesc} onChange={e=>setMDesc(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-medium border border-transparent focus:border-purple-500 transition-all resize-none" rows={3} />
+                        <textarea required placeholder="What's the core objective?" value={mDesc} onChange={e=>setMDesc(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-medium border border-transparent focus:border-purple-500 transition-colors resize-none" rows={3} />
                       </div>
                       <div className="p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
                         <label className="flex flex-col items-center gap-2 cursor-pointer">
@@ -626,7 +626,7 @@ const CourseClassroom: React.FC = () => {
                         </label>
                       </div>
                     </div>
-                    <button type="submit" className="w-full py-5 bg-purple-600 text-white font-black rounded-[2rem] shadow-xl shadow-purple-600/20 hover:scale-[1.02] transition-all">
+                    <button type="submit" className="w-full py-5 bg-purple-600 text-white font-black rounded-[2rem] shadow-xl shadow-purple-600/20 hover:scale-[1.02] transition-transform">
                       DEPLOY MODULE
                     </button>
                   </form>
@@ -635,11 +635,11 @@ const CourseClassroom: React.FC = () => {
                 {showLectureModal && (
                   <form onSubmit={handleAddLecture} className="space-y-6">
                     <div className="space-y-4">
-                      <input required placeholder="Session Title" value={lTitle} onChange={e=>setLTitle(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-all" />
-                      <input placeholder="Live Meeting Link (Optional)" type="url" value={lMeet} onChange={e=>setLMeet(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-blue-500 transition-all" />
-                      <input placeholder="Recording Link (Optional)" type="url" value={lRec} onChange={e=>setLRec(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-rose-500 transition-all" />
+                      <input required placeholder="Session Title" value={lTitle} onChange={e=>setLTitle(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-colors" />
+                      <input placeholder="Live Meeting Link (Optional)" type="url" value={lMeet} onChange={e=>setLMeet(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-blue-500 transition-colors" />
+                      <input placeholder="Recording Link (Optional)" type="url" value={lRec} onChange={e=>setLRec(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-rose-500 transition-colors" />
                     </div>
-                    <button type="submit" className="w-full py-5 bg-indigo-600 text-white font-black rounded-[2rem] shadow-xl shadow-indigo-600/20 hover:scale-[1.02] transition-all">
+                    <button type="submit" className="w-full py-5 bg-indigo-600 text-white font-black rounded-[2rem] shadow-xl shadow-indigo-600/20 hover:scale-[1.02] transition-transform">
                       SYNC SESSION
                     </button>
                   </form>
@@ -648,10 +648,10 @@ const CourseClassroom: React.FC = () => {
                 {showResourceModal && (
                   <form onSubmit={handleCreateResource} className="space-y-6">
                     <div className="space-y-4">
-                      <input required placeholder="Asset Title" value={rTitle} onChange={e=>setRTitle(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-all" />
-                      <input required placeholder="Direct URL (Drive/Dropbox)" type="url" value={rUrl} onChange={e=>setRUrl(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-all" />
+                      <input required placeholder="Asset Title" value={rTitle} onChange={e=>setRTitle(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+                      <input required placeholder="Direct URL (Drive/Dropbox)" type="url" value={rUrl} onChange={e=>setRUrl(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
                     </div>
-                    <button type="submit" className="w-full py-5 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-600/20 hover:scale-[1.02] transition-all">
+                    <button type="submit" className="w-full py-5 bg-emerald-600 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-600/20 hover:scale-[1.02] transition-transform">
                       UPLOAD ASSET
                     </button>
                   </form>

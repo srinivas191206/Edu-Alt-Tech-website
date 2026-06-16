@@ -19,6 +19,7 @@ const CtaSection: React.FC = () => {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 30, ease: 'linear', repeat: Infinity }}
+            style={{ willChange: 'transform' }}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-gradient-conic from-emerald-500/20 via-transparent to-indigo-500/20 rounded-full pointer-events-none"
           />
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LCAyNTUsIDI1NSwgMC4wNSkiLz48L3N2Zz4=')] opacity-50" />
@@ -70,14 +71,14 @@ const CtaSection: React.FC = () => {
             >
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-3 bg-white text-slate-900 hover:bg-emerald-50 px-10 py-5 rounded-2xl font-black text-lg transition-all shadow-2xl hover:shadow-emerald-500/20 hover:-translate-y-1 group"
+                className="inline-flex items-center gap-3 bg-white text-slate-900 hover:bg-emerald-50 px-10 py-5 rounded-2xl font-black text-lg transition-colors transition-shadow transition-transform shadow-2xl hover:shadow-emerald-500/20 hover:-translate-y-1 group"
               >
                 Book a Free Demo
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 to="/courses"
-                className="inline-flex items-center gap-3 bg-white/10 backdrop-blur text-white hover:bg-white/20 px-10 py-5 rounded-2xl font-bold text-lg transition-all border border-white/20 hover:-translate-y-1"
+                className="inline-flex items-center gap-3 bg-white/10 backdrop-blur text-white hover:bg-white/20 px-10 py-5 rounded-2xl font-bold text-lg transition-colors transition-transform border border-white/20 hover:-translate-y-1"
               >
                 <Zap className="w-5 h-5 text-yellow-300" />
                 Explore Courses

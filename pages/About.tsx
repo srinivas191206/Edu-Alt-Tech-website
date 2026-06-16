@@ -39,7 +39,7 @@ const About: React.FC = () => {
             <motion.div
               key={idx} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               transition={{ delay: idx * 0.1, duration: 0.6 }}
-              className={`p-10 rounded-[2.5rem] bg-gradient-to-br ${v.bg} border ${v.border} hover:-translate-y-2 hover:shadow-xl transition-all duration-500`}
+              className={`p-10 rounded-[2.5rem] bg-gradient-to-br ${v.bg} border ${v.border} hover:-translate-y-2 hover:shadow-xl transition-transform transition-shadow duration-500`}
             >
               <div className={`mb-8 ${v.iconColor}`}>{v.icon}</div>
               <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">{v.title}</h3>
@@ -69,11 +69,11 @@ const About: React.FC = () => {
               <motion.div
                 key={idx} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                 transition={{ delay: idx * 0.05 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-emerald-500 hover:-translate-y-2 transition-all duration-500 text-center"
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-emerald-500 hover:-translate-y-2 transition-colors transition-transform duration-500 text-center"
               >
                 <div className="w-24 h-24 mx-auto mb-5 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800">
                   {member.image ? (
-                    <img src={member.image} alt={member.name} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                    <img src={member.image} loading="lazy" decoding="async" alt={member.name} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                   ) : null}
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{member.name}</h3>
@@ -91,10 +91,10 @@ const About: React.FC = () => {
           <h2 className="text-4xl md:text-6xl font-black text-white mb-6 relative z-10 tracking-tighter">Let's Transform Your School</h2>
           <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto relative z-10 font-medium">Partner with us and bring world-class technology to your institution.</p>
           <div className="flex flex-wrap justify-center gap-4 relative z-10">
-            <Link to="/contact" className="px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black transition-all shadow-xl shadow-emerald-500/30 hover:-translate-y-1">
+            <Link to="/contact" className="px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black transition-colors transition-transform shadow-xl shadow-emerald-500/30 hover:-translate-y-1">
               Get in Touch
             </Link>
-            <Link to="/services" className="px-10 py-5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl font-bold transition-all backdrop-blur-sm hover:-translate-y-1">
+            <Link to="/services" className="px-10 py-5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl font-bold transition-colors transition-transform backdrop-blur-sm hover:-translate-y-1">
               Explore Services
             </Link>
           </div>

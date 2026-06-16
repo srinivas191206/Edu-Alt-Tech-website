@@ -27,7 +27,7 @@ function ProblemCard({ problem }: { problem: LeetCodeProblem }) {
       layout
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300"
+      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
@@ -82,7 +82,7 @@ function ProblemCard({ problem }: { problem: LeetCodeProblem }) {
 function CourseCard({ course }: { course: CourseLink }) {
   return (
     <a href={course.url} target="_blank" rel="noopener noreferrer"
-      className="block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
+      className="block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
     >
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center shrink-0">
@@ -105,7 +105,7 @@ function InterviewCard({ interview }: { interview: InterviewExperience }) {
   };
   return (
     <a href={interview.url} target="_blank" rel="noopener noreferrer"
-      className="block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
+      className="block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
@@ -124,7 +124,7 @@ function InterviewCard({ interview }: { interview: InterviewExperience }) {
 function ChannelCard({ channel }: { channel: YouTubeChannel }) {
   return (
     <a href={channel.url} target="_blank" rel="noopener noreferrer"
-      className="flex items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
+      className="flex items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
     >
       <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/20 text-red-500 flex items-center justify-center shrink-0">
         <Youtube className="w-5 h-5" />
@@ -204,7 +204,7 @@ const Practice: React.FC = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex gap-2 mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
           {tabs.map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-colors ${
                 tab === t.key
                   ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
                   : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
@@ -220,16 +220,16 @@ const Practice: React.FC = () => {
           <>
             {/* Problem Set Toggle */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex gap-2 mb-6">
-              <button onClick={() => setProblemSet('popular')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              <button onClick={() => setProblemSet('popular')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
                 problemSet === 'popular' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
               }`}>Most Popular ({POPULAR_PROBLEMS.length})</button>
-              <button onClick={() => setProblemSet('leetcode150')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              <button onClick={() => setProblemSet('leetcode150')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
                 problemSet === 'leetcode150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
               }`}>LeetCode 150 ({LEETCODE_150_PROBLEMS.length})</button>
-              <button onClick={() => setProblemSet('top150')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              <button onClick={() => setProblemSet('top150')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
                 problemSet === 'top150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
               }`}>Top Interview 150 ({TOP_INTERVIEW_150.length})</button>
-              <button onClick={() => setProblemSet('admin')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              <button onClick={() => setProblemSet('admin')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
                 problemSet === 'admin' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
               }`}>Custom ({adminProblems.length})</button>
             </motion.div>
@@ -294,7 +294,7 @@ const Practice: React.FC = () => {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-2 mb-6">
               {Array.from(new Set(YOUTUBE_CHANNELS.map(c => c.category))).sort().map(cat => (
                 <button key={cat} onClick={() => setChannelFilter(cat === channelFilter ? '' : cat)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
                     channelFilter === cat ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
                   }`}
                 >

@@ -79,12 +79,12 @@ const FlashcardDeck: React.FC = () => {
                 onKeyDown={e => e.key === 'Enter' && handleGenerate()}
                 placeholder="e.g. Quantum Physics, JavaScript Basics, World History..."
                 disabled={loading}
-                className="flex-1 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-medium border border-transparent focus:border-emerald-500 transition-all"
+                className="flex-1 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-medium border border-transparent focus:border-emerald-500 transition-colors transition-shadow"
               />
               <button
                 onClick={handleGenerate}
                 disabled={loading || !topic.trim()}
-                className="px-8 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl transition-all disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-emerald-500/20"
+                className="px-8 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl transition-colors disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-emerald-500/20"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
                 Generate
@@ -109,7 +109,7 @@ const FlashcardDeck: React.FC = () => {
             &larr; New Topic
           </button>
           <div className="flex items-center gap-3">
-            <button onClick={shuffleCards} className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all">
+            <button onClick={shuffleCards} className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
               <Shuffle className="w-5 h-5" />
             </button>
             <span className="text-sm font-bold text-slate-500">{current + 1} / {cards.length}</span>
@@ -121,7 +121,7 @@ const FlashcardDeck: React.FC = () => {
         {/* Flashcard */}
         <div className="relative cursor-pointer" style={{ perspective: '1200px' }} onClick={() => setFlipped(!flipped)}>
           <div
-            className="relative w-full transition-all duration-500"
+            className="relative w-full transition-transform duration-500"
             style={{
               transformStyle: 'preserve-3d',
               transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
@@ -155,7 +155,7 @@ const FlashcardDeck: React.FC = () => {
           <button
             onClick={prevCard}
             disabled={current === 0}
-            className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-lg hover:shadow-xl transition-all disabled:opacity-30"
+            className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-lg hover:shadow-xl transition-shadow disabled:opacity-30"
           >
             <ChevronLeft className="w-6 h-6 text-slate-700 dark:text-slate-300" />
           </button>
@@ -170,7 +170,7 @@ const FlashcardDeck: React.FC = () => {
           <button
             onClick={nextCard}
             disabled={current === cards.length - 1}
-            className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-lg hover:shadow-xl transition-all disabled:opacity-30"
+            className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-lg hover:shadow-xl transition-shadow disabled:opacity-30"
           >
             <ChevronRight className="w-6 h-6 text-slate-700 dark:text-slate-300" />
           </button>

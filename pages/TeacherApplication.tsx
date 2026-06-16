@@ -203,7 +203,7 @@ const TeacherApplication: React.FC = () => {
             <button 
               type="submit"
               disabled={submitLoading}
-              className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
+              className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors shadow-lg flex items-center justify-center gap-2"
             >
               {submitLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit Application'}
             </button>

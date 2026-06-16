@@ -57,7 +57,7 @@ const Verification: React.FC = () => {
         <div className="space-y-4">
           <Link
             to="/login"
-            className="block w-full py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all shadow-lg text-lg"
+            className="block w-full py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-colors shadow-lg text-lg"
           >
             Go to Login
           </Link>
@@ -66,7 +66,7 @@ const Verification: React.FC = () => {
             <button
               onClick={handleResend}
               disabled={loading}
-              className="w-full py-4 bg-white text-slate-700 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 bg-white text-slate-700 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-colors flex items-center justify-center gap-2"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><RefreshCw className="w-4 h-4" /> Resend Verification</>}
             </button>

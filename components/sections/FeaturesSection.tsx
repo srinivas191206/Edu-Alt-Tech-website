@@ -59,7 +59,7 @@ const FeaturesSection: React.FC = () => {
             Empowering Everyone
           </div>
           <h2 className="text-5xl md:text-6xl font-black text-slate-900 dark:text-white mb-6 tracking-tighter leading-[0.95]">
-            Built for the <span className={`text-transparent bg-clip-text bg-gradient-to-r ${tabColors[activeTab]} transition-all duration-500`}>Entire Ecosystem</span>
+            Built for the <span className={`text-transparent bg-clip-text bg-gradient-to-r ${tabColors[activeTab]} transition-colors duration-500`}>Entire Ecosystem</span>
           </h2>
         </motion.div>
 
@@ -77,7 +77,7 @@ const FeaturesSection: React.FC = () => {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`relative px-6 md:px-8 py-4 rounded-[1.5rem] text-sm font-bold transition-all duration-300 z-10 ${
+                  className={`relative px-6 md:px-8 py-4 rounded-[1.5rem] text-sm font-bold transition-colors duration-300 z-10 ${
                     activeTab === tab ? 'text-white shadow-lg' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
                   }`}
                 >
@@ -105,10 +105,10 @@ const FeaturesSection: React.FC = () => {
                     key={`${activeTab}-${idx}`}
                     custom={idx}
                     variants={cardVariants}
-                    className="group bg-slate-50 dark:bg-slate-900/60 backdrop-blur-xl p-10 rounded-[2.5rem] border border-slate-200/50 dark:border-slate-800/50 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden"
+                    className="group bg-slate-50 dark:bg-slate-900/60 backdrop-blur-xl p-10 rounded-[2.5rem] border border-slate-200/50 dark:border-slate-800/50 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-shadow transition-transform duration-500 relative overflow-hidden"
                   >
                     <div className={`absolute inset-0 bg-gradient-to-br ${tabColors[activeTab]} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-[2.5rem]`} />
-                    <div className={`w-16 h-16 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:${tabBg[activeTab]} group-hover:text-white transition-all duration-500 shadow-sm relative z-10`}>
+                    <div className={`w-16 h-16 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:${tabBg[activeTab]} group-hover:text-white transition-transform transition-colors duration-500 shadow-sm relative z-10`}>
                       {feat.icon}
                     </div>
                     <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 tracking-tight relative z-10">{feat.title}</h3>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Download, FileText, BookOpen, Brain, FileSpreadsheet, Lock, Sparkles, ArrowRight, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -92,14 +92,14 @@ const Resources: React.FC = () => {
     fetchResources();
   }, []);
 
-  const allResources = [...STATIC_RESOURCES, ...firebaseResources.filter(fr => !STATIC_RESOURCES.find(r => r.title === fr.title))];
+  const allResources = useMemo(() => [...STATIC_RESOURCES, ...firebaseResources.filter(fr => !STATIC_RESOURCES.find(r => r.title === fr.title))], [firebaseResources]);
 
-  const filtered = allResources.filter(r => {
+  const filtered = useMemo(() => allResources.filter(r => {
     const matchSearch = r.title.toLowerCase().includes(search.toLowerCase()) || r.description.toLowerCase().includes(search.toLowerCase());
     const matchCat = filter === 'All' || r.category === filter;
     const matchPremium = showPremium === 'all' || (showPremium === 'free' && !r.premium) || (showPremium === 'premium' && r.premium);
     return matchSearch && matchCat && matchPremium;
-  });
+  }), [allResources, search, filter, showPremium]);
 
   return (
     <div className="min-h-screen pt-32 pb-32 px-6 bg-white dark:bg-slate-950 relative overflow-hidden">
@@ -129,14 +129,14 @@ const Resources: React.FC = () => {
           </div>
           <div className="flex gap-2 flex-wrap">
             {categories.map(c => (
-              <button key={c} onClick={() => setFilter(c)} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              <button key={c} onClick={() => setFilter(c)} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
                 filter === c ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
               }`}>{c}</button>
             ))}
           </div>
           <div className="flex gap-2">
             {(['all', 'free', 'premium'] as const).map(s => (
-              <button key={s} onClick={() => setShowPremium(s)} className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all ${
+              <button key={s} onClick={() => setShowPremium(s)} className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-colors ${
                 showPremium === s ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
               }`}>{s}</button>
             ))}
@@ -148,7 +148,7 @@ const Resources: React.FC = () => {
           {filtered.map((item, idx) => (
             <motion.div
               key={idx} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}
-              className={`group bg-white dark:bg-slate-900 border rounded-2xl p-6 transition-all duration-500 hover:-translate-y-2 ${
+              className={`group bg-white dark:bg-slate-900 border rounded-2xl p-6 transition-transform duration-500 hover:-translate-y-2 ${
                 item.premium
                   ? 'border-amber-200 dark:border-amber-800/50 hover:shadow-xl hover:shadow-amber-500/10'
                   : 'border-slate-200 dark:border-slate-800 hover:shadow-xl hover:border-emerald-500'
@@ -176,7 +176,7 @@ const Resources: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-xs text-slate-400">{item.downloads} downloads</span>
                 {item.url ? (
-                  <a href={item.url} download className={`flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-all ${
+                  <a href={item.url} download className={`flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-colors ${
                     item.premium
                       ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
                       : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20'
@@ -184,7 +184,7 @@ const Resources: React.FC = () => {
                     <Download className="w-3 h-3" /> {item.premium ? 'Unlock' : 'Download'}
                   </a>
                 ) : (
-                  <button className={`flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-all ${
+                  <button className={`flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-colors ${
                     item.premium
                       ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
                       : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20'
@@ -207,7 +207,7 @@ const Resources: React.FC = () => {
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/10 rounded-[2rem] p-12 text-center border border-emerald-100 dark:border-emerald-800/30">
           <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">Want Access to Premium Resources?</h2>
           <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-lg mx-auto">Enroll in our courses to unlock premium resources, question banks, and personalized study materials.</p>
-          <Link to="/courses" className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold transition-all shadow-xl shadow-emerald-600/20 hover:-translate-y-1">
+          <Link to="/courses" className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold transition-colors transition-transform shadow-xl shadow-emerald-600/20 hover:-translate-y-1">
             Browse Courses <ArrowRight className="w-5 h-5" />
           </Link>
         </motion.div>

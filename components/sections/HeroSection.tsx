@@ -50,11 +50,11 @@ const HeroSection: React.FC = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 relative z-10">
-              <Link to="/courses" className="px-8 py-4 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200 text-white rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl hover:shadow-indigo-500/20 group">
+              <Link to="/courses" className="px-8 py-4 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200 text-white rounded-2xl font-bold transition-colors transition-shadow flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl hover:shadow-indigo-500/20 group">
                 Explore Courses
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/contact" className="px-8 py-4 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md backdrop-blur-lg">
+              <Link to="/contact" className="px-8 py-4 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl font-bold transition-colors transition-shadow flex items-center justify-center gap-2 shadow-sm hover:shadow-md backdrop-blur-lg">
                 Partner with us
               </Link>
             </div>
@@ -79,14 +79,14 @@ const HeroSection: React.FC = () => {
 
             {/* Bottom Split Bento */}
             <div className="grid grid-cols-2 gap-6 lg:gap-8">
-              <motion.div variants={scaleItem} className="bg-white dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 rounded-[2.5rem] p-6 lg:p-8 flex flex-col items-center justify-center text-center shadow-xl shadow-slate-200/50 dark:shadow-none hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
+              <motion.div variants={scaleItem} className="bg-white dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 rounded-[2.5rem] p-6 lg:p-8 flex flex-col items-center justify-center text-center shadow-xl shadow-slate-200/50 dark:shadow-none hover:-translate-y-2 hover:shadow-2xl transition-shadow transition-transform duration-300">
                 <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mb-5 ring-4 ring-emerald-50 dark:ring-emerald-900/10">
                   <Play className="w-6 h-6 ml-1" />
                 </div>
                 <p className="font-bold text-slate-900 dark:text-white tracking-tight">Active<br/>Engagements</p>
               </motion.div>
               
-              <motion.div variants={scaleItem} className="bg-slate-900 dark:bg-slate-800 rounded-[2.5rem] p-6 lg:p-8 flex flex-col items-center justify-center text-center shadow-xl hover:-translate-y-2 hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 relative overflow-hidden group">
+              <motion.div variants={scaleItem} className="bg-slate-900 dark:bg-slate-800 rounded-[2.5rem] p-6 lg:p-8 flex flex-col items-center justify-center text-center shadow-xl hover:-translate-y-2 hover:shadow-2xl hover:shadow-indigo-500/20 transition-shadow transition-transform duration-300 relative overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-t from-indigo-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <Layers className="w-10 h-10 text-indigo-400 mb-5 relative z-10" />
                 <p className="font-black text-2xl text-white mb-1 relative z-10 tracking-tight">+150</p>

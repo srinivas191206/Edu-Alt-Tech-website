@@ -78,23 +78,23 @@ const SolutionSection: React.FC = () => {
             </div>
 
             {/* Orbital Rings */}
-            <motion.div animate={{ rotate: 360 }} transition={{ duration: 40, ease: "linear", repeat: Infinity }} className="absolute w-[500px] h-[500px] border-[2px] border-dashed border-emerald-300/40 dark:border-emerald-700/40 rounded-full z-10" />
-            <motion.div animate={{ rotate: -360 }} transition={{ duration: 60, ease: "linear", repeat: Infinity }} className="absolute w-[700px] h-[700px] border border-slate-200 dark:border-slate-800 rounded-full z-0" />
+            <motion.div animate={{ rotate: 360 }} transition={{ duration: 40, ease: "linear", repeat: Infinity }} style={{ willChange: 'transform' }} className="absolute w-[500px] h-[500px] border-[2px] border-dashed border-emerald-300/40 dark:border-emerald-700/40 rounded-full z-10" />
+            <motion.div animate={{ rotate: -360 }} transition={{ duration: 60, ease: "linear", repeat: Infinity }} style={{ willChange: 'transform' }} className="absolute w-[700px] h-[700px] border border-slate-200 dark:border-slate-800 rounded-full z-0" />
             
             {/* Floating Satellites with Premium Glassmorphism */}
-            <motion.div animate={{ y: [0, -20, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} className="absolute top-[15%] left-[10%] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-3xl border border-white/50 dark:border-slate-700/50 shadow-2xl shadow-indigo-500/10 z-40">
+            <motion.div animate={{ y: [0, -20, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} style={{ willChange: 'transform' }} className="absolute top-[15%] left-[10%] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-3xl border border-white/50 dark:border-slate-700/50 shadow-2xl shadow-indigo-500/10 z-40">
               <Smartphone className="w-10 h-10 text-indigo-500 mb-3" />
               <p className="font-bold text-sm text-slate-900 dark:text-white tracking-tight">Parent Portal</p>
               <div className="mt-3 flex gap-1"><div className="w-2 h-2 rounded-full bg-emerald-500"/><div className="w-10 h-2 bg-slate-200 dark:bg-slate-700 rounded-full"/></div>
             </motion.div>
             
-            <motion.div animate={{ y: [0, 20, 0] }} transition={{ duration: 6, repeat: Infinity, delay: 1, ease: "easeInOut" }} className="absolute bottom-[15%] right-[10%] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-3xl border border-white/50 dark:border-slate-700/50 shadow-2xl shadow-teal-500/10 z-40">
+            <motion.div animate={{ y: [0, 20, 0] }} transition={{ duration: 6, repeat: Infinity, delay: 1, ease: "easeInOut" }} style={{ willChange: 'transform' }} className="absolute bottom-[15%] right-[10%] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-3xl border border-white/50 dark:border-slate-700/50 shadow-2xl shadow-teal-500/10 z-40">
               <MonitorDot className="w-10 h-10 text-teal-500 mb-3" />
               <p className="font-bold text-sm text-slate-900 dark:text-white tracking-tight">Teacher Dash</p>
               <div className="mt-3 flex gap-1"><div className="w-2 h-2 rounded-full bg-emerald-500"/><div className="w-10 h-2 bg-slate-200 dark:bg-slate-700 rounded-full"/></div>
             </motion.div>
 
-            <motion.div animate={{ y: [0, -15, 0] }} transition={{ duration: 7, repeat: Infinity, delay: 2, ease: "easeInOut" }} className="absolute top-[30%] right-[0%] bg-slate-900 dark:bg-white p-6 rounded-3xl shadow-2xl z-40">
+            <motion.div animate={{ y: [0, -15, 0] }} transition={{ duration: 7, repeat: Infinity, delay: 2, ease: "easeInOut" }} style={{ willChange: 'transform' }} className="absolute top-[30%] right-[0%] bg-slate-900 dark:bg-white p-6 rounded-3xl shadow-2xl z-40">
               <BarChart3 className="w-10 h-10 text-rose-400 dark:text-rose-500 mb-3" />
               <p className="font-bold text-sm text-white dark:text-slate-900 tracking-tight">Admin Master</p>
               <div className="mt-3 flex gap-1"><div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"/><div className="w-10 h-2 bg-slate-700 dark:bg-slate-200 rounded-full"/></div>
