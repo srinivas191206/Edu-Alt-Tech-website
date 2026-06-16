@@ -44,6 +44,9 @@ export interface Course {
   category: CourseCategory;
   price?: number; // in INR, 0 = free
   thumbnailUrl?: string; // Optional thumbnail
+  folder?: string;
+  duration?: string;
+  level?: string;
   createdAt: any;
   createdBy: string; // admin or system
 }

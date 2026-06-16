@@ -1,9 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import { db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
-import { Search, Book, Palette, ArrowRight, Compass, Filter, Sparkles, GraduationCap, Globe, ShieldCheck, ExternalLink } from 'lucide-react';
+import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const FOLDER_MAP: Record<string, 'education' | 'alternative'> = {
+  'Core Education': 'education',
+  'Language Skills': 'education',
+  'Music': 'education',
+  'Dance': 'education',
+  'Arts & Creativity': 'education',
+  'Life Skills': 'education',
+  'Mind Sports': 'education',
+  'Health & Wellness': 'education',
+};
+
+const EDUCATION_FOLDERS = new Set(['Core Education', 'Language Skills', 'Music', 'Dance', 'Arts & Creativity', 'Life Skills', 'Mind Sports', 'Health & Wellness']);
+
+function getThumbnail(title: string, folder: string): string {
+  const colors: Record<string, [string, string]> = {
+    'Artificial Intelligence': ['#059669', '#10b981'],
+    'Entrepreneurship': ['#7c3aed', '#a855f7'],
+    'Career Development': ['#0284c7', '#38bdf8'],
+    'Marketing': ['#dc2626', '#f87171'],
+    'Finance': ['#ca8a04', '#eab308'],
+    'Innovation': ['#ea580c', '#f97316'],
+    'Life Skills': ['#0891b2', '#22d3ee'],
+    'Robotics': ['#4f46e5', '#818cf8'],
+    'Cybersecurity': ['#1e293b', '#475569'],
+    'Creator Economy': ['#be123c', '#f43f5e'],
+    'Future Technologies': ['#6d28d9', '#8b5cf6'],
+    'Technology': ['#0369a1', '#0ea5e9'],
+    'Core Education': ['#0d9488', '#14b8a6'],
+    'Language Skills': ['#d97706', '#f59e0b'],
+    'Music': ['#9333ea', '#a855f7'],
+    'Dance': ['#db2777', '#ec4899'],
+    'Arts & Creativity': ['#e11d48', '#fb7185'],
+    'Mind Sports': ['#15803d', '#22c55e'],
+    'Health & Wellness': ['#059669', '#34d399'],
+  };
+  const [c1, c2] = colors[folder] || ['#6366f1', '#a855f7'];
+  const icon = getIconForFolder(folder);
+  return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:${c1}"/><stop offset="100%" style="stop-color:${c2}"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/><text x="200" y="140" text-anchor="middle" font-size="64" fill="rgba(255,255,255,0.2)">${icon}</text><text x="200" y="260" text-anchor="middle" font-size="16" fill="rgba(255,255,255,0.6)" font-weight="bold" font-family="sans-serif">${escapeXml(title)}</text></svg>`)}`;
+}
+
+function getIconForFolder(folder: string): string {
+  const icons: Record<string, string> = {
+    'Artificial Intelligence': '🤖',
+    'Entrepreneurship': '🚀',
+    'Career Development': '📈',
+    'Marketing': '📢',
+    'Finance': '💰',
+    'Innovation': '💡',
+    'Life Skills': '🧠',
+    'Robotics': '⚙️',
+    'Cybersecurity': '🔒',
+    'Creator Economy': '🎬',
+    'Future Technologies': '🔮',
+    'Technology': '💻',
+    'Core Education': '📚',
+    'Language Skills': '🗣️',
+    'Music': '🎵',
+    'Dance': '💃',
+    'Arts & Creativity': '🎨',
+    'Mind Sports': '♟️',
+    'Health & Wellness': '🧘',
+  };
+  return icons[folder] || '📖';
+}
+
+function escapeXml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
 const Courses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -18,7 +87,21 @@ const Courses: React.FC = () => {
         const querySnapshot = await getDocs(q);
         const fetchedCourses: Course[] = [];
         querySnapshot.forEach((doc) => {
-          fetchedCourses.push({ id: doc.id, ...doc.data() } as Course);
+          const data = doc.data();
+          const folder = data.folder || data.category || '';
+          fetchedCourses.push({
+            id: doc.id,
+            title: data.title || '',
+            description: data.description || '',
+            category: FOLDER_MAP[folder] || 'alternative',
+            price: data.price ?? 0,
+            thumbnailUrl: data.thumbnailUrl || getThumbnail(data.title || 'Course', folder),
+            folder,
+            duration: data.duration,
+            level: data.level,
+            createdAt: data.created_at,
+            createdBy: '',
+          } as Course);
         });
         setCourses(fetchedCourses);
       } catch (err) {
@@ -32,252 +115,134 @@ const Courses: React.FC = () => {
 
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          course.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = activeFilter === 'all' || course.category === activeFilter;
-    return matchesSearch && matchesFilter;
+                          (course.description || '').toLowerCase().includes(searchTerm.toLowerCase());
+    if (activeFilter === 'all') return matchesSearch;
+    if (activeFilter === 'education') return matchesSearch && EDUCATION_FOLDERS.has((course as any).folder || '');
+    return matchesSearch && !EDUCATION_FOLDERS.has((course as any).folder || '');
   });
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.1 }
-    }
-  } as const;
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.98 },
-    show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 70, damping: 15 } },
-    exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } }
-  } as const;
-
   return (
-    <div className="min-h-screen pt-32 pb-32 px-6 bg-slate-50 dark:bg-[#020617] selection:bg-emerald-500/30">
-      {/* Dynamic Ambient Background */}
+    <div className="min-h-screen bg-slate-50 dark:bg-[#020617] selection:bg-emerald-500/30">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-emerald-500/5 blur-[120px] rounded-full" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-500/5 blur-[120px] rounded-full" />
       </div>
-      
-      <div className="max-w-[1400px] mx-auto relative z-10">
-        
-        {/* Header Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-20 flex flex-col lg:flex-row lg:items-end justify-between gap-12"
-        >
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-[10px] font-black tracking-[0.2em] uppercase mb-8 shadow-sm">
-              <Sparkles className="w-4 h-4 text-emerald-500" />
-              Curriculum Discovery
-            </div>
-            <h1 className="text-6xl md:text-8xl font-black text-slate-900 dark:text-white mb-8 tracking-tighter leading-[0.85]">
-              Redefining <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500">Learning</span> Pathways.
-            </h1>
-            <p className="text-xl text-slate-500 dark:text-slate-400 leading-relaxed font-medium max-w-xl">
-              Curated architectural frameworks for modern execution. Bridge the gap between theory and real-world mastery.
-            </p>
-          </div>
 
-          <div className="w-full lg:w-[450px] space-y-6">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-emerald-500/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative">
-                <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
-                <input 
-                  type="text" 
-                  placeholder="Filter by keyword..." 
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-14 pr-6 py-6 bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 shadow-2xl shadow-slate-200/50 dark:shadow-none dark:text-white transition-all text-lg font-bold placeholder:text-slate-400 placeholder:font-medium"
-                />
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4 px-6 text-slate-400">
-              <Filter className="w-4 h-4" />
-              <span className="text-[10px] font-black uppercase tracking-widest">Global Taxonomy Filter</span>
-            </div>
+      <div className="max-w-[1400px] mx-auto relative z-10 px-6 py-24 md:py-32">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-[10px] font-black tracking-[0.2em] uppercase mb-6 shadow-sm">
+            <Sparkles className="w-4 h-4 text-emerald-500" /> Curriculum Discovery
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white mb-6 tracking-tighter leading-[0.85]">
+            Redefining <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500">Learning</span> Pathways.
+          </h1>
+          <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed font-medium max-w-xl">
+            Curated architectural frameworks for modern execution. Bridge the gap between theory and real-world mastery.
+          </p>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8">
+          <div className="relative max-w-md">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <input type="text" placeholder="Search courses..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-14 pr-6 py-4 bg-white dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 dark:text-white transition-all font-medium placeholder:text-slate-400" />
           </div>
         </motion.div>
 
-        {/* Bento Filtering Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-20"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+          className="flex flex-wrap gap-3 mb-10">
           {[
-            { id: 'all', label: 'Global Directory', icon: Globe, desc: 'Complete access to all orchestrated programs.' },
-            { id: 'education', label: 'Core Curricula', icon: GraduationCap, desc: 'Academic foundations and certified standards.' },
-            { id: 'alternative', label: 'Strategic Skills', icon: ShieldCheck, desc: 'High-leverage alternative execution frameworks.' }
-          ].map((filter) => (
-            <button
-              key={filter.id}
-              onClick={() => setActiveFilter(filter.id as any)}
-              className={`p-8 rounded-[2.5rem] text-left transition-all duration-500 border group relative overflow-hidden ${
-                activeFilter === filter.id 
-                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-transparent shadow-2xl scale-[1.02]' 
-                : 'bg-white dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-emerald-500/30'
-              }`}
-            >
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-500 group-hover:scale-110 ${
-                activeFilter === filter.id ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:text-emerald-500'
+            { id: 'all', label: 'All Courses', icon: Compass },
+            { id: 'education', label: 'Subjective', icon: GraduationCap },
+            { id: 'alternative', label: 'Alternative', icon: Sparkles },
+          ].map((f) => (
+            <button key={f.id} onClick={() => setActiveFilter(f.id as any)}
+              className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all ${
+                activeFilter === f.id
+                  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25'
+                  : 'bg-white dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50'
               }`}>
-                <filter.icon className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-black tracking-tight mb-2 uppercase">{filter.label}</h3>
-              <p className={`text-xs font-medium leading-relaxed ${activeFilter === filter.id ? 'opacity-70' : 'opacity-50'}`}>
-                {filter.desc}
-              </p>
-              {activeFilter === filter.id && (
-                <motion.div layoutId="activeGlow" className="absolute inset-0 bg-emerald-500/10 pointer-events-none" />
-              )}
+              <f.icon className="w-4 h-4" /> {f.label}
             </button>
           ))}
         </motion.div>
 
-        {/* Asymmetrical Course Grid */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-4">
             <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
               <Sparkles className="w-12 h-12 text-emerald-500" />
             </motion.div>
-            <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Syncing Directory...</p>
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Loading courses...</p>
           </div>
         ) : filteredCourses.length > 0 ? (
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10"
-          >
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             <AnimatePresence mode="popLayout">
-              {filteredCourses.map((course, idx) => (
-                <motion.div 
-                  layout
-                  variants={cardVariants}
-                  key={course.id} 
-                  className={`group bg-white dark:bg-slate-900/40 backdrop-blur-xl rounded-[3rem] overflow-hidden border border-slate-200 dark:border-slate-800 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-all duration-700 flex flex-col h-full transform ${
-                    idx % 4 === 0 ? 'md:col-span-2 xl:col-span-2' : ''
-                  }`}
-                >
-                  <div className={`flex flex-col ${idx % 4 === 0 ? 'md:flex-row' : 'flex-col'} h-full`}>
-                    {/* Media Container */}
-                    <div className={`relative overflow-hidden flex-shrink-0 ${
-                      idx % 4 === 0 ? 'md:w-[45%] h-72 md:h-auto' : 'h-72 w-full'
-                    } bg-slate-100 dark:bg-slate-800`}>
-                      {course.thumbnailUrl ? (
-                        <img 
-                          src={course.thumbnailUrl} 
-                          alt="" 
-                          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out" 
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center opacity-20">
-                          <Book className="w-20 h-20" />
-                        </div>
-                      )}
-                      <div className="absolute top-6 left-6 px-4 py-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white border border-slate-200/50 dark:border-slate-700/50">
-                        {course.category}
-                      </div>
+              {filteredCourses.map((course) => (
+                <motion.div layout key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+                  className="group bg-white dark:bg-slate-900/40 backdrop-blur-xl rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-all duration-500 flex flex-col">
+                  <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                    <img src={course.thumbnailUrl} alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                    <div className="absolute top-4 left-4 px-3 py-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white border border-slate-200/50 dark:border-slate-700/50">
+                      {(course as any).folder || course.category}
                     </div>
-
-                    {/* Content Container */}
-                    <div className="p-10 flex flex-col flex-1">
-                      <div className="flex-1">
-                        <h3 className="text-3xl font-black text-slate-900 dark:text-white mb-6 tracking-tight leading-tight group-hover:text-emerald-500 transition-colors">
-                          {course.title}
-                        </h3>
-                        <p className="text-slate-500 dark:text-slate-400 mb-10 font-medium leading-relaxed line-clamp-3">
-                          {course.description}
-                        </p>
-                      </div>
-                      
-                      <div className="flex items-center justify-between pt-8 border-t border-slate-100 dark:border-slate-800">
-                        <div className="flex flex-col">
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Tuition Fee</span>
-                          <span className="font-black text-slate-900 dark:text-white text-2xl tracking-tighter">
-                            {course.price === 0 || !course.price ? 'Free' : `₹${course.price}`}
-                          </span>
-                        </div>
-                        <Link 
-                          to={`/courses/${course.id}`} 
-                          className="inline-flex items-center gap-3 px-8 py-4 bg-slate-900 text-white dark:bg-white dark:text-slate-900 rounded-[2rem] font-black text-xs uppercase tracking-widest hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white transition-all shadow-xl shadow-slate-900/10 dark:shadow-none active:scale-95 group/btn"
-                        >
-                          Explore <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                        </Link>
-                      </div>
+                    <div className="absolute top-4 right-4 px-3 py-1.5 bg-emerald-500/90 backdrop-blur-md rounded-full text-[10px] font-black text-white uppercase tracking-wider">
+                      ₹{course.price || 0}
                     </div>
+                  </div>
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 tracking-tight leading-tight group-hover:text-emerald-500 transition-colors line-clamp-2">
+                      {course.title}
+                    </h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-5 font-medium leading-relaxed line-clamp-2 flex-1">
+                      {course.description}
+                    </p>
+                    <Link to={`/courses/${course.id}`}
+                      className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white transition-all active:scale-[0.98]">
+                      Explore Course →
+                    </Link>
                   </div>
                 </motion.div>
               ))}
             </AnimatePresence>
           </motion.div>
         ) : (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-32 bg-white dark:bg-slate-900/50 backdrop-blur-xl rounded-[3rem] border border-slate-200 dark:border-slate-800"
-          >
-            <div className="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-8">
-              <Search className="w-10 h-10 text-slate-300" />
-            </div>
-            <h3 className="text-4xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">System Empty.</h3>
-            <p className="text-lg text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-10 font-medium leading-relaxed">No curricula matches your current search parameters.</p>
-            <button 
-              onClick={() => {setSearchTerm(''); setActiveFilter('all');}} 
-              className="px-10 py-5 bg-emerald-500 text-white rounded-full font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-emerald-500/20 hover:-translate-y-1 transition-all"
-            >
-              Reset Protocols
-            </button>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-24 bg-white dark:bg-slate-900/50 backdrop-blur-xl rounded-3xl border border-slate-200 dark:border-slate-800">
+            <Search className="w-12 h-12 text-slate-300 mx-auto mb-6" />
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">No courses found</h3>
+            <p className="text-slate-500 dark:text-slate-400 mb-6">Try a different search or filter.</p>
+            <button onClick={() => { setSearchTerm(''); setActiveFilter('all'); }}
+              className="px-8 py-3.5 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:-translate-y-0.5 transition-all">Reset Filters</button>
           </motion.div>
         )}
 
-        {/* Free AI Courses Section */}
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-28">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-300 font-bold uppercase tracking-widest text-[10px] mb-6">
-              <Sparkles className="w-4 h-4" />
-              Free AI Courses
+        {/* Free AI Courses */}
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-300 font-bold uppercase tracking-widest text-[10px] mb-4">
+              <Sparkles className="w-4 h-4" /> Free AI Courses
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] mb-6">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter mb-3">
               Learn AI from the <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500">Best in the World</span>
             </h2>
-            <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">
-              Free courses and tutorials from top AI companies and universities.
-            </p>
+            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">Free courses from top AI companies and universities.</p>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {AI_COURSES.map((provider, idx) => (
-              <motion.a
-                key={idx}
-                href={provider.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.05 }}
-                className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-emerald-500 hover:-translate-y-2 transition-all duration-500 hover:shadow-xl block"
-              >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center p-2">
+              <motion.a key={idx} href={provider.url} target="_blank" rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: idx * 0.03 }}
+                className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:border-emerald-500 hover:-translate-y-1 transition-all duration-300 block">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center p-1.5 flex-shrink-0">
                     <img src={provider.logo} alt={provider.name} className="w-full h-full object-contain"
-                      onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2310b981"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>'; }}
-                    />
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{provider.name}</h3>
-                  <ExternalLink className="w-4 h-4 text-slate-300 ml-auto group-hover:text-emerald-500 transition-colors" />
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">{provider.name}</h3>
+                  <ExternalLink className="w-3.5 h-3.5 text-slate-300 ml-auto flex-shrink-0" />
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {provider.courses.map((course, ci) => (
-                    <span key={ci} className="px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 rounded-lg text-[10px] font-bold uppercase tracking-wider">
-                      {course}
-                    </span>
+                    <span key={ci} className="px-2 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 rounded-md text-[9px] font-bold uppercase tracking-wider">{course}</span>
                   ))}
                 </div>
               </motion.a>
@@ -290,26 +255,22 @@ const Courses: React.FC = () => {
 };
 
 const AI_COURSES = [
-  { name: "Anthropic", url: "https://anthropic.skilljar.com", logo: "https://www.anthropic.com/favicon.ico", courses: ["Claude API Fundamentals", "Prompt Engineering", "AI Safety", "Agent Development"] },
-  { name: "Google", url: "https://grow.google/ai", logo: "https://www.google.com/favicon.ico", courses: ["Google AI Essentials", "Gemini for Developers", "Generative AI Learning Path"] },
-  { name: "Meta", url: "https://ai.meta.com/resources", logo: "https://about.meta.com/favicon.ico", courses: ["Llama Tutorials", "Responsible AI", "Open-Source AI Development"] },
-  { name: "NVIDIA", url: "https://developer.nvidia.com/training", logo: "https://developer.nvidia.com/sites/default/files/favicon.ico", courses: ["Generative AI with LLMs", "CUDA Programming", "Deep Learning Institute"] },
-  { name: "Microsoft", url: "https://learn.microsoft.com/training", logo: "https://learn.microsoft.com/favicon.ico", courses: ["AI Fundamentals (AI-900)", "Azure OpenAI", "Copilot Development"] },
-  { name: "OpenAI", url: "https://academy.openai.com", logo: "https://openai.com/favicon.ico", courses: ["Prompt Engineering", "Agents SDK", "OpenAI API Development"] },
-  { name: "IBM", url: "https://skillsbuild.org", logo: "https://www.ibm.com/favicon.ico", courses: ["AI Fundamentals", "Machine Learning", "Generative AI for Everyone"] },
-  { name: "AWS", url: "https://skillbuilder.aws", logo: "https://aws.amazon.com/favicon.ico", courses: ["Generative AI Essentials", "Amazon Bedrock", "ML Engineer Path"] },
-  { name: "DeepLearning.AI", url: "https://www.deeplearning.ai", logo: "https://www.deeplearning.ai/favicon.ico", courses: ["AI for Everyone", "LangChain", "RAG", "LLM Engineering"] },
-  { name: "Hugging Face", url: "https://huggingface.co/learn", logo: "https://huggingface.co/favicon.ico", courses: ["NLP Course", "Transformers", "Agents Course"] },
-  { name: "FastAI", url: "https://course.fast.ai", logo: "https://www.fast.ai/favicon.ico", courses: ["Practical Deep Learning for Coders"] },
-  { name: "Kaggle Learn", url: "https://www.kaggle.com/learn", logo: "https://www.kaggle.com/favicon.ico", courses: ["Python", "Machine Learning", "Deep Learning", "Feature Engineering"] },
-  { name: "Stanford AI", url: "https://cs231n.stanford.edu", logo: "https://www.stanford.edu/favicon.ico", courses: ["CS231n: CNNs for Visual Recognition"] },
-  { name: "MIT OpenCourseWare", url: "https://ocw.mit.edu", logo: "https://ocw.mit.edu/favicon.ico", courses: ["Machine Learning", "Artificial Intelligence", "Linear Algebra", "Probability"] },
-  { name: "Full Stack Deep Learning", url: "https://fullstackdeeplearning.com", logo: "https://fullstackdeeplearning.com/favicon.ico", courses: ["LLM Bootcamp", "ML Systems", "Production AI"] },
-  { name: "DeepMind", url: "https://deepmind.google/learning-resources", logo: "https://deepmind.google/favicon.ico", courses: ["AI Safety", "Reinforcement Learning", "Research Resources"] },
-  { name: "OpenAI Cookbook", url: "https://github.com/openai/openai-cookbook", logo: "https://github.githubassets.com/favicons/favicon.svg", courses: ["RAG Examples", "Function Calling", "Agents", "API Tutorials"] },
-  { name: "Papers With Code", url: "https://paperswithcode.com", logo: "https://paperswithcode.com/favicon.ico", courses: ["Research Papers", "Benchmarks", "State-of-the-Art Models"] },
-  { name: "AssemblyAI", url: "https://www.assemblyai.com/blog", logo: "https://www.assemblyai.com/favicon.ico", courses: ["Speech AI", "Voice Agents", "LLM Applications"] },
-  { name: "Pinecone", url: "https://learn.pinecone.io", logo: "https://www.pinecone.io/favicon.ico", courses: ["Vector Databases", "RAG", "Semantic Search"] },
+  { name: "Anthropic", url: "https://anthropic.skilljar.com", logo: "https://www.anthropic.com/favicon.ico", courses: ["Claude API", "Prompt Engineering", "AI Safety"] },
+  { name: "Google", url: "https://grow.google/ai", logo: "https://www.google.com/favicon.ico", courses: ["Google AI Essentials", "Gemini"] },
+  { name: "Meta", url: "https://ai.meta.com/resources", logo: "https://about.meta.com/favicon.ico", courses: ["Llama Tutorials", "Responsible AI"] },
+  { name: "NVIDIA", url: "https://developer.nvidia.com/training", logo: "https://developer.nvidia.com/favicon.ico", courses: ["Generative AI", "Deep Learning"] },
+  { name: "Microsoft", url: "https://learn.microsoft.com/training", logo: "https://learn.microsoft.com/favicon.ico", courses: ["AI-900", "Azure OpenAI"] },
+  { name: "OpenAI", url: "https://academy.openai.com", logo: "https://openai.com/favicon.ico", courses: ["Prompt Engineering", "Agents SDK"] },
+  { name: "IBM", url: "https://skillsbuild.org", logo: "https://www.ibm.com/favicon.ico", courses: ["AI Fundamentals", "Generative AI"] },
+  { name: "AWS", url: "https://skillbuilder.aws", logo: "https://aws.amazon.com/favicon.ico", courses: ["Generative AI", "Bedrock"] },
+  { name: "DeepLearning.AI", url: "https://www.deeplearning.ai", logo: "https://www.deeplearning.ai/favicon.ico", courses: ["AI for Everyone", "LangChain"] },
+  { name: "Hugging Face", url: "https://huggingface.co/learn", logo: "https://huggingface.co/favicon.ico", courses: ["NLP Course", "Transformers"] },
+  { name: "FastAI", url: "https://course.fast.ai", logo: "https://course.fast.ai/favicon.ico", courses: ["Practical Deep Learning"] },
+  { name: "Kaggle", url: "https://www.kaggle.com/learn", logo: "https://www.kaggle.com/favicon.ico", courses: ["Python", "ML", "Deep Learning"] },
+  { name: "Stanford", url: "https://cs231n.stanford.edu", logo: "https://www.stanford.edu/favicon.ico", courses: ["CS231n: CNNs"] },
+  { name: "MIT", url: "https://ocw.mit.edu", logo: "https://ocw.mit.edu/favicon.ico", courses: ["ML", "AI", "Math"] },
+  { name: "DeepMind", url: "https://deepmind.google/learning-resources", logo: "https://deepmind.google/favicon.ico", courses: ["AI Safety", "RL"] },
+  { name: "Pinecone", url: "https://learn.pinecone.io", logo: "https://www.pinecone.io/favicon.ico", courses: ["Vector DBs", "RAG"] },
 ];
 
 export default Courses;
