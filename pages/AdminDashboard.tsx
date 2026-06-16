@@ -492,6 +492,17 @@ const AdminDashboard: React.FC = () => {
                             </div>
                           </div>
 
+                          {app.status === 'scheduled' && (() => {
+                            const linkMatch = app.message?.match(/\[Interview Link:\s*([^\]\n]+)\]/);
+                            const meetingUrl = linkMatch ? linkMatch[1] : app.meetingLink;
+                            const formattedUrl = meetingUrl ? (meetingUrl.startsWith('http') ? meetingUrl : `https://${meetingUrl}`) : null;
+                            return formattedUrl ? (
+                              <a href={formattedUrl} target="_blank" rel="noreferrer" className="block mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 text-blue-600 font-bold text-sm truncate hover:underline">
+                                <Video className="w-3.5 h-3.5 inline mr-2" />{meetingUrl}
+                              </a>
+                            ) : null;
+                          })()}
+
                           <button 
                             onClick={() => setSelectedApp(app)}
                             className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-transform transition-colors shadow-xl group-hover:bg-emerald-500 group-hover:text-white"
