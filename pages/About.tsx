@@ -12,6 +12,7 @@ const values = [
 ];
 
 function TiltCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
+  const gradients = ['from-emerald-500 to-teal-500', 'from-blue-500 to-indigo-500', 'from-purple-500 to-pink-500', 'from-amber-500 to-orange-500', 'from-rose-500 to-red-500', 'from-cyan-500 to-blue-500', 'from-violet-500 to-purple-500', 'from-lime-500 to-emerald-500'];
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -34,8 +35,6 @@ function TiltCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
     y.set(0);
   }
 
-  const gradients = ['from-emerald-500 to-teal-500', 'from-blue-500 to-indigo-500', 'from-purple-500 to-pink-500', 'from-amber-500 to-orange-500', 'from-rose-500 to-red-500', 'from-cyan-500 to-blue-500', 'from-violet-500 to-purple-500', 'from-lime-500 to-emerald-500'];
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -50,14 +49,14 @@ function TiltCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
         onMouseLeave={handleLeave}
         style={{ rotateX, rotateY }}
         whileHover={{ scale: 1.02, z: 20 }}
-        className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 transition-colors duration-500 text-center overflow-hidden"
+        className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 transition-colors duration-500 text-center overflow-hidden w-[300px] sm:w-[340px]"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-slate-50/50 to-transparent dark:from-slate-800/30 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         <div className="relative z-10">
           <motion.div
             whileHover={{ scale: 1.1 }}
-            className={`w-24 h-24 mx-auto mb-5 rounded-[1.25rem] overflow-hidden bg-gradient-to-br ${gradients[idx % gradients.length]} p-[3px] shadow-lg`}
+            className={`w-36 h-36 sm:w-44 sm:h-44 mx-auto mb-6 rounded-[1.75rem] overflow-hidden bg-gradient-to-br ${gradients[idx % gradients.length]} p-[4px] shadow-xl`}
           >
             <div className="w-full h-full rounded-[1.1rem] overflow-hidden bg-white dark:bg-slate-900">
               {member.image ? (
@@ -167,10 +166,22 @@ const About: React.FC = () => {
             <p className="text-slate-500 dark:text-slate-400 text-lg">The innovators shaping the future of EduAltTech</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 relative z-10">
-            {TEAM.map((member, idx) => (
-              <TiltCard key={idx} idx={idx} member={member} />
-            ))}
+          <div className="relative">
+            <motion.div
+              className="flex gap-6 lg:gap-8 overflow-x-auto pb-6 snap-x snap-mandatory scroll-smooth no-scrollbar relative z-10"
+              drag="x"
+              dragConstraints={{ right: 0, left: -(TEAM.length * 320) }}
+              dragElastic={0.1}
+              whileTap={{ cursor: 'grabbing' }}
+            >
+              {TEAM.map((member, idx) => (
+                <motion.div key={idx} className="snap-center shrink-0 first:pl-0 last:pr-0">
+                  <TiltCard idx={idx} member={member} />
+                </motion.div>
+              ))}
+            </motion.div>
+            <div className="absolute -left-4 top-0 bottom-6 w-16 bg-gradient-to-r from-white dark:from-[#020617] to-transparent pointer-events-none z-20" />
+            <div className="absolute -right-4 top-0 bottom-6 w-16 bg-gradient-to-l from-white dark:from-[#020617] to-transparent pointer-events-none z-20" />
           </div>
         </motion.div>
 
