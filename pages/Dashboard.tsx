@@ -184,153 +184,129 @@ const Dashboard: React.FC = () => {
   const approvedApps = myApplications.filter(a => a.status === 'approved').length;
 
   return (
-    <div className="min-h-screen pt-32 pb-24 px-6 bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen pt-28 pb-20 px-4 md:px-8 bg-slate-50 dark:bg-slate-950">
       <div className="max-w-7xl mx-auto">
-        {/* Welcome */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-3 tracking-tighter">
-            {getGreeting()}, {userProfile?.name || 'Learner'}!
-          </h1>
-          <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">
-            Your learning command center.
-          </p>
+
+        {/* ── Hero Row: Greeting + Mini Strip ── */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">
+                {getGreeting()}, {userProfile?.name || 'Learner'}
+              </h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Your learning command center</p>
+            </div>
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full text-sm font-bold text-slate-700 dark:text-slate-300 shadow-sm">
+                <GraduationCap className="w-4 h-4 text-emerald-500" /> {enrollments.length} Learning
+              </span>
+              {totalTeaching > 0 && (
+                <span className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full text-sm font-bold text-slate-700 dark:text-slate-300 shadow-sm">
+                  <Users className="w-4 h-4 text-purple-500" /> {totalTeaching} Teaching
+                </span>
+              )}
+              <span className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full text-sm font-bold text-slate-700 dark:text-slate-300 shadow-sm">
+                <Download className="w-4 h-4 text-blue-500" /> {resourceCount} Resources
+              </span>
+              <Link to="/practice" className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full text-sm font-bold text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+                <Code2 className="w-4 h-4" /> {leetcodeCount + englishCount > 0 ? `${leetcodeCount + englishCount} Practiced` : 'Practice'}
+              </Link>
+            </div>
+          </div>
         </motion.div>
 
-        {/* Quick Stats */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-2 lg:grid-cols-7 gap-4 mb-12">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center mb-3"><BookOpen className="w-5 h-5" /></div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white">{enrollments.length}</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Learning</div>
-          </div>
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center mb-3"><Users className="w-5 h-5" /></div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white">{totalTeaching}</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Teaching</div>
-          </div>
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-500 flex items-center justify-center mb-3"><FileText className="w-5 h-5" /></div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white">{totalApplications}</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Applications</div>
-          </div>
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-3"><Download className="w-5 h-5" /></div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white">{resourceCount}</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Resources</div>
-          </div>
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center mb-3"><Star className="w-5 h-5" /></div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white">{enrollments.length > 0 ? 'In Progress' : '0%'}</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Progress</div>
-          </div>
-          <Link to="/practice" className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:border-blue-500 transition-colors duration-300 group">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-3"><Code2 className="w-5 h-5" /></div>
-            <div className="text-sm font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Start Practicing</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">{leetcodeCount} problems solved</div>
-          </Link>
-          <Link to="/practice" className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:border-indigo-500 transition-colors duration-300 group">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 flex items-center justify-center mb-3"><BookOpen className="w-5 h-5" /></div>
-            <div className="text-sm font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Practice English</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">{englishCount} exercises done</div>
-          </Link>
-        </motion.div>
-
-        {/* Interview Scheduled — prominent banner */}
+        {/* ── Interview Banner (compact) ── */}
         {scheduledApp && extractMeetingLink(scheduledApp.message, scheduledApp.meetingLink) && (() => {
           const mLink = extractMeetingLink(scheduledApp.message, scheduledApp.meetingLink)!;
           const mDate = extractMeetingDate(scheduledApp.message, scheduledApp.meetingDate);
           return (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }} className="mb-10">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-[2rem] p-8 md:p-10 text-white shadow-2xl shadow-blue-500/30 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10"><Video className="w-40 h-40" /></div>
-              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-5 md:p-6 text-white shadow-lg shadow-blue-500/20 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="absolute top-0 right-0 p-2 opacity-5"><Video className="w-28 h-28" /></div>
+              <div className="relative z-10 flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0"><Video className="w-5 h-5" /></div>
                 <div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="px-3 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest">Action Required</span>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-2 py-0.5 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest">Action Required</span>
                   </div>
-                  <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-2">Interview Scheduled</h2>
-                  <p className="text-blue-100 text-lg font-medium">
-                    {scheduledApp.courseTitle} — Click the link below to join your interview.
-                    {mDate && <><br />Scheduled for: <strong>{new Date(mDate).toLocaleString()}</strong></>}
-                  </p>
+                  <h2 className="text-lg font-black">Interview Scheduled</h2>
+                  <p className="text-blue-100 text-sm">{scheduledApp.courseTitle}{mDate ? <> — <strong>{new Date(mDate).toLocaleString()}</strong></> : ''}</p>
                 </div>
-                <a
-                  href={mLink.startsWith('http') ? mLink : `https://${mLink}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="shrink-0 inline-flex items-center gap-3 px-8 py-5 bg-white text-blue-700 font-black rounded-2xl hover:bg-blue-50 transition-colors shadow-xl text-lg"
-                >
-                  <Video className="w-6 h-6" /> Join Interview Now
-                </a>
               </div>
+              <a href={mLink.startsWith('http') ? mLink : `https://${mLink}`} target="_blank" rel="noreferrer"
+                className="relative z-10 shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-700 font-black rounded-xl hover:bg-blue-50 transition-colors shadow-lg text-sm">
+                <Video className="w-4 h-4" /> Join Now
+              </a>
             </div>
           </motion.div>
-          )
+          );
         })()}
 
-        {/* Next Step Assistant Card (hidden if interview banner is shown) */}
+        {/* ── Next Step (compact) ── */}
         {!scheduledApp && nextSteps.length > 0 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-10">
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-[2rem] p-8 text-white shadow-2xl shadow-emerald-500/20 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-6 opacity-10"><Target className="w-32 h-32" /></div>
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <Lightbulb className="w-7 h-7 text-emerald-200" />
-                  <h2 className="text-xl font-black tracking-tight">Next Step</h2>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+            <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/15 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-3 opacity-10"><Lightbulb className="w-20 h-20" /></div>
+              <div className="relative z-10 flex items-start gap-3">
+                <Lightbulb className="w-6 h-6 text-emerald-200 shrink-0 mt-0.5" />
+                <div>
+                  <h2 className="text-sm font-black tracking-tight mb-2">Next Step</h2>
+                  <ul className="space-y-1.5">
+                    {nextSteps.slice(0, 2).map((step, i) => (
+                      <li key={i} className="flex items-start gap-2 text-emerald-50 text-sm">
+                        <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">{i + 1}</span>
+                        <span className="font-medium">{step}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="space-y-3">
-                  {nextSteps.slice(0, 3).map((step, i) => (
-                    <li key={i} className="flex items-start gap-3 text-emerald-50">
-                      <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs font-black shrink-0 mt-0.5">{i + 1}</span>
-                      <span className="font-medium">{step}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
             </div>
           </motion.div>
         )}
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-10">
+        {/* ── Main 2‑col Layout ── */}
+        <div className="grid lg:grid-cols-3 gap-5">
+
+          {/* ===== LEFT ===== */}
+          <div className="lg:col-span-2 space-y-5">
+
             {/* My Learning */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                  <GraduationCap className="w-6 h-6 text-emerald-500" /> My Learning
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <GraduationCap className="w-5 h-5 text-emerald-500" /> My Learning
                 </h2>
-                <Link to="/courses" className="text-sm font-bold text-emerald-600 hover:text-emerald-500 transition-colors">Browse All</Link>
+                {enrollments.length > 0 && <Link to="/courses" className="text-xs font-bold text-emerald-600 hover:text-emerald-500 transition-colors">Browse All</Link>}
               </div>
 
               {enrollments.length === 0 ? (
-                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-10 text-center">
-                  <BookOpen className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No Enrollments Yet</h3>
-                  <p className="text-slate-500 dark:text-slate-400 mb-6">Start your learning journey by enrolling in a course.</p>
-                  <Link to="/courses" className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-colors shadow-lg shadow-emerald-600/20">
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 md:p-8 text-center">
+                  <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center mx-auto mb-4"><BookOpen className="w-7 h-7" /></div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">No Enrollments Yet</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">Start your learning journey by enrolling in a course.</p>
+                  <Link to="/courses" className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-sm transition-colors shadow-lg shadow-emerald-600/20">
                     Browse Courses <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
               ) : (
-                <div className="grid gap-4">
+                <div className="grid gap-3">
                   {enrollments.map((enr, idx) => (
-                    <motion.div
-                      key={enr.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.05 }}
-                      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-emerald-500 transition-colors duration-300 shadow-sm"
+                    <motion.div key={enr.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.04 }}
+                      className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:border-emerald-500 hover:shadow-md transition-all duration-200"
                     >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{enr.courseData?.title || 'Unknown Course'}</h3>
-                          <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">{enr.courseData?.description}</p>
-                          <div className="flex items-center gap-4 mt-4 text-xs text-slate-400">
-                            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> Enrolled {new Date(enr.createdAt?.toDate?.() || Date.now()).toLocaleDateString()}</span>
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center text-sm font-black shrink-0 shadow-sm">
+                            {enr.courseData?.title?.charAt(0) || 'C'}
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate">{enr.courseData?.title || 'Unknown Course'}</h3>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{enr.courseData?.description}</p>
                           </div>
                         </div>
-                        <Link to={`/classroom/${enr.courseId}`} className="shrink-0 px-5 py-2.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-xl font-bold text-sm hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors">
+                        <Link to={`/classroom/${enr.courseId}`}
+                          className="shrink-0 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold text-xs hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors opacity-0 group-hover:opacity-100">
                           Continue
                         </Link>
                       </div>
@@ -340,204 +316,62 @@ const Dashboard: React.FC = () => {
               )}
             </motion.div>
 
-            {/* My Teaching */}
-            {totalTeaching > 0 && (
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                    <Users className="w-6 h-6 text-purple-500" /> My Teaching
-                  </h2>
-                  <Link to="/teacher-panel" className="text-sm font-bold text-purple-600 hover:text-purple-500 transition-colors">Manage All →</Link>
-                </div>
-                <div className="grid gap-4">
-                  {teachingEnrollments.map((enr, idx) => (
-                    <motion.div
-                      key={enr.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.05 }}
-                      className="bg-white dark:bg-slate-900 border-2 border-purple-200 dark:border-purple-800/50 rounded-2xl p-6 hover:border-purple-500 transition-colors duration-300 shadow-sm"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-[10px] font-bold uppercase tracking-wider">Teacher</span>
-                          </div>
-                          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{enr.courseData?.title || 'Unknown Course'}</h3>
-                          <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">{enr.courseData?.description}</p>
-                        </div>
-                        <Link to={`/classroom/${enr.courseId}`} className="shrink-0 px-5 py-2.5 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-xl font-bold text-sm hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors">
-                          Manage
-                        </Link>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Applications */}
-            {totalApplications > 0 && (
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                    <FileText className="w-6 h-6 text-amber-500" /> Teacher Applications
-                  </h2>
-                </div>
-                <div className="grid gap-4">
-                  {myApplications.map((app, idx) => {
-                    const meetingLink = extractMeetingLink(app.message, app.meetingLink);
-                    const formattedMeetingLink = meetingLink ? (meetingLink.startsWith('http') ? meetingLink : `https://${meetingLink}`) : '';
-                    const meetingDateVal = extractMeetingDate(app.message, app.meetingDate);
-                    return (
-                      <motion.div
-                        key={app.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm"
-                      >
-                        {app.status === 'scheduled' && meetingLink ? (
-                          <div>
-                            <div className="flex items-center gap-2 mb-3">
-                              <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">Interview Scheduled</span>
-                            </div>
-                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{app.courseTitle}</h3>
-                            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-                              Applied {new Date(app.appliedAt?.toDate?.() || Date.now()).toLocaleDateString()}
-                            </p>
-                            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-5 border border-blue-200 dark:border-blue-800">
-                              <div className="flex justify-between items-start mb-4">
-                                <div>
-                                  <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Your Interview</p>
-                                  {meetingDateVal && (
-                                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                                      {new Date(meetingDateVal).toLocaleString()}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                              <a href={formattedMeetingLink} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-colors text-sm shadow-lg shadow-blue-600/20">
-                                <Video className="w-5 h-5" /> Join Interview Now
-                              </a>
-                            </div>
-                          </div>
-                        ) : app.status === 'approved' ? (
-                          <div className="flex items-center justify-between gap-4">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">Approved</span>
-                              </div>
-                              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{app.courseTitle}</h3>
-                              <p className="text-sm text-slate-500 dark:text-slate-400">You are approved to teach this course.</p>
-                            </div>
-                            <Link to="/teacher-panel" className="shrink-0 px-6 py-3.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-2xl transition-colors text-sm shadow-lg shadow-purple-600/20">
-                              Teacher Panel →
-                            </Link>
-                          </div>
-                        ) : (
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-2">
-                                <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
-                                  app.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' :
-                                  'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
-                                }`}>
-                                  {app.status === 'rejected' && rejectionCounts[app.qualification || ''] > 1
-                                    ? `Rejected (${rejectionCounts[app.qualification || '']}x)`
-                                    : app.status}
-                                </span>
-                              </div>
-                              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{app.courseTitle}</h3>
-                              <p className="text-sm text-slate-500 dark:text-slate-400">
-                                Applied {new Date(app.appliedAt?.toDate?.() || Date.now()).toLocaleDateString()}
-                              </p>
-                              {meetingLink && (
-                                <a href={formattedMeetingLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors text-sm">
-                                  <Video className="w-4 h-4" /> Join Interview
-                                </a>
-                              )}
-                            </div>
-                            <div className="shrink-0">
-                              {app.status === 'pending' && <CalendarCheck className="w-8 h-8 text-amber-400" />}
-                              {app.status === 'rejected' && <AlertCircle className="w-8 h-8 text-red-400" />}
-                            </div>
-                          </div>
-                        )}
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            )}
-          </div>
-
-            {/* Practice History */}
+            {/* Practice History (compact timeline) */}
             {practiceHistory.length > 0 && (
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.37 }}>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                    <History className="w-6 h-6 text-blue-500" /> Practice History
+              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                    <History className="w-5 h-5 text-blue-500" /> Recent Activity
                   </h2>
                 </div>
                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
-                  <div className="max-h-72 overflow-y-auto custom-scrollbar">
-                    <table className="w-full text-sm">
-                      <thead className="bg-slate-50 dark:bg-slate-800/50 sticky top-0">
-                        <tr>
-                          <th className="text-left px-5 py-3 font-bold text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-widest">Type</th>
-                          <th className="text-left px-5 py-3 font-bold text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-widest">Item</th>
-                          <th className="text-right px-5 py-3 font-bold text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-widest">When</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                        {practiceHistory.map((h) => (
-                          <tr key={h.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                            <td className="px-5 py-3">
-                              <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                                h.practice_type === 'leetcode'
-                                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                                  : 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
-                              }`}>
-                                {h.practice_type === 'leetcode' ? 'LeetCode' : 'English'}
-                              </span>
-                            </td>
-                            <td className="px-5 py-3 font-medium text-slate-900 dark:text-white text-sm">#{h.item_id} {h.item_title}</td>
-                            <td className="px-5 py-3 text-right text-xs text-slate-400">{new Date(h.opened_at).toLocaleDateString()} {new Date(h.opened_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  <div className="max-h-64 overflow-y-auto custom-scrollbar divide-y divide-slate-100 dark:divide-slate-800">
+                    {practiceHistory.slice(0, 15).map((h) => (
+                      <div key={h.id} className="flex items-center gap-4 px-5 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs font-black shadow-sm ${
+                          h.practice_type === 'leetcode'
+                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                            : 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400'
+                        }`}>
+                          {h.practice_type === 'leetcode' ? 'LC' : 'EN'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-slate-900 dark:text-white truncate">{h.item_title}</p>
+                          <p className="text-[11px] text-slate-400">{h.practice_type === 'leetcode' ? 'LeetCode Problem' : 'English Exercise'} · #{h.item_id}</p>
+                        </div>
+                        <span className="text-[11px] text-slate-400 shrink-0">{new Date(h.opened_at).toLocaleDateString()} {new Date(h.opened_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </motion.div>
             )}
 
-            {/* Messages */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                  <MessageSquare className="w-6 h-6 text-blue-500" /> Messages
+            {/* Messages (compact) */}
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-blue-500" /> Messages
                 </h2>
               </div>
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] overflow-hidden shadow-sm">
-                <div className="h-72 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                <div className="h-56 overflow-y-auto p-4 space-y-3 custom-scrollbar">
                   {chatMessages.length === 0 ? (
-                    <div className="text-center py-10">
-                      <MessageSquare className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+                    <div className="text-center py-6">
+                      <MessageSquare className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
                       <p className="text-slate-400 font-medium text-sm">No messages yet</p>
-                      <p className="text-xs text-slate-500 mt-1">Reach out to the admin team below</p>
+                      <p className="text-xs text-slate-500 mt-0.5">Reach out to the admin team below</p>
                     </div>
                   ) : (
                     chatMessages.map((msg) => (
                       <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[80%] p-4 rounded-2xl ${
+                        <div className={`max-w-[85%] p-3 rounded-2xl ${
                           msg.role === 'user'
                             ? 'bg-emerald-500 text-white rounded-br-md'
                             : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-bl-md'
                         }`}>
                           <p className="text-sm font-medium leading-relaxed">{msg.content}</p>
-                          <p className={`text-[10px] mt-1 ${msg.role === 'user' ? 'text-emerald-200' : 'text-slate-400'}`}>
+                          <p className={`text-[10px] mt-0.5 ${msg.role === 'user' ? 'text-emerald-200' : 'text-slate-400'}`}>
                             {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
@@ -545,19 +379,19 @@ const Dashboard: React.FC = () => {
                     ))
                   )}
                 </div>
-                <div className="p-4 border-t border-slate-100 dark:border-slate-800">
-                  <div className="flex gap-3">
+                <div className="p-3 border-t border-slate-100 dark:border-slate-800">
+                  <div className="flex gap-2">
                     <input
                       value={chatInput}
                       onChange={(e) => setChatInput(e.target.value)}
                       onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
-                      placeholder="Type a message to admin..."
-                      className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl outline-none font-medium text-sm border border-transparent focus:border-emerald-500 transition-colors"
+                      placeholder="Message admin..."
+                      className="flex-1 p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl outline-none font-medium text-sm border border-transparent focus:border-emerald-500 transition-colors"
                     />
                     <button
                       onClick={handleSendMessage}
                       disabled={sendingMessage || !chatInput.trim()}
-                      className="px-5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold rounded-xl transition-colors flex items-center gap-2 text-sm"
+                      className="px-4 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold rounded-xl transition-colors flex items-center gap-1 text-sm"
                     >
                       {sendingMessage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                     </button>
@@ -566,82 +400,125 @@ const Dashboard: React.FC = () => {
               </div>
             </motion.div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
+          </div>
+
+          {/* ===== RIGHT ===== */}
+          <div className="space-y-5">
+
             {/* Profile Card */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center font-black text-xl overflow-hidden">
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 text-white rounded-2xl flex items-center justify-center font-black text-lg overflow-hidden shadow-md shrink-0">
                   {userProfile?.profilePic ? <img src={userProfile.profilePic} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover" /> : (userProfile?.name?.charAt(0) || 'U')}
                 </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 dark:text-white">{userProfile?.name || 'User'}</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">{userProfile?.email}</p>
-                  <span className="inline-block mt-1 px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+                <div className="min-w-0">
+                  <h3 className="font-bold text-slate-900 dark:text-white text-sm truncate">{userProfile?.name || 'User'}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{userProfile?.email}</p>
+                  <span className="inline-block mt-0.5 px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-lg text-[9px] font-bold uppercase tracking-wider">
                     {userProfile?.role || 'Student'}
                   </span>
                 </div>
               </div>
-              <Link to="/profile" className="flex items-center justify-between w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
-                View Profile <ArrowRight className="w-4 h-4" />
+              <Link to="/profile" className="flex items-center justify-between w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                View Profile <ArrowRight className="w-3 h-3" />
               </Link>
             </motion.div>
 
-            {/* Quick Links */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-              <h3 className="font-bold text-slate-900 dark:text-white mb-4">Quick Links</h3>
-              <div className="space-y-2">
-                {[
-                  { icon: <Library className="w-4 h-4" />, label: 'Browse Resources', path: '/resources' },
-                  { icon: <FileText className="w-4 h-4" />, label: 'Flashcards', path: '/flashcards' },
-                  { icon: <GraduationCap className="w-4 h-4" />, label: 'All Courses', path: '/courses' },
-                ].map((link, i) => (
-                  <Link key={i} to={link.path} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
-                    <span className="text-emerald-500">{link.icon}</span>
-                    {link.label}
-                  </Link>
-                ))}
+            {/* Quick Actions */}
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm"
+            >
+              <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-3">Quick Actions</h3>
+              <div className="grid grid-cols-2 gap-2">
+                <Link to="/practice" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 border border-blue-100 dark:border-blue-800/30 hover:shadow-md transition-all group">
+                  <Code2 className="w-5 h-5 text-blue-500 group-hover:scale-110 transition-transform" />
+                  <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">Problems</span>
+                  {leetcodeCount > 0 && <span className="text-[10px] font-bold text-blue-500">{leetcodeCount}</span>}
+                </Link>
+                <Link to="/practice" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/10 dark:to-purple-900/10 border border-indigo-100 dark:border-indigo-800/30 hover:shadow-md transition-all group">
+                  <BookOpen className="w-5 h-5 text-indigo-500 group-hover:scale-110 transition-transform" />
+                  <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">English</span>
+                  {englishCount > 0 && <span className="text-[10px] font-bold text-indigo-500">{englishCount}</span>}
+                </Link>
+                <Link to="/resources" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 border border-amber-100 dark:border-amber-800/30 hover:shadow-md transition-all group">
+                  <Download className="w-5 h-5 text-amber-500 group-hover:scale-110 transition-transform" />
+                  <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">Resources</span>
+                  {resourceCount > 0 && <span className="text-[10px] font-bold text-amber-500">{resourceCount}</span>}
+                </Link>
+                <Link to="/courses" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10 border border-emerald-100 dark:border-emerald-800/30 hover:shadow-md transition-all group">
+                  <GraduationCap className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
+                  <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">Courses</span>
+                </Link>
               </div>
             </motion.div>
 
-            {/* Application Status Summary */}
+            {/* Applications (if any) */}
             {totalApplications > 0 && (
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-                <h3 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"><FileText className="w-4 h-4 text-amber-500" /> Application Status</h3>
-                <div className="space-y-3">
+              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm"
+              >
+                <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-3 flex items-center gap-2"><FileText className="w-4 h-4 text-amber-500" /> Applications</h3>
+                <div className="space-y-2">
                   {pendingApps > 0 && (
                     <div className="flex items-center justify-between p-3 bg-amber-50 dark:bg-amber-900/10 rounded-xl">
-                      <span className="text-sm font-medium text-amber-700 dark:text-amber-300">Pending Review</span>
-                      <span className="text-lg font-black text-amber-600 dark:text-amber-400">{pendingApps}</span>
+                      <span className="text-xs font-bold text-amber-700 dark:text-amber-300">Pending Review</span>
+                      <span className="text-sm font-black text-amber-600 dark:text-amber-400">{pendingApps}</span>
                     </div>
                   )}
                   {approvedApps > 0 && (
                     <div className="flex items-center justify-between p-3 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl">
-                      <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">Approved</span>
-                      <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">{approvedApps}</span>
+                      <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">Approved</span>
+                      <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">{approvedApps}</span>
                     </div>
                   )}
-                  {scheduledApp && (
-                    <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl">
-                      <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Interview Scheduled</span>
-                      <span className="text-lg font-black text-blue-600 dark:text-blue-400">1</span>
-                    </div>
+                  {approvedApps > 0 && (
+                    <Link to="/teacher-panel" className="flex items-center justify-center gap-1.5 w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-xs transition-colors shadow-md">
+                      <Users className="w-3.5 h-3.5" /> Go to Teacher Panel
+                    </Link>
                   )}
                 </div>
               </motion.div>
             )}
 
-            {/* Resources Card */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl p-6 text-white shadow-xl shadow-emerald-500/20">
-              <Download className="w-8 h-8 mb-3 text-emerald-200" />
-              <h3 className="font-black text-lg mb-1">Free Resources</h3>
-              <p className="text-sm text-emerald-100 mb-4">Download PDFs, notes, and worksheets.</p>
-              <Link to="/resources" className="inline-flex items-center gap-1 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-bold transition-colors backdrop-blur-sm">
-                Explore <ArrowRight className="w-4 h-4" />
+            {/* My Teaching (if any) */}
+            {totalTeaching > 0 && teachingEnrollments.map((enr) => (
+              <motion.div key={enr.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}
+                className="bg-white dark:bg-slate-900 border-2 border-purple-200 dark:border-purple-800/40 rounded-2xl p-5 shadow-sm"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 text-white flex items-center justify-center font-black shrink-0 shadow-sm text-sm">
+                      {enr.courseData?.title?.charAt(0) || 'T'}
+                    </div>
+                    <div className="min-w-0">
+                      <span className="px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded text-[9px] font-bold uppercase tracking-wider">Teacher</span>
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate mt-0.5">{enr.courseData?.title || 'Unknown Course'}</h3>
+                    </div>
+                  </div>
+                  <Link to={`/classroom/${enr.courseId}`} className="shrink-0 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold text-xs transition-colors shadow-sm">
+                    Manage
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+
+            {/* Courses / Resources CTA */}
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }}
+              className="bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/15"
+            >
+              <Download className="w-6 h-6 mb-2 text-emerald-200" />
+              <h3 className="font-black text-sm mb-0.5">Free Resources</h3>
+              <p className="text-xs text-emerald-100 mb-3">Download PDFs, notes, and worksheets.</p>
+              <Link to="/resources" className="inline-flex items-center gap-1 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-xs font-bold transition-colors backdrop-blur-sm">
+                Explore <ArrowRight className="w-3 h-3" />
               </Link>
             </motion.div>
+
           </div>
         </div>
+
       </div>
     </div>
   );
