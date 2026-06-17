@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Download, FileText, BookOpen, Brain, FileSpreadsheet, Lock, Sparkles, ArrowRight, Filter } from 'lucide-react';
+import { Search, Download, FileText, BookOpen, Brain, FileSpreadsheet, Lock, Sparkles, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, onAuthStateChanged, db, collection, getDocs } from '../lib/firebase';
-import { toast } from 'react-hot-toast';
 import LoginModal from '../components/LoginModal';
+import { getDriveSubfolders, getDriveDownloadUrl, getDriveFileCategory } from '../lib/drive';
 
 export interface ResourceItem {
   title: string;
@@ -89,6 +89,8 @@ const Resources: React.FC = () => {
   const [showPremium, setShowPremium] = useState<'all' | 'free' | 'premium'>('all');
   const [classFilter, setClassFilter] = useState('All');
   const [firebaseResources, setFirebaseResources] = useState<ResourceItem[]>([]);
+  const [driveResources, setDriveResources] = useState<ResourceItem[]>([]);
+  const [loadingDrive, setLoadingDrive] = useState(true);
   const [user, setUser] = useState<any>(auth.currentUser);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -114,7 +116,40 @@ const Resources: React.FC = () => {
     fetchResources();
   }, []);
 
-  const allResources = useMemo(() => [...STATIC_RESOURCES, ...firebaseResources.filter(fr => !STATIC_RESOURCES.find(r => r.title === fr.title))], [firebaseResources]);
+  useEffect(() => {
+    const fetchDrive = async () => {
+      try {
+        const folders = await getDriveSubfolders();
+        const items: ResourceItem[] = [];
+        for (const folder of folders) {
+          const category = getDriveFileCategory(folder.name);
+          for (const file of folder.files) {
+            if (file.mimeType === 'application/vnd.google-apps.folder') continue;
+            const name = file.name.replace(/\.pdf$/i, '');
+            const sizeLabel = file.size ? ` (${(Number(file.size) / 1024 / 1024).toFixed(1)} MB)` : '';
+            items.push({
+              title: name,
+              description: `${category} resource from Google Drive${sizeLabel}`,
+              type: 'pdf',
+              category,
+              premium: false,
+              downloads: '0',
+              url: getDriveDownloadUrl(file.id),
+              classLevel: 'General',
+            });
+          }
+        }
+        setDriveResources(items);
+      } catch (e) {
+        console.error('Failed to load Drive resources', e);
+      } finally {
+        setLoadingDrive(false);
+      }
+    };
+    fetchDrive();
+  }, []);
+
+  const allResources = useMemo(() => [...STATIC_RESOURCES, ...firebaseResources.filter(fr => !STATIC_RESOURCES.find(r => r.title === fr.title)), ...driveResources.filter(dr => !STATIC_RESOURCES.find(r => r.title === dr.title) && !firebaseResources.find(fr => fr.title === dr.title))], [firebaseResources, driveResources]);
 
   const trackDownload = async (item: ResourceItem) => {
     if (!auth.currentUser) return;
