@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Target, Users, BookOpen, Rocket, Globe, HeartHandshake, ArrowRight, Sparkles, Linkedin, Mail } from 'lucide-react';
@@ -13,6 +13,7 @@ const values = [
 
 function TiltCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
   const gradients = ['from-emerald-500 to-teal-500', 'from-blue-500 to-indigo-500', 'from-purple-500 to-pink-500', 'from-amber-500 to-orange-500', 'from-rose-500 to-red-500', 'from-cyan-500 to-blue-500', 'from-violet-500 to-purple-500', 'from-lime-500 to-emerald-500'];
+  const [imgError, setImgError] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -58,11 +59,13 @@ function TiltCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
             whileHover={{ scale: 1.1 }}
             className={`w-36 h-36 sm:w-44 sm:h-44 mx-auto mb-6 rounded-[1.75rem] overflow-hidden bg-gradient-to-br ${gradients[idx % gradients.length]} p-[4px] shadow-xl`}
           >
-            <div className="w-full h-full rounded-[1.1rem] overflow-hidden bg-white dark:bg-slate-900">
-              {member.image ? (
-                <img src={member.image} loading="lazy" decoding="async" alt={member.name} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            <div className="w-full h-full rounded-[1.1rem] overflow-hidden bg-white dark:bg-slate-900 relative">
+              {member.image && !imgError ? (
+                <img src={member.image} loading="lazy" decoding="async" alt={member.name} className="w-full h-full object-cover" onError={() => setImgError(true)} />
               ) : (
-                <div className="w-full h-full flex items-center justify-center font-black text-2xl text-slate-400">{member.name.charAt(0)}</div>
+                <div className="w-full h-full flex items-center justify-center font-black text-3xl sm:text-4xl text-slate-300 dark:text-slate-600 bg-slate-50 dark:bg-slate-800">
+                  {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                </div>
               )}
             </div>
           </motion.div>
