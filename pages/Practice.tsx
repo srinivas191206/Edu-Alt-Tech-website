@@ -334,10 +334,10 @@ const Practice: React.FC = () => {
             Practice & Interview Prep
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white mb-6 tracking-tighter leading-[0.9]">
-            Master Coding<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500">Interviews</span>
+            Master Coding &<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500">English Grammar</span>
           </h1>
           <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl font-medium">
-            460+ handpicked LeetCode problems with video solutions, full courses, interview experiences, and tech talks.
+            460+ LeetCode problems, 52 English grammar topics, video solutions, full courses, and interview prep.
           </p>
         </motion.div>
 
