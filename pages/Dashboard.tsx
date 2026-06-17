@@ -223,16 +223,16 @@ const Dashboard: React.FC = () => {
             <div className="text-2xl font-black text-slate-900 dark:text-white">{enrollments.length > 0 ? 'In Progress' : '0%'}</div>
             <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Progress</div>
           </div>
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+          <Link to="/practice" className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:border-blue-500 transition-colors duration-300 group">
             <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-3"><Code2 className="w-5 h-5" /></div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white">{leetcodeCount}</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Problems</div>
-          </div>
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div className="text-sm font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Start Practicing</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">{leetcodeCount} problems solved</div>
+          </Link>
+          <Link to="/practice" className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:border-indigo-500 transition-colors duration-300 group">
             <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 flex items-center justify-center mb-3"><BookOpen className="w-5 h-5" /></div>
-            <div className="text-2xl font-black text-slate-900 dark:text-white">{englishCount}</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">English</div>
-          </div>
+            <div className="text-sm font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Practice English</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">{englishCount} exercises done</div>
+          </Link>
         </motion.div>
 
         {/* Interview Scheduled — prominent banner */}
