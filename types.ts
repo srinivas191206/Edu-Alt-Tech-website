@@ -357,6 +357,15 @@ export interface BehaviorInsight {
   updatedAt: any;
 }
 
+export interface PracticeHistory {
+  id: string;
+  user_id: string;
+  practice_type: 'leetcode' | 'english';
+  item_id: number;
+  item_title: string;
+  opened_at: string;
+}
+
 export interface Notification {
   id: string;
   userId: string;

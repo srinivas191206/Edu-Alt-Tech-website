@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db, onAuthStateChanged, doc, onSnapshot, collection, query, where, getDocs, getDoc } from '../lib/firebase';
-import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, ArrowRight, Clock, Star, TrendingUp, CheckCircle, Library, Sparkles, Video, CalendarCheck, AlertCircle, Users, Lightbulb, Target, MessageSquare, Send } from 'lucide-react';
+import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, ArrowRight, Clock, Star, TrendingUp, CheckCircle, Library, Sparkles, Video, CalendarCheck, AlertCircle, Users, Lightbulb, Target, MessageSquare, Send, Code2, History } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserObject, CourseEnrollment, Course, TeacherApplication } from '../types';
 import { motion } from 'framer-motion';
@@ -36,6 +36,9 @@ const Dashboard: React.FC = () => {
   const [sendingMessage, setSendingMessage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [rejectionCounts, setRejectionCounts] = useState<Record<string, number>>({});
+  const [leetcodeCount, setLeetcodeCount] = useState(0);
+  const [englishCount, setEnglishCount] = useState(0);
+  const [practiceHistory, setPracticeHistory] = useState<any[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -121,6 +124,16 @@ const Dashboard: React.FC = () => {
           }
           if (!cancelled) setResourceCount((dlCount || 0) + courseResCount);
         } catch (_) {}
+
+        // Practice stats
+        try {
+          const { count: lcCount } = await db.from('practice_history').select('id', { count: 'exact', head: true }).eq('user_id', u.uid).eq('practice_type', 'leetcode');
+          if (!cancelled) setLeetcodeCount(lcCount || 0);
+          const { count: engCount } = await db.from('practice_history').select('id', { count: 'exact', head: true }).eq('user_id', u.uid).eq('practice_type', 'english');
+          if (!cancelled) setEnglishCount(engCount || 0);
+          const { data: pHistory } = await db.from('practice_history').select('*').eq('user_id', u.uid).order('opened_at', { ascending: false }).limit(30);
+          if (pHistory && !cancelled) setPracticeHistory(pHistory);
+        } catch (_) {}
       } catch (err) { console.error("Dashboard init error", err); }
       if (!cancelled) setLoading(false);
     });
@@ -184,7 +197,7 @@ const Dashboard: React.FC = () => {
         </motion.div>
 
         {/* Quick Stats */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-2 lg:grid-cols-7 gap-4 mb-12">
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
             <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center mb-3"><BookOpen className="w-5 h-5" /></div>
             <div className="text-2xl font-black text-slate-900 dark:text-white">{enrollments.length}</div>
@@ -209,6 +222,16 @@ const Dashboard: React.FC = () => {
             <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center mb-3"><Star className="w-5 h-5" /></div>
             <div className="text-2xl font-black text-slate-900 dark:text-white">{enrollments.length > 0 ? 'In Progress' : '0%'}</div>
             <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Progress</div>
+          </div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center mb-3"><Code2 className="w-5 h-5" /></div>
+            <div className="text-2xl font-black text-slate-900 dark:text-white">{leetcodeCount}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Problems</div>
+          </div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 flex items-center justify-center mb-3"><BookOpen className="w-5 h-5" /></div>
+            <div className="text-2xl font-black text-slate-900 dark:text-white">{englishCount}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">English</div>
           </div>
         </motion.div>
 
@@ -449,8 +472,49 @@ const Dashboard: React.FC = () => {
             )}
           </div>
 
+            {/* Practice History */}
+            {practiceHistory.length > 0 && (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.37 }}>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+                    <History className="w-6 h-6 text-blue-500" /> Practice History
+                  </h2>
+                </div>
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                  <div className="max-h-72 overflow-y-auto custom-scrollbar">
+                    <table className="w-full text-sm">
+                      <thead className="bg-slate-50 dark:bg-slate-800/50 sticky top-0">
+                        <tr>
+                          <th className="text-left px-5 py-3 font-bold text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-widest">Type</th>
+                          <th className="text-left px-5 py-3 font-bold text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-widest">Item</th>
+                          <th className="text-right px-5 py-3 font-bold text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-widest">When</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                        {practiceHistory.map((h) => (
+                          <tr key={h.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                            <td className="px-5 py-3">
+                              <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                                h.practice_type === 'leetcode'
+                                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                                  : 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
+                              }`}>
+                                {h.practice_type === 'leetcode' ? 'LeetCode' : 'English'}
+                              </span>
+                            </td>
+                            <td className="px-5 py-3 font-medium text-slate-900 dark:text-white text-sm">#{h.item_id} {h.item_title}</td>
+                            <td className="px-5 py-3 text-right text-xs text-slate-400">{new Date(h.opened_at).toLocaleDateString()} {new Date(h.opened_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             {/* Messages */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
                   <MessageSquare className="w-6 h-6 text-blue-500" /> Messages

@@ -30,7 +30,17 @@ function ProblemCard({ problem, user, onLockedClick }: { problem: LeetCodeProble
     if (!user) {
       e.preventDefault();
       onLockedClick();
+      return;
     }
+    (async () => {
+      try { await db.from('practice_history').insert({
+        user_id: user.uid,
+        practice_type: 'leetcode',
+        item_id: problem.num,
+        item_title: problem.title,
+        opened_at: new Date().toISOString(),
+      }); } catch {}
+    })();
   };
 
   return (
@@ -150,7 +160,16 @@ function InterviewCard({ interview, user, onLockedClick }: { interview: Intervie
 
 function EnglishExerciseCard({ exercise, user, onLockedClick }: { exercise: EnglishExercise; user: any; onLockedClick: () => void }) {
   const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (!user) { e.preventDefault(); onLockedClick(); }
+    if (!user) { e.preventDefault(); onLockedClick(); return; }
+    (async () => {
+      try { await db.from('practice_history').insert({
+        user_id: user.uid,
+        practice_type: 'english',
+        item_id: exercise.num,
+        item_title: exercise.title,
+        opened_at: new Date().toISOString(),
+      }); } catch {}
+    })();
   };
 
   return (
