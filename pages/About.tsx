@@ -50,20 +50,20 @@ function TiltCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
         onMouseLeave={handleLeave}
         style={{ rotateX, rotateY }}
         whileHover={{ scale: 1.02, z: 20 }}
-        className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 transition-colors duration-500 text-center overflow-hidden w-[300px] sm:w-[340px]"
+        className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 transition-colors duration-500 text-center overflow-hidden w-[340px] sm:w-[380px]"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-slate-50/50 to-transparent dark:from-slate-800/30 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         <div className="relative z-10">
           <motion.div
             whileHover={{ scale: 1.1 }}
-            className={`w-36 h-36 sm:w-44 sm:h-44 mx-auto mb-6 rounded-[1.75rem] overflow-hidden bg-gradient-to-br ${gradients[idx % gradients.length]} p-[4px] shadow-xl`}
+            className={`w-48 h-48 sm:w-56 sm:h-56 mx-auto mb-6 rounded-[2rem] overflow-hidden bg-gradient-to-br ${gradients[idx % gradients.length]} p-[5px] shadow-xl`}
           >
-            <div className="w-full h-full rounded-[1.1rem] overflow-hidden bg-white dark:bg-slate-900 relative">
+            <div className="w-full h-full rounded-[1.6rem] overflow-hidden bg-white dark:bg-slate-900 relative">
               {member.image && !imgError ? (
                 <img src={member.image} loading="lazy" decoding="async" alt={member.name} className="w-full h-full object-cover" onError={() => setImgError(true)} />
               ) : (
-                <div className="w-full h-full flex items-center justify-center font-black text-3xl sm:text-4xl text-slate-300 dark:text-slate-600 bg-slate-50 dark:bg-slate-800">
+                <div className="w-full h-full flex items-center justify-center font-black text-4xl sm:text-5xl text-slate-300 dark:text-slate-600 bg-slate-50 dark:bg-slate-800">
                   {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                 </div>
               )}
@@ -173,7 +173,7 @@ const About: React.FC = () => {
             <motion.div
               className="flex gap-6 lg:gap-8 overflow-x-auto pb-6 snap-x snap-mandatory scroll-smooth no-scrollbar relative z-10"
               drag="x"
-              dragConstraints={{ right: 0, left: -(TEAM.length * 320) }}
+              dragConstraints={{ right: 0, left: -(TEAM.length * 400) }}
               dragElastic={0.1}
               whileTap={{ cursor: 'grabbing' }}
             >
