@@ -86,7 +86,7 @@ export const TEAM: TeamMember[] = [
     specialization: "Quality Assurance",
     bio: "Meticulously tests every feature. Ensures our platforms meet the highest standards of quality before launch.",
     email: "vksvl2006@gmail.com",
-    image: "/images/team/kavya.jpeg"
+    image: "/images/team/kavya.jpeg?v=2"
   },
   {
     name: "Gnana Sri Bathina",
