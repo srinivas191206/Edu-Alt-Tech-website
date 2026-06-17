@@ -1,14 +1,14 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Youtube, Code2, BookOpen, Briefcase, Sparkles, ExternalLink, GraduationCap } from 'lucide-react';
-import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, YOUTUBE_CHANNELS } from '../data/problems';
-import type { LeetCodeProblem, CourseLink, InterviewExperience, YouTubeChannel } from '../data/problems';
+import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, YOUTUBE_CHANNELS, ENGLISH_EXERCISES } from '../data/problems';
+import type { LeetCodeProblem, CourseLink, InterviewExperience, EnglishExercise, YouTubeChannel } from '../data/problems';
 import { auth, onAuthStateChanged, db, collection, getDocs, query, orderBy } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import LoginModal from '../components/LoginModal';
 
-type Tab = 'problems' | 'courses' | 'interviews' | 'channels';
+type Tab = 'problems' | 'courses' | 'interviews' | 'channels' | 'english';
 type ProblemSet = 'popular' | 'leetcode150' | 'top150' | 'admin';
 
 const difficultyColors: Record<string, string> = {
@@ -21,6 +21,7 @@ const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
   { key: 'problems', label: 'Problems', icon: <Code2 className="w-4 h-4" /> },
   { key: 'courses', label: 'Full Courses', icon: <BookOpen className="w-4 h-4" /> },
   { key: 'interviews', label: 'Interviews', icon: <Briefcase className="w-4 h-4" /> },
+  { key: 'english', label: 'English', icon: <BookOpen className="w-4 h-4" /> },
   { key: 'channels', label: 'Channels', icon: <GraduationCap className="w-4 h-4" /> },
 ];
 
@@ -147,6 +148,46 @@ function InterviewCard({ interview, user, onLockedClick }: { interview: Intervie
   );
 }
 
+function EnglishExerciseCard({ exercise, user, onLockedClick }: { exercise: EnglishExercise; user: any; onLockedClick: () => void }) {
+  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (!user) { e.preventDefault(); onLockedClick(); }
+  };
+
+  return (
+    <motion.div layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xs font-bold text-slate-400 dark:text-slate-500 shrink-0">#{exercise.num}</span>
+            <h3 className="font-bold text-slate-900 dark:text-white truncate">{exercise.title}</h3>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800">
+              {exercise.level}
+            </span>
+          </div>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          <a href={exercise.practiceUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+            className="p-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors"
+            title="Practice on English-Exercises.org"
+          >
+            <ExternalLink className="w-5 h-5" />
+          </a>
+          <a href={exercise.videoUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+            className="p-2 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-colors"
+            title="Watch video lesson"
+          >
+            <Youtube className="w-5 h-5" />
+          </a>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 function ChannelCard({ channel, user, onLockedClick }: { channel: YouTubeChannel; user: any; onLockedClick: () => void }) {
   const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     if (!user) {
@@ -178,6 +219,8 @@ const Practice: React.FC = () => {
   const [topicFilter, setTopicFilter] = useState('');
   const [diffFilter, setDiffFilter] = useState('');
   const [channelFilter, setChannelFilter] = useState('');
+  const [englishSearch, setEnglishSearch] = useState('');
+  const [levelFilter, setLevelFilter] = useState('');
   const [adminProblems, setAdminProblems] = useState<LeetCodeProblem[]>([]);
   const [user, setUser] = useState<any>(auth.currentUser);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -245,6 +288,22 @@ const Practice: React.FC = () => {
   const displayedChannels = useMemo(() => {
     return !user ? filteredChannels.slice(0, 3) : filteredChannels;
   }, [filteredChannels, user]);
+
+  const allLevels = useMemo(() => {
+    return Array.from(new Set(ENGLISH_EXERCISES.map(e => e.level))).sort();
+  }, []);
+
+  const filteredEnglish = useMemo(() => {
+    return ENGLISH_EXERCISES.filter(e => {
+      const matchSearch = !englishSearch || e.title.toLowerCase().includes(englishSearch.toLowerCase());
+      const matchLevel = !levelFilter || e.level === levelFilter;
+      return matchSearch && matchLevel;
+    });
+  }, [englishSearch, levelFilter]);
+
+  const displayedEnglish = useMemo(() => {
+    return !user ? filteredEnglish.slice(0, 3) : filteredEnglish;
+  }, [filteredEnglish, user]);
 
   return (
     <div className="min-h-screen pt-32 pb-32 px-6 bg-white dark:bg-slate-950 relative overflow-hidden">
@@ -349,6 +408,34 @@ const Practice: React.FC = () => {
               <InterviewCard key={i.num} interview={i} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
             ))}
           </motion.div>
+        )}
+
+        {/* English Exercises Tab */}
+        {tab === 'english' && (
+          <>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-3 mb-8">
+              <div className="relative flex-1 min-w-[200px] max-w-sm">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input type="text" placeholder="Search grammar topics..." value={englishSearch} onChange={e => setEnglishSearch(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 dark:text-white placeholder-slate-400"
+                />
+              </div>
+              <select value={levelFilter} onChange={e => setLevelFilter(e.target.value)}
+                className="px-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-emerald-500 outline-none"
+              >
+                <option value="">All Levels</option>
+                {allLevels.map(l => <option key={l} value={l}>{l}</option>)}
+              </select>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {displayedEnglish.map(e => (
+                <EnglishExerciseCard key={e.num} exercise={e} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
+              ))}
+            </motion.div>
+            {displayedEnglish.length === 0 && (
+              <p className="text-center text-slate-400 py-12 font-medium">No English exercises match your criteria.</p>
+            )}
+          </>
         )}
 
         {/* Channels Tab */}

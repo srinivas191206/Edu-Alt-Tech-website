@@ -29,6 +29,14 @@ export interface TechTalk {
   url: string;
 }
 
+export interface EnglishExercise {
+  num: number;
+  title: string;
+  level: string;
+  practiceUrl: string;
+  videoUrl: string;
+}
+
 export interface YouTubeChannel {
   num: number;
   name: string;
@@ -515,6 +523,54 @@ export const INTERVIEW_EXPERIENCES: InterviewExperience[] = [
 ];
 
 export const TECH_TALKS: TechTalk[] = [
+];
+
+export const ENGLISH_EXERCISES: EnglishExercise[] = [
+  { num: 1, title: 'Articles (A/An/The)', level: 'A1-B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=english+grammar+articles+a+an+the' },
+  { num: 2, title: 'Prepositions', level: 'A1-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=english+grammar+prepositions' },
+  { num: 3, title: 'Present Simple', level: 'A1-A2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=present+simple+tense+english+grammar' },
+  { num: 4, title: 'Present Continuous', level: 'A1-A2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=present+continuous+tense+english+grammar' },
+  { num: 5, title: 'There Is / There Are', level: 'A1-A2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=there+is+there+are+english+grammar' },
+  { num: 6, title: 'Past Simple', level: 'A1-A2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=past+simple+tense+english+grammar' },
+  { num: 7, title: 'Past Continuous', level: 'A1-B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=past+continuous+tense+english+grammar' },
+  { num: 8, title: 'Present Perfect', level: 'A2-B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=present+perfect+tense+english+grammar' },
+  { num: 9, title: 'Past Perfect', level: 'B1-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=past+perfect+tense+english+grammar' },
+  { num: 10, title: 'Future Tenses', level: 'A2-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=future+tenses+english+grammar' },
+  { num: 11, title: 'Conditionals (If Clauses)', level: 'B1-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=conditionals+if+clauses+english+grammar' },
+  { num: 12, title: 'Modal Verbs', level: 'A2-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=modal+verbs+english+grammar' },
+  { num: 13, title: 'Passive Voice', level: 'B1-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=passive+voice+english+grammar' },
+  { num: 14, title: 'Reported Speech', level: 'B1-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=reported+speech+english+grammar' },
+  { num: 15, title: 'Relative Clauses', level: 'B1-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=relative+clauses+english+grammar' },
+  { num: 16, title: 'Comparatives & Superlatives', level: 'A2-B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=comparatives+superlatives+english+grammar' },
+  { num: 17, title: 'Gerunds & Infinitives', level: 'B1-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=gerunds+infinitives+english+grammar' },
+  { num: 18, title: 'Question Tags', level: 'B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=question+tags+english+grammar' },
+  { num: 19, title: 'Quantifiers (Some/Any/Much/Many)', level: 'A2-B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=quantifiers+some+any+much+many+english' },
+  { num: 20, title: 'Linking Words (Connectors)', level: 'B1-C1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=linking+words+connectors+english+grammar' },
+  { num: 21, title: 'Phrasal Verbs', level: 'B1-C1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=phrasal+verbs+english+lesson' },
+  { num: 22, title: 'Used To / Would', level: 'B1-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=used+to+would+english+grammar' },
+  { num: 23, title: 'Subject-Verb Agreement', level: 'A2-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=subject+verb+agreement+english+grammar' },
+  { num: 24, title: 'Wish & If Only', level: 'B1-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=wish+if+only+english+grammar' },
+  { num: 25, title: 'Wh- Questions', level: 'A1-A2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=wh+questions+english+grammar' },
+  { num: 26, title: 'Pronouns', level: 'A1-A2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=pronouns+english+grammar' },
+  { num: 27, title: 'Possessives & Apostrophes', level: 'A1-A2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=possessives+apostrophes+english+grammar' },
+  { num: 28, title: 'Word Order', level: 'A1-B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=word+order+english+sentence+structure' },
+  { num: 29, title: 'Adjective Order', level: 'B1-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=adjective+order+english+grammar' },
+  { num: 30, title: 'Confusing Verbs', level: 'A2-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=confusing+verbs+english+lesson' },
+  { num: 31, title: 'Causative (Have/Get Something Done)', level: 'B1-C1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=causative+have+get+something+done+english' },
+  { num: 32, title: 'Inversion', level: 'B2-C1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=inversion+english+grammar' },
+  { num: 33, title: 'Cleft Sentences', level: 'B2-C1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=cleft+sentences+english+grammar' },
+  { num: 34, title: 'So vs Such / Too vs Enough', level: 'A2-B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=so+such+too+enough+english+grammar' },
+  { num: 35, title: '-ed vs -ing Adjectives', level: 'A2-B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=ed+ing+adjectives+english+grammar' },
+  { num: 36, title: 'Noun + Preposition', level: 'B1-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=noun+preposition+combinations+english' },
+  { num: 37, title: 'Adjective + Preposition', level: 'B1-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=adjective+preposition+combinations+english' },
+  { num: 38, title: 'Vocabulary: Restaurant & Food', level: 'A1-B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=restaurant+vocabulary+english' },
+  { num: 39, title: 'Vocabulary: Travel', level: 'A1-B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=travel+vocabulary+english' },
+  { num: 40, title: 'Vocabulary: Business English', level: 'B1-C1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=business+english+vocabulary' },
+  { num: 41, title: 'Vocabulary: Daily Life', level: 'A1-A2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=daily+life+english+vocabulary' },
+  { num: 42, title: 'Vocabulary: Health', level: 'A2-B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=health+english+vocabulary' },
+  { num: 43, title: 'Vocabulary: Shopping', level: 'A1-B1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=shopping+english+vocabulary' },
+  { num: 44, title: 'Vocabulary: Technology', level: 'A2-B2', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=technology+english+vocabulary' },
+  { num: 45, title: 'Reading Comprehension', level: 'A2-C1', practiceUrl: 'https://www.english-exercises.org/', videoUrl: 'https://www.youtube.com/results?search_query=english+reading+comprehension+practice' },
 ];
 
 export const YOUTUBE_CHANNELS: YouTubeChannel[] = [
