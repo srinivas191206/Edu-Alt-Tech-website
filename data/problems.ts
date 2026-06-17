@@ -578,6 +578,17 @@ export const YOUTUBE_CHANNELS: YouTubeChannel[] = [
   { num: 58, name: 'React Native School', category: 'Mobile App Development', url: 'https://www.youtube.com/@ReactNativeSchool' },
   { num: 59, name: 'freeCodeCamp', category: 'Mobile App Development', url: 'https://www.youtube.com/@freecodecamp' },
   { num: 60, name: 'Coding in Flow', category: 'Mobile App Development', url: 'https://www.youtube.com/@CodinginFlow' },
+  // English Learning
+  { num: 61, name: 'BBC Learning English', category: 'English Learning', url: 'https://www.youtube.com/@bbclearningenglish' },
+  { num: 62, name: 'English with Lucy', category: 'English Learning', url: 'https://www.youtube.com/@EnglishwithLucy' },
+  { num: 63, name: 'EngVid', category: 'English Learning', url: 'https://www.youtube.com/@engvidenglish' },
+  { num: 64, name: 'Learn English with Bob the Canadian', category: 'English Learning', url: 'https://www.youtube.com/@LearnEnglishwithBobtheCanadian' },
+  { num: 65, name: 'Speak English With Vanessa', category: 'English Learning', url: 'https://www.youtube.com/@SpeakEnglishWithVanessa' },
+  { num: 66, name: 'English Addict with Mr Duncan', category: 'English Learning', url: 'https://www.youtube.com/@duncaninchina' },
+  { num: 67, name: 'VOA Learning English', category: 'English Learning', url: 'https://www.youtube.com/@voalearningenglish' },
+  { num: 68, name: "Rachel's English", category: 'English Learning', url: 'https://www.youtube.com/@rachelsenglish' },
+  { num: 69, name: 'English Like A Native', category: 'English Learning', url: 'https://www.youtube.com/@EnglishLikeANative' },
+  { num: 70, name: 'Papa Teach Me', category: 'English Learning', url: 'https://www.youtube.com/@PapaTeachMe' },
 ];
 
 
