@@ -20,7 +20,7 @@ const FOLDER_MAP: Record<string, 'education' | 'alternative'> = {
 
 const EDUCATION_FOLDERS = new Set(['Core Education', 'Language Skills', 'Music', 'Dance', 'Arts & Creativity', 'Life Skills', 'Mind Sports', 'Health & Wellness']);
 
-function getThumbnail(title: string, folder: string): string {
+function getFallbackThumbnail(title: string, folder: string): string {
   const colors: Record<string, [string, string]> = {
     'Artificial Intelligence': ['#059669', '#10b981'],
     'Entrepreneurship': ['#7c3aed', '#a855f7'],
@@ -44,6 +44,11 @@ function getThumbnail(title: string, folder: string): string {
   const [c1, c2] = colors[folder] || ['#6366f1', '#a855f7'];
   const icon = getIconForFolder(folder);
   return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:${c1}"/><stop offset="100%" style="stop-color:${c2}"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/><text x="200" y="140" text-anchor="middle" font-size="64" fill="rgba(255,255,255,0.2)">${icon}</text><text x="200" y="260" text-anchor="middle" font-size="16" fill="rgba(255,255,255,0.6)" font-weight="bold" font-family="sans-serif">${escapeXml(title)}</text></svg>`)}`;
+}
+
+function getThumbnail(title: string, folder: string): string {
+  const seed = encodeURIComponent((title || folder || 'course').replace(/\s+/g, '-').toLowerCase().slice(0, 50));
+  return `https://picsum.photos/seed/${seed}/400/225`;
 }
 
 function getIconForFolder(folder: string): string {
@@ -238,7 +243,7 @@ const Courses: React.FC = () => {
                     className="group bg-white dark:bg-slate-900/40 backdrop-blur-xl rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-colors transition-shadow duration-500 flex flex-col">
                     <div className="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
                       <img src={course.thumbnailUrl} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                        onError={(e) => { const el = e.target as HTMLImageElement; if (!el.dataset.fallback) { el.dataset.fallback = '1'; el.src = getFallbackThumbnail(course.title, course.folder || ''); } }} />
                       <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
                         <div className="px-3 py-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white border border-slate-200/50 dark:border-slate-700/50">
                           {course.folder || course.category}
