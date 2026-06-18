@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Target, Users, BookOpen, Rocket, Globe, HeartHandshake, ArrowRight, Sparkles, Linkedin, Mail, GraduationCap, Code2, Brain, Zap, Lightbulb, Award, CheckCircle, Play, Hammer, MapPin, MessageCircle, Code, RefreshCw, Palette, Briefcase, Calculator, Atom, Music, Star } from 'lucide-react';
+import { Target, Users, BookOpen, Rocket, Globe, HeartHandshake, Sparkles, Linkedin, Mail, GraduationCap, Code2, Zap, Award, CheckCircle, Play, Hammer, MapPin, MessageCircle, RefreshCw, Palette, Briefcase } from 'lucide-react';
 import { TEAM } from '../constants';
 
 const About: React.FC = () => {
@@ -12,44 +12,36 @@ const About: React.FC = () => {
 
       <div className="max-w-[1400px] mx-auto px-6 relative z-10">
 
-        {/* ═══════════════════════════════════════════════════════ Hero */}
+        {/* ═══════════════════════════════════════════════════════ Mission Hero */}
         <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-center max-w-4xl mx-auto mb-28">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100/30 border border-amber-200/50 text-amber-700 font-bold uppercase tracking-widest text-xs mb-6">
-            <ShieldCheck className="w-4 h-4" />
-            Trusted by Schools, Educators & Students
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100/30 border border-emerald-200/50 text-emerald-700 font-bold uppercase tracking-widest text-xs mb-6">
+            <Sparkles className="w-4 h-4" />
+            Our Mission
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-8 tracking-tighter leading-[0.9]">
-            Learn. Build.{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500 animate-shimmer-text">Innovate.</span>
+            Empowering the Next Generation of{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500 animate-shimmer-text">Innovators</span>
           </h1>
-          <p className="text-lg md:text-xl text-slate-600 font-medium leading-relaxed max-w-3xl mx-auto">
-            Alternative Education, Industry Skills, AI Learning, School Technology Solutions, and Future-Ready Courses — all in one ecosystem. Edu Alt Tech empowers students to master future skills and schools to embrace digital transformation.
+          <p className="text-lg md:text-xl text-slate-600 font-medium leading-relaxed max-w-3xl mx-auto mb-12">
+            We believe every student deserves an education that prepares them for tomorrow — not just for the next exam. Edu Alt Tech was built by a team of passionate technologists and educators who saw a gap between traditional academics and the skills the world actually needs.
           </p>
-          <div className="flex flex-wrap justify-center gap-4 mt-10">
-            <Link to="/courses" className="group px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold transition-all shadow-xl shadow-emerald-600/25 hover:shadow-emerald-500/30 hover:-translate-y-1 inline-flex items-center gap-2">
-              Explore Courses <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link to="/contact" className="px-8 py-4 bg-slate-100 text-slate-900 rounded-2xl font-bold hover:bg-slate-200 border border-slate-200 hover:-translate-y-1 transition-all">
-              Partner With Us
-            </Link>
-          </div>
-        </motion.div>
 
-        {/* ═══════════════════════════════════════════════════════ Stats */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-          className="flex flex-wrap justify-center gap-12 sm:gap-16 mb-28 py-10 border-y border-slate-200"
-        >
-          {[
-            { value: "4", label: "Partner Schools" },
-            { value: "500+", label: "Students Reached" },
-            { value: "100+", label: "Courses & Resources" },
-            { value: "20+", label: "Expert Mentors" },
-          ].map((s, i) => (
-            <div key={i} className="text-center">
-              <div className="text-4xl font-black text-slate-900 animate-float" style={{ animationDelay: `${i * 0.3}s` }}>{s.value}</div>
-              <div className="text-sm text-slate-500 font-medium">{s.label}</div>
-            </div>
-          ))}
+          <div className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+            {[
+              { icon: <Target className="w-6 h-6" />, title: "Our Vision", desc: "A world where education and real-world skills are inseparable — where every learner is future-ready." },
+              { icon: <HeartHandshake className="w-6 h-6" />, title: "Our Promise", desc: "We partner with students and schools to deliver relevant, high-quality learning that opens doors." },
+              { icon: <Rocket className="w-6 h-6" />, title: "Our Drive", desc: "Innovation is at our core. We constantly evolve our platform to match the pace of industry change." },
+            ].map((item, idx) => (
+              <motion.div
+                key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 + idx * 0.12 }}
+                className="bg-white border border-slate-200 rounded-2xl p-6 text-left hover:border-emerald-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+              >
+                <div className="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-4">{item.icon}</div>
+                <h3 className="font-black text-slate-900 text-sm mb-1.5">{item.title}</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
 
         {/* ═══════════════════════════════════════════════════════ Our Story */}
