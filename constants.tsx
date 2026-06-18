@@ -145,6 +145,26 @@ export const STATS: StatItem[] = [
  { value: "24/7", label: "Support Available" }
 ];
 
+export const SUPPORTING_TEAM: TeamMember[] = [
+  {
+    name: "Yuvaraj Nagireddy",
+    role: "Data Scraper",
+    specialization: "Data Extraction & Web Scraping",
+    bio: "Specializes in extracting and organizing data to power informed decision-making across the platform.",
+    email: "yuvarajnagireddy5@gmail.com",
+    image: "/images/team/Yuva.jpeg",
+    linkedin: "https://www.linkedin.com/in/yuvaraj-nagireddy-9048173b6?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+  },
+  {
+    name: "Lavaraju",
+    role: "Customer Service Manager",
+    specialization: "Client Relations & Support",
+    bio: "Dedicated to ensuring every client receives prompt, professional support and a seamless experience.",
+    email: "lavaraju5751@gmail.com",
+    image: "/images/team/lavaraju.jpg",
+  },
+];
+
 export const HOW_IT_WORKS = [
  {
  title: "Consult & Assess",
