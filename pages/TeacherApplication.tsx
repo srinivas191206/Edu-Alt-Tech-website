@@ -47,7 +47,7 @@ const TeacherApplication: React.FC = () => {
         name,
         email,
         phone,
-        highest_qualification: qualification,
+        qualification,
         experience,
         subjects,
         teaching_mode: mode,
@@ -58,9 +58,9 @@ const TeacherApplication: React.FC = () => {
       if (error) throw error;
       toast.success('Application submitted successfully!');
       navigate('/');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      toast.error('Failed to submit application');
+      toast.error(err?.message || 'Failed to submit application');
     } finally {
       setSubmitLoading(false);
     }
