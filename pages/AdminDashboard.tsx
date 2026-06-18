@@ -1185,6 +1185,12 @@ const AdminDashboard: React.FC = () => {
                       <div className="flex-1">
                         <input value={courseForm.thumbnailUrl} onChange={e => setCourseForm(f => ({ ...f, thumbnailUrl: e.target.value }))} placeholder="https://picsum.photos/seed/..." className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
                       </div>
+                      <button type="button" onClick={() => {
+                        const seed = (courseForm.title || 'course').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+                        setCourseForm(f => ({ ...f, thumbnailUrl: `https://picsum.photos/seed/${seed}/400/225` }));
+                      }} className="px-4 py-4 bg-slate-100 dark:bg-slate-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-2xl font-bold text-xs transition-colors shrink-0">
+                        Generate
+                      </button>
                       {courseForm.thumbnailUrl && (
                         <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700">
                           <img src={courseForm.thumbnailUrl} alt="preview" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23ddd" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%23999" font-size="10">N/A</text></svg>' }} />
