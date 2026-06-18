@@ -33,6 +33,61 @@
         .animate-float {
             animation: float 4s ease-in-out infinite;
         }
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(2deg); }
+            66% { transform: translateY(5px) rotate(-1deg); }
+        }
+        .animate-float-slow {
+            animation: float-slow 12s ease-in-out infinite;
+        }
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -20px) scale(1.05); }
+            50% { transform: translate(-15px, -35px) scale(0.95); }
+            75% { transform: translate(-30px, 10px) scale(1.02); }
+        }
+        .animate-drift {
+            animation: drift 20s ease-in-out infinite;
+        }
+        @keyframes drift-reverse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-25px, 15px) scale(0.97); }
+            50% { transform: translate(20px, 30px) scale(1.03); }
+            75% { transform: translate(25px, -15px) scale(0.98); }
+        }
+        .animate-drift-reverse {
+            animation: drift-reverse 25s ease-in-out infinite;
+        }
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 3s ease-in-out infinite;
+        }
+        @keyframes shimmer-text {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animate-shimmer-text {
+            background-size: 200% auto;
+            animation: shimmer-text 4s ease infinite;
+        }
+        @keyframes blur-oscillate {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        .animate-blur-oscillate {
+            animation: blur-oscillate 6s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .animate-float, .animate-float-slow, .animate-drift, .animate-drift-reverse,
+            .animate-pulse-soft, .animate-shimmer-text, .animate-blur-oscillate {
+                animation: none !important;
+            }
+        }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
