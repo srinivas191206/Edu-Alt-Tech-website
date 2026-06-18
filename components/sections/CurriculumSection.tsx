@@ -18,7 +18,7 @@ const features = [
 const CurriculumSection: React.FC = () => {
   return (
     <section className="py-24 md:py-40 bg-white dark:bg-slate-950 transition-colors duration-300 relative overflow-hidden">
-      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[100px] -translate-y-1/2 pointer-events-none" />
+      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[50px] -translate-y-1/2 pointer-events-none" />
 
       <div className="max-w-[1400px] mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">

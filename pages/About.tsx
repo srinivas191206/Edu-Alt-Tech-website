@@ -111,7 +111,7 @@ function TiltCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
 const About: React.FC = () => {
   return (
     <div className="bg-white dark:bg-[#020617] min-h-screen pt-32 pb-32 transition-colors duration-300 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-gradient-to-br from-emerald-500/5 to-blue-500/5 dark:from-emerald-500/10 dark:to-blue-500/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/3 translate-x-1/3" />
+      <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-gradient-to-br from-emerald-500/5 to-blue-500/5 dark:from-emerald-500/10 dark:to-blue-500/10 rounded-full blur-[60px] pointer-events-none -translate-y-1/3 translate-x-1/3" />
 
       <div className="max-w-[1400px] mx-auto px-6 relative z-10">
         {/* Hero */}

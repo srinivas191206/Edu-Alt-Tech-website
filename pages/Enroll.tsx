@@ -51,7 +51,7 @@ const Enroll: React.FC = () => {
   if (isDone) {
     return (
       <div className="pt-32 pb-24 px-6 flex items-center justify-center min-h-screen bg-slate-50 dark:bg-[#020617] relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-emerald-500/10 to-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-emerald-500/10 to-indigo-500/10 rounded-full blur-[60px] pointer-events-none" />
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -89,7 +89,7 @@ const Enroll: React.FC = () => {
 
   return (
     <div className="pt-32 pb-32 px-6 bg-slate-50 dark:bg-[#020617] min-h-screen relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 dark:from-emerald-500/10 dark:to-indigo-500/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 dark:from-emerald-500/10 dark:to-indigo-500/10 rounded-full blur-[60px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
       <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
         <motion.div
           initial={{ opacity: 0, x: -30 }}

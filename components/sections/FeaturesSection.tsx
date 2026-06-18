@@ -45,7 +45,7 @@ const FeaturesSection: React.FC = () => {
 
   return (
     <section className="py-24 md:py-40 bg-white dark:bg-[#020617] transition-colors duration-300 relative overflow-hidden">
-      <div className="absolute top-1/2 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 dark:from-emerald-500/10 dark:to-indigo-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="absolute top-1/2 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 dark:from-emerald-500/10 dark:to-indigo-500/10 rounded-full blur-[50px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
 
       <div className="max-w-[1400px] mx-auto px-6 relative z-10">
         <motion.div

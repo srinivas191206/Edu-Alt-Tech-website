@@ -16,12 +16,7 @@ const CtaSection: React.FC = () => {
         >
           {/* Layered Background */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-indigo-950 to-emerald-950" />
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 30, ease: 'linear', repeat: Infinity }}
-            style={{ willChange: 'transform' }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-gradient-conic from-emerald-500/20 via-transparent to-indigo-500/20 rounded-full pointer-events-none"
-          />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-gradient-conic from-emerald-500/20 via-transparent to-indigo-500/20 rounded-full pointer-events-none" />
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LCAyNTUsIDI1NSwgMC4wNSkiLz48L3N2Zz4=')] opacity-50" />
 
           {/* Glow orbs */}

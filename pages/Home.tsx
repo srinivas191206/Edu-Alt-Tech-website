@@ -19,8 +19,8 @@ const Home: React.FC = () => {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-950 dark:to-emerald-950/20" />
-        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-emerald-500/5 blur-[150px] rounded-full" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-blue-500/5 blur-[150px] rounded-full" />
+        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-emerald-500/5 blur-[80px] rounded-full" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-blue-500/5 blur-[80px] rounded-full" />
 
         <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
           <div className="grid lg:grid-cols-2 gap-16 items-center">

@@ -178,8 +178,8 @@ const Courses: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#020617] selection:bg-emerald-500/30">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-emerald-500/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-500/5 blur-[120px] rounded-full" />
+        <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-500/5 blur-[60px] rounded-full" />
       </div>
 
       <div className="max-w-[1400px] mx-auto relative z-10 px-6 py-24 md:py-32">
@@ -288,7 +288,7 @@ const Courses: React.FC = () => {
               <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
                 className="relative mt-12 py-16 px-8 rounded-3xl bg-white/20 dark:bg-slate-900/20 border border-slate-200/50 dark:border-slate-800/50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
                 <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[50px] rounded-full pointer-events-none" />
                 <div className="relative z-10 max-w-md mx-auto">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-indigo-500 text-white mb-6 shadow-xl shadow-emerald-500/20">
                     <Book className="w-8 h-8" />

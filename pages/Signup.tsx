@@ -98,7 +98,7 @@ const Signup: React.FC = () => {
 
   return (
     <div className="min-h-screen pt-32 pb-24 px-6 bg-slate-50 dark:bg-[#020617] flex flex-col items-center relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 dark:from-emerald-500/10 dark:to-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 dark:from-emerald-500/10 dark:to-indigo-500/10 rounded-full blur-[60px] pointer-events-none" />
       <Link to="/" className="mb-12 inline-flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors font-medium relative z-10">
         <ArrowLeft className="w-4 h-4" /> Back to Home
       </Link>

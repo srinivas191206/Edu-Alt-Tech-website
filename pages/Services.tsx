@@ -16,8 +16,8 @@ const iconMap: Record<string, React.ReactNode> = {
 const Services: React.FC = () => {
   return (
     <div className="min-h-screen pt-32 pb-32 px-6 bg-white dark:bg-slate-950 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[120px] rounded-full" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 blur-[120px] rounded-full" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 blur-[60px] rounded-full" />
 
       <div className="max-w-[1400px] mx-auto relative z-10">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-4xl mx-auto mb-20">
