@@ -79,27 +79,85 @@ export type TeacherAppStatus = 'pending' | 'approved_for_interview' | 'scheduled
 
 
 export interface TeacherApplication {
-  id: string; // Document ID
-  userId: string; // from user_id column
-  name?: string; // from name column (userName mapped in code)
-  email?: string; // from email column (userEmail mapped in code)
-  qualification?: string; // stores courseId
-  courseId?: string; // mapped from qualification
+  id: string;
+  userId: string;
+  name?: string;
+  email?: string;
+  qualification?: string;
+  courseId?: string;
   status: TeacherAppStatus;
   meetingLink?: string;
   meetingDate?: any;
   appliedAt: any;
   updatedAt?: any;
-  
+
   // Mentor Profile Info
   userName?: string;
   userEmail?: string;
   experience?: string;
   skills?: string;
   message?: string;
-  
+
   // Curriculum Path
   proposedPath?: string[];
+
+  // Extended fields
+  phone?: string;
+  dateOfBirth?: string;
+  gender?: string;
+  location?: string;
+  highestQualification?: string;
+  specialization?: string;
+  currentOccupation?: string;
+  languages?: string;
+  subjects?: string;
+  courseCategory?: string;
+  teachingMode?: string;
+  preferredTimings?: string;
+  classDuration?: string;
+  targetAudience?: string;
+  resumeUrl?: string;
+  certificatesUrl?: string;
+  idProofUrl?: string;
+  portfolioUrl?: string;
+  linkedinUrl?: string;
+  websiteUrl?: string;
+  introVideoUrl?: string;
+  demoVideoUrl?: string;
+  sampleContent?: string;
+  bankAccountName?: string;
+  bankAccountNumber?: string;
+  bankIfsc?: string;
+  bankUpi?: string;
+  bankPan?: string;
+  agreeTerms?: boolean;
+  agreeContentOwnership?: boolean;
+  agreeRevenueSharing?: boolean;
+  profilePhoto?: string;
+}
+
+export interface TeacherEarning {
+  id: string;
+  teacherId: string;
+  courseId?: string;
+  amount: number;
+  type: 'payout' | 'credit' | 'bonus';
+  description?: string;
+  createdAt: any;
+}
+
+export interface TeacherRecurringClass {
+  id: string;
+  teacherId: string;
+  courseId: string;
+  title: string;
+  description?: string;
+  meetingLink: string;
+  repeatType: 'daily' | 'weekly' | 'weekdays';
+  startTime: any;
+  endTime?: any;
+  isActive: boolean;
+  createdAt: any;
 }
 
 export interface PathClass {
