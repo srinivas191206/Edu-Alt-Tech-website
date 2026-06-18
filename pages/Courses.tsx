@@ -117,6 +117,7 @@ const Courses: React.FC = () => {
             duration: data.duration,
             level: data.level,
             classLevel: data.class_level || 'General',
+            comingSoon: data.comingSoon ?? false,
             createdAt: data.created_at,
             createdBy: '',
           } as Course);
@@ -254,8 +255,8 @@ const Courses: React.FC = () => {
                           </div>
                         )}
                       </div>
-                      <div className="absolute top-4 right-4 px-3 py-1.5 bg-emerald-500/90 backdrop-blur-md rounded-full text-[10px] font-black text-white uppercase tracking-wider">
-                        {course.price === 0 ? 'Free' : `₹${course.price}`}
+                      <div className={`absolute top-4 right-4 px-3 py-1.5 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-wider ${course.comingSoon ? 'bg-amber-500/90' : 'bg-emerald-500/90'} text-white`}>
+                        {course.comingSoon ? 'Coming Soon' : course.price === 0 ? 'Free' : `₹${course.price}`}
                       </div>
                     </div>
                     <div className="p-6 flex flex-col flex-1">
@@ -265,7 +266,11 @@ const Courses: React.FC = () => {
                       <p className="text-sm text-slate-500 dark:text-slate-400 mb-5 font-medium leading-relaxed line-clamp-2 flex-1">
                         {course.description}
                       </p>
-                      {!user ? (
+                      {course.comingSoon ? (
+                        <div className="w-full py-3.5 bg-slate-100 dark:bg-slate-800 text-slate-400 rounded-xl font-bold text-sm text-center tracking-wide cursor-not-allowed">
+                          Coming Soon
+                        </div>
+                      ) : !user ? (
                         <button onClick={() => setIsAuthModalOpen(true)}
                           className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white transition-colors transition-transform active:scale-[0.98]">
                           Explore Course →
