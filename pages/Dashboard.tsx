@@ -266,7 +266,7 @@ const Dashboard: React.FC = () => {
         )}
 
         {/* ── Main 2‑col Layout ── */}
-        <div className="grid lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
           {/* ===== LEFT ===== */}
           <div className="lg:col-span-2 space-y-5">
@@ -306,7 +306,7 @@ const Dashboard: React.FC = () => {
                           </div>
                         </div>
                         <Link to={`/classroom/${enr.courseId}`}
-                          className="shrink-0 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold text-xs hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors opacity-0 group-hover:opacity-100">
+                          className="shrink-0 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold text-xs hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100">
                           Continue
                         </Link>
                       </div>

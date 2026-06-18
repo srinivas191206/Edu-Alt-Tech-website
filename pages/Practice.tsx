@@ -81,7 +81,7 @@ function ProblemCard({ problem, user, onLockedClick }: { problem: LeetCodeProble
             target="_blank"
             rel="noopener noreferrer"
             onClick={handleAction}
-            className="p-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors"
+            className="p-2.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors"
             title="Solve on LeetCode"
           >
             <ExternalLink className="w-5 h-5" />
@@ -91,7 +91,7 @@ function ProblemCard({ problem, user, onLockedClick }: { problem: LeetCodeProble
             target="_blank"
             rel="noopener noreferrer"
             onClick={handleAction}
-            className="p-2 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-colors"
+            className="p-2.5 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-colors"
             title="Watch solution"
           >
             <Youtube className="w-5 h-5" />
@@ -190,13 +190,13 @@ function EnglishExerciseCard({ exercise, user, onLockedClick }: { exercise: Engl
         </div>
         <div className="flex items-center gap-1 shrink-0">
           <a href={exercise.practiceUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
-            className="p-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors"
+            className="p-2.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors"
             title="Practice on English-Exercises.org"
           >
             <ExternalLink className="w-5 h-5" />
           </a>
           <a href={exercise.videoUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
-            className="p-2 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-colors"
+            className="p-2.5 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-colors"
             title="Watch video lesson"
           >
             <Youtube className="w-5 h-5" />
@@ -325,7 +325,7 @@ const Practice: React.FC = () => {
   }, [filteredEnglish, user]);
 
   return (
-    <div className="min-h-screen pt-32 pb-32 px-6 bg-white dark:bg-slate-950 relative overflow-hidden">
+    <div className="min-h-screen pt-32 pb-32 px-4 md:px-6 bg-white dark:bg-slate-950 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
       <div className="max-w-[1400px] mx-auto relative z-10">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mb-12">
@@ -342,7 +342,7 @@ const Practice: React.FC = () => {
         </motion.div>
 
         {/* Tabs */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex gap-2 mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex gap-2 mb-8 border-b border-slate-200 dark:border-slate-800 pb-4 overflow-x-auto">
           {tabs.map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-colors ${
@@ -360,7 +360,7 @@ const Practice: React.FC = () => {
         {tab === 'problems' && (
           <>
             {/* Problem Set Toggle */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex gap-2 mb-6">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-2 mb-6">
               <button onClick={() => setProblemSet('popular')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
                 problemSet === 'popular' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
               }`}>Most Popular ({POPULAR_PROBLEMS.length})</button>
@@ -377,7 +377,7 @@ const Practice: React.FC = () => {
 
             {/* Filters */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-wrap gap-3 mb-8">
-              <div className="relative flex-1 min-w-[200px] max-w-sm">
+              <div className="relative flex-1 min-w-[160px] max-w-sm">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input type="text" placeholder="Search problems..." value={search} onChange={e => setSearch(e.target.value)}
                   className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 dark:text-white placeholder-slate-400"
@@ -433,7 +433,7 @@ const Practice: React.FC = () => {
         {tab === 'english' && (
           <>
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-3 mb-8">
-              <div className="relative flex-1 min-w-[200px] max-w-sm">
+              <div className="relative flex-1 min-w-[160px] max-w-sm">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input type="text" placeholder="Search grammar topics..." value={englishSearch} onChange={e => setEnglishSearch(e.target.value)}
                   className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 dark:text-white placeholder-slate-400"
@@ -482,7 +482,7 @@ const Practice: React.FC = () => {
         {/* Guest Lock Overlay */}
         {!user && (
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-            className="relative mt-12 py-16 px-8 rounded-3xl bg-white/20 dark:bg-slate-900/20 border border-slate-200/50 dark:border-slate-800/50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
+            className="relative mt-12 py-10 sm:py-16 px-8 rounded-3xl bg-white/20 dark:bg-slate-900/20 border border-slate-200/50 dark:border-slate-800/50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
             <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[50px] rounded-full pointer-events-none" />
             <div className="relative z-10 max-w-md mx-auto">
