@@ -166,7 +166,7 @@ const Profile: React.FC = () => {
                <Link to="/dashboard" className="p-2.5 text-slate-500 hover:text-emerald-600 bg-white/80 dark:bg-slate-900/80 backdrop-blur border border-slate-200/50 dark:border-slate-800/50 rounded-2xl transition-colors shadow-sm">
                   <ArrowLeft className="w-5 h-5" />
                </Link>
-               <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Your Profile</h1>
+                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">Your Profile</h1>
            </div>
            
            {!isEditing && (
@@ -176,11 +176,11 @@ const Profile: React.FC = () => {
            )}
         </div>
 
-        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-2xl rounded-[2.5rem] p-10 border border-slate-200/50 dark:border-slate-800/50 shadow-2xl">
+        <div className="bg-white/90 dark:bg-slate-900/80 backdrop-blur-2xl rounded-[2.5rem] p-6 sm:p-10 border border-slate-200/50 dark:border-slate-800/50 shadow-2xl">
            
            <div className="flex flex-col md:flex-row items-center gap-8 mb-10 pb-10 border-b border-slate-100 dark:border-slate-800">
              <div className="relative group">
-                <div className="w-32 h-32 rounded-full border-4 border-slate-100 dark:border-slate-800 flex items-center justify-center overflow-hidden bg-emerald-50 dark:bg-emerald-900/10">
+                 <div className="w-24 md:w-32 h-24 md:h-32 rounded-full border-4 border-slate-100 dark:border-slate-800 flex items-center justify-center overflow-hidden bg-emerald-50 dark:bg-emerald-900/10">
                    {selectedFile ? (
                       <img src={URL.createObjectURL(selectedFile)} loading="lazy" decoding="async" alt="preview" className="w-full h-full object-cover" />
                    ) : userProfile.profilePic ? (
@@ -206,7 +206,7 @@ const Profile: React.FC = () => {
                 )}
              </div>
              <div className="text-center md:text-left flex-1">
-                <h2 className="text-3xl font-black text-slate-900 dark:text-white capitalize mb-1 tracking-tight">{userProfile.name}</h2>
+                 <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white capitalize mb-1 tracking-tight">{userProfile.name}</h2>
                 <p className="text-slate-500 text-lg font-medium">{userProfile.email || user?.email}</p>
              </div>
            </div>
