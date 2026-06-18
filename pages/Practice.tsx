@@ -12,502 +12,502 @@ type Tab = 'problems' | 'courses' | 'interviews' | 'channels' | 'english';
 type ProblemSet = 'popular' | 'leetcode150' | 'top150' | 'admin';
 
 const difficultyColors: Record<string, string> = {
-  Easy: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
-  Medium: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800',
-  Hard: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800',
+ Easy: 'bg-emerald-100 /30 text-emerald-700 border-emerald-200 ',
+ Medium: 'bg-amber-100 /30 text-amber-700 border-amber-200 ',
+ Hard: 'bg-red-100 /30 text-red-700 border-red-200 ',
 };
 
 const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
-  { key: 'problems', label: 'Problems', icon: <Code2 className="w-4 h-4" /> },
-  { key: 'courses', label: 'Full Courses', icon: <BookOpen className="w-4 h-4" /> },
-  { key: 'interviews', label: 'Interviews', icon: <Briefcase className="w-4 h-4" /> },
-  { key: 'english', label: 'English', icon: <BookOpen className="w-4 h-4" /> },
-  { key: 'channels', label: 'Channels', icon: <GraduationCap className="w-4 h-4" /> },
+ { key: 'problems', label: 'Problems', icon: <Code2 className="w-4 h-4" /> },
+ { key: 'courses', label: 'Full Courses', icon: <BookOpen className="w-4 h-4" /> },
+ { key: 'interviews', label: 'Interviews', icon: <Briefcase className="w-4 h-4" /> },
+ { key: 'english', label: 'English', icon: <BookOpen className="w-4 h-4" /> },
+ { key: 'channels', label: 'Channels', icon: <GraduationCap className="w-4 h-4" /> },
 ];
 
 function ProblemCard({ problem, user, onLockedClick }: { problem: LeetCodeProblem; user: any; onLockedClick: () => void }) {
-  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (!user) {
-      e.preventDefault();
-      onLockedClick();
-      return;
-    }
-    (async () => {
-      try { await db.from('practice_history').insert({
-        user_id: user.uid,
-        practice_type: 'leetcode',
-        item_id: problem.num,
-        item_title: problem.title,
-        opened_at: new Date().toISOString(),
-      }); } catch {}
-    })();
-  };
+ const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+ if (!user) {
+ e.preventDefault();
+ onLockedClick();
+ return;
+ }
+ (async () => {
+ try { await db.from('practice_history').insert({
+ user_id: user.uid,
+ practice_type: 'leetcode',
+ item_id: problem.num,
+ item_title: problem.title,
+ opened_at: new Date().toISOString(),
+ }); } catch {}
+ })();
+ };
 
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-bold text-slate-400 dark:text-slate-500 shrink-0">#{problem.num}</span>
-            <h3 className="font-bold text-slate-900 dark:text-white truncate">{problem.title}</h3>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{problem.topic}</span>
-            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${difficultyColors[problem.difficulty] || ''}`}>
-              {problem.difficulty}
-            </span>
-          </div>
-          {problem.companies && problem.companies.length > 0 && (
-            <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-              {problem.companies.slice(0, 3).map((c, i) => (
-                <span key={i} className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
-                  {c.name} {c.count > 0 && `(${c.count})`}
-                </span>
-              ))}
-              {problem.companies.length > 3 && (
-                <span className="text-[10px] text-slate-400">+{problem.companies.length - 3}</span>
-              )}
-            </div>
-          )}
-        </div>
-        <div className="flex items-center gap-1 shrink-0">
-          <a
-            href={problem.leetcodeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={handleAction}
-            className="p-2.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors"
-            title="Solve on LeetCode"
-          >
-            <ExternalLink className="w-5 h-5" />
-          </a>
-          <a
-            href={problem.videoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={handleAction}
-            className="p-2.5 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-colors"
-            title="Watch solution"
-          >
-            <Youtube className="w-5 h-5" />
-          </a>
-        </div>
-      </div>
-    </motion.div>
-  );
+ return (
+ <motion.div
+ layout
+ initial={{ opacity: 0, y: 10 }}
+ animate={{ opacity: 1, y: 0 }}
+ className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300"
+ >
+ <div className="flex items-start justify-between gap-3">
+ <div className="flex-1 min-w-0">
+ <div className="flex items-center gap-2 mb-1">
+ <span className="text-xs font-bold text-slate-400 shrink-0">#{problem.num}</span>
+ <h3 className="font-bold text-slate-900 truncate">{problem.title}</h3>
+ </div>
+ <div className="flex items-center gap-2 flex-wrap">
+ <span className="text-xs font-medium text-slate-500 ">{problem.topic}</span>
+ <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${difficultyColors[problem.difficulty] || ''}`}>
+ {problem.difficulty}
+ </span>
+ </div>
+ {problem.companies && problem.companies.length > 0 && (
+ <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+ {problem.companies.slice(0, 3).map((c, i) => (
+ <span key={i} className="text-[10px] font-semibold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
+ {c.name} {c.count > 0 && `(${c.count})`}
+ </span>
+ ))}
+ {problem.companies.length > 3 && (
+ <span className="text-[10px] text-slate-400">+{problem.companies.length - 3}</span>
+ )}
+ </div>
+ )}
+ </div>
+ <div className="flex items-center gap-1 shrink-0">
+ <a
+ href={problem.leetcodeUrl}
+ target="_blank"
+ rel="noopener noreferrer"
+ onClick={handleAction}
+ className="p-2.5 bg-emerald-50 /20 text-emerald-500 hover:bg-emerald-100 :bg-emerald-900/30 rounded-xl transition-colors"
+ title="Solve on LeetCode"
+ >
+ <ExternalLink className="w-5 h-5" />
+ </a>
+ <a
+ href={problem.videoUrl}
+ target="_blank"
+ rel="noopener noreferrer"
+ onClick={handleAction}
+ className="p-2.5 bg-red-50 /20 text-red-500 hover:bg-red-100 :bg-red-900/30 rounded-xl transition-colors"
+ title="Watch solution"
+ >
+ <Youtube className="w-5 h-5" />
+ </a>
+ </div>
+ </div>
+ </motion.div>
+ );
 }
 
 function CourseCard({ course, user, onLockedClick }: { course: CourseLink; user: any; onLockedClick: () => void }) {
-  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (!user) {
-      e.preventDefault();
-      onLockedClick();
-    }
-  };
+ const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+ if (!user) {
+ e.preventDefault();
+ onLockedClick();
+ }
+ };
 
-  return (
-    <a href={course.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
-      className="block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
-    >
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center shrink-0">
-          <Youtube className="w-5 h-5" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">{course.title}</h3>
-        </div>
-        <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
-      </div>
-    </a>
-  );
+ return (
+ <a href={course.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+ className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
+ >
+ <div className="flex items-center gap-3">
+ <div className="w-10 h-10 rounded-xl bg-emerald-100 /20 text-emerald-500 flex items-center justify-center shrink-0">
+ <Youtube className="w-5 h-5" />
+ </div>
+ <div className="flex-1 min-w-0">
+ <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 :text-emerald-400 transition-colors truncate">{course.title}</h3>
+ </div>
+ <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
+ </div>
+ </a>
+ );
 }
 
 function InterviewCard({ interview, user, onLockedClick }: { interview: InterviewExperience; user: any; onLockedClick: () => void }) {
-  const resultColors: Record<string, string> = {
-    Hired: 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/20',
-    Selected: 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/20',
-    Rejected: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/20',
-  };
-  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (!user) {
-      e.preventDefault();
-      onLockedClick();
-    }
-  };
+ const resultColors: Record<string, string> = {
+ Hired: 'text-emerald-600 bg-emerald-100 /20',
+ Selected: 'text-blue-600 bg-blue-100 /20',
+ Rejected: 'text-red-600 bg-red-100 /20',
+ };
+ const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+ if (!user) {
+ e.preventDefault();
+ onLockedClick();
+ }
+ };
 
-  return (
-    <a href={interview.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
-      className="block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
-    >
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">{interview.company}</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{interview.interviewType}</p>
-        </div>
-        <span className={`shrink-0 text-[10px] font-bold px-2 py-1 rounded-md ${resultColors[interview.result] || ''}`}>
-          {interview.result}
-        </span>
-        <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
-      </div>
-    </a>
-  );
+ return (
+ <a href={interview.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+ className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
+ >
+ <div className="flex items-center justify-between gap-3">
+ <div className="flex-1 min-w-0">
+ <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 :text-emerald-400 transition-colors truncate">{interview.company}</h3>
+ <p className="text-xs text-slate-500 mt-0.5">{interview.interviewType}</p>
+ </div>
+ <span className={`shrink-0 text-[10px] font-bold px-2 py-1 rounded-md ${resultColors[interview.result] || ''}`}>
+ {interview.result}
+ </span>
+ <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
+ </div>
+ </a>
+ );
 }
 
 function EnglishExerciseCard({ exercise, user, onLockedClick }: { exercise: EnglishExercise; user: any; onLockedClick: () => void }) {
-  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (!user) { e.preventDefault(); onLockedClick(); return; }
-    (async () => {
-      try { await db.from('practice_history').insert({
-        user_id: user.uid,
-        practice_type: 'english',
-        item_id: exercise.num,
-        item_title: exercise.title,
-        opened_at: new Date().toISOString(),
-      }); } catch {}
-    })();
-  };
+ const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+ if (!user) { e.preventDefault(); onLockedClick(); return; }
+ (async () => {
+ try { await db.from('practice_history').insert({
+ user_id: user.uid,
+ practice_type: 'english',
+ item_id: exercise.num,
+ item_title: exercise.title,
+ opened_at: new Date().toISOString(),
+ }); } catch {}
+ })();
+ };
 
-  return (
-    <motion.div layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-bold text-slate-400 dark:text-slate-500 shrink-0">#{exercise.num}</span>
-            <h3 className="font-bold text-slate-900 dark:text-white truncate">{exercise.title}</h3>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800">
-              {exercise.level}
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-1 shrink-0">
-          <a href={exercise.practiceUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
-            className="p-2.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors"
-            title="Practice on English-Exercises.org"
-          >
-            <ExternalLink className="w-5 h-5" />
-          </a>
-          <a href={exercise.videoUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
-            className="p-2.5 bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-colors"
-            title="Watch video lesson"
-          >
-            <Youtube className="w-5 h-5" />
-          </a>
-        </div>
-      </div>
-    </motion.div>
-  );
+ return (
+ <motion.div layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+ className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300"
+ >
+ <div className="flex items-start justify-between gap-3">
+ <div className="flex-1 min-w-0">
+ <div className="flex items-center gap-2 mb-1">
+ <span className="text-xs font-bold text-slate-400 shrink-0">#{exercise.num}</span>
+ <h3 className="font-bold text-slate-900 truncate">{exercise.title}</h3>
+ </div>
+ <div className="flex items-center gap-2 flex-wrap">
+ <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-indigo-100 /30 text-indigo-700 border-indigo-200 ">
+ {exercise.level}
+ </span>
+ </div>
+ </div>
+ <div className="flex items-center gap-1 shrink-0">
+ <a href={exercise.practiceUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+ className="p-2.5 bg-emerald-50 /20 text-emerald-500 hover:bg-emerald-100 :bg-emerald-900/30 rounded-xl transition-colors"
+ title="Practice on English-Exercises.org"
+ >
+ <ExternalLink className="w-5 h-5" />
+ </a>
+ <a href={exercise.videoUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+ className="p-2.5 bg-red-50 /20 text-red-500 hover:bg-red-100 :bg-red-900/30 rounded-xl transition-colors"
+ title="Watch video lesson"
+ >
+ <Youtube className="w-5 h-5" />
+ </a>
+ </div>
+ </div>
+ </motion.div>
+ );
 }
 
 function ChannelCard({ channel, user, onLockedClick }: { channel: YouTubeChannel; user: any; onLockedClick: () => void }) {
-  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (!user) {
-      e.preventDefault();
-      onLockedClick();
-    }
-  };
+ const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+ if (!user) {
+ e.preventDefault();
+ onLockedClick();
+ }
+ };
 
-  return (
-    <a href={channel.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
-      className="flex items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
-    >
-      <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/20 text-red-500 flex items-center justify-center shrink-0">
-        <Youtube className="w-5 h-5" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <h3 className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">{channel.name}</h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{channel.category}</p>
-      </div>
-      <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
-    </a>
-  );
+ return (
+ <a href={channel.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+ className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
+ >
+ <div className="w-10 h-10 rounded-xl bg-red-100 /20 text-red-500 flex items-center justify-center shrink-0">
+ <Youtube className="w-5 h-5" />
+ </div>
+ <div className="flex-1 min-w-0">
+ <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 :text-emerald-400 transition-colors truncate">{channel.name}</h3>
+ <p className="text-xs text-slate-500 mt-0.5">{channel.category}</p>
+ </div>
+ <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
+ </a>
+ );
 }
 
 const Practice: React.FC = () => {
-  const [tab, setTab] = useState<Tab>('problems');
-  const [problemSet, setProblemSet] = useState<ProblemSet>('popular');
-  const [search, setSearch] = useState('');
-  const [topicFilter, setTopicFilter] = useState('');
-  const [diffFilter, setDiffFilter] = useState('');
-  const [channelFilter, setChannelFilter] = useState('');
-  const [englishSearch, setEnglishSearch] = useState('');
-  const [levelFilter, setLevelFilter] = useState('');
-  const [adminProblems, setAdminProblems] = useState<LeetCodeProblem[]>([]);
-  const [user, setUser] = useState<any>(auth.currentUser);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const navigate = useNavigate();
+ const [tab, setTab] = useState<Tab>('problems');
+ const [problemSet, setProblemSet] = useState<ProblemSet>('popular');
+ const [search, setSearch] = useState('');
+ const [topicFilter, setTopicFilter] = useState('');
+ const [diffFilter, setDiffFilter] = useState('');
+ const [channelFilter, setChannelFilter] = useState('');
+ const [englishSearch, setEnglishSearch] = useState('');
+ const [levelFilter, setLevelFilter] = useState('');
+ const [adminProblems, setAdminProblems] = useState<LeetCodeProblem[]>([]);
+ const [user, setUser] = useState<any>(auth.currentUser);
+ const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+ const navigate = useNavigate();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-    });
-    return () => unsubscribe();
-  }, []);
+ useEffect(() => {
+ const unsubscribe = onAuthStateChanged(auth, (u) => {
+ setUser(u);
+ });
+ return () => unsubscribe();
+ }, []);
 
-  useEffect(() => {
-    const fetchAdmin = async () => {
-      try {
-        const snap = await getDocs(query(collection(db, 'practice_problems'), orderBy('num', 'asc')));
-        const problems = snap.docs.map(d => {
-          const data = d.data() as any;
-          return { num: data.num, title: data.title, topic: data.topic || '', videoUrl: data.videoUrl || '', leetcodeUrl: data.leetcodeUrl || '', difficulty: data.difficulty || 'Easy' } as LeetCodeProblem;
-        });
-        setAdminProblems(problems);
-      } catch {}
-    };
-    fetchAdmin();
-  }, []);
+ useEffect(() => {
+ const fetchAdmin = async () => {
+ try {
+ const snap = await getDocs(query(collection(db, 'practice_problems'), orderBy('num', 'asc')));
+ const problems = snap.docs.map(d => {
+ const data = d.data() as any;
+ return { num: data.num, title: data.title, topic: data.topic || '', videoUrl: data.videoUrl || '', leetcodeUrl: data.leetcodeUrl || '', difficulty: data.difficulty || 'Easy' } as LeetCodeProblem;
+ });
+ setAdminProblems(problems);
+ } catch {}
+ };
+ fetchAdmin();
+ }, []);
 
-  const currentProblems = problemSet === 'popular' ? POPULAR_PROBLEMS : problemSet === 'leetcode150' ? LEETCODE_150_PROBLEMS : problemSet === 'top150' ? TOP_INTERVIEW_150 : adminProblems;
+ const currentProblems = problemSet === 'popular' ? POPULAR_PROBLEMS : problemSet === 'leetcode150' ? LEETCODE_150_PROBLEMS : problemSet === 'top150' ? TOP_INTERVIEW_150 : adminProblems;
 
-  const allTopics = useMemo(() => {
-    const topics = new Set(currentProblems.map(p => p.topic));
-    return Array.from(topics).sort();
-  }, [problemSet]);
+ const allTopics = useMemo(() => {
+ const topics = new Set(currentProblems.map(p => p.topic));
+ return Array.from(topics).sort();
+ }, [problemSet]);
 
-  const allCompanies = useMemo(() => {
-    const companies = new Set<string>();
-    currentProblems.forEach(p => p.companies?.forEach(c => companies.add(c.name)));
-    return Array.from(companies).sort();
-  }, [problemSet]);
+ const allCompanies = useMemo(() => {
+ const companies = new Set<string>();
+ currentProblems.forEach(p => p.companies?.forEach(c => companies.add(c.name)));
+ return Array.from(companies).sort();
+ }, [problemSet]);
 
-  const filteredProblems = useMemo(() => {
-    return currentProblems.filter(p => {
-      const matchSearch = !search || p.title.toLowerCase().includes(search.toLowerCase());
-      const matchTopic = !topicFilter || p.topic === topicFilter;
-      const matchDiff = !diffFilter || p.difficulty === diffFilter;
-      return matchSearch && matchTopic && matchDiff;
-    });
-  }, [currentProblems, search, topicFilter, diffFilter]);
+ const filteredProblems = useMemo(() => {
+ return currentProblems.filter(p => {
+ const matchSearch = !search || p.title.toLowerCase().includes(search.toLowerCase());
+ const matchTopic = !topicFilter || p.topic === topicFilter;
+ const matchDiff = !diffFilter || p.difficulty === diffFilter;
+ return matchSearch && matchTopic && matchDiff;
+ });
+ }, [currentProblems, search, topicFilter, diffFilter]);
 
-  const displayedProblems = useMemo(() => {
-    return !user ? filteredProblems.slice(0, 3) : filteredProblems;
-  }, [filteredProblems, user]);
+ const displayedProblems = useMemo(() => {
+ return !user ? filteredProblems.slice(0, 3) : filteredProblems;
+ }, [filteredProblems, user]);
 
-  const displayedCourses = useMemo(() => {
-    return !user ? FULL_COURSES.slice(0, 3) : FULL_COURSES;
-  }, [user]);
+ const displayedCourses = useMemo(() => {
+ return !user ? FULL_COURSES.slice(0, 3) : FULL_COURSES;
+ }, [user]);
 
-  const displayedInterviews = useMemo(() => {
-    return !user ? INTERVIEW_EXPERIENCES.slice(0, 3) : INTERVIEW_EXPERIENCES;
-  }, [user]);
+ const displayedInterviews = useMemo(() => {
+ return !user ? INTERVIEW_EXPERIENCES.slice(0, 3) : INTERVIEW_EXPERIENCES;
+ }, [user]);
 
-  const filteredChannels = useMemo(() => {
-    return YOUTUBE_CHANNELS.filter(c => !channelFilter || c.category === channelFilter);
-  }, [channelFilter]);
+ const filteredChannels = useMemo(() => {
+ return YOUTUBE_CHANNELS.filter(c => !channelFilter || c.category === channelFilter);
+ }, [channelFilter]);
 
-  const displayedChannels = useMemo(() => {
-    return !user ? filteredChannels.slice(0, 3) : filteredChannels;
-  }, [filteredChannels, user]);
+ const displayedChannels = useMemo(() => {
+ return !user ? filteredChannels.slice(0, 3) : filteredChannels;
+ }, [filteredChannels, user]);
 
-  const allLevels = useMemo(() => {
-    return Array.from(new Set(ENGLISH_EXERCISES.map(e => e.level))).sort();
-  }, []);
+ const allLevels = useMemo(() => {
+ return Array.from(new Set(ENGLISH_EXERCISES.map(e => e.level))).sort();
+ }, []);
 
-  const filteredEnglish = useMemo(() => {
-    return ENGLISH_EXERCISES.filter(e => {
-      const matchSearch = !englishSearch || e.title.toLowerCase().includes(englishSearch.toLowerCase());
-      const matchLevel = !levelFilter || e.level === levelFilter;
-      return matchSearch && matchLevel;
-    });
-  }, [englishSearch, levelFilter]);
+ const filteredEnglish = useMemo(() => {
+ return ENGLISH_EXERCISES.filter(e => {
+ const matchSearch = !englishSearch || e.title.toLowerCase().includes(englishSearch.toLowerCase());
+ const matchLevel = !levelFilter || e.level === levelFilter;
+ return matchSearch && matchLevel;
+ });
+ }, [englishSearch, levelFilter]);
 
-  const displayedEnglish = useMemo(() => {
-    return !user ? filteredEnglish.slice(0, 3) : filteredEnglish;
-  }, [filteredEnglish, user]);
+ const displayedEnglish = useMemo(() => {
+ return !user ? filteredEnglish.slice(0, 3) : filteredEnglish;
+ }, [filteredEnglish, user]);
 
-  return (
-    <div className="min-h-screen pt-32 pb-32 px-4 md:px-6 bg-white dark:bg-slate-950 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
-      <div className="max-w-[1400px] mx-auto relative z-10">
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-300 font-bold uppercase tracking-widest text-[10px] mb-6">
-            <Sparkles className="w-4 h-4" />
-            Practice & Interview Prep
-          </div>
-          <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white mb-6 tracking-tighter leading-[0.9]">
-            Master Coding &<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500">English Grammar</span>
-          </h1>
-          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl font-medium">
-            460+ LeetCode problems, 52 English grammar topics, video solutions, full courses, and interview prep.
-          </p>
-        </motion.div>
+ return (
+ <div className="min-h-screen pt-32 pb-32 px-4 md:px-6 bg-white relative overflow-hidden">
+ <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
+ <div className="max-w-[1400px] mx-auto relative z-10">
+ <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mb-12">
+ <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 /30 border border-emerald-200 /50 text-emerald-700 font-bold uppercase tracking-widest text-[10px] mb-6">
+ <Sparkles className="w-4 h-4" />
+ Practice & Interview Prep
+ </div>
+ <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tighter leading-[0.9]">
+ Master Coding &<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500">English Grammar</span>
+ </h1>
+ <p className="text-lg text-slate-500 max-w-xl font-medium">
+ 460+ LeetCode problems, 52 English grammar topics, video solutions, full courses, and interview prep.
+ </p>
+ </motion.div>
 
-        {/* Tabs */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex gap-2 mb-8 border-b border-slate-200 dark:border-slate-800 pb-4 overflow-x-auto">
-          {tabs.map(t => (
-            <button key={t.key} onClick={() => setTab(t.key)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-colors ${
-                tab === t.key
-                  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
-              }`}
-            >
-              {t.icon} {t.label}
-            </button>
-          ))}
-        </motion.div>
+ {/* Tabs */}
+ <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex gap-2 mb-8 border-b border-slate-200 pb-4 overflow-x-auto">
+ {tabs.map(t => (
+ <button key={t.key} onClick={() => setTab(t.key)}
+ className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-colors ${
+ tab === t.key
+ ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+ : 'text-slate-600 hover:bg-slate-100 :bg-slate-900'
+ }`}
+ >
+ {t.icon} {t.label}
+ </button>
+ ))}
+ </motion.div>
 
-        {/* Problems Tab */}
-        {tab === 'problems' && (
-          <>
-            {/* Problem Set Toggle */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-2 mb-6">
-              <button onClick={() => setProblemSet('popular')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
-                problemSet === 'popular' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
-              }`}>Most Popular ({POPULAR_PROBLEMS.length})</button>
-              <button onClick={() => setProblemSet('leetcode150')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
-                problemSet === 'leetcode150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
-              }`}>LeetCode 150 ({LEETCODE_150_PROBLEMS.length})</button>
-              <button onClick={() => setProblemSet('top150')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
-                problemSet === 'top150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
-              }`}>Top Interview 150 ({TOP_INTERVIEW_150.length})</button>
-              <button onClick={() => setProblemSet('admin')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
-                problemSet === 'admin' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
-              }`}>Custom ({adminProblems.length})</button>
-            </motion.div>
+ {/* Problems Tab */}
+ {tab === 'problems' && (
+ <>
+ {/* Problem Set Toggle */}
+ <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-2 mb-6">
+ <button onClick={() => setProblemSet('popular')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+ problemSet === 'popular' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
+ }`}>Most Popular ({POPULAR_PROBLEMS.length})</button>
+ <button onClick={() => setProblemSet('leetcode150')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+ problemSet === 'leetcode150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
+ }`}>LeetCode 150 ({LEETCODE_150_PROBLEMS.length})</button>
+ <button onClick={() => setProblemSet('top150')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+ problemSet === 'top150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
+ }`}>Top Interview 150 ({TOP_INTERVIEW_150.length})</button>
+ <button onClick={() => setProblemSet('admin')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+ problemSet === 'admin' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
+ }`}>Custom ({adminProblems.length})</button>
+ </motion.div>
 
-            {/* Filters */}
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-wrap gap-3 mb-8">
-              <div className="relative flex-1 min-w-[160px] max-w-sm">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input type="text" placeholder="Search problems..." value={search} onChange={e => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 dark:text-white placeholder-slate-400"
-                />
-              </div>
-              <select value={topicFilter} onChange={e => setTopicFilter(e.target.value)}
-                className="px-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-emerald-500 outline-none"
-              >
-                <option value="">All Topics</option>
-                {allTopics.map(t => <option key={t} value={t}>{t}</option>)}
-              </select>
-              <select value={diffFilter} onChange={e => setDiffFilter(e.target.value)}
-                className="px-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-emerald-500 outline-none"
-              >
-                <option value="">All Difficulties</option>
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-              </select>
-            </motion.div>
+ {/* Filters */}
+ <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-wrap gap-3 mb-8">
+ <div className="relative flex-1 min-w-[160px] max-w-sm">
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+ <input type="text" placeholder="Search problems..." value={search} onChange={e => setSearch(e.target.value)}
+ className="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder-slate-400"
+ />
+ </div>
+ <select value={topicFilter} onChange={e => setTopicFilter(e.target.value)}
+ className="px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none"
+ >
+ <option value="">All Topics</option>
+ {allTopics.map(t => <option key={t} value={t}>{t}</option>)}
+ </select>
+ <select value={diffFilter} onChange={e => setDiffFilter(e.target.value)}
+ className="px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none"
+ >
+ <option value="">All Difficulties</option>
+ <option value="Easy">Easy</option>
+ <option value="Medium">Medium</option>
+ <option value="Hard">Hard</option>
+ </select>
+ </motion.div>
 
-            {/* Problem Grid */}
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {displayedProblems.map((p, i) => (
-                <ProblemCard key={`${problemSet}-${p.num}`} problem={p} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
-              ))}
-            </div>
-            {displayedProblems.length === 0 && (
-              <p className="text-center text-slate-400 py-12 font-medium">No problems match your filters.</p>
-            )}
-          </>
-        )}
+ {/* Problem Grid */}
+ <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+ {displayedProblems.map((p, i) => (
+ <ProblemCard key={`${problemSet}-${p.num}`} problem={p} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
+ ))}
+ </div>
+ {displayedProblems.length === 0 && (
+ <p className="text-center text-slate-400 py-12 font-medium">No problems match your filters.</p>
+ )}
+ </>
+ )}
 
-        {/* Full Courses Tab */}
-        {tab === 'courses' && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {displayedCourses.map(c => (
-              <CourseCard key={c.num} course={c} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
-            ))}
-          </motion.div>
-        )}
+ {/* Full Courses Tab */}
+ {tab === 'courses' && (
+ <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+ {displayedCourses.map(c => (
+ <CourseCard key={c.num} course={c} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
+ ))}
+ </motion.div>
+ )}
 
-        {/* Interview Experiences Tab */}
-        {tab === 'interviews' && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2">
-            {displayedInterviews.map(i => (
-              <InterviewCard key={i.num} interview={i} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
-            ))}
-          </motion.div>
-        )}
+ {/* Interview Experiences Tab */}
+ {tab === 'interviews' && (
+ <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2">
+ {displayedInterviews.map(i => (
+ <InterviewCard key={i.num} interview={i} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
+ ))}
+ </motion.div>
+ )}
 
-        {/* English Exercises Tab */}
-        {tab === 'english' && (
-          <>
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-3 mb-8">
-              <div className="relative flex-1 min-w-[160px] max-w-sm">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input type="text" placeholder="Search grammar topics..." value={englishSearch} onChange={e => setEnglishSearch(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 dark:text-white placeholder-slate-400"
-                />
-              </div>
-              <select value={levelFilter} onChange={e => setLevelFilter(e.target.value)}
-                className="px-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-emerald-500 outline-none"
-              >
-                <option value="">All Levels</option>
-                {allLevels.map(l => <option key={l} value={l}>{l}</option>)}
-              </select>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {displayedEnglish.map(e => (
-                <EnglishExerciseCard key={e.num} exercise={e} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
-              ))}
-            </motion.div>
-            {displayedEnglish.length === 0 && (
-              <p className="text-center text-slate-400 py-12 font-medium">No English exercises match your criteria.</p>
-            )}
-          </>
-        )}
+ {/* English Exercises Tab */}
+ {tab === 'english' && (
+ <>
+ <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-3 mb-8">
+ <div className="relative flex-1 min-w-[160px] max-w-sm">
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+ <input type="text" placeholder="Search grammar topics..." value={englishSearch} onChange={e => setEnglishSearch(e.target.value)}
+ className="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder-slate-400"
+ />
+ </div>
+ <select value={levelFilter} onChange={e => setLevelFilter(e.target.value)}
+ className="px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none"
+ >
+ <option value="">All Levels</option>
+ {allLevels.map(l => <option key={l} value={l}>{l}</option>)}
+ </select>
+ </motion.div>
+ <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+ {displayedEnglish.map(e => (
+ <EnglishExerciseCard key={e.num} exercise={e} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
+ ))}
+ </motion.div>
+ {displayedEnglish.length === 0 && (
+ <p className="text-center text-slate-400 py-12 font-medium">No English exercises match your criteria.</p>
+ )}
+ </>
+ )}
 
-        {/* Channels Tab */}
-        {tab === 'channels' && (
-          <>
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-2 mb-6">
-              {Array.from(new Set(YOUTUBE_CHANNELS.map(c => c.category))).sort().map(cat => (
-                <button key={cat} onClick={() => setChannelFilter(cat === channelFilter ? '' : cat)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
-                    channelFilter === cat ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {displayedChannels.map(ch => (
-                <ChannelCard key={ch.num} channel={ch} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
-              ))}
-            </motion.div>
-          </>
-        )}
+ {/* Channels Tab */}
+ {tab === 'channels' && (
+ <>
+ <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-2 mb-6">
+ {Array.from(new Set(YOUTUBE_CHANNELS.map(c => c.category))).sort().map(cat => (
+ <button key={cat} onClick={() => setChannelFilter(cat === channelFilter ? '' : cat)}
+ className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+ channelFilter === cat ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
+ }`}
+ >
+ {cat}
+ </button>
+ ))}
+ </motion.div>
+ <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+ {displayedChannels.map(ch => (
+ <ChannelCard key={ch.num} channel={ch} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
+ ))}
+ </motion.div>
+ </>
+ )}
 
-        {/* Guest Lock Overlay */}
-        {!user && (
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-            className="relative mt-12 py-10 sm:py-16 px-8 rounded-3xl bg-white/20 dark:bg-slate-900/20 border border-slate-200/50 dark:border-slate-800/50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[50px] rounded-full pointer-events-none" />
-            <div className="relative z-10 max-w-md mx-auto">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-indigo-500 text-white mb-6 shadow-xl shadow-emerald-500/20">
-                <Code2 className="w-8 h-8" />
-              </div>
-              <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
-                Unlock 450+ More Practice Items
-              </h2>
-              <p className="text-slate-500 dark:text-slate-400 mb-8 font-medium leading-relaxed">
-                Join our community of developers to access complete LeetCode patterns, full video courses, real interview experiences, and premium channels.
-              </p>
-              <button
-                onClick={() => setIsAuthModalOpen(true)}
-                className="px-8 py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 hover:from-emerald-600 hover:via-teal-600 hover:to-indigo-600 text-white rounded-2xl font-extrabold tracking-wide shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-              >
-                Unlock Practice Platform
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </div>
-      <LoginModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
-    </div>
-  );
+ {/* Guest Lock Overlay */}
+ {!user && (
+ <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+ className="relative mt-12 py-10 sm:py-16 px-8 rounded-3xl bg-white/20 /20 border border-slate-200/50 /50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
+ <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
+ <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[50px] rounded-full pointer-events-none" />
+ <div className="relative z-10 max-w-md mx-auto">
+ <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-indigo-500 text-white mb-6 shadow-xl shadow-emerald-500/20">
+ <Code2 className="w-8 h-8" />
+ </div>
+ <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">
+ Unlock 450+ More Practice Items
+ </h2>
+ <p className="text-slate-500 mb-8 font-medium leading-relaxed">
+ Join our community of developers to access complete LeetCode patterns, full video courses, real interview experiences, and premium channels.
+ </p>
+ <button
+ onClick={() => setIsAuthModalOpen(true)}
+ className="px-8 py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 hover:from-emerald-600 hover:via-teal-600 hover:to-indigo-600 text-white rounded-2xl font-extrabold tracking-wide shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+ >
+ Unlock Practice Platform
+ </button>
+ </div>
+ </motion.div>
+ )}
+ </div>
+ <LoginModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+ </div>
+ );
 };
 
 export default Practice;

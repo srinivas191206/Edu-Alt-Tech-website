@@ -28,75 +28,75 @@ import { Toaster } from 'react-hot-toast';
 import AIAssistant from './components/AIAssistant';
 // Scroll to top on route change
 const ScrollToTop = () => {
-  const { pathname, hash } = useLocation();
+ const { pathname, hash } = useLocation();
 
-  useEffect(() => {
-    if (hash) {
-      const element = document.getElementById(hash.slice(1));
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else {
-      window.scrollTo(0, 0);
-    }
-  }, [pathname, hash]);
+ useEffect(() => {
+ if (hash) {
+ const element = document.getElementById(hash.slice(1));
+ if (element) {
+ element.scrollIntoView({ behavior: 'smooth' });
+ }
+ } else {
+ window.scrollTo(0, 0);
+ }
+ }, [pathname, hash]);
 
-  return null;
+ return null;
 };
 
 import { SmoothScroll } from './components/SmoothScroll';
 
 const AppContent: React.FC = () => {
-  const location = useLocation();
-  const isAdminPath = location.pathname.startsWith('/admin');
-  const isClassroomPath = location.pathname.startsWith('/classroom');
-  const isTeacherPath = location.pathname.startsWith('/teacher-panel');
-  const isHideLayout = isAdminPath || isClassroomPath || isTeacherPath;
+ const location = useLocation();
+ const isAdminPath = location.pathname.startsWith('/admin');
+ const isClassroomPath = location.pathname.startsWith('/classroom');
+ const isTeacherPath = location.pathname.startsWith('/teacher-panel');
+ const isHideLayout = isAdminPath || isClassroomPath || isTeacherPath;
 
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Toaster position="top-right" toastOptions={{ className: 'dark:bg-slate-800 dark:text-white' }} />
-      {!isHideLayout && <Navbar />}
-      <div className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/resources" element={<Resources />} />
-          <Route path="/peer-education" element={<PeerEducation />} />
-          <Route path="/courses" element={<Courses />} />
-          <Route path="/courses/:courseId" element={<CourseDetails />} />
-          <Route path="/classroom/:courseId" element={<CourseClassroom />} />
-          <Route path="/teacher-application" element={<TeacherApplication />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/patch-notes" element={<PatchNotes />} />
-          <Route path="/verify" element={<Verification />} />
-          <Route path="/flashcards" element={<FlashcardDeck />} />
-          <Route path="/admin/behavior" element={<BehaviorInsights />} />
-          <Route path="/practice" element={<Practice />} />
-          <Route path="/teacher-panel" element={<TeacherPanel />} />
-        </Routes>
-      </div>
-      {!isHideLayout && <Footer />}
-      {!isHideLayout && <AIAssistant />}
-    </div>
-  );
+ return (
+ <div className="flex flex-col min-h-screen">
+ <Toaster position="top-right" toastOptions={{ className: ' ' }} />
+ {!isHideLayout && <Navbar />}
+ <div className="flex-grow">
+ <Routes>
+ <Route path="/" element={<Home />} />
+ <Route path="/about" element={<About />} />
+ <Route path="/services" element={<Services />} />
+ <Route path="/resources" element={<Resources />} />
+ <Route path="/peer-education" element={<PeerEducation />} />
+ <Route path="/courses" element={<Courses />} />
+ <Route path="/courses/:courseId" element={<CourseDetails />} />
+ <Route path="/classroom/:courseId" element={<CourseClassroom />} />
+ <Route path="/teacher-application" element={<TeacherApplication />} />
+ <Route path="/login" element={<Login />} />
+ <Route path="/signup" element={<Signup />} />
+ <Route path="/contact" element={<Contact />} />
+ <Route path="/dashboard" element={<Dashboard />} />
+ <Route path="/profile" element={<Profile />} />
+ <Route path="/admin" element={<AdminDashboard />} />
+ <Route path="/patch-notes" element={<PatchNotes />} />
+ <Route path="/verify" element={<Verification />} />
+ <Route path="/flashcards" element={<FlashcardDeck />} />
+ <Route path="/admin/behavior" element={<BehaviorInsights />} />
+ <Route path="/practice" element={<Practice />} />
+ <Route path="/teacher-panel" element={<TeacherPanel />} />
+ </Routes>
+ </div>
+ {!isHideLayout && <Footer />}
+ {!isHideLayout && <AIAssistant />}
+ </div>
+ );
 };
 
 const App: React.FC = () => {
-  return (
-    <SmoothScroll>
-      <Router>
-        <ScrollToTop />
-        <AppContent />
-      </Router>
-    </SmoothScroll>
-  );
+ return (
+ <SmoothScroll>
+ <Router>
+ <ScrollToTop />
+ <AppContent />
+ </Router>
+ </SmoothScroll>
+ );
 };
 
 export default App;
