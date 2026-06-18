@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ChevronDown, User as LucideUser, LogOut, Sun, Moon, GraduationCap, BookOpen, Wrench, LayoutDashboard, Library } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { Menu, X, ChevronDown, User as LucideUser, LogOut, GraduationCap, BookOpen, Wrench, LayoutDashboard, Library } from 'lucide-react';
 import { auth, db, onAuthStateChanged, signOut, doc, getDoc } from '../lib/firebase';
 import type { User as FirebaseUser } from '../lib/firebase';
 import { UserObject } from '../types';
@@ -14,7 +13,6 @@ export default function Navbar() {
   const [userProfile, setUserProfile] = useState<UserObject | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleResize = () => {
@@ -128,9 +126,6 @@ export default function Navbar() {
               </div>
 
               <div className="flex items-center gap-3 pl-6 border-l border-slate-200 dark:border-slate-800">
-                <button onClick={toggleTheme} className="p-2 text-slate-600 hover:text-emerald-600 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
-                  {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                </button>
 
                 {!user ? (
                   <Link
@@ -216,13 +211,6 @@ export default function Navbar() {
                 transition={{ delay: navLinks.length * 0.05 + 0.2 }}
                 className="mt-auto space-y-4"
               >
-                <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-                  <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Theme</span>
-                  <button onClick={toggleTheme} className="p-3 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl shadow-sm">
-                    {theme === 'dark' ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
-                  </button>
-                </div>
-
                 {!user ? (
                   <Link
                     to="/login"
