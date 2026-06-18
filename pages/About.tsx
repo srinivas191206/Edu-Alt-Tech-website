@@ -50,20 +50,20 @@ function TiltCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
         onMouseLeave={handleLeave}
         style={{ rotateX, rotateY }}
         whileHover={{ scale: 1.02, z: 20 }}
-        className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 transition-colors duration-500 text-center overflow-hidden w-[340px] sm:w-[380px]"
+        className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 sm:p-8 transition-colors duration-500 text-center overflow-hidden w-full sm:w-[340px] lg:w-[380px]"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-slate-50/50 to-transparent dark:from-slate-800/30 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         <div className="relative z-10">
           <motion.div
             whileHover={{ scale: 1.1 }}
-            className={`w-48 h-48 sm:w-56 sm:h-56 mx-auto mb-6 rounded-[2rem] overflow-hidden bg-gradient-to-br ${gradients[idx % gradients.length]} p-[5px] shadow-xl`}
+            className={`w-40 h-40 sm:w-48 sm:h-48 lg:w-56 lg:h-56 mx-auto mb-6 rounded-[2rem] overflow-hidden bg-gradient-to-br ${gradients[idx % gradients.length]} p-[5px] shadow-xl`}
           >
             <div className="w-full h-full rounded-[1.6rem] overflow-hidden bg-white dark:bg-slate-900 relative">
               {member.image && !imgError ? (
                 <img src={member.image} loading="lazy" decoding="async" alt={member.name} className="w-full h-full object-cover" onError={() => setImgError(true)} />
               ) : (
-                <div className="w-full h-full flex items-center justify-center font-black text-4xl sm:text-5xl text-slate-300 dark:text-slate-600 bg-slate-50 dark:bg-slate-800">
+                <div className="w-full h-full flex items-center justify-center font-black text-3xl sm:text-4xl lg:text-5xl text-slate-300 dark:text-slate-600 bg-slate-50 dark:bg-slate-800">
                   {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                 </div>
               )}
@@ -170,8 +170,15 @@ const About: React.FC = () => {
           </div>
 
           <div className="relative">
+            {/* Mobile: grid layout */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-6 relative z-10">
+              {TEAM.map((member, idx) => (
+                <TiltCard key={idx} idx={idx} member={member} />
+              ))}
+            </div>
+            {/* Desktop: horizontal scroll */}
             <motion.div
-              className="flex gap-6 lg:gap-8 overflow-x-auto pb-6 snap-x snap-mandatory scroll-smooth no-scrollbar relative z-10"
+              className="hidden lg:flex gap-6 lg:gap-8 overflow-x-auto pb-6 snap-x snap-mandatory scroll-smooth no-scrollbar relative z-10"
               drag="x"
               dragConstraints={{ right: 0, left: -(TEAM.length * 400) }}
               dragElastic={0.1}
@@ -183,8 +190,8 @@ const About: React.FC = () => {
                 </motion.div>
               ))}
             </motion.div>
-            <div className="absolute -left-4 top-0 bottom-6 w-16 bg-gradient-to-r from-white dark:from-[#020617] to-transparent pointer-events-none z-20" />
-            <div className="absolute -right-4 top-0 bottom-6 w-16 bg-gradient-to-l from-white dark:from-[#020617] to-transparent pointer-events-none z-20" />
+            <div className="absolute -left-4 top-0 bottom-6 w-16 bg-gradient-to-r from-white dark:from-[#020617] to-transparent pointer-events-none z-20 hidden lg:block" />
+            <div className="absolute -right-4 top-0 bottom-6 w-16 bg-gradient-to-l from-white dark:from-[#020617] to-transparent pointer-events-none z-20 hidden lg:block" />
           </div>
         </motion.div>
 

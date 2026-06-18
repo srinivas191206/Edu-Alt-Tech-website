@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL, createEnrollment } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical, Calendar, Video, Pencil, Trash2, Plus, Image, Save } from 'lucide-react';
+import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical, Calendar, Video, Pencil, Trash2, Plus, Image, Save, Eye, EyeOff } from 'lucide-react';
 import { TeacherApplication } from '../types';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -98,6 +98,17 @@ const AdminDashboard: React.FC = () => {
       fetchData();
     } catch (e: any) {
       toast.error(e?.message || 'Failed to delete course');
+    }
+  };
+
+  const handleToggleComingSoon = async (course: any) => {
+    const newVal = !course.comingSoon;
+    try {
+      await updateDoc(doc(db, 'courses', course.id), { comingSoon: newVal });
+      toast.success(newVal ? 'Marked as Coming Soon' : 'Course released');
+      fetchData();
+    } catch (e: any) {
+      toast.error(e?.message || 'Failed to update course');
     }
   };
 
@@ -945,6 +956,13 @@ const AdminDashboard: React.FC = () => {
                               </td>
                               <td className="px-4 sm:px-8 py-4 sm:py-5 text-right">
                                 <div className="flex items-center justify-end gap-2">
+                                  <button onClick={() => handleToggleComingSoon(course)} className={`p-2.5 rounded-xl transition-colors ${
+                                    course.comingSoon
+                                      ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/50'
+                                      : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-900/50'
+                                  }`} title={course.comingSoon ? 'Release course' : 'Mark as Coming Soon'}>
+                                    {course.comingSoon ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                  </button>
                                   <button onClick={() => openEditCourse(course)} className="p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors" title="Edit">
                                     <Pencil className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                                   </button>
