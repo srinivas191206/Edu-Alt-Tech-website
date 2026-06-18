@@ -30,7 +30,7 @@ export interface UserObject {
   profilePic?: string;
   createdAt: any;
   preferences?: string[]; // E.g., 'jee-mains', 'music'
-  classYear?: string;
+  classLevel?: string;
   location?: string;
 }
 
