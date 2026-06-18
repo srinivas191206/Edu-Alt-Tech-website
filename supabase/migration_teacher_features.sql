@@ -7,6 +7,7 @@ ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS highest_qualification 
 ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS specialization TEXT;
 ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS current_occupation TEXT;
 ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS languages TEXT;
+ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS languages_count INTEGER;
 ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS subjects TEXT;
 ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS course_category TEXT;
 ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS teaching_mode TEXT;

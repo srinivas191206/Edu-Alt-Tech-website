@@ -404,3 +404,5 @@ CREATE POLICY "Users can update own notifications"
 -- Safe migration statements to ensure existing DB tables get the new columns
 ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS meeting_link TEXT;
 ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS meeting_date TIMESTAMPTZ;
+ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS languages TEXT;
+ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS languages_count INTEGER;

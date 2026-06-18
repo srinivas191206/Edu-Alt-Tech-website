@@ -1032,6 +1032,10 @@ const AdminDashboard: React.FC = () => {
  <p className="text-sm font-black text-slate-400 uppercase mb-1">Target Curriculum</p>
  <p className="font-bold text-base sm:text-lg">{selectedApp.courseTitle}</p>
  </div>
+ <div className="sm:col-span-2">
+ <p className="text-sm font-black text-slate-400 uppercase mb-1">Languages to Teach (Total: {selectedApp.languagesCount || 0})</p>
+ <p className="font-bold text-base text-emerald-600">{selectedApp.languages || 'Not specified'}</p>
+ </div>
  </div>
  </section>
 

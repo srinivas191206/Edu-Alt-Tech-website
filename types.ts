@@ -112,6 +112,7 @@ export interface TeacherApplication {
  specialization?: string;
  currentOccupation?: string;
  languages?: string;
+ languagesCount?: number;
  subjects?: string;
  courseCategory?: string;
  teachingMode?: string;
