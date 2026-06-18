@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { auth, onAuthStateChanged, db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
-import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Code } from 'lucide-react';
+import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Code, Clock } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoginModal from '../components/LoginModal';
@@ -334,9 +334,9 @@ const Courses: React.FC = () => {
  </div>
  )}
  </div>
- <div className="absolute top-4 right-4 px-3 py-1.5 bg-emerald-500/90 backdrop-blur-md rounded-full text-[10px] font-black text-white uppercase tracking-wider">
- {course.price === 0 ? 'Free' : `₹${course.price}`}
- </div>
+  <div className={`absolute top-4 right-4 px-3 py-1.5 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-wider ${course.comingSoon ? 'bg-amber-500/90 text-white' : 'bg-emerald-500/90 text-white'}`}>
+    {course.comingSoon ? 'Coming Soon' : course.price === 0 ? 'Free' : `₹${course.price}`}
+  </div>
  </div>
  <div className="p-6 flex flex-col flex-1">
  <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tight leading-tight group-hover:text-emerald-500 transition-colors line-clamp-2">
@@ -345,12 +345,16 @@ const Courses: React.FC = () => {
  <p className="text-sm text-slate-500 mb-5 font-medium leading-relaxed line-clamp-2 flex-1">
  {course.description}
  </p>
- {!user ? (
- <button onClick={() => setIsAuthModalOpen(true)}
- className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-colors transition-transform active:scale-[0.98]">
- Explore Course →
- </button>
- ) : course.externalUrl ? (
+  {course.comingSoon ? (
+    <span className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-amber-100 text-amber-600 rounded-xl font-bold text-sm tracking-wide cursor-not-allowed">
+      <Clock className="w-4 h-4" /> Coming Soon
+    </span>
+  ) : !user ? (
+    <button onClick={() => setIsAuthModalOpen(true)}
+      className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-colors transition-transform active:scale-[0.98]">
+      Explore Course →
+    </button>
+  ) : course.externalUrl ? (
  <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
  className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold text-sm tracking-wide hover:from-emerald-600 hover:to-teal-600 transition-colors transition-transform active:scale-[0.98]">
  Start Free <ExternalLink className="w-4 h-4" />
