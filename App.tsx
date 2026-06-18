@@ -24,7 +24,6 @@ import Services from './pages/Services';
 import Resources from './pages/Resources';
 import Practice from './pages/Practice';
 import TeacherPanel from './pages/TeacherPanel';
-import { ThemeProvider } from './components/ThemeProvider';
 import { Toaster } from 'react-hot-toast';
 import AIAssistant from './components/AIAssistant';
 // Scroll to top on route change
@@ -91,14 +90,12 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <ThemeProvider>
-      <SmoothScroll>
-        <Router>
-          <ScrollToTop />
-          <AppContent />
-        </Router>
-      </SmoothScroll>
-    </ThemeProvider>
+    <SmoothScroll>
+      <Router>
+        <ScrollToTop />
+        <AppContent />
+      </Router>
+    </SmoothScroll>
   );
 };
 

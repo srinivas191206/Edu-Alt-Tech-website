@@ -68,7 +68,7 @@ const PricingSection: React.FC = () => {
 
     // If it's a free or custom plan, redirect to email
     if (plan.price === 'Free' || plan.price === 'Custom') {
-      window.location.href = "mailto:edualtstudy@gmail.com";
+      window.location.href = "mailto:info@edualttech.com";
       return;
     }
 
