@@ -521,13 +521,10 @@ const AI_COURSES = [
     { title: "LLM Course", url: "https://huggingface.co/learn/llm-course" },
     { title: "Agents Course", url: "https://huggingface.co/learn/agents-course" },
     { title: "Computer Vision Course", url: "https://huggingface.co/learn/computer-vision-course" },
-    { title: "Audio Course", url: "https://huggingface.co/learn/audio-course" },
     { title: "Deep Reinforcement Learning Course", url: "https://huggingface.co/learn/deep-rl-course" },
     { title: "Diffusion Course", url: "https://huggingface.co/learn/diffusion-course" },
     { title: "ML for Games Course", url: "https://huggingface.co/learn/ml-games-course" },
-    { title: "ML for 3D Course", url: "https://huggingface.co/learn/ml-3d-course" },
     { title: "Robotics Course", url: "https://huggingface.co/learn/robotics-course" },
-    { title: "Context Engineering for Code Agents", url: "https://huggingface.co/learn/context-engineering-course" },
     { title: "a smol course", url: "https://huggingface.co/learn/smol-course" },
     { title: "Open-Source AI Cookbook", url: "https://huggingface.co/learn/cookbook" },
   ] },
@@ -540,7 +537,7 @@ const AI_COURSES = [
   { name: "OpenAI Cookbook", url: "https://github.com/openai/openai-cookbook", logo: "https://github.githubassets.com/favicons/favicon.svg", courses: ["RAG Examples", "Function Calling", "Agents", "API Tutorials"] },
   { name: "Papers With Code", url: "https://paperswithcode.com", logo: "https://paperswithcode.com/favicon.ico", courses: ["Research Papers", "Benchmarks", "State-of-the-Art Models"] },
   { name: "AssemblyAI", url: "https://www.assemblyai.com/blog", logo: "https://www.assemblyai.com/favicon.ico", courses: ["Speech AI", "Voice Agents", "LLM Applications"] },
-  { name: "Pinecone", url: "https://learn.pinecone.io", logo: "https://www.pinecone.io/favicon.ico", courses: ["Vector Databases", "RAG", "Semantic Search"] },
+  { name: "Pinecone", url: "https://www.pinecone.io/learn/", logo: "https://www.pinecone.io/favicon.ico", courses: ["Vector Databases", "RAG", "Semantic Search"] },
 ];
 
 export default Courses;
