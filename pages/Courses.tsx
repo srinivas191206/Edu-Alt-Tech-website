@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { auth, onAuthStateChanged, db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
-import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Clock, Rocket, Zap, Brain, Cpu, Cloud, Layers, Code, Database, Bot, Network } from 'lucide-react';
+import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Zap, Brain, Cpu, Cloud, Layers, Code, Database, Bot, Network } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoginModal from '../components/LoginModal';
@@ -143,7 +143,7 @@ const Courses: React.FC = () => {
             fetchedCourses.push({
               id: `ai-${pi}-${ci}`,
               title: `${course}`,
-              description: `Coming soon from ${provider.name}. Master ${course.toLowerCase()} with industry-leading curriculum.`,
+              description: `Free course from ${provider.name}. Master ${course.toLowerCase()} with industry-leading curriculum.`,
               category: 'alternative',
               price: 0,
               thumbnailUrl: `https://picsum.photos/seed/${provider.name.toLowerCase().replace(/\s+/g, '-')}-${ci}/400/225`,
@@ -151,7 +151,7 @@ const Courses: React.FC = () => {
               duration: 'Self-paced',
               level: 'beginner',
               classLevel: 'General',
-              comingSoon: true,
+              comingSoon: false,
               provider: provider.name,
               externalUrl: provider.url,
               createdAt: new Date().toISOString(),
@@ -244,10 +244,10 @@ const Courses: React.FC = () => {
             <button onClick={() => setShowComingSoon(!showComingSoon)}
               className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-colors border ${
                 showComingSoon
-                  ? 'bg-amber-50 text-amber-700 border-amber-200 hover:border-amber-400'
-                  : 'bg-white text-slate-600 border-slate-200 hover:border-amber-400'
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:border-emerald-400'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-400'
               }`}>
-              <Clock className="w-4 h-4" /> Coming Soon
+              <Globe className="w-4 h-4" /> Provider Courses
             </button>
           )}
         </motion.div>
@@ -261,16 +261,16 @@ const Courses: React.FC = () => {
           </div>
         ) : filteredCourses.length > 0 ? (
           <>
-            {/* Provider Coming Soon Section */}
+            {/* Provider Courses Section */}
             {showComingSoon && providerCourses.length > 0 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-12">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/20">
-                    <Rocket className="w-5 h-5" />
+                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20">
+                    <Globe className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-black text-slate-900">Coming Soon</h2>
-                    <p className="text-xs text-slate-500 font-medium">Free courses from industry leaders — launching soon</p>
+                    <h2 className="text-xl font-black text-slate-900">Free Courses from Industry Leaders</h2>
+                    <p className="text-xs text-slate-500 font-medium">Free, high-quality courses from top providers — start learning today</p>
                   </div>
                   <div className="ml-auto hidden sm:flex items-center gap-2">
                     <span className="text-xs text-slate-400 font-bold">{providerCourses.length} courses</span>
@@ -287,11 +287,11 @@ const Courses: React.FC = () => {
                     const provider = course.provider || '';
                     return (
                       <motion.div key={course.id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                        className="group relative bg-white rounded-2xl border border-slate-200 hover:border-amber-300 hover:shadow-lg hover:shadow-amber-500/5 transition-all duration-300 overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        className="group relative bg-white rounded-2xl border border-slate-200 hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-500/5 transition-all duration-300 overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="p-5 relative">
                           <div className="flex items-center gap-3 mb-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center text-amber-600 shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-emerald-600 shrink-0">
                               {PROVIDER_LOGOS[provider] ? (
                                 <img src={PROVIDER_LOGOS[provider]} alt={provider} className="w-5 h-5 rounded"
                                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).parentElement!.innerHTML = '<div class="w-5 h-5 flex items-center justify-center text-xs font-bold">' + provider.charAt(0) + '</div>'; }} />
@@ -300,23 +300,23 @@ const Courses: React.FC = () => {
                               )}
                             </div>
                             <div className="min-w-0">
-                              <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">{provider}</p>
+                              <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">{provider}</p>
                               <p className="text-xs text-slate-400 font-medium truncate">{course.duration}</p>
                             </div>
                           </div>
-                          <h3 className="font-bold text-slate-900 mb-2 leading-snug text-sm line-clamp-2 group-hover:text-amber-600 transition-colors">
+                          <h3 className="font-bold text-slate-900 mb-2 leading-snug text-sm line-clamp-2 group-hover:text-emerald-600 transition-colors">
                             {course.title}
                           </h3>
                           <p className="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-4">
                             {course.description}
                           </p>
                           <div className="flex items-center justify-between">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-bold uppercase tracking-wider">
-                              <Clock className="w-3 h-3" /> Coming Soon
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+                              <Sparkles className="w-3 h-3" /> Free
                             </span>
                             <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
-                              className="text-xs font-bold text-slate-400 hover:text-amber-600 transition-colors flex items-center gap-1">
-                              Learn More <ExternalLink className="w-3 h-3" />
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-600 transition-colors">
+                              Start Free <ExternalLink className="w-3 h-3" />
                             </a>
                           </div>
                         </div>
@@ -345,8 +345,19 @@ const Courses: React.FC = () => {
                       <motion.div layout key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
                         className="group bg-white backdrop-blur-xl rounded-3xl overflow-hidden border border-slate-200 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-colors transition-shadow duration-500 flex flex-col">
                         <div className="relative h-48 overflow-hidden bg-slate-100">
-                          <img src={course.thumbnailUrl} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                            onError={(e) => { const el = e.target as HTMLImageElement; if (!el.dataset.fallback) { el.dataset.fallback = '1'; el.src = getFallbackThumbnail(course.title, course.folder || ''); } }} />
+                          {course.price === 0 ? (
+                            <img src={course.thumbnailUrl} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                              onError={(e) => { const el = e.target as HTMLImageElement; if (!el.dataset.fallback) { el.dataset.fallback = '1'; el.src = getFallbackThumbnail(course.title, course.folder || ''); } }} />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+                              <div className="text-center px-6">
+                                <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/10 flex items-center justify-center">
+                                  <Book className="w-8 h-8 text-white/60" />
+                                </div>
+                                <h4 className="text-white font-bold text-sm leading-tight line-clamp-2">{course.title}</h4>
+                              </div>
+                            </div>
+                          )}
                           <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
                             <div className="px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 border border-slate-200/50">
                               {course.folder || course.category}
