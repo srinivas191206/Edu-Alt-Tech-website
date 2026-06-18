@@ -21,6 +21,8 @@ const TeacherApplication: React.FC = () => {
   const [subjects, setSubjects] = useState('');
   const [mode, setMode] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [customLanguages, setCustomLanguages] = useState('');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -40,6 +42,13 @@ const TeacherApplication: React.FC = () => {
       toast.error('Please accept the terms');
       return;
     }
+    const finalLanguagesList = [
+      ...selectedLanguages,
+      ...customLanguages.split(',').map(s => s.trim()).filter(Boolean)
+    ];
+    const languagesStr = finalLanguagesList.join(', ');
+    const languagesCount = finalLanguagesList.length;
+
     setSubmitLoading(true);
     try {
       const { error } = await db.from('teacher_applications').insert({
@@ -50,6 +59,8 @@ const TeacherApplication: React.FC = () => {
         qualification,
         experience,
         subjects,
+        languages: languagesStr,
+        languages_count: languagesCount,
         teaching_mode: mode,
         agree_terms: agreeTerms,
         status: 'pending',
@@ -126,6 +137,50 @@ const TeacherApplication: React.FC = () => {
                   <option value="recorded">Recorded</option>
                   <option value="hybrid">Hybrid</option>
                 </select>
+              </div>
+              <div className="md:col-span-2">
+                <label className={labelCls}>Languages you teach</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                  {['English', 'Hindi', 'Telugu', 'Spanish', 'Bengali', 'Tamil', 'Kannada', 'Marathi'].map((lang) => {
+                    const isSelected = selectedLanguages.includes(lang);
+                    return (
+                      <button
+                        type="button"
+                        key={lang}
+                        onClick={() => {
+                          if (isSelected) {
+                            setSelectedLanguages(selectedLanguages.filter(l => l !== lang));
+                          } else {
+                            setSelectedLanguages([...selectedLanguages, lang]);
+                          }
+                        }}
+                        className={`p-3 rounded-xl border font-bold text-xs transition-all flex items-center justify-between ${
+                          isSelected 
+                            ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm' 
+                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        <span>{lang}</span>
+                        {isSelected && <span className="w-2 h-2 rounded-full bg-emerald-500" />}
+                      </button>
+                    );
+                  })}
+                </div>
+                <input 
+                  value={customLanguages} 
+                  onChange={e => setCustomLanguages(e.target.value)} 
+                  className={inputCls} 
+                  placeholder="Other languages (e.g. French, German - comma separated)" 
+                />
+                <div className="mt-2 text-xs text-slate-500 font-bold">
+                  Total Languages Selected: <span className="text-emerald-600 font-black">{
+                    (() => {
+                      const listCount = selectedLanguages.length;
+                      const customCount = customLanguages.split(',').map(s => s.trim()).filter(Boolean).length;
+                      return listCount + customCount;
+                    })()
+                  }</span>
+                </div>
               </div>
             </div>
 
