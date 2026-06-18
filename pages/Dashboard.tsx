@@ -447,10 +447,14 @@ const Dashboard: React.FC = () => {
  <span className="text-[11px] font-bold text-slate-700 ">Resources</span>
  {resourceCount > 0 && <span className="text-[10px] font-bold text-amber-500">{resourceCount}</span>}
  </Link>
- <Link to="/courses" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 /10 /10 border border-emerald-100 /30 hover:shadow-md transition-all group">
- <GraduationCap className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
- <span className="text-[11px] font-bold text-slate-700 ">Courses</span>
- </Link>
+  <Link to="/courses" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 /10 /10 border border-emerald-100 /30 hover:shadow-md transition-all group">
+  <GraduationCap className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
+  <span className="text-[11px] font-bold text-slate-700 ">Courses</span>
+  </Link>
+  <Link to="/teacher-application" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-purple-50 to-violet-50 /10 /10 border border-purple-100 /30 hover:shadow-md transition-all group">
+  <Award className="w-5 h-5 text-purple-500 group-hover:scale-110 transition-transform" />
+  <span className="text-[11px] font-bold text-slate-700 ">Apply as Teacher</span>
+  </Link>
  </div>
  </motion.div>
 
