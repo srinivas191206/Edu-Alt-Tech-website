@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { auth, onAuthStateChanged, db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
-import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Zap, Brain, Cpu, Cloud, Layers, Code, Database, Bot, Network } from 'lucide-react';
+import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Code, Clock } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoginModal from '../components/LoginModal';
@@ -50,49 +50,13 @@ function getThumbnail(title: string, folder: string): string {
 }
 
 const PROVIDER_LOGOS: Record<string, string> = {
- 'Anthropic': 'https://www.anthropic.com/favicon.ico',
- 'Google': 'https://www.google.com/favicon.ico',
- 'Meta': 'https://about.meta.com/favicon.ico',
- 'NVIDIA': 'https://developer.nvidia.com/sites/default/files/favicon.ico',
- 'Microsoft': 'https://learn.microsoft.com/favicon.ico',
- 'OpenAI': 'https://openai.com/favicon.ico',
- 'IBM': 'https://www.ibm.com/favicon.ico',
- 'AWS': 'https://aws.amazon.com/favicon.ico',
- 'DeepLearningAI': 'https://www.deeplearning.ai/favicon.ico',
- 'Hugging Face': 'https://huggingface.co/front/assets/huggingface_logo.svg',
- 'FastAI': 'https://www.fast.ai/favicon.ico',
- 'Kaggle Learn': 'https://www.kaggle.com/favicon.ico',
- 'Stanford AI': 'https://www.stanford.edu/favicon.ico',
- 'MIT OpenCourseWare': 'https://ocw.mit.edu/favicon.ico',
- 'Full Stack Deep Learning': 'https://fullstackdeeplearning.com/favicon.ico',
- 'DeepMind': 'https://deepmind.google/favicon.ico',
- 'OpenAI Cookbook': 'https://github.githubassets.com/favicons/favicon.svg',
- 'Papers With Code': 'https://paperswithcode.com/favicon.ico',
- 'AssemblyAI': 'https://www.assemblyai.com/favicon.ico',
- 'Pinecone': 'https://www.pinecone.io/favicon.ico',
+  'DeepLearningAI': 'https://www.deeplearning.ai/favicon.ico',
+  'Hugging Face': 'https://huggingface.co/front/assets/huggingface_logo.svg',
 };
 
 const providerIcons: Record<string, React.ReactNode> = {
- 'Anthropic': <Brain className="w-5 h-5" />,
- 'Google': <Zap className="w-5 h-5" />,
- 'Meta': <Globe className="w-5 h-5" />,
- 'NVIDIA': <Cpu className="w-5 h-5" />,
- 'Microsoft': <Cloud className="w-5 h-5" />,
- 'OpenAI': <Sparkles className="w-5 h-5" />,
- 'IBM': <Brain className="w-5 h-5" />,
- 'AWS': <Cloud className="w-5 h-5" />,
- 'DeepLearningAI': <Book className="w-5 h-5" />,
- 'Hugging Face': <Code className="w-5 h-5" />,
- 'FastAI': <Zap className="w-5 h-5" />,
- 'Kaggle Learn': <Database className="w-5 h-5" />,
- 'Stanford AI': <GraduationCap className="w-5 h-5" />,
- 'MIT OpenCourseWare': <GraduationCap className="w-5 h-5" />,
- 'Full Stack Deep Learning': <Layers className="w-5 h-5" />,
- 'DeepMind': <Brain className="w-5 h-5" />,
- 'OpenAI Cookbook': <Book className="w-5 h-5" />,
- 'Papers With Code': <Network className="w-5 h-5" />,
- 'AssemblyAI': <Bot className="w-5 h-5" />,
- 'Pinecone': <Database className="w-5 h-5" />,
+  'DeepLearningAI': <Book className="w-5 h-5" />,
+  'Hugging Face': <Code className="w-5 h-5" />,
 };
 
 const Courses: React.FC = () => {
@@ -370,9 +334,9 @@ const Courses: React.FC = () => {
  </div>
  )}
  </div>
- <div className="absolute top-4 right-4 px-3 py-1.5 bg-emerald-500/90 backdrop-blur-md rounded-full text-[10px] font-black text-white uppercase tracking-wider">
- {course.price === 0 ? 'Free' : `₹${course.price}`}
- </div>
+  <div className={`absolute top-4 right-4 px-3 py-1.5 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-wider ${course.comingSoon ? 'bg-amber-500/90 text-white' : 'bg-emerald-500/90 text-white'}`}>
+    {course.comingSoon ? 'Coming Soon' : course.price === 0 ? 'Free' : `₹${course.price}`}
+  </div>
  </div>
  <div className="p-6 flex flex-col flex-1">
  <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tight leading-tight group-hover:text-emerald-500 transition-colors line-clamp-2">
@@ -381,12 +345,16 @@ const Courses: React.FC = () => {
  <p className="text-sm text-slate-500 mb-5 font-medium leading-relaxed line-clamp-2 flex-1">
  {course.description}
  </p>
- {!user ? (
- <button onClick={() => setIsAuthModalOpen(true)}
- className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-colors transition-transform active:scale-[0.98]">
- Explore Course →
- </button>
- ) : course.externalUrl ? (
+  {course.comingSoon ? (
+    <span className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-amber-100 text-amber-600 rounded-xl font-bold text-sm tracking-wide cursor-not-allowed">
+      <Clock className="w-4 h-4" /> Coming Soon
+    </span>
+  ) : !user ? (
+    <button onClick={() => setIsAuthModalOpen(true)}
+      className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-colors transition-transform active:scale-[0.98]">
+      Explore Course →
+    </button>
+  ) : course.externalUrl ? (
  <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
  className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold text-sm tracking-wide hover:from-emerald-600 hover:to-teal-600 transition-colors transition-transform active:scale-[0.98]">
  Start Free <ExternalLink className="w-4 h-4" />
@@ -447,15 +415,7 @@ const Courses: React.FC = () => {
 };
 
 const AI_COURSES = [
- { name: "Anthropic", url: "https://anthropic.skilljar.com", logo: "https://www.anthropic.com/favicon.ico", courses: ["Claude API Fundamentals", "Prompt Engineering", "AI Safety", "Agent Development"] },
- { name: "Google", url: "https://grow.google/ai", logo: "https://www.google.com/favicon.ico", courses: ["Google AI Essentials", "Gemini for Developers", "Generative AI Learning Path"] },
- { name: "Meta", url: "https://ai.meta.com/resources", logo: "https://about.meta.com/favicon.ico", courses: ["Llama Tutorials", "Responsible AI", "Open-Source AI Development"] },
- { name: "NVIDIA", url: "https://developer.nvidia.com/training", logo: "https://developer.nvidia.com/sites/default/files/favicon.ico", courses: ["Generative AI with LLMs", "CUDA Programming", "Deep Learning Institute Courses"] },
- { name: "Microsoft", url: "https://learn.microsoft.com/training", logo: "https://learn.microsoft.com/favicon.ico", courses: ["AI Fundamentals (AI-900)", "Azure OpenAI", "Copilot Development"] },
- { name: "OpenAI", url: "https://academy.openai.com", logo: "https://openai.com/favicon.ico", courses: ["Prompt Engineering", "Agents SDK", "OpenAI API Development"] },
- { name: "IBM", url: "https://skillsbuild.org", logo: "https://www.ibm.com/favicon.ico", courses: ["AI Fundamentals", "Machine Learning", "Generative AI for Everyone"] },
- { name: "AWS", url: "https://skillbuilder.aws", logo: "https://aws.amazon.com/favicon.ico", courses: ["Generative AI Essentials", "Amazon Bedrock", "Machine Learning Engineer Path"] },
- { name: "DeepLearningAI", url: "https://www.deeplearning.ai/courses/", logo: "https://www.deeplearning.ai/favicon.ico", courses: [
+  { name: "DeepLearningAI", url: "https://www.deeplearning.ai/courses/", logo: "https://www.deeplearning.ai/favicon.ico", courses: [
  { title: "AI Prompting for Everyone", url: "https://www.deeplearning.ai/courses/ai-prompting-for-everyone/" },
  { title: "Build with Andrew", url: "https://www.deeplearning.ai/courses/build-with-andrew/" },
  { title: "Agentic AI", url: "https://www.deeplearning.ai/courses/agentic-ai/" },
@@ -527,17 +487,8 @@ const AI_COURSES = [
  { title: "Robotics Course", url: "https://huggingface.co/learn/robotics-course" },
  { title: "a smol course", url: "https://huggingface.co/learn/smol-course" },
  { title: "Open-Source AI Cookbook", url: "https://huggingface.co/learn/cookbook" },
- ] },
- { name: "FastAI", url: "https://course.fast.ai", logo: "https://www.fast.ai/favicon.ico", courses: ["Practical Deep Learning for Coders"] },
- { name: "Kaggle Learn", url: "https://www.kaggle.com/learn", logo: "https://www.kaggle.com/favicon.ico", courses: ["Python", "Machine Learning", "Deep Learning", "Feature Engineering"] },
- { name: "Stanford AI", url: "https://cs231n.stanford.edu", logo: "https://www.stanford.edu/favicon.ico", courses: ["CS231n: Convolutional Neural Networks for Visual Recognition"] },
- { name: "MIT OpenCourseWare", url: "https://ocw.mit.edu", logo: "https://ocw.mit.edu/favicon.ico", courses: ["Machine Learning", "Artificial Intelligence", "Linear Algebra", "Probability"] },
- { name: "Full Stack Deep Learning", url: "https://fullstackdeeplearning.com", logo: "https://fullstackdeeplearning.com/favicon.ico", courses: ["LLM Bootcamp", "ML Systems", "Production AI"] },
- { name: "DeepMind", url: "https://deepmind.google/learning-resources", logo: "https://deepmind.google/favicon.ico", courses: ["AI Safety", "Reinforcement Learning", "Research Resources"] },
- { name: "OpenAI Cookbook", url: "https://github.com/openai/openai-cookbook", logo: "https://github.githubassets.com/favicons/favicon.svg", courses: ["RAG Examples", "Function Calling", "Agents", "API Tutorials"] },
- { name: "Papers With Code", url: "https://paperswithcode.com", logo: "https://paperswithcode.com/favicon.ico", courses: ["Research Papers", "Benchmarks", "State-of-the-Art Models"] },
- { name: "AssemblyAI", url: "https://www.assemblyai.com/blog", logo: "https://www.assemblyai.com/favicon.ico", courses: ["Speech AI", "Voice Agents", "LLM Applications"] },
- { name: "Pinecone", url: "https://www.pinecone.io/learn/", logo: "https://www.pinecone.io/favicon.ico", courses: ["Vector Databases", "RAG", "Semantic Search"] },
+  ] },
 ];
+
 
 export default Courses;
