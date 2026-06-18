@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Target, Users, BookOpen, Rocket, Globe, HeartHandshake, Sparkles, Linkedin, Mail, GraduationCap, Code2, Zap, Award, CheckCircle, Play, Hammer, MapPin, MessageCircle, RefreshCw, Palette, Briefcase } from 'lucide-react';
-import { TEAM } from '../constants';
+import { TEAM, SUPPORTING_TEAM } from '../constants';
 
 const About: React.FC = () => {
   return (
@@ -211,6 +211,44 @@ const About: React.FC = () => {
               whileTap={{ cursor: 'grabbing' }}
             >
               {TEAM.map((member, idx) => (
+                <motion.div key={idx} className="snap-center shrink-0 first:pl-0 last:pr-0">
+                  <TeamCard idx={idx} member={member} />
+                </motion.div>
+              ))}
+            </motion.div>
+            <div className="absolute -left-4 top-0 bottom-6 w-16 bg-gradient-to-r from-white to-transparent pointer-events-none z-20 hidden lg:block" />
+            <div className="absolute -right-4 top-0 bottom-6 w-16 bg-gradient-to-l from-white to-transparent pointer-events-none z-20 hidden lg:block" />
+          </div>
+        </motion.div>
+
+        {/* ═══════════════════════════════════════════════════════ Supporting Team */}
+        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-28 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-amber-500/5 via-transparent to-orange-500/5 rounded-[4rem] blur-3xl pointer-events-none" />
+          <div className="text-center mb-16 relative z-10">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 border border-amber-200 text-amber-700 font-bold uppercase tracking-widest text-xs mb-6">
+              <Users className="w-4 h-4" />
+              Supporting Team
+            </motion.div>
+            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter">
+              Behind the <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-red-500">Scenes</span>
+            </h2>
+            <p className="text-slate-500 text-lg">The dedicated folks who keep things running smoothly</p>
+          </div>
+
+          <div className="relative">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-6 relative z-10">
+              {SUPPORTING_TEAM.map((member, idx) => (
+                <TeamCard key={idx} idx={idx} member={member} />
+              ))}
+            </div>
+            <motion.div
+              className="hidden lg:flex gap-6 lg:gap-8 overflow-x-auto pb-6 snap-x snap-mandatory scroll-smooth no-scrollbar relative z-10"
+              drag="x"
+              dragConstraints={{ right: 0, left: -(SUPPORTING_TEAM.length * 400) }}
+              dragElastic={0.1}
+              whileTap={{ cursor: 'grabbing' }}
+            >
+              {SUPPORTING_TEAM.map((member, idx) => (
                 <motion.div key={idx} className="snap-center shrink-0 first:pl-0 last:pr-0">
                   <TeamCard idx={idx} member={member} />
                 </motion.div>
