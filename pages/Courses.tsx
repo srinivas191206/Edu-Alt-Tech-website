@@ -140,10 +140,12 @@ const Courses: React.FC = () => {
         // Add provider courses as Coming Soon at the top
         AI_COURSES.forEach((provider, pi) => {
           provider.courses.forEach((course, ci) => {
+            const courseTitle = typeof course === 'string' ? course : course.title;
+            const courseUrl = typeof course === 'string' ? provider.url : course.url;
             fetchedCourses.push({
               id: `ai-${pi}-${ci}`,
-              title: `${course}`,
-              description: `Free course from ${provider.name}. Master ${course.toLowerCase()} with industry-leading curriculum.`,
+              title: courseTitle,
+              description: `Free course from ${provider.name}. Master ${courseTitle.toLowerCase()} with industry-leading curriculum.`,
               category: 'alternative',
               price: 0,
               thumbnailUrl: `https://picsum.photos/seed/${provider.name.toLowerCase().replace(/\s+/g, '-')}-${ci}/400/225`,
@@ -153,7 +155,7 @@ const Courses: React.FC = () => {
               classLevel: 'General',
               comingSoon: false,
               provider: provider.name,
-              externalUrl: provider.url,
+              externalUrl: courseUrl,
               createdAt: new Date().toISOString(),
               createdBy: 'provider',
             } as Course & { provider?: string });
@@ -453,7 +455,28 @@ const AI_COURSES = [
   { name: "OpenAI", url: "https://academy.openai.com", logo: "https://openai.com/favicon.ico", courses: ["Prompt Engineering", "Agents SDK", "OpenAI API Development"] },
   { name: "IBM", url: "https://skillsbuild.org", logo: "https://www.ibm.com/favicon.ico", courses: ["AI Fundamentals", "Machine Learning", "Generative AI for Everyone"] },
   { name: "AWS", url: "https://skillbuilder.aws", logo: "https://aws.amazon.com/favicon.ico", courses: ["Generative AI Essentials", "Amazon Bedrock", "Machine Learning Engineer Path"] },
-  { name: "DeepLearningAI", url: "https://www.deeplearning.ai", logo: "https://www.deeplearning.ai/favicon.ico", courses: ["AI for Everyone", "LangChain", "RAG", "LLM Engineering"] },
+  { name: "DeepLearningAI", url: "https://www.deeplearning.ai/courses/", logo: "https://www.deeplearning.ai/favicon.ico", courses: [
+    { title: "AI Prompting for Everyone", url: "https://www.deeplearning.ai/courses/ai-prompting-for-everyone/" },
+    { title: "Build with Andrew", url: "https://www.deeplearning.ai/courses/build-with-andrew/" },
+    { title: "Agentic AI", url: "https://www.deeplearning.ai/courses/agentic-ai/" },
+    { title: "AI Python for Beginners", url: "https://www.deeplearning.ai/courses/ai-python-for-beginners/" },
+    { title: "AI for Everyone", url: "https://www.deeplearning.ai/courses/ai-for-everyone/" },
+    { title: "Generative AI for Everyone", url: "https://www.deeplearning.ai/courses/generative-ai-for-everyone/" },
+    { title: "Machine Learning in Production", url: "https://www.deeplearning.ai/courses/machine-learning-in-production/" },
+    { title: "RAG", url: "https://www.deeplearning.ai/courses/retrieval-augmented-generation-rag/" },
+    { title: "Fast and Efficient LLM Inference with vLLM", url: "https://www.deeplearning.ai/courses/fast-and-efficient-llm-inference-with-vllm/" },
+    { title: "ChatGPT Prompt Engineering for Developers", url: "https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/" },
+    { title: "LangChain for LLM Application Development", url: "https://www.deeplearning.ai/short-courses/langchain-for-llm-application-development/" },
+    { title: "Building Systems with ChatGPT API", url: "https://www.deeplearning.ai/short-courses/building-systems-with-chatgpt/" },
+    { title: "Building and Evaluating Advanced RAG", url: "https://www.deeplearning.ai/short-courses/building-evaluating-advanced-rag/" },
+    { title: "Functions, Tools and Agents with LangChain", url: "https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/" },
+    { title: "Finetuning Large Language Models", url: "https://www.deeplearning.ai/short-courses/finetuning-large-language-models/" },
+    { title: "Building GenAI Apps with Gradio", url: "https://www.deeplearning.ai/short-courses/building-generative-ai-applications-with-gradio/" },
+    { title: "Vector Databases: From Embeddings to Applications", url: "https://www.deeplearning.ai/short-courses/vector-databases-embeddings-applications/" },
+    { title: "LLMs with Semantic Search", url: "https://www.deeplearning.ai/short-courses/large-language-models-semantic-search/" },
+    { title: "How Diffusion Models Work", url: "https://www.deeplearning.ai/short-courses/how-diffusion-models-work/" },
+    { title: "Building Apps with Vector Databases", url: "https://www.deeplearning.ai/short-courses/building-applications-vector-databases/" },
+  ] },
   { name: "Hugging Face", url: "https://huggingface.co/learn", logo: "https://huggingface.co/favicon.ico", courses: ["NLP Course", "Transformers", "Agents Course"] },
   { name: "FastAI", url: "https://course.fast.ai", logo: "https://www.fast.ai/favicon.ico", courses: ["Practical Deep Learning for Coders"] },
   { name: "Kaggle Learn", url: "https://www.kaggle.com/learn", logo: "https://www.kaggle.com/favicon.ico", courses: ["Python", "Machine Learning", "Deep Learning", "Feature Engineering"] },
