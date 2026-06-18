@@ -25,7 +25,6 @@ function getThumbnail(title: string, folder: string): string {
     'Artificial Intelligence': ['#059669', '#10b981'],
     'Entrepreneurship': ['#7c3aed', '#a855f7'],
     'Career Development': ['#0284c7', '#38bdf8'],
-    'Marketing': ['#dc2626', '#f87171'],
     'Finance': ['#ca8a04', '#eab308'],
     'Innovation': ['#ea580c', '#f97316'],
     'Life Skills': ['#0891b2', '#22d3ee'],
@@ -52,7 +51,6 @@ function getIconForFolder(folder: string): string {
     'Artificial Intelligence': '🤖',
     'Entrepreneurship': '🚀',
     'Career Development': '📈',
-    'Marketing': '📢',
     'Finance': '💰',
     'Innovation': '💡',
     'Life Skills': '🧠',
@@ -157,6 +155,7 @@ const Courses: React.FC = () => {
   }, []);
 
   const filteredCourses = useMemo(() => courses.filter(course => {
+    if ((course.folder || '') === 'Marketing') return false;
     const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           (course.description || '').toLowerCase().includes(searchTerm.toLowerCase());
     
