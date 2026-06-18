@@ -42,12 +42,12 @@ const AdminDashboard: React.FC = () => {
   const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
   const [courseForm, setCourseForm] = useState({
     title: '', description: '', price: 0, folder: '', category: 'alternative' as string,
-    thumbnailUrl: '', duration: '', level: '', classLevel: '', externalUrl: ''
+    thumbnailUrl: '', duration: '', level: '', classLevel: '', externalUrl: '', comingSoon: false
   });
   const [savingCourse, setSavingCourse] = useState(false);
 
   const openAddCourse = () => {
-    setCourseForm({ title: '', description: '', price: 0, folder: '', category: 'alternative', thumbnailUrl: '', duration: '', level: '', classLevel: '', externalUrl: '' });
+    setCourseForm({ title: '', description: '', price: 0, folder: '', category: 'alternative', thumbnailUrl: '', duration: '', level: '', classLevel: '', externalUrl: '', comingSoon: false });
     setEditingCourse(null);
     setIsCourseModalOpen(true);
   };
@@ -64,6 +64,7 @@ const AdminDashboard: React.FC = () => {
       level: course.level || '',
       classLevel: course.classLevel || '',
       externalUrl: course.externalUrl || '',
+      comingSoon: course.comingSoon ?? false,
     });
     setEditingCourse(course);
     setIsCourseModalOpen(true);
@@ -786,10 +787,13 @@ const AdminDashboard: React.FC = () => {
                                     <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
                                       {course.title?.charAt(0) || 'C'}
                                     </div>
-                                    <div className="min-w-0">
-                                      <p className="font-bold text-sm sm:text-base text-slate-900 dark:text-white truncate">{course.title || 'Untitled'}</p>
-                                      <p className="text-[10px] text-slate-400 font-medium hidden sm:block">{course.id?.slice(0, 8)}...</p>
-                                    </div>
+                                     <div className="min-w-0">
+                                       <div className="flex items-center gap-2">
+                                         <p className="font-bold text-sm sm:text-base text-slate-900 dark:text-white truncate">{course.title || 'Untitled'}</p>
+                                         {course.comingSoon && <span className="text-[9px] px-2 py-0.5 bg-amber-500/20 text-amber-600 dark:text-amber-400 font-black uppercase tracking-wider rounded-full">Soon</span>}
+                                       </div>
+                                       <p className="text-[10px] text-slate-400 font-medium hidden sm:block">{course.id?.slice(0, 8)}...</p>
+                                     </div>
                                   </div>
                                 </td>
                                 <td className="px-4 sm:px-8 py-4 sm:py-5 hidden sm:table-cell">
@@ -922,10 +926,13 @@ const AdminDashboard: React.FC = () => {
                                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0 overflow-hidden">
                                     {course.thumbnailUrl ? <img src={course.thumbnailUrl} alt="" className="w-full h-full object-cover" /> : course.title?.charAt(0) || 'C'}
                                   </div>
-                                  <div className="min-w-0">
-                                    <p className="font-bold text-sm sm:text-base text-slate-900 dark:text-white truncate">{course.title || 'Untitled'}</p>
-                                    <p className="text-[10px] text-slate-400 font-medium">{course.id?.slice(0, 8)}...</p>
-                                  </div>
+                                     <div className="min-w-0">
+                                       <div className="flex items-center gap-2">
+                                         <p className="font-bold text-sm sm:text-base text-slate-900 dark:text-white truncate">{course.title || 'Untitled'}</p>
+                                         {course.comingSoon && <span className="text-[9px] px-2 py-0.5 bg-amber-500/20 text-amber-600 dark:text-amber-400 font-black uppercase tracking-wider rounded-full">Soon</span>}
+                                       </div>
+                                       <p className="text-[10px] text-slate-400 font-medium">{course.id?.slice(0, 8)}...</p>
+                                     </div>
                                 </div>
                               </td>
                               <td className="px-4 sm:px-8 py-4 sm:py-5 hidden md:table-cell">
@@ -1216,6 +1223,19 @@ const AdminDashboard: React.FC = () => {
                   <div className="sm:col-span-2">
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">External URL (for provider courses)</label>
                     <input value={courseForm.externalUrl} onChange={e => setCourseForm(f => ({ ...f, externalUrl: e.target.value }))} placeholder="https://..." className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <div className="relative">
+                        <input type="checkbox" checked={courseForm.comingSoon} onChange={e => setCourseForm(f => ({ ...f, comingSoon: e.target.checked }))} className="sr-only peer" />
+                        <div className="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer-checked:bg-amber-500 transition-colors" />
+                        <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-5 transition-transform" />
+                      </div>
+                      <div>
+                        <span className="block text-sm font-bold text-slate-900 dark:text-white">Coming Soon</span>
+                        <span className="block text-[10px] text-slate-400 font-medium">Hide course from students until ready</span>
+                      </div>
+                    </label>
                   </div>
                 </div>
               </div>

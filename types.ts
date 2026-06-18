@@ -49,6 +49,7 @@ export interface Course {
   level?: string;
   classLevel?: string;
   externalUrl?: string; // external link for provider courses
+  comingSoon?: boolean;
   createdAt: any;
   createdBy: string; // admin or system
 }
