@@ -210,51 +210,51 @@ const Home: React.FC = () => {
           </div>
 
           {/* Hero Right: Interactive Floating Skill Sphere */}
-          <div className="lg:col-span-5 relative flex justify-center items-center h-[450px]">
+          <div className="lg:col-span-5 relative flex justify-center items-center h-[600px]">
             <motion.div 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="relative w-80 h-80 rounded-full bg-gradient-to-br from-emerald-500/10 to-blue-500/10 flex items-center justify-center border border-emerald-500/20 shadow-2xl backdrop-blur-xl"
+              className="relative w-[420px] h-[420px] rounded-full bg-gradient-to-br from-emerald-500/10 to-blue-500/10 flex items-center justify-center border border-emerald-500/20 shadow-2xl backdrop-blur-xl"
             >
               {/* Central Logo Orb */}
-              <div className="w-36 h-36 rounded-full bg-white flex items-center justify-center shadow-2xl border border-slate-100 z-20 group relative overflow-hidden">
+              <div className="w-44 h-44 rounded-full bg-white flex items-center justify-center shadow-2xl border border-slate-100 z-20 group relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-tr from-emerald-50 to-teal-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <img src="/edulogo.png" alt="EduAltTech Logo" className="w-20 h-20 object-contain z-10 animate-float" />
+                <img src="/edulogo.png" alt="EduAltTech Logo" className="w-24 h-24 object-contain z-10 animate-float" />
               </div>
 
               {/* Orbiting Language Characters representing barrier breaking */}
               <div className="absolute inset-0 w-full h-full pointer-events-none">
                 <div className="absolute inset-0 animate-orbit-1 flex items-center justify-center">
-                  <span className="bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-md font-bold text-emerald-600 text-sm flex items-center gap-1.5 select-none pointer-events-auto">
-                    <span>अ</span> <span className="text-[10px] text-slate-400 font-medium">Hindi</span>
+                  <span className="bg-white px-4 py-2 rounded-full border border-slate-100 shadow-md font-bold text-emerald-600 text-base flex items-center gap-1.5 select-none pointer-events-auto">
+                    <span>अ</span> <span className="text-xs text-slate-400 font-medium">Hindi</span>
                   </span>
                 </div>
                 <div className="absolute inset-0 animate-orbit-2 flex items-center justify-center">
-                  <span className="bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-md font-bold text-blue-600 text-sm flex items-center gap-1.5 select-none pointer-events-auto">
-                    <span>ड</span> <span className="text-[10px] text-slate-400 font-medium">Dogri (Jammu)</span>
+                  <span className="bg-white px-4 py-2 rounded-full border border-slate-100 shadow-md font-bold text-blue-600 text-base flex items-center gap-1.5 select-none pointer-events-auto">
+                    <span>ड</span> <span className="text-xs text-slate-400 font-medium">Dogri (Jammu)</span>
                   </span>
                 </div>
                 <div className="absolute inset-0 animate-orbit-3 flex items-center justify-center">
-                  <span className="bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-md font-bold text-teal-600 text-sm flex items-center gap-1.5 select-none pointer-events-auto">
-                    <span>అ</span> <span className="text-[10px] text-slate-400 font-medium">Telugu</span>
+                  <span className="bg-white px-4 py-2 rounded-full border border-slate-100 shadow-md font-bold text-teal-600 text-base flex items-center gap-1.5 select-none pointer-events-auto">
+                    <span>అ</span> <span className="text-xs text-slate-400 font-medium">Telugu</span>
                   </span>
                 </div>
                 <div className="absolute inset-0 animate-orbit-4 flex items-center justify-center">
-                  <span className="bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-md font-bold text-purple-600 text-sm flex items-center gap-1.5 select-none pointer-events-auto">
-                    <span>ک</span> <span className="text-[10px] text-slate-400 font-medium">Kashmiri</span>
+                  <span className="bg-white px-4 py-2 rounded-full border border-slate-100 shadow-md font-bold text-purple-600 text-base flex items-center gap-1.5 select-none pointer-events-auto">
+                    <span>ک</span> <span className="text-xs text-slate-400 font-medium">Kashmiri</span>
                   </span>
                 </div>
                 <div className="absolute inset-0 animate-orbit-5 flex items-center justify-center">
-                  <span className="bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-md font-bold text-amber-600 text-sm flex items-center gap-1.5 select-none pointer-events-auto">
-                    <span>অ</span> <span className="text-[10px] text-slate-400 font-medium">Bengali</span>
+                  <span className="bg-white px-4 py-2 rounded-full border border-slate-100 shadow-md font-bold text-amber-600 text-base flex items-center gap-1.5 select-none pointer-events-auto">
+                    <span>অ</span> <span className="text-xs text-slate-400 font-medium">Bengali</span>
                   </span>
                 </div>
               </div>
 
               {/* Orbital Path rings */}
-              <div className="absolute w-[280px] h-[280px] rounded-full border border-emerald-500/10 pointer-events-none" />
-              <div className="absolute w-[360px] h-[360px] rounded-full border border-blue-500/5 pointer-events-none" />
+              <div className="absolute w-[400px] h-[400px] rounded-full border border-emerald-500/10 pointer-events-none" />
+              <div className="absolute w-[480px] h-[480px] rounded-full border border-blue-500/5 pointer-events-none" />
             </motion.div>
           </div>
         </div>
