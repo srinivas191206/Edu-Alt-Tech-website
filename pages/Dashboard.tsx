@@ -451,11 +451,24 @@ const Dashboard: React.FC = () => {
   <GraduationCap className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
   <span className="text-[11px] font-bold text-slate-700 ">Courses</span>
   </Link>
-  <Link to="/teacher-application" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-purple-50 to-violet-50 /10 /10 border border-purple-100 /30 hover:shadow-md transition-all group">
-  <Award className="w-5 h-5 text-purple-500 group-hover:scale-110 transition-transform" />
-  <span className="text-[11px] font-bold text-slate-700 ">Apply as Teacher</span>
-  </Link>
  </div>
+
+ {/* Highlighted: Apply as Teacher */}
+ <Link to="/teacher-application" className="mt-3 block w-full p-4 rounded-2xl bg-gradient-to-br from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-500 hover:via-violet-500 hover:to-indigo-500 text-white shadow-lg shadow-purple-500/20 hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-300 group relative overflow-hidden">
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.15),transparent_60%)] pointer-events-none" />
+  <div className="relative z-10 flex items-center gap-4">
+   <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform shrink-0">
+    <Award className="w-6 h-6 text-white" />
+   </div>
+   <div className="flex-1 min-w-0">
+    <p className="font-black text-sm tracking-tight">Apply as Teacher</p>
+    <p className="text-xs text-white/70 font-medium mt-0.5">Share your skills — become a mentor</p>
+   </div>
+   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm group-hover:bg-white/30 transition-colors">
+    <Sparkles className="w-3.5 h-3.5" /> Apply Now
+   </div>
+  </div>
+ </Link>
  </motion.div>
 
  {/* Applications (if any) */}
