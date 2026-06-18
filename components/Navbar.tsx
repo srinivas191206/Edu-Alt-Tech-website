@@ -126,7 +126,7 @@ export default function Navbar() {
  </div>
 
  <div className="flex items-center gap-3 pl-6 border-l border-slate-200 ">
- <div id="google_translate_element" className="scale-90 select-none mr-2"></div>
+
  {!user ? (
  <Link
  to="/login"
@@ -152,7 +152,6 @@ export default function Navbar() {
  </div>
 
  <div className="md:hidden flex items-center gap-4">
- <div id="google_translate_element_mobile" className="scale-90 select-none"></div>
  <button onClick={() => setIsOpen(!isOpen)} className="text-slate-900 p-2">
  {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
  </button>
