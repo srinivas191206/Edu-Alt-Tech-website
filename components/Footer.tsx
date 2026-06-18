@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, MessageCircle, ArrowRight, GraduationCap, Mail, Phone, MapPin } from 'lucide-react';
+import { Instagram, Linkedin, MessageCircle, ArrowRight, GraduationCap, Mail, Phone, MapPin } from 'lucide-react';
 import { LINKS } from '../constants';
 
 const Footer: React.FC = () => {
@@ -28,6 +28,9 @@ const Footer: React.FC = () => {
             <div className="flex gap-4">
               <a href={LINKS.instagram} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-full hover:bg-emerald-600 transition-colors">
                 <Instagram className="w-5 h-5" />
+              </a>
+              <a href={LINKS.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-full hover:bg-emerald-600 transition-colors">
+                <Linkedin className="w-5 h-5" />
               </a>
               <a href={LINKS.whatsapp} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-full hover:bg-emerald-600 transition-colors">
                 <MessageCircle className="w-5 h-5" />
@@ -62,11 +65,11 @@ const Footer: React.FC = () => {
             <ul className="space-y-4 text-sm text-slate-400">
               <li className="flex items-start gap-3">
                 <Mail className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                <span>contact@edualttech.com</span>
+                <span>edualtstudy@gmail.com</span>
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                <span>+91 123 456 7890</span>
+                <span>+91 9121505879</span>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />

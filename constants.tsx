@@ -4,7 +4,8 @@ import { Users, Globe, BookOpen, Brain, Smartphone, ShieldCheck, GraduationCap, 
 export const LINKS = {
   enroll: "https://docs.google.com/forms/d/e/1FAIpQLSeQXyJQQjPwLJt-2E1P1PYBKC89z_NsX4UJewQymFPW0C0IIw/viewform",
   whatsapp: "https://chat.whatsapp.com/Bzd430nwAtb6pP0lJUam35",
-  instagram: "https://www.instagram.com/edu_alt_tech/"
+  instagram: "https://www.instagram.com/edu_alt_tech/",
+  linkedin: "https://www.linkedin.com/company/edu-alt-tech/"
 };
 
 export interface TeamMember {
