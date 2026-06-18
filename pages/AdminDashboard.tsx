@@ -170,18 +170,45 @@ const AdminDashboard: React.FC = () => {
     return () => unsub();
   }, [navigate]);
 
-  // Build chat contacts from teacher_applications
+  // Build chat contacts from teacher_applications + all chat_messages senders
   useEffect(() => {
-    if (teacherApps.length > 0) {
+    const buildContacts = async () => {
       const map = new Map<string, { id: string; name: string; email: string }>();
+
+      // Add teacher applicant contacts
       teacherApps.forEach(app => {
         const id = app.userId || app.id;
         if (!map.has(id)) {
           map.set(id, { id, name: app.userName || 'Unknown', email: app.userEmail || 'No Email' });
         }
       });
+
+      // Add contacts from chat_messages (users who messaged but didn't apply as teacher)
+      try {
+        const { data: msgs } = await db.from('chat_messages').select('user_id');
+        if (msgs) {
+          const seen = new Set<string>();
+          for (const m of msgs) {
+            if (m.user_id && !seen.has(m.user_id)) {
+              seen.add(m.user_id);
+              if (!map.has(m.user_id)) {
+                const { data: userData } = await db.from('users').select('name, email').eq('id', m.user_id).maybeSingle();
+                map.set(m.user_id, {
+                  id: m.user_id,
+                  name: userData?.name || m.user_id.slice(0, 8),
+                  email: userData?.email || ''
+                });
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load chat message senders", e);
+      }
+
       setChatContacts(Array.from(map.values()));
-    }
+    };
+    buildContacts();
   }, [teacherApps]);
 
   const loadChatMessages = async (userId: string) => {
@@ -383,7 +410,7 @@ const AdminDashboard: React.FC = () => {
           {[
             { id: 'applications', label: 'Applications', icon: Users, desc: 'Provider review' },
             { id: 'courses', label: 'Course Management', icon: Database, desc: 'CRUD operations' },
-            { id: 'chat', label: 'Provider Chat', icon: MessageSquare, desc: 'Direct messaging' },
+            { id: 'chat', label: 'Messages', icon: MessageSquare, desc: 'All conversations' },
             { id: 'stats', label: 'Course Stats', icon: BarChart3, desc: 'Enrollment analytics' },
             { id: 'classes', label: 'Scheduled Classes', icon: Calendar, desc: 'Teacher-scheduled classes' },
           ].map((item) => (
@@ -455,7 +482,7 @@ const AdminDashboard: React.FC = () => {
                 {[
                   { id: 'applications', label: 'Applications', icon: Users, desc: 'Provider review' },
                   { id: 'courses', label: 'Course Management', icon: Database, desc: 'CRUD operations' },
-                  { id: 'chat', label: 'Provider Chat', icon: MessageSquare, desc: 'Direct messaging' },
+{ id: 'chat', label: 'Messages', icon: MessageSquare, desc: 'All conversations' },
                   { id: 'stats', label: 'Course Stats', icon: BarChart3, desc: 'Enrollment analytics' },
                   { id: 'classes', label: 'Scheduled Classes', icon: Calendar, desc: 'Teacher-scheduled classes' },
                 ].map((item) => (
@@ -498,7 +525,7 @@ const AdminDashboard: React.FC = () => {
           <header className="mb-16">
             <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Admin Console</span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
-              {activeTab === 'applications' ? 'Provider Applications' : activeTab === 'chat' ? 'Provider Chat' : activeTab === 'stats' ? 'Course Statistics' : activeTab === 'courses' ? 'Course Management' : 'Scheduled Classes'}
+              {activeTab === 'applications' ? 'Provider Applications' : activeTab === 'chat' ? 'Messages' : activeTab === 'stats' ? 'Course Statistics' : activeTab === 'courses' ? 'Course Management' : 'Scheduled Classes'}
             </h1>
             <p className="text-slate-500 font-medium mt-2">
               {activeTab === 'applications' ? 'Review and manage teacher/provider applications' : activeTab === 'chat' ? 'Direct messaging with providers' : activeTab === 'stats' ? 'Enrollment analytics per course' : activeTab === 'courses' ? 'Create, edit, and delete courses' : 'Live classes scheduled by teachers'}
@@ -595,15 +622,15 @@ const AdminDashboard: React.FC = () => {
                   {/* Contacts sidebar */}
                   <div className="lg:w-80 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col shrink-0">
                     <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                      <h3 className="font-black text-lg">Provider Contacts</h3>
-                      <p className="text-xs text-slate-400 font-medium mt-1">{chatContacts.length} providers</p>
+                      <h3 className="font-black text-lg">Contacts</h3>
+                      <p className="text-xs text-slate-400 font-medium mt-1">{chatContacts.length} contacts</p>
                     </div>
                     <div className="flex-1 overflow-y-auto custom-scrollbar">
                       {chatContacts.length === 0 ? (
                         <div className="p-8 text-center">
                           <MessageSquare className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
-                          <p className="text-sm font-medium text-slate-400">No provider contacts yet</p>
-                          <p className="text-xs text-slate-500 mt-1">Applications will appear here</p>
+                          <p className="text-sm font-medium text-slate-400">No contacts yet</p>
+                          <p className="text-xs text-slate-500 mt-1">Messages from users will appear here</p>
                         </div>
                       ) : (
                         chatContacts.map(contact => (
