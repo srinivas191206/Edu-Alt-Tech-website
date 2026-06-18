@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL, createEnrollment } from '../lib/firebase';
+import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL, createEnrollment } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical, Calendar, Video } from 'lucide-react';
+import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical, Calendar, Video, Pencil, Trash2, Plus, Image, Save } from 'lucide-react';
 import { TeacherApplication } from '../types';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,7 +10,7 @@ const ADMIN_EMAILS = ['ukkukk97@gmail.com', 'umakrishnakanthchokkapu15@gmail.com
 
 const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'applications' | 'chat' | 'stats' | 'classes'>('applications');
+  const [activeTab, setActiveTab] = useState<'applications' | 'chat' | 'stats' | 'classes' | 'courses'>('applications');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -35,6 +35,76 @@ const AdminDashboard: React.FC = () => {
 
   const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
 
+  // Course management states
+  const [courseSearch, setCourseSearch] = useState('');
+  const [editingCourse, setEditingCourse] = useState<any>(null);
+  const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
+  const [courseForm, setCourseForm] = useState({
+    title: '', description: '', price: 0, folder: '', category: 'alternative' as string,
+    thumbnailUrl: '', duration: '', level: '', classLevel: '', externalUrl: ''
+  });
+  const [savingCourse, setSavingCourse] = useState(false);
+
+  const openAddCourse = () => {
+    setCourseForm({ title: '', description: '', price: 0, folder: '', category: 'alternative', thumbnailUrl: '', duration: '', level: '', classLevel: '', externalUrl: '' });
+    setEditingCourse(null);
+    setIsCourseModalOpen(true);
+  };
+
+  const openEditCourse = (course: any) => {
+    setCourseForm({
+      title: course.title || '',
+      description: course.description || '',
+      price: course.price ?? 0,
+      folder: course.folder || '',
+      category: course.category || 'alternative',
+      thumbnailUrl: course.thumbnailUrl || '',
+      duration: course.duration || '',
+      level: course.level || '',
+      classLevel: course.classLevel || '',
+      externalUrl: course.externalUrl || '',
+    });
+    setEditingCourse(course);
+    setIsCourseModalOpen(true);
+  };
+
+  const handleSaveCourse = async () => {
+    if (!courseForm.title.trim()) { toast.error('Title is required'); return; }
+    setSavingCourse(true);
+    try {
+      if (editingCourse) {
+        await updateDoc(doc(db, 'courses', editingCourse.id), courseForm);
+        toast.success('Course updated');
+      } else {
+        await addDoc(collection(db, 'courses'), { ...courseForm, createdAt: serverTimestamp(), createdBy: auth.currentUser?.uid || 'admin' });
+        toast.success('Course created');
+      }
+      setIsCourseModalOpen(false);
+      fetchData();
+    } catch (e: any) {
+      toast.error(e?.message || 'Failed to save course');
+    } finally {
+      setSavingCourse(false);
+    }
+  };
+
+  const handleDeleteCourse = async (courseId: string, title: string) => {
+    if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    try {
+      await deleteDoc(doc(db, 'courses', courseId));
+      toast.success('Course deleted');
+      fetchData();
+    } catch (e: any) {
+      toast.error(e?.message || 'Failed to delete course');
+    }
+  };
+
+  const filteredCoursesList = useMemo(() => {
+    return coursesList.filter((c: any) => {
+      const term = courseSearch.toLowerCase();
+      return !term || (c.title || '').toLowerCase().includes(term) || (c.folder || '').toLowerCase().includes(term);
+    });
+  }, [coursesList, courseSearch]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -312,6 +382,7 @@ const AdminDashboard: React.FC = () => {
         <div className="flex-1 space-y-3">
           {[
             { id: 'applications', label: 'Applications', icon: Users, desc: 'Provider review' },
+            { id: 'courses', label: 'Course Management', icon: Database, desc: 'CRUD operations' },
             { id: 'chat', label: 'Provider Chat', icon: MessageSquare, desc: 'Direct messaging' },
             { id: 'stats', label: 'Course Stats', icon: BarChart3, desc: 'Enrollment analytics' },
             { id: 'classes', label: 'Scheduled Classes', icon: Calendar, desc: 'Teacher-scheduled classes' },
@@ -383,6 +454,7 @@ const AdminDashboard: React.FC = () => {
               <div className="flex-1 space-y-3">
                 {[
                   { id: 'applications', label: 'Applications', icon: Users, desc: 'Provider review' },
+                  { id: 'courses', label: 'Course Management', icon: Database, desc: 'CRUD operations' },
                   { id: 'chat', label: 'Provider Chat', icon: MessageSquare, desc: 'Direct messaging' },
                   { id: 'stats', label: 'Course Stats', icon: BarChart3, desc: 'Enrollment analytics' },
                   { id: 'classes', label: 'Scheduled Classes', icon: Calendar, desc: 'Teacher-scheduled classes' },
@@ -426,10 +498,10 @@ const AdminDashboard: React.FC = () => {
           <header className="mb-16">
             <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Admin Console</span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
-              {activeTab === 'applications' ? 'Provider Applications' : activeTab === 'chat' ? 'Provider Chat' : activeTab === 'stats' ? 'Course Statistics' : 'Scheduled Classes'}
+              {activeTab === 'applications' ? 'Provider Applications' : activeTab === 'chat' ? 'Provider Chat' : activeTab === 'stats' ? 'Course Statistics' : activeTab === 'courses' ? 'Course Management' : 'Scheduled Classes'}
             </h1>
             <p className="text-slate-500 font-medium mt-2">
-              {activeTab === 'applications' ? 'Review and manage teacher/provider applications' : activeTab === 'chat' ? 'Direct messaging with providers' : activeTab === 'stats' ? 'Enrollment analytics per course' : 'Live classes scheduled by teachers'}
+              {activeTab === 'applications' ? 'Review and manage teacher/provider applications' : activeTab === 'chat' ? 'Direct messaging with providers' : activeTab === 'stats' ? 'Enrollment analytics per course' : activeTab === 'courses' ? 'Create, edit, and delete courses' : 'Live classes scheduled by teachers'}
             </p>
           </header>
 
@@ -760,6 +832,94 @@ const AdminDashboard: React.FC = () => {
                   )}
                 </div>
               )}
+
+              {activeTab === 'courses' && (
+                <div className="space-y-8">
+                  {/* Summary cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Courses</span>
+                      <p className="text-3xl sm:text-4xl font-black mt-2 text-slate-900 dark:text-white">{coursesList.length}</p>
+                    </div>
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Enrollments</span>
+                      <p className="text-3xl sm:text-4xl font-black mt-2 text-emerald-500">{enrollments.length}</p>
+                    </div>
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Active Enrollments</span>
+                      <p className="text-3xl sm:text-4xl font-black mt-2 text-blue-500">{activeCount}</p>
+                    </div>
+                  </div>
+
+                  {/* Search & Add bar */}
+                  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                    <input type="text" placeholder="Search courses..." value={courseSearch} onChange={e => setCourseSearch(e.target.value)}
+                      className="w-full sm:max-w-xs p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 outline-none focus:border-emerald-500 transition-colors font-bold text-sm" />
+                    <button onClick={openAddCourse} className="flex items-center gap-2 px-6 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl transition-colors shadow-lg shadow-emerald-500/20">
+                      <Plus className="w-5 h-5" /> Add Course
+                    </button>
+                  </div>
+
+                  {/* Course table */}
+                  <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-slate-50/50 dark:bg-slate-800/30 sticky top-0 backdrop-blur-md">
+                            <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Course</th>
+                            <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden md:table-cell">Folder</th>
+                            <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Price</th>
+                            <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
+                          {filteredCoursesList.map((course: any) => (
+                            <tr key={course.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                              <td className="px-4 sm:px-8 py-4 sm:py-5">
+                                <div className="flex items-center gap-3 sm:gap-4">
+                                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0 overflow-hidden">
+                                    {course.thumbnailUrl ? <img src={course.thumbnailUrl} alt="" className="w-full h-full object-cover" /> : course.title?.charAt(0) || 'C'}
+                                  </div>
+                                  <div className="min-w-0">
+                                    <p className="font-bold text-sm sm:text-base text-slate-900 dark:text-white truncate">{course.title || 'Untitled'}</p>
+                                    <p className="text-[10px] text-slate-400 font-medium">{course.id?.slice(0, 8)}...</p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-4 sm:px-8 py-4 sm:py-5 hidden md:table-cell">
+                                <span className="text-xs font-medium text-slate-500">{course.folder || '—'}</span>
+                              </td>
+                              <td className="px-4 sm:px-8 py-4 sm:py-5">
+                                <span className={`text-xs font-bold ${!course.price || course.price === 0 ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-300'}`}>
+                                  {!course.price || course.price === 0 ? 'Free' : `₹${course.price}`}
+                                </span>
+                              </td>
+                              <td className="px-4 sm:px-8 py-4 sm:py-5 text-right">
+                                <div className="flex items-center justify-end gap-2">
+                                  <button onClick={() => openEditCourse(course)} className="p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors" title="Edit">
+                                    <Pencil className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                                  </button>
+                                  <button onClick={() => handleDeleteCourse(course.id, course.title)} className="p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-rose-100 dark:hover:bg-rose-900/30 rounded-xl transition-colors" title="Delete">
+                                    <Trash2 className="w-4 h-4 text-rose-500" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                          {filteredCoursesList.length === 0 && (
+                            <tr>
+                              <td colSpan={4} className="px-8 py-16 text-center">
+                                <Database className="w-12 h-12 text-slate-200 dark:text-slate-800 mx-auto mb-4" />
+                                <p className="text-slate-400 font-medium">{courseSearch ? 'No courses match your search' : 'No courses yet. Add your first course.'}</p>
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -927,6 +1087,99 @@ const AdminDashboard: React.FC = () => {
                     </div>
                   )}
                 </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Course Edit/Create Modal */}
+      <AnimatePresence>
+        {isCourseModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCourseModalOpen(false)} className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
+            <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+              <div className="p-6 sm:p-8 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+                <div>
+                  <h2 className="text-2xl font-black tracking-tight">{editingCourse ? 'Edit Course' : 'Add Course'}</h2>
+                  <p className="text-xs text-slate-400 font-medium mt-1">{editingCourse ? `Editing: ${editingCourse.title}` : 'Create a new course'}</p>
+                </div>
+                <button onClick={() => setIsCourseModalOpen(false)} className="p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6 custom-scrollbar">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Course Title *</label>
+                    <input value={courseForm.title} onChange={e => setCourseForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Introduction to AI" className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Description</label>
+                    <textarea value={courseForm.description} onChange={e => setCourseForm(f => ({ ...f, description: e.target.value }))} rows={3} placeholder="Course description..." className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors resize-none" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Price (₹)</label>
+                    <input type="number" value={courseForm.price} onChange={e => setCourseForm(f => ({ ...f, price: Number(e.target.value) }))} placeholder="0 = Free" className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Category</label>
+                    <select value={courseForm.category} onChange={e => setCourseForm(f => ({ ...f, category: e.target.value }))} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors">
+                      <option value="alternative">Alternative</option>
+                      <option value="education">Education</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Folder</label>
+                    <input value={courseForm.folder} onChange={e => setCourseForm(f => ({ ...f, folder: e.target.value }))} placeholder="e.g. Artificial Intelligence" className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Level</label>
+                    <select value={courseForm.level} onChange={e => setCourseForm(f => ({ ...f, level: e.target.value }))} className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors">
+                      <option value="">Any Level</option>
+                      <option value="beginner">Beginner</option>
+                      <option value="intermediate">Intermediate</option>
+                      <option value="advanced">Advanced</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Duration</label>
+                    <input value={courseForm.duration} onChange={e => setCourseForm(f => ({ ...f, duration: e.target.value }))} placeholder="e.g. 8 weeks" className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Class Level</label>
+                    <input value={courseForm.classLevel} onChange={e => setCourseForm(f => ({ ...f, classLevel: e.target.value }))} placeholder="e.g. 6-8" className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Thumbnail URL</label>
+                    <div className="flex gap-4 items-start">
+                      <div className="flex-1">
+                        <input value={courseForm.thumbnailUrl} onChange={e => setCourseForm(f => ({ ...f, thumbnailUrl: e.target.value }))} placeholder="https://picsum.photos/seed/..." className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+                      </div>
+                      {courseForm.thumbnailUrl && (
+                        <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700">
+                          <img src={courseForm.thumbnailUrl} alt="preview" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23ddd" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%23999" font-size="10">N/A</text></svg>' }} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">External URL (for provider courses)</label>
+                    <input value={courseForm.externalUrl} onChange={e => setCourseForm(f => ({ ...f, externalUrl: e.target.value }))} placeholder="https://..." className="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 sm:p-8 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-4 shrink-0">
+                <button onClick={() => setIsCourseModalOpen(false)} className="px-6 py-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                  Cancel
+                </button>
+                <button onClick={handleSaveCourse} disabled={savingCourse} className="flex items-center gap-2 px-6 py-4 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white font-black rounded-2xl transition-colors shadow-lg shadow-emerald-500/20">
+                  {savingCourse ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                  {editingCourse ? 'Update Course' : 'Create Course'}
+                </button>
               </div>
             </motion.div>
           </div>
