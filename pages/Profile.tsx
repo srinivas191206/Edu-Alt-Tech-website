@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { auth, db, storage, onAuthStateChanged, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword, doc, onSnapshot, setDoc, ref, uploadBytes, getDownloadURL } from '../lib/firebase';
+import { auth, db, onAuthStateChanged, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword, doc, onSnapshot, setDoc } from '../lib/firebase';
 import { Loader2, Camera, X, Check, LogOut, ArrowLeft, Building2, MapPin, Tag, Edit3, Save } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserObject } from '../types';
@@ -71,29 +71,33 @@ const Profile: React.FC = () => {
       let newPicUrl = userProfile?.profilePic;
       
       if (selectedFile) {
-        const imgRef = ref(storage, `profiles/${user.uid}/${selectedFile.name}`);
-        const snapshot = await uploadBytes(imgRef, selectedFile);
-        newPicUrl = await getDownloadURL(snapshot.ref);
+        const reader = new FileReader();
+        newPicUrl = await new Promise<string>((resolve, reject) => {
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(selectedFile);
+        });
       }
 
       const prefArray = editInterests.split(',')
                           .map(s => s.trim())
                           .filter(s => s.length > 0);
 
-      // We use setDoc with merge: true to avoid 404/400 errors if doc is missing
       await setDoc(doc(db, 'users', user.uid), {
         classYear: editClass,
         location: editLocation,
         preferences: prefArray,
+        name: userProfile?.name || user.displayName || 'User',
+        email: user.email,
         ...(newPicUrl && { profilePic: newPicUrl })
       }, { merge: true });
       
       setIsEditing(false);
       setSuccessMsg('Profile updated successfully!');
       setSelectedFile(null);
-    } catch (e) {
+    } catch (e: any) {
       console.error("Error updating profile", e);
-      toast.error("Failed to update profile. Make sure Firebase Storage rules are set.");
+      toast.error(e?.message || "Failed to update profile. Make sure you are logged in.");
     }
     setSaving(false);
   };
