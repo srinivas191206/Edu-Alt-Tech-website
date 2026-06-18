@@ -274,7 +274,7 @@ const Home: React.FC = () => {
               Education Without Linguistic Boundaries
             </h2>
             <p className="text-lg text-slate-600 font-medium leading-relaxed">
-              We translate everything. Real-time class voice dubbing, localized textbooks, and AI learning support in your mother tongue. Language is no longer a barrier to global tech skills.
+              We provide classrooms and study materials customized to your exact language requirements. Enjoy regional audio tracks, localized textbooks, and AI learning support in your mother tongue. Language is no longer a barrier to global tech skills.
             </p>
           </div>
 
@@ -292,7 +292,7 @@ const Home: React.FC = () => {
                   </div>
                   <span className="text-xs font-bold text-slate-400 tracking-tight flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-soft" />
-                    Session.dub_stream_v2.0
+                    Session.lang_aligned_stream_v2.0
                   </span>
                   <div className="w-12" /> {/* spacer */}
                 </div>
@@ -336,10 +336,10 @@ const Home: React.FC = () => {
                     <div className="bg-slate-900 rounded-2xl p-5 border border-slate-800 flex flex-col justify-between">
                       <div className="space-y-2">
                         <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
-                          Interactive Live Translation
+                          Adaptive Language Sync
                         </div>
                         <h4 className="text-sm font-bold text-white tracking-tight">
-                          Select student's native language to translate transcript instantly:
+                          Select student's native language requirement to update class transcript:
                         </h4>
                       </div>
 
@@ -368,7 +368,7 @@ const Home: React.FC = () => {
                     <div className="flex justify-between items-center border-b border-slate-800 pb-3">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
                         <Volume2 className="w-3.5 h-3.5 text-emerald-500" />
-                        Live Translated Subtitles
+                        Live Subtitles (Language Aligned)
                       </span>
                       <span className="text-[10px] text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full">
                         {translations[selectedLang].badge}
@@ -401,8 +401,8 @@ const Home: React.FC = () => {
             <div className="lg:col-span-5 space-y-6">
               {[
                 {
-                  title: "Real-Time Dubbing & Audio Transcripts",
-                  desc: "Listen to lectures in English while instantly receiving high-fidelity translated audio streams and transcripts synchronized to your device.",
+                  title: "Language-Aligned Audio & Transcripts",
+                  desc: "Listen to lectures and read transcripts presented directly in your preferred language according to your exact requirements.",
                   icon: <Volume2 className="w-6 h-6 text-emerald-600" />,
                   bg: "bg-emerald-500/5",
                   border: "hover:border-emerald-500/30"
