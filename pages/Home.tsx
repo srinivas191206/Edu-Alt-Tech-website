@@ -232,7 +232,7 @@ const Home: React.FC = () => {
                 </div>
                 <div className="absolute inset-0 animate-orbit-2 flex items-center justify-center">
                   <span className="bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-md font-bold text-blue-600 text-sm flex items-center gap-1.5 select-none pointer-events-auto">
-                    <span>A</span> <span className="text-[10px] text-slate-400 font-medium">English</span>
+                    <span>ड</span> <span className="text-[10px] text-slate-400 font-medium">Dogri (Jammu)</span>
                   </span>
                 </div>
                 <div className="absolute inset-0 animate-orbit-3 flex items-center justify-center">
@@ -242,12 +242,12 @@ const Home: React.FC = () => {
                 </div>
                 <div className="absolute inset-0 animate-orbit-4 flex items-center justify-center">
                   <span className="bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-md font-bold text-purple-600 text-sm flex items-center gap-1.5 select-none pointer-events-auto">
-                    <span>あ</span> <span className="text-[10px] text-slate-400 font-medium">Japanese</span>
+                    <span>அ</span> <span className="text-[10px] text-slate-400 font-medium">Tamil</span>
                   </span>
                 </div>
                 <div className="absolute inset-0 animate-orbit-5 flex items-center justify-center">
                   <span className="bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-md font-bold text-amber-600 text-sm flex items-center gap-1.5 select-none pointer-events-auto">
-                    <span>文</span> <span className="text-[10px] text-slate-400 font-medium">Chinese</span>
+                    <span>অ</span> <span className="text-[10px] text-slate-400 font-medium">Bengali</span>
                   </span>
                 </div>
               </div>
