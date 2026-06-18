@@ -37,6 +37,7 @@ const AdminDashboard: React.FC = () => {
 
   // Course management states
   const [courseSearch, setCourseSearch] = useState('');
+  const [coursePriceFilter, setCoursePriceFilter] = useState<'all' | 'free' | 'paid'>('all');
   const [editingCourse, setEditingCourse] = useState<any>(null);
   const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
   const [courseForm, setCourseForm] = useState({
@@ -102,9 +103,11 @@ const AdminDashboard: React.FC = () => {
   const filteredCoursesList = useMemo(() => {
     return coursesList.filter((c: any) => {
       const term = courseSearch.toLowerCase();
-      return !term || (c.title || '').toLowerCase().includes(term) || (c.folder || '').toLowerCase().includes(term);
+      const matchesSearch = !term || (c.title || '').toLowerCase().includes(term) || (c.folder || '').toLowerCase().includes(term);
+      const matchesPrice = coursePriceFilter === 'all' || (coursePriceFilter === 'free' ? (!c.price || c.price === 0) : (c.price && c.price > 0));
+      return matchesSearch && matchesPrice;
     });
-  }, [coursesList, courseSearch]);
+  }, [coursesList, courseSearch, coursePriceFilter]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -880,8 +883,20 @@ const AdminDashboard: React.FC = () => {
 
                   {/* Search & Add bar */}
                   <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                    <input type="text" placeholder="Search courses..." value={courseSearch} onChange={e => setCourseSearch(e.target.value)}
-                      className="w-full sm:max-w-xs p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 outline-none focus:border-emerald-500 transition-colors font-bold text-sm" />
+                    <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                      <input type="text" placeholder="Search courses..." value={courseSearch} onChange={e => setCourseSearch(e.target.value)}
+                        className="w-full sm:w-64 p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 outline-none focus:border-emerald-500 transition-colors font-bold text-sm" />
+                      <div className="flex gap-2">
+                        {(['all', 'free', 'paid'] as const).map(f => (
+                          <button key={f} onClick={() => setCoursePriceFilter(f)}
+                            className={`px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors ${
+                              coursePriceFilter === f ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
+                            }`}>
+                            {f === 'free' ? 'Free' : f === 'paid' ? 'Paid' : 'All'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                     <button onClick={openAddCourse} className="flex items-center gap-2 px-6 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl transition-colors shadow-lg shadow-emerald-500/20">
                       <Plus className="w-5 h-5" /> Add Course
                     </button>

@@ -44,7 +44,7 @@ const Profile: React.FC = () => {
           const data = docObj.data() as UserObject;
           setUserProfile({ ...data, uid: docObj.id });
           if (!saving && editClass === '') { // Only populate initial values
-            setEditClass(data.classYear || '');
+            setEditClass(data.classLevel || '');
             setEditLocation(data.location || '');
             setEditInterests((data.preferences || []).join(', '));
           }
@@ -84,7 +84,7 @@ const Profile: React.FC = () => {
                           .filter(s => s.length > 0);
 
       await setDoc(doc(db, 'users', user.uid), {
-        classYear: editClass,
+        classLevel: editClass,
         location: editLocation,
         preferences: prefArray,
         name: userProfile?.name || user.displayName || 'User',
@@ -221,7 +221,7 @@ const Profile: React.FC = () => {
                        <input type="text" value={editClass} onChange={(e) => {setEditClass(e.target.value); setSuccessMsg('');}} placeholder="e.g. B.Tech / High School" className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/40 outline-none text-slate-900 dark:text-white transition-colors transition-shadow" />
                    ) : (
                       <p className="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/80 rounded-2xl text-slate-800 dark:text-slate-200 font-medium">
-                        {userProfile.classYear || <span className="text-slate-400 italic">Not specified</span>}
+                        {userProfile.classLevel || <span className="text-slate-400 italic">Not specified</span>}
                       </p>
                    )}
                  </div>
