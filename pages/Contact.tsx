@@ -42,11 +42,7 @@ const Contact: React.FC = () => {
  role: 'user',
  created_at: new Date().toISOString()
  });
- await db.from('users').upsert({
- id: currentUser.uid,
- name: name.trim() || currentUser.displayName || 'User',
- email: email.trim() || currentUser.email || ''
- }, { onConflict: 'id' });
+
  toast.success('Message sent!');
  setMessage('');
  } catch (e) {

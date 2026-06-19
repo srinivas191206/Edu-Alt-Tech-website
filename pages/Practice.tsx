@@ -279,14 +279,14 @@ const Practice: React.FC = () => {
  return Array.from(companies).sort();
  }, [problemSet]);
 
- const filteredProblems = useMemo(() => {
- return currentProblems.filter(p => {
- const matchSearch = !search || p.title.toLowerCase().includes(search.toLowerCase());
- const matchTopic = !topicFilter || p.topic === topicFilter;
- const matchDiff = !diffFilter || p.difficulty === diffFilter;
- return matchSearch && matchTopic && matchDiff;
- });
- }, [currentProblems, search, topicFilter, diffFilter]);
+  const filteredProblems = useMemo(() => {
+  return currentProblems.filter(p => {
+    const matchSearch = !search || p.title.toLowerCase().includes(search.toLowerCase()) || String(p.num).includes(search);
+    const matchTopic = !topicFilter || p.topic === topicFilter;
+    const matchDiff = !diffFilter || p.difficulty === diffFilter;
+    return matchSearch && matchTopic && matchDiff;
+  });
+  }, [currentProblems, search, topicFilter, diffFilter]);
 
  const displayedProblems = useMemo(() => {
  return !user ? filteredProblems.slice(0, 3) : filteredProblems;
@@ -312,13 +312,13 @@ const Practice: React.FC = () => {
  return Array.from(new Set(ENGLISH_EXERCISES.map(e => e.level))).sort();
  }, []);
 
- const filteredEnglish = useMemo(() => {
- return ENGLISH_EXERCISES.filter(e => {
- const matchSearch = !englishSearch || e.title.toLowerCase().includes(englishSearch.toLowerCase());
- const matchLevel = !levelFilter || e.level === levelFilter;
- return matchSearch && matchLevel;
- });
- }, [englishSearch, levelFilter]);
+  const filteredEnglish = useMemo(() => {
+  return ENGLISH_EXERCISES.filter(e => {
+    const matchSearch = !englishSearch || e.title.toLowerCase().includes(englishSearch.toLowerCase()) || e.level.toLowerCase().includes(englishSearch.toLowerCase()) || String(e.num).includes(englishSearch);
+    const matchLevel = !levelFilter || e.level === levelFilter;
+    return matchSearch && matchLevel;
+  });
+  }, [englishSearch, levelFilter]);
 
  const displayedEnglish = useMemo(() => {
  return !user ? filteredEnglish.slice(0, 3) : filteredEnglish;
@@ -356,10 +356,12 @@ const Practice: React.FC = () => {
  ))}
  </motion.div>
 
- {/* Problems Tab */}
- {tab === 'problems' && (
- <>
- {/* Problem Set Toggle */}
+  {/* Tab Content Container */}
+  <div className="min-h-[400px]">
+  {/* Problems Tab */}
+  {tab === 'problems' && (
+  <>
+  {/* Problem Set Toggle */}
  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-2 mb-6">
  <button onClick={() => setProblemSet('popular')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
  problemSet === 'popular' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
@@ -375,29 +377,31 @@ const Practice: React.FC = () => {
  }`}>Custom ({adminProblems.length})</button>
  </motion.div>
 
- {/* Filters */}
- <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-wrap gap-3 mb-8">
- <div className="relative flex-1 min-w-[160px] max-w-sm">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
- <input type="text" placeholder="Search problems..." value={search} onChange={e => setSearch(e.target.value)}
- className="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder-slate-400"
- />
- </div>
- <select value={topicFilter} onChange={e => setTopicFilter(e.target.value)}
- className="px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none"
- >
- <option value="">All Topics</option>
- {allTopics.map(t => <option key={t} value={t}>{t}</option>)}
- </select>
- <select value={diffFilter} onChange={e => setDiffFilter(e.target.value)}
- className="px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none"
- >
- <option value="">All Difficulties</option>
- <option value="Easy">Easy</option>
- <option value="Medium">Medium</option>
- <option value="Hard">Hard</option>
- </select>
- </motion.div>
+  {/* Filters */}
+  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-wrap gap-4 mb-8">
+  <div className="relative flex-1 min-w-[200px] max-w-sm">
+  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+  <input type="text" placeholder="Search problems..." value={search} onChange={e => setSearch(e.target.value)}
+  className="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder-slate-400"
+  />
+  </div>
+  <div className="flex flex-wrap gap-3">
+  <select value={topicFilter} onChange={e => setTopicFilter(e.target.value)}
+  className="px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-[140px]"
+  >
+  <option value="">All Topics</option>
+  {allTopics.map(t => <option key={t} value={t}>{t}</option>)}
+  </select>
+  <select value={diffFilter} onChange={e => setDiffFilter(e.target.value)}
+  className="px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-[140px]"
+  >
+  <option value="">All Difficulties</option>
+  <option value="Easy">Easy</option>
+  <option value="Medium">Medium</option>
+  <option value="Hard">Hard</option>
+  </select>
+  </div>
+  </motion.div>
 
  {/* Problem Grid */}
  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -479,8 +483,10 @@ const Practice: React.FC = () => {
  </>
  )}
 
- {/* Guest Lock Overlay */}
- {!user && (
+  </div>
+
+  {/* Guest Lock Overlay */}
+  {!user && (
  <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
  className="relative mt-12 py-10 sm:py-16 px-8 rounded-3xl bg-white/20 /20 border border-slate-200/50 /50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
  <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-indigo-500/5 to-transparent pointer-events-none" />

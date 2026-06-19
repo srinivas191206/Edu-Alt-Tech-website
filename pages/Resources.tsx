@@ -173,13 +173,14 @@ const Resources: React.FC = () => {
  } catch (e) { console.error("Download track failed", e); }
  };
 
- const filtered = useMemo(() => allResources.filter(r => {
- const matchSearch = r.title.toLowerCase().includes(search.toLowerCase()) || r.description.toLowerCase().includes(search.toLowerCase());
- const matchCat = filter === 'All' || r.category === filter;
- const matchPremium = showPremium === 'all' || (showPremium === 'free' && !r.premium) || (showPremium === 'premium' && r.premium);
- const matchClass = classFilter === 'All' || r.classLevel === classFilter;
- return matchSearch && matchCat && matchPremium && matchClass;
- }), [allResources, search, filter, showPremium, classFilter]);
+  const filtered = useMemo(() => allResources.filter(r => {
+  const haystack = (r.title + ' ' + r.description + ' ' + (r.category || '') + ' ' + (r.classLevel || '')).toLowerCase();
+  const matchSearch = !search || haystack.includes(search.toLowerCase());
+  const matchCat = filter === 'All' || r.category === filter;
+  const matchPremium = showPremium === 'all' || (showPremium === 'free' && !r.premium) || (showPremium === 'premium' && r.premium);
+  const matchClass = classFilter === 'All' || r.classLevel === classFilter;
+  return matchSearch && matchCat && matchPremium && matchClass;
+  }), [allResources, search, filter, showPremium, classFilter]);
 
  const displayedResources = useMemo(() => {
  return !user ? filtered.slice(0, 3) : filtered;

@@ -63,18 +63,7 @@ const Signup: React.FC = () => {
  // Send verification email (silent)
  await sendEmailVerification(userCredential.user);
 
- // Trigger Welcome Email
- try {
- await setDoc(doc(collection(db, 'mail')), {
- to: email,
- message: {
- subject: 'Welcome to the Edu-Alt-Tech Community! 🚀',
- text: `Hi ${name},\n\nWelcome to Edu-Alt-Tech! We're excited to have you on board. You've taken the first step towards a more disciplined and structured learning journey.\n\nWhat's next?\n1. Explore our high-discipline curricula.\n2. Apply for mentorship or find a mentor for your target subject.\n3. Track your progress daily in your personal dashboard.\n\nWe're here to support you every step of the way.\n\nKeep building,\nThe Edu-Alt-Tech Team`
- }
- });
- } catch (mailErr) {
- console.error("Welcome email trigger failed", mailErr);
- }
+
 
  // navigate(`/verify?email=${encodeURIComponent(email)}`);
  
@@ -89,7 +78,7 @@ const Signup: React.FC = () => {
  if (err.code === 'auth/email-already-in-use') {
  setError('User already exists. Please sign in');
  } else {
- setError(err.message || 'Failed to create account.');
+      setError('Failed to create account. Please try again.');
  }
  } finally {
  setLoading(false);

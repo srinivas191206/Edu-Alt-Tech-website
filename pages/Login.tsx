@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Lock, Mail, Loader2, Eye, EyeOff } from 'lucide-react';
-import { auth, db, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, doc, getDoc, setDoc, serverTimestamp, collection } from '../lib/firebase';
+import { auth, db, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, doc, getDoc, setDoc, serverTimestamp } from '../lib/firebase';
 import { motion } from 'framer-motion';
 
 const Login: React.FC = () => {
@@ -63,18 +63,7 @@ const Login: React.FC = () => {
  createdAt: serverTimestamp()
  });
 
- // Trigger Welcome Email
- try {
- await setDoc(doc(collection(db, 'mail')), {
- to: result.user.email,
- message: {
- subject: 'Welcome to the Edu-Alt-Tech Community! 🚀',
- text: `Hi ${result.user.displayName || 'Learner'},\n\nWelcome to Edu-Alt-Tech! We're excited to have you on board. You've taken the first step towards a more disciplined and structured learning journey.\n\nWhat's next?\n1. Explore our high-discipline curricula.\n2. Apply for mentorship or find a mentor for your target subject.\n3. Track your progress daily in your personal dashboard.\n\nWe're here to support you every step of the way.\n\nKeep building,\nThe Edu-Alt-Tech Team`
- }
- });
- } catch (mailErr) {
- console.error("Welcome email failed", mailErr);
- }
+
  }
 
  if (result.user.email === 'ukkukk97@gmail.com' || result.user.email === 'umakrishnakanthchokkapu15@gmail.com') {
