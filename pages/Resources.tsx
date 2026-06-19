@@ -52,14 +52,25 @@ export const STATIC_RESOURCES: ResourceItem[] = [
  { title: "SOFTWARE PROCESS AND PROJECT MANAGEMENT", description: "Software project management principles, processes, and methodologies", type: "pdf", category: "Computer Science", premium: false, downloads: "1.6K", url: "/resources/SOFTWARE%20PROCESS%20AND%20PROJECT%20MANAGEMENT.pdf", classLevel: "College/Engineering" },
  { title: "SOFTWARE TESTING METHODOLOGIES", description: "Software testing techniques, strategies, and methodologies", type: "pdf", category: "Computer Science", premium: false, downloads: "1.4K", url: "/resources/SOFTWARE%20TESTING%20METHODOLOGIES.pdf", classLevel: "College/Engineering" },
  
- // Mock High School & Middle School Resources
- { title: "Class 10 Math Formula Sheet", description: "All essential formulas and concepts for Class 10 Board exams", type: "notes", category: "Mathematics", premium: false, downloads: "3.2K", classLevel: "Class 9-10" },
- { title: "Class 9 Physics Mechanics Worksheet", description: "Practice problems on force, laws of motion, and gravitation", type: "worksheet", category: "Science", premium: false, downloads: "1.5K", classLevel: "Class 9-10" },
- { title: "Class 12 Electrostatics Revision Notes", description: "Quick revision notes and key derivations for Electrostatics", type: "notes", category: "Science", premium: false, downloads: "4.1K", classLevel: "Class 11-12" },
- { title: "Class 11 Trigonometry Question Bank", description: "Comprehensive question bank covering trigonometric functions and identities", type: "questions", category: "Mathematics", premium: false, downloads: "2.8K", classLevel: "Class 11-12" },
- { title: "English Grammar & Writing Skills", description: "Guide to active/passive voice, tenses, and essay writing", type: "notes", category: "English", premium: false, downloads: "2.4K", classLevel: "Class 6-8" },
- { title: "French Vocabulary & Conversation Guide", description: "Basic vocabulary list and introductory phrases in French", type: "notes", category: "English", premium: false, downloads: "1.1K", classLevel: "Class 6-8" },
-];
+  // JEE Main Resources
+  { title: "JEE Main Mathematics - Calculus", description: "Complete calculus coverage for JEE Main including limits, derivatives, and integration", type: "pdf", category: "Mathematics", premium: false, downloads: "5.2K", classLevel: "JEE Main" },
+  { title: "JEE Main Mathematics - Algebra", description: "Algebra comprehensive notes covering matrices, determinants, permutations, and combinations", type: "pdf", category: "Mathematics", premium: false, downloads: "4.8K", classLevel: "JEE Main" },
+  { title: "JEE Main Mathematics - Coordinate Geometry", description: "Coordinate geometry concepts and problem-solving techniques for JEE", type: "pdf", category: "Mathematics", premium: false, downloads: "4.1K", classLevel: "JEE Main" },
+  { title: "JEE Main Physics - Mechanics", description: "Mechanics complete guide covering kinematics, laws of motion, work, energy, and power", type: "pdf", category: "Science", premium: false, downloads: "6.1K", classLevel: "JEE Main" },
+  { title: "JEE Main Physics - Electrodynamics", description: "Electrostatics, current electricity, magnetism, and electromagnetic induction", type: "pdf", category: "Science", premium: false, downloads: "5.5K", classLevel: "JEE Main" },
+  { title: "JEE Main Physics - Optics & Modern Physics", description: "Wave optics, ray optics, dual nature of matter, and atomic physics", type: "pdf", category: "Science", premium: false, downloads: "4.3K", classLevel: "JEE Main" },
+  { title: "JEE Main Chemistry - Physical Chemistry", description: "Physical chemistry including thermodynamics, chemical kinetics, and equilibrium", type: "pdf", category: "Science", premium: false, downloads: "4.9K", classLevel: "JEE Main" },
+  { title: "JEE Main Chemistry - Organic Chemistry", description: "Organic chemistry reaction mechanisms, nomenclature, and biomolecules", type: "pdf", category: "Science", premium: false, downloads: "5.7K", classLevel: "JEE Main" },
+  { title: "JEE Main Chemistry - Inorganic Chemistry", description: "Periodic table, chemical bonding, coordination compounds, and metallurgy", type: "pdf", category: "Science", premium: false, downloads: "4.5K", classLevel: "JEE Main" },
+
+  // Mock High School & Middle School Resources
+  { title: "Class 10 Math Formula Sheet", description: "All essential formulas and concepts for Class 10 Board exams", type: "notes", category: "Mathematics", premium: false, downloads: "3.2K", classLevel: "Class 9-10" },
+  { title: "Class 9 Physics Mechanics Worksheet", description: "Practice problems on force, laws of motion, and gravitation", type: "worksheet", category: "Science", premium: false, downloads: "1.5K", classLevel: "Class 9-10" },
+  { title: "Class 12 Electrostatics Revision Notes", description: "Quick revision notes and key derivations for Electrostatics", type: "notes", category: "Science", premium: false, downloads: "4.1K", classLevel: "Class 11-12" },
+  { title: "Class 11 Trigonometry Question Bank", description: "Comprehensive question bank covering trigonometric functions and identities", type: "questions", category: "Mathematics", premium: false, downloads: "2.8K", classLevel: "Class 11-12" },
+  { title: "English Grammar & Writing Skills", description: "Guide to active/passive voice, tenses, and essay writing", type: "notes", category: "English", premium: false, downloads: "2.4K", classLevel: "Class 6-8" },
+  { title: "French Vocabulary & Conversation Guide", description: "Basic vocabulary list and introductory phrases in French", type: "notes", category: "English", premium: false, downloads: "1.1K", classLevel: "Class 6-8" },
+ ];
 
 const typeIcons: Record<string, React.ReactNode> = {
  pdf: <FileText className="w-5 h-5" />,
@@ -129,7 +140,7 @@ const Resources: React.FC = () => {
  premium: false,
  downloads: '0',
  url: getDriveDownloadUrl(file.id),
- classLevel: 'General',
+  classLevel: 'College/Engineering',
  });
  }
  }
@@ -215,7 +226,7 @@ const Resources: React.FC = () => {
  {/* Class Level Filters */}
  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
  className="flex flex-wrap gap-2 mb-12 pb-6 border-b border-slate-100 /60">
- {['All', 'Class 6-8', 'Class 9-10', 'Class 11-12', 'College/Engineering', 'General'].map(lvl => (
+  {['All', 'Class 6-8', 'Class 9-10', 'Class 11-12', 'College/Engineering', 'JEE Main'].map(lvl => (
  <button key={lvl} onClick={() => setClassFilter(lvl)} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
  classFilter === lvl
  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
