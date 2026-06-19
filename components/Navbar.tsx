@@ -174,62 +174,62 @@ export default function Navbar() {
  <div className="w-10 h-10 overflow-hidden rounded-xl">
  <img src="/edulogo.png" loading="lazy" decoding="async" alt="EduAltTech Logo" className="w-full h-full object-cover" />
  </div>
- <span className="text-xl font-bold text-slate-900 tracking-tight">EduAltTech</span>
+  <span className="text-lg font-bold text-slate-900 tracking-tight">EduAltTech</span>
  </Link>
  <button onClick={() => setIsOpen(false)} className="p-2 bg-slate-100 rounded-xl">
  <X className="w-6 h-6" />
  </button>
  </div>
 
- <div className="flex-1 flex flex-col gap-6 p-8 overflow-y-auto">
- {navLinks.map((link, idx) => (
- <motion.div
- key={link.name}
- initial={{ opacity: 0, x: -20 }}
- animate={{ opacity: 1, x: 0 }}
- transition={{ delay: idx * 0.05 + 0.1 }}
- >
- <Link
- to={link.path}
- onClick={() => setIsOpen(false)}
- className={`text-3xl font-black px-4 py-4 rounded-2xl transition-colors block ${
- location.pathname === link.path
- ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20'
- : 'text-slate-600 hover:bg-slate-50 :bg-slate-900'
- }`}
- >
- {link.name}
- </Link>
- </motion.div>
- ))}
+  <div className="flex-1 flex flex-col gap-2 p-6 overflow-y-auto">
+  {navLinks.map((link, idx) => (
+  <motion.div
+  key={link.name}
+  initial={{ opacity: 0, x: -20 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ delay: idx * 0.05 + 0.1 }}
+  >
+  <Link
+  to={link.path}
+  onClick={() => setIsOpen(false)}
+  className={`text-base font-semibold px-5 py-3.5 rounded-xl transition-colors block ${
+  location.pathname === link.path
+  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+  }`}
+  >
+  {link.name}
+  </Link>
+  </motion.div>
+  ))}
 
- <div className="h-px bg-slate-200 my-4" />
+  <div className="h-px bg-slate-100 my-3" />
 
- <motion.div
- initial={{ opacity: 0, y: 20 }}
- animate={{ opacity: 1, y: 0 }}
- transition={{ delay: navLinks.length * 0.05 + 0.2 }}
- className="mt-auto space-y-4"
- >
- {!user ? (
- <Link
- to="/login"
- onClick={() => setIsOpen(false)}
- className="bg-emerald-600 text-white px-4 py-6 rounded-[2rem] font-black text-2xl text-center shadow-xl shadow-emerald-600/20 block"
- >
- Login to Platform
- </Link>
- ) : (
- <Link
- to="/profile"
- onClick={() => setIsOpen(false)}
- className="bg-emerald-500 text-white px-4 py-6 rounded-[2rem] font-black text-2xl flex items-center justify-center gap-3 shadow-xl shadow-emerald-500/20"
- >
- <LucideUser className="w-8 h-8" /> View Profile
- </Link>
- )}
- </motion.div>
- </div>
+  <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: navLinks.length * 0.05 + 0.2 }}
+  className="mt-auto space-y-3"
+  >
+  {!user ? (
+  <Link
+  to="/login"
+  onClick={() => setIsOpen(false)}
+  className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-4 rounded-2xl font-bold text-center shadow-lg shadow-emerald-600/20 block transition-colors"
+  >
+  Login
+  </Link>
+  ) : (
+  <Link
+  to="/profile"
+  onClick={() => setIsOpen(false)}
+  className="bg-emerald-500 hover:bg-emerald-400 text-white px-5 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg shadow-emerald-500/20 transition-colors"
+  >
+  <LucideUser className="w-5 h-5" /> Profile
+  </Link>
+  )}
+  </motion.div>
+  </div>
  </motion.div>
  )}
  </AnimatePresence>

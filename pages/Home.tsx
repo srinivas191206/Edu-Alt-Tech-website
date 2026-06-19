@@ -8,6 +8,7 @@ import {
   Play, Hammer, MapPin, MessageCircle, Code, Rocket, RefreshCw, Target, 
   Volume2, Languages, Video, Cpu, School, Sparkle
 } from 'lucide-react';
+import AnimatedCounter from '../components/AnimatedCounter';
 
 // ════════════════════════════════════════════════════════════ Decrypt Text Animation Component
 const DecryptText: React.FC<{ text: string; speed?: number }> = ({ text, speed = 30 }) => {
@@ -196,13 +197,15 @@ const Home: React.FC = () => {
               className="flex flex-wrap gap-8 pt-8 border-t border-slate-200/60 max-w-xl"
             >
               {[
-                { value: "4", label: "Partner Schools" },
-                { value: "500+", label: "Students Reached" },
-                { value: "100+", label: "Study Resources" },
-                { value: "98%", label: "Satisfaction Rate" },
+                { value: 4, label: "Partner Schools" },
+                { value: 500, label: "Students Reached", suffix: "+" },
+                { value: 100, label: "Study Resources", suffix: "+" },
+                { value: 98, label: "Satisfaction Rate", suffix: "%" },
               ].map((stat, i) => (
                 <div key={i} className="min-w-[100px]">
-                  <div className="text-3xl font-black text-slate-900">{stat.value}</div>
+                  <div className="text-3xl font-black text-slate-900">
+                    <AnimatedCounter value={stat.value} suffix={stat.suffix || ''} />
+                  </div>
                   <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{stat.label}</div>
                 </div>
               ))}
@@ -922,10 +925,10 @@ const Home: React.FC = () => {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { value: "4", label: "Partner Schools", icon: <Globe className="w-6 h-6" /> },
-              { value: "500+", label: "Students Enrolled", icon: <Users className="w-6 h-6" /> },
-              { value: "100+", label: "Learning Roadmaps", icon: <BookOpen className="w-6 h-6" /> },
-              { value: "20+", label: "Expert Instructors", icon: <Star className="w-6 h-6" /> },
+              { value: 4, label: "Partner Schools", icon: <Globe className="w-6 h-6" /> },
+              { value: 500, label: "Students Enrolled", icon: <Users className="w-6 h-6" />, suffix: "+" },
+              { value: 100, label: "Learning Roadmaps", icon: <BookOpen className="w-6 h-6" />, suffix: "+" },
+              { value: 20, label: "Expert Instructors", icon: <Star className="w-6 h-6" />, suffix: "+" },
             ].map((metric, idx) => (
               <motion.div
                 key={idx}
@@ -938,7 +941,9 @@ const Home: React.FC = () => {
                 <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center text-emerald-400 mx-auto mb-6 border border-white/10">
                   {metric.icon}
                 </div>
-                <div className="text-5xl font-black text-white mb-2 tracking-tight">{metric.value}</div>
+                <div className="text-5xl font-black text-white mb-2 tracking-tight">
+                  <AnimatedCounter value={metric.value} suffix={metric.suffix || ''} />
+                </div>
                 <div className="text-xs text-emerald-300/80 font-bold uppercase tracking-wider">{metric.label}</div>
               </motion.div>
             ))}
