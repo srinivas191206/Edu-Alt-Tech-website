@@ -138,6 +138,19 @@ const Home: React.FC = () => {
       <meta property="og:description" content="Learning Resources, Courses, AI Tools & School Technology Solutions" />
       <meta property="og:image" content="https://www.edualttech.com/og-image.jpg" />
       <meta property="og:url" content="https://www.edualttech.com/" />
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "EducationalOrganization",
+          "name": "Edu Alt Tech",
+          "url": "https://www.edualttech.com",
+          "description": "Learning Resources, Courses, AI Tools and School Technology Solutions",
+          "sameAs": [
+            "https://www.linkedin.com/company/edualttech",
+            "https://www.instagram.com/edualttech"
+          ]
+        })}
+      </script>
     </Helmet>
     <div className="bg-slate-50 text-slate-900 overflow-hidden min-h-screen relative">
       
