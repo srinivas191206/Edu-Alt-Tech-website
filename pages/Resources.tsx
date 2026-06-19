@@ -121,30 +121,34 @@ const Resources: React.FC = () => {
  fetchResources();
  }, []);
 
- useEffect(() => {
- const fetchDrive = async () => {
- try {
- const folders = await getDriveSubfolders();
- const items: ResourceItem[] = [];
- for (const folder of folders) {
- const category = getDriveFileCategory(folder.name);
- for (const file of folder.files) {
- if (file.mimeType === 'application/vnd.google-apps.folder') continue;
- const name = file.name.replace(/\.pdf$/i, '');
- const sizeLabel = file.size ? ` (${(Number(file.size) / 1024 / 1024).toFixed(1)} MB)` : '';
- items.push({
- title: name,
- description: `${category} resource from Google Drive${sizeLabel}`,
- type: 'pdf',
- category,
- premium: false,
- downloads: '0',
- url: getDriveDownloadUrl(file.id),
-  classLevel: 'College/Engineering',
- });
- }
- }
- setDriveResources(items);
+  useEffect(() => {
+  const fetchDrive = async () => {
+  try {
+  const folders = await getDriveSubfolders();
+  const items: ResourceItem[] = [];
+  for (const folder of folders) {
+  const category = getDriveFileCategory(folder.name);
+  const folderLower = folder.name.toLowerCase();
+  const isJee = folderLower.includes('jee') || folderLower.includes('iit') || folderLower.includes('jeee');
+  for (const file of folder.files) {
+  if (file.mimeType === 'application/vnd.google-apps.folder') continue;
+  const name = file.name.replace(/\.pdf$/i, '');
+  const sizeLabel = file.size ? ` (${(Number(file.size) / 1024 / 1024).toFixed(1)} MB)` : '';
+  const fileLower = name.toLowerCase();
+  const isJeeFile = fileLower.includes('jee') || fileLower.includes('iit') || fileLower.includes('advance') || fileLower.includes('mains') || (['physics', 'chemistry', 'mathematics', 'math'].includes(category.toLowerCase()) && (fileLower.includes('revision') || fileLower.includes('revison')));
+  items.push({
+  title: name,
+  description: `${category} resource from Google Drive${sizeLabel}`,
+  type: 'pdf',
+  category,
+  premium: false,
+  downloads: '0',
+  url: getDriveDownloadUrl(file.id),
+   classLevel: isJee || isJeeFile ? 'JEE Main' : 'College/Engineering',
+  });
+  }
+  }
+  setDriveResources(items);
  } catch (e) {
  console.error('Failed to load Drive resources', e);
  } finally {
