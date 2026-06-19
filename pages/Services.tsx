@@ -40,7 +40,7 @@ const Services: React.FC = () => {
  initial={{ opacity: 0, y: 40 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ delay: idx * 0.1, duration: 0.6 }}
- className="group bg-white border border-slate-200 rounded-[2rem] p-10 hover:border-emerald-500 hover:shadow-2xl hover:-translate-y-2 transition-colors transition-shadow transition-transform duration-500"
+ className="group bg-white border border-slate-200 rounded-[2rem] p-10 hover:border-emerald-500 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
  >
  <div className="flex items-start gap-6 mb-8">
  <div className="text-emerald-500 bg-emerald-50 /20 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
@@ -78,10 +78,10 @@ const Services: React.FC = () => {
  Schedule a free consultation and discover how we can transform your school with technology.
  </p>
  <div className="flex flex-wrap justify-center gap-4 relative z-10">
- <Link to="/contact" className="px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black transition-colors transition-transform shadow-xl shadow-emerald-500/30 hover:-translate-y-1">
+ <Link to="/contact" className="px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black transition-all shadow-xl shadow-emerald-500/30 hover:-translate-y-1">
  Get a Free Consultation
  </Link>
- <Link to="/resources" className="px-10 py-5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl font-bold transition-colors transition-transform backdrop-blur-sm hover:-translate-y-1">
+ <Link to="/resources" className="px-10 py-5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl font-bold transition-all backdrop-blur-sm hover:-translate-y-1">
  Explore Resources
  </Link>
  </div>

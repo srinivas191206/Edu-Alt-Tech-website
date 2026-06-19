@@ -44,7 +44,7 @@ const ScrollToTop = () => {
  return null;
 };
 
-import { SmoothScroll } from './components/SmoothScroll';
+
 
 const AppContent: React.FC = () => {
  const location = useLocation();
@@ -90,12 +90,10 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
  return (
- <SmoothScroll>
- <Router>
- <ScrollToTop />
- <AppContent />
- </Router>
- </SmoothScroll>
+  <Router>
+   <ScrollToTop />
+   <AppContent />
+  </Router>
  );
 };
 

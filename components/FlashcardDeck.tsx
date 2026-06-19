@@ -79,7 +79,7 @@ const FlashcardDeck: React.FC = () => {
  onKeyDown={e => e.key === 'Enter' && handleGenerate()}
  placeholder="e.g. Quantum Physics, JavaScript Basics, World History..."
  disabled={loading}
- className="flex-1 p-4 bg-slate-50 rounded-2xl outline-none font-medium border border-transparent focus:border-emerald-500 transition-colors transition-shadow"
+ className="flex-1 p-4 bg-slate-50 rounded-2xl outline-none font-medium border border-transparent focus:border-emerald-500 transition-all"
  />
  <button
  onClick={handleGenerate}

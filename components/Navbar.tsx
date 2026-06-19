@@ -75,10 +75,10 @@ export default function Navbar() {
  if (isAdmin) navLinks = adminLinks;
  else if (user) navLinks = studentLinks;
 
- useEffect(() => {
- document.body.style.overflow = isOpen ? 'hidden' : 'unset';
- return () => { document.body.style.overflow = 'unset'; };
- }, [isOpen]);
+  useEffect(() => {
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+  return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
 
  return (
  <>

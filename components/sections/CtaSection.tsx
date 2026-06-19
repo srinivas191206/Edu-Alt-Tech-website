@@ -66,14 +66,14 @@ const CtaSection: React.FC = () => {
  >
  <Link
  to="/contact"
- className="inline-flex items-center gap-3 bg-white text-slate-900 hover:bg-emerald-50 px-10 py-5 rounded-2xl font-black text-lg transition-colors transition-shadow transition-transform shadow-2xl hover:shadow-emerald-500/20 hover:-translate-y-1 group"
+ className="inline-flex items-center gap-3 bg-white text-slate-900 hover:bg-emerald-50 px-10 py-5 rounded-2xl font-black text-lg transition-all shadow-2xl hover:shadow-emerald-500/20 hover:-translate-y-1 group"
  >
  Book a Free Demo
  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
  </Link>
  <Link
  to="/courses"
- className="inline-flex items-center gap-3 bg-white/10 backdrop-blur text-white hover:bg-white/20 px-10 py-5 rounded-2xl font-bold text-lg transition-colors transition-transform border border-white/20 hover:-translate-y-1"
+ className="inline-flex items-center gap-3 bg-white/10 backdrop-blur text-white hover:bg-white/20 px-10 py-5 rounded-2xl font-bold text-lg transition-all border border-white/20 hover:-translate-y-1"
  >
  <Zap className="w-5 h-5 text-yellow-300" />
  Explore Courses

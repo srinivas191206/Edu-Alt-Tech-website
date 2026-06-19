@@ -255,12 +255,12 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  value={newMessage}
  onChange={(e) => setNewMessage(e.target.value)}
  placeholder="Type a message..."
- className="flex-1 bg-slate-50 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 text-sm transition-colors transition-shadow"
+ className="flex-1 bg-slate-50 px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 text-sm transition-all"
  />
  <button 
  type="submit"
  disabled={!newMessage.trim()}
- className="bg-slate-900 hover:bg-slate-800 :bg-emerald-500 disabled:opacity-50 text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-colors transition-transform active:scale-95"
+ className="bg-slate-900 hover:bg-slate-800 :bg-emerald-500 disabled:opacity-50 text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all active:scale-95"
  >
  <Send className="w-5 h-5" />
  </button>

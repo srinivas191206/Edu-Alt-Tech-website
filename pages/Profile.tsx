@@ -218,7 +218,7 @@ const Profile: React.FC = () => {
  <Building2 className="w-4 h-4 text-emerald-500"/> Education
  </label>
  {isEditing ? (
- <input type="text" value={editClass} onChange={(e) => {setEditClass(e.target.value); setSuccessMsg('');}} placeholder="e.g. B.Tech / High School" className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none text-slate-900 transition-colors transition-shadow" />
+ <input type="text" value={editClass} onChange={(e) => {setEditClass(e.target.value); setSuccessMsg('');}} placeholder="e.g. B.Tech / High School" className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none text-slate-900 transition-all" />
  ) : (
  <p className="w-full px-5 py-4 bg-slate-50 /50 border border-slate-100 /80 rounded-2xl text-slate-800 font-medium">
  {userProfile.classLevel || <span className="text-slate-400 italic">Not specified</span>}
@@ -231,7 +231,7 @@ const Profile: React.FC = () => {
  <MapPin className="w-4 h-4 text-blue-500"/> Location
  </label>
  {isEditing ? (
- <input type="text" value={editLocation} onChange={(e) => {setEditLocation(e.target.value); setSuccessMsg('');}} placeholder="e.g. Bangalore" className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none text-slate-900 transition-colors transition-shadow" />
+ <input type="text" value={editLocation} onChange={(e) => {setEditLocation(e.target.value); setSuccessMsg('');}} placeholder="e.g. Bangalore" className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none text-slate-900 transition-all" />
  ) : (
  <p className="w-full px-5 py-4 bg-slate-50 /50 border border-slate-100 /80 rounded-2xl text-slate-800 font-medium">
  {userProfile.location || <span className="text-slate-400 italic">Not specified</span>}
@@ -245,7 +245,7 @@ const Profile: React.FC = () => {
  <Tag className="w-4 h-4 text-purple-500"/> Interests & Preferences
  </label>
  {isEditing ? (
- <input type="text" value={editInterests} onChange={(e) => {setEditInterests(e.target.value); setSuccessMsg('');}} placeholder="e.g. Math, Coding, Art (comma-separated)" className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none text-slate-900 transition-colors transition-shadow" />
+ <input type="text" value={editInterests} onChange={(e) => {setEditInterests(e.target.value); setSuccessMsg('');}} placeholder="e.g. Math, Coding, Art (comma-separated)" className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none text-slate-900 transition-all" />
  ) : (
  <div className="w-full px-5 py-4 bg-slate-50 /50 border border-slate-100 /80 rounded-2xl min-h-[56px] flex flex-wrap gap-2">
  {userProfile.preferences && userProfile.preferences.length > 0 ? (
@@ -324,13 +324,13 @@ const Profile: React.FC = () => {
  <button onClick={() => { setIsEditing(false); setSuccessMsg(''); }} disabled={saving} className="w-full sm:w-auto hover:bg-slate-100 :bg-slate-800 text-slate-700 font-bold py-4 px-8 rounded-2xl transition-colors">
  Cancel
  </button>
- <button onClick={handleSaveProfile} disabled={saving} className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-2xl transition-colors transition-transform shadow-lg hover:shadow-xl flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50">
+ <button onClick={handleSaveProfile} disabled={saving} className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50">
  {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
  Save Changes
  </button>
  </>
  ) : (
- <button onClick={handleLogout} className="w-full sm:w-auto bg-red-50 hover:bg-red-100 /20 :bg-red-900/40 text-red-600 font-bold py-4 px-8 rounded-2xl transition-colors transition-transform flex items-center justify-center gap-2 active:scale-95">
+ <button onClick={handleLogout} className="w-full sm:w-auto bg-red-50 hover:bg-red-100 /20 :bg-red-900/40 text-red-600 font-bold py-4 px-8 rounded-2xl transition-all flex items-center justify-center gap-2 active:scale-95">
  <LogOut className="w-5 h-5" />
  Logout Account
  </button>
