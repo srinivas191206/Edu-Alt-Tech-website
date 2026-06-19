@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { auth, onAuthStateChanged, db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
-import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Code, Clock } from 'lucide-react';
+import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Code, Clock, CircleDollarSign } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoginModal from '../components/LoginModal';
@@ -64,7 +64,8 @@ const Courses: React.FC = () => {
  const [loading, setLoading] = useState(true);
  const [searchTerm, setSearchTerm] = useState('');
  const [activeFilter, setActiveFilter] = useState<'all' | 'education' | 'alternative'>('all');
- const [showComingSoon, setShowComingSoon] = useState(true);
+  const [showComingSoon, setShowComingSoon] = useState(true);
+  const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
  const [user, setUser] = useState<any>(auth.currentUser);
  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
  const navigate = useNavigate();
@@ -153,8 +154,13 @@ const Courses: React.FC = () => {
  matchesCategory = !EDUCATION_FOLDERS.has(course.folder || '');
  }
  
- return matchesSearch && matchesCategory;
- }), [courses, searchTerm, activeFilter]);
+  let matchesPrice = true;
+  const price = course.price ?? -1;
+  if (priceFilter === 'free') matchesPrice = price === 0;
+  else if (priceFilter === 'paid') matchesPrice = price > 0;
+
+  return matchesSearch && matchesCategory && matchesPrice;
+  }), [courses, searchTerm, activeFilter, priceFilter]);
 
  const providerCourses = useMemo(() => filteredCourses.filter(c => c.id.startsWith('ai-')), [filteredCourses]);
  const dbCourses = useMemo(() => filteredCourses.filter(c => !c.id.startsWith('ai-')), [filteredCourses]);
@@ -215,10 +221,25 @@ const Courses: React.FC = () => {
  ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:border-emerald-400'
  : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-400'
  }`}>
- <Globe className="w-4 h-4" /> Provider Courses
- </button>
- )}
- </motion.div>
+      <Globe className="w-4 h-4" /> Provider Courses
+    </button>
+    )}
+    <div className="w-px h-8 bg-slate-200 self-center" />
+    {[
+      { id: 'all', label: 'All Prices', icon: CircleDollarSign },
+      { id: 'free', label: 'Free', icon: CircleDollarSign },
+      { id: 'paid', label: 'Paid', icon: CircleDollarSign },
+    ].map((f) => (
+      <button key={f.id} onClick={() => setPriceFilter(f.id as any)}
+        className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold transition-colors ${
+          priceFilter === f.id
+            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25'
+            : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-500/50'
+        }`}>
+        <f.icon className="w-3.5 h-3.5" /> {f.label}
+      </button>
+    ))}
+  </motion.div>
 
  {loading ? (
  <div className="flex flex-col items-center justify-center py-40 gap-4">
@@ -406,7 +427,7 @@ const Courses: React.FC = () => {
  <Search className="w-12 h-12 text-slate-300 mx-auto mb-6" />
  <h3 className="text-2xl font-black text-slate-900 mb-2">No courses found</h3>
  <p className="text-slate-500 mb-6">Try a different search or filter.</p>
- <button onClick={() => { setSearchTerm(''); setActiveFilter('all'); }}
+ <button onClick={() => { setSearchTerm(''); setActiveFilter('all'); setPriceFilter('all'); }}
  className="px-8 py-3.5 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:-translate-y-0.5 transition-transform">Reset Filters</button>
  </motion.div>
  )}
