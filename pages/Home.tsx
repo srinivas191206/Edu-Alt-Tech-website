@@ -219,11 +219,12 @@ const Home: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
               className="relative w-[420px] h-[420px] rounded-full bg-gradient-to-br from-emerald-500/10 to-blue-500/10 flex items-center justify-center border border-emerald-500/20 shadow-2xl backdrop-blur-xl"
+              style={{ willChange: 'transform' }}
             >
               {/* Central Logo Orb */}
               <div className="w-44 h-44 rounded-full bg-white flex items-center justify-center shadow-2xl border border-slate-100 z-20 group relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-tr from-emerald-50 to-teal-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <img src="/edulogo.png" alt="EduAltTech Logo" className="w-24 h-24 object-contain z-10 animate-float" />
+                <img src="/edulogo.png" loading="lazy" decoding="async" alt="EduAltTech Logo" className="w-24 h-24 object-contain z-10 animate-float" />
               </div>
 
               {/* Orbiting Language Characters representing barrier breaking */}

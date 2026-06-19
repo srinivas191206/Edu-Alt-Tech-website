@@ -89,7 +89,7 @@ const PatchNotes: React.FC = () => {
  whileInView={{ opacity: 1, y: 0 }}
  viewport={{ once: true }}
  transition={{ delay: idx * 0.08, duration: 0.5 }}
- className="bg-white/90 /80 backdrop-blur-xl p-10 rounded-[2.5rem] border border-slate-200/50 /50 shadow-xl relative overflow-hidden group hover:-translate-y-1 hover:shadow-2xl transition-transform transition-shadow duration-300"
+ className="bg-white/90 /80 backdrop-blur-xl p-10 rounded-[2.5rem] border border-slate-200/50 /50 shadow-xl relative overflow-hidden group hover:-translate-y-1 hover:shadow-2xl transition-all duration-300"
  >
  <div className="absolute top-0 right-0 py-2 px-5 bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-black text-sm rounded-bl-2xl shadow-md">
  {note.version}

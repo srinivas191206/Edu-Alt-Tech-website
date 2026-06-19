@@ -242,7 +242,7 @@ const Courses: React.FC = () => {
  <span className="text-xs text-slate-400 font-bold">{providerCourses.length} courses</span>
  <div className="flex -space-x-2">
  {AI_COURSES.slice(0, 5).map((p, i) => (
- <img key={i} src={p.logo} alt={p.name} className="w-6 h-6 rounded-full border-2 border-white bg-white"
+ <img key={i} src={p.logo} loading="lazy" decoding="async" alt={p.name} className="w-6 h-6 rounded-full border-2 border-white bg-white"
  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
  ))}
  </div>
@@ -259,7 +259,7 @@ const Courses: React.FC = () => {
  <div className="flex items-center gap-3 mb-3">
  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-emerald-600 shrink-0">
  {PROVIDER_LOGOS[provider] ? (
- <img src={PROVIDER_LOGOS[provider]} alt={provider} className="w-5 h-5 rounded"
+ <img src={PROVIDER_LOGOS[provider]} loading="lazy" decoding="async" alt={provider} className="w-5 h-5 rounded"
  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).parentElement!.innerHTML = '<div class="w-5 h-5 flex items-center justify-center text-xs font-bold">' + provider.charAt(0) + '</div>'; }} />
  ) : (
  <span className="text-xs font-bold">{provider.charAt(0)}</span>
@@ -309,7 +309,7 @@ const Courses: React.FC = () => {
  <AnimatePresence mode="popLayout">
  {displayedCourses.filter(c => !c.id.startsWith('ai-')).map((course) => (
  <motion.div layout key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
- className="group bg-white backdrop-blur-xl rounded-3xl overflow-hidden border border-slate-200 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-colors transition-shadow duration-500 flex flex-col">
+ className="group bg-white backdrop-blur-xl rounded-3xl overflow-hidden border border-slate-200 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-all duration-500 flex flex-col">
  <div className="relative h-48 overflow-hidden bg-slate-100">
  {course.price === 0 ? (
  <img src={course.thumbnailUrl} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
@@ -351,17 +351,17 @@ const Courses: React.FC = () => {
     </span>
   ) : !user ? (
     <button onClick={() => setIsAuthModalOpen(true)}
-      className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-colors transition-transform active:scale-[0.98]">
+      className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-all active:scale-[0.98]">
       Explore Course →
     </button>
   ) : course.externalUrl ? (
  <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
- className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold text-sm tracking-wide hover:from-emerald-600 hover:to-teal-600 transition-colors transition-transform active:scale-[0.98]">
+ className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold text-sm tracking-wide hover:from-emerald-600 hover:to-teal-600 transition-all active:scale-[0.98]">
  Start Free <ExternalLink className="w-4 h-4" />
  </a>
  ) : (
  <Link to={`/courses/${course.id}`}
- className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-colors transition-transform active:scale-[0.98]">
+ className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-all active:scale-[0.98]">
  Explore Course →
  </Link>
  )}

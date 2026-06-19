@@ -323,7 +323,7 @@ const Resources: React.FC = () => {
  <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20 bg-gradient-to-br from-emerald-50 to-teal-50 /20 /10 rounded-[2rem] p-12 text-center border border-emerald-100 /30">
  <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">Want Access to Premium Resources?</h2>
  <p className="text-slate-500 mb-8 max-w-lg mx-auto">Enroll in our courses to unlock premium resources, question banks, and personalized study materials.</p>
- <Link to="/courses" className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold transition-colors transition-transform shadow-xl shadow-emerald-600/20 hover:-translate-y-1">
+ <Link to="/courses" className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold transition-all shadow-xl shadow-emerald-600/20 hover:-translate-y-1">
  Browse Courses <ArrowRight className="w-5 h-5" />
  </Link>
  </motion.div>

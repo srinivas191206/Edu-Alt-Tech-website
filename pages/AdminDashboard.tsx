@@ -621,7 +621,7 @@ const AdminDashboard: React.FC = () => {
 
  <button 
  onClick={() => setSelectedApp(app)}
- className="w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-transform transition-colors shadow-xl group-hover:bg-emerald-500 group-hover:text-white"
+ className="w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl group-hover:bg-emerald-500 group-hover:text-white"
  >
  REVIEW DOSSIER
  </button>
@@ -935,7 +935,7 @@ const AdminDashboard: React.FC = () => {
  <td className="px-4 sm:px-8 py-4 sm:py-5">
  <div className="flex items-center gap-3 sm:gap-4">
  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0 overflow-hidden">
- {course.thumbnailUrl ? <img src={course.thumbnailUrl} alt="" className="w-full h-full object-cover" /> : course.title?.charAt(0) || 'C'}
+ {course.thumbnailUrl ? <img src={course.thumbnailUrl} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover" /> : course.title?.charAt(0) || 'C'}
  </div>
  <div className="min-w-0">
  <div className="flex items-center gap-2">
@@ -1237,7 +1237,7 @@ const AdminDashboard: React.FC = () => {
  </button>
  {courseForm.thumbnailUrl && (
  <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200 ">
- <img src={courseForm.thumbnailUrl} alt="preview" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23ddd" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%23999" font-size="10">N/A</text></svg>' }} />
+  <img src={courseForm.thumbnailUrl} loading="lazy" decoding="async" alt="preview" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23ddd" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%23999" font-size="10">N/A</text></svg>' }} />
  </div>
  )}
  </div>

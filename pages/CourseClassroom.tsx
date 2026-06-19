@@ -371,11 +371,11 @@ const CourseClassroom: React.FC = () => {
  className="relative md:pl-20"
  >
  {/* Milestone Marker */}
- <div className={`absolute left-[30px] top-10 w-5 h-5 rounded-full border-4 border-slate-50 [#020617] z-20 transition-transform transition-colors duration-500 hidden md:flex items-center justify-center ${
+ <div className={`absolute left-[30px] top-10 w-5 h-5 rounded-full border-4 border-slate-50 [#020617] z-20 transition-all duration-500 hidden md:flex items-center justify-center ${
  isCompleted ? 'bg-emerald-500 scale-125 shadow-[0_0_20px_rgba(16,185,129,0.5)]' : 'bg-slate-300 '
  }`} />
 
- <div className={`group bg-white /80 backdrop-blur-xl border-2 rounded-[2.5rem] transition-transform transition-colors duration-500 overflow-hidden ${
+ <div className={`group bg-white /80 backdrop-blur-xl border-2 rounded-[2.5rem] transition-all duration-500 overflow-hidden ${
  isCompleted ? 'border-emerald-500/20 shadow-emerald-500/5' : 'border-slate-200/50 shadow-xl'
  } ${isExpanded ? 'shadow-2xl border-purple-500/30' : 'hover:-translate-y-1 hover:border-purple-500/30'}`}>
  

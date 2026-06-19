@@ -48,7 +48,7 @@ function ProblemCard({ problem, user, onLockedClick }: { problem: LeetCodeProble
  layout
  initial={{ opacity: 0, y: 10 }}
  animate={{ opacity: 1, y: 0 }}
- className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300"
+ className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300"
  >
  <div className="flex items-start justify-between gap-3">
  <div className="flex-1 min-w-0">
@@ -112,7 +112,7 @@ function CourseCard({ course, user, onLockedClick }: { course: CourseLink; user:
 
  return (
  <a href={course.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
- className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
+ className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
  >
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-xl bg-emerald-100 /20 text-emerald-500 flex items-center justify-center shrink-0">
@@ -142,7 +142,7 @@ function InterviewCard({ interview, user, onLockedClick }: { interview: Intervie
 
  return (
  <a href={interview.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
- className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
+ className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
  >
  <div className="flex items-center justify-between gap-3">
  <div className="flex-1 min-w-0">
@@ -174,7 +174,7 @@ function EnglishExerciseCard({ exercise, user, onLockedClick }: { exercise: Engl
 
  return (
  <motion.div layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
- className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300"
+ className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300"
  >
  <div className="flex items-start justify-between gap-3">
  <div className="flex-1 min-w-0">
@@ -217,7 +217,7 @@ function ChannelCard({ channel, user, onLockedClick }: { channel: YouTubeChannel
 
  return (
  <a href={channel.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
- className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-shadow transition-colors duration-300 group"
+ className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
  >
  <div className="w-10 h-10 rounded-xl bg-red-100 /20 text-red-500 flex items-center justify-center shrink-0">
  <Youtube className="w-5 h-5" />

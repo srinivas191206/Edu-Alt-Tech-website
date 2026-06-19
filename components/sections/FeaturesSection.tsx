@@ -105,10 +105,10 @@ const FeaturesSection: React.FC = () => {
  key={`${activeTab}-${idx}`}
  custom={idx}
  variants={cardVariants}
- className="group bg-slate-50 /60 backdrop-blur-xl p-10 rounded-[2.5rem] border border-slate-200/50 /50 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-shadow transition-transform duration-500 relative overflow-hidden"
+ className="group bg-slate-50 /60 backdrop-blur-xl p-10 rounded-[2.5rem] border border-slate-200/50 /50 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden"
  >
  <div className={`absolute inset-0 bg-gradient-to-br ${tabColors[activeTab]} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-[2.5rem]`} />
- <div className={`w-16 h-16 bg-slate-100 text-slate-600 rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:${tabBg[activeTab]} group-hover:text-white transition-transform transition-colors duration-500 shadow-sm relative z-10`}>
+ <div className={`w-16 h-16 bg-slate-100 text-slate-600 rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:${tabBg[activeTab]} group-hover:text-white transition-all duration-500 shadow-sm relative z-10`}>
  {feat.icon}
  </div>
  <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight relative z-10">{feat.title}</h3>

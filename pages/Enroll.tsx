@@ -125,28 +125,28 @@ const Enroll: React.FC = () => {
  <div>
  <label className="block text-sm font-bold text-slate-700 mb-2">Full Name</label>
  <input type="text" required placeholder="Enter your full name"
- className="w-full px-5 py-4 bg-slate-50 rounded-2xl border border-slate-200 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none transition-colors transition-shadow"
+ className="w-full px-5 py-4 bg-slate-50 rounded-2xl border border-slate-200 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none transition-all"
  value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })}
  />
  </div>
  <div>
  <label className="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
  <input type="email" required placeholder="name@example.com"
- className="w-full px-5 py-4 bg-slate-50 rounded-2xl border border-slate-200 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none transition-colors transition-shadow"
+ className="w-full px-5 py-4 bg-slate-50 rounded-2xl border border-slate-200 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none transition-all"
  value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })}
  />
  </div>
  <div>
  <label className="block text-sm font-bold text-slate-700 mb-2">Phone Number</label>
  <input type="tel" required placeholder="+91 XXXXX XXXXX"
- className="w-full px-5 py-4 bg-slate-50 rounded-2xl border border-slate-200 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none transition-colors transition-shadow"
+ className="w-full px-5 py-4 bg-slate-50 rounded-2xl border border-slate-200 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none transition-all"
  value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })}
  />
  </div>
  <div>
  <label className="block text-sm font-bold text-slate-700 mb-2">Main Goal in Learning</label>
  <textarea required placeholder="What is your biggest execution hurdle?"
- className="w-full px-5 py-4 bg-slate-50 rounded-2xl border border-slate-200 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none transition-colors transition-shadow h-32 resize-none"
+ className="w-full px-5 py-4 bg-slate-50 rounded-2xl border border-slate-200 focus:border-[#90EE90] focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none transition-all h-32 resize-none"
  value={formData.goal} onChange={e => setFormData({ ...formData, goal: e.target.value })}
  />
  </div>

@@ -92,7 +92,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ courseId, courseTit
  <div className="space-y-4">
  <div>
  <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Your Learning Goal</label>
- <input value={goal} onChange={e => setGoal(e.target.value)} placeholder="e.g. Master the basics and build a project" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors transition-shadow" />
+ <input value={goal} onChange={e => setGoal(e.target.value)} placeholder="e.g. Master the basics and build a project" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-all" />
  </div>
  <div>
  <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Current Level</label>
