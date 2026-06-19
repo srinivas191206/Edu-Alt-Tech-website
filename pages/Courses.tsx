@@ -140,9 +140,11 @@ const Courses: React.FC = () => {
 
  const filteredCourses = useMemo(() => courses.filter(course => {
  if ((course.folder || '') === 'Marketing') return false;
- const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
- (course.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
- (course.provider || '').toLowerCase().includes(searchTerm.toLowerCase());
+  const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+  (course.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+  (course.provider || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+  (course.folder || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+  (course.category || '').toLowerCase().includes(searchTerm.toLowerCase());
  
  let matchesCategory = true;
  if (activeFilter === 'education') {

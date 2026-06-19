@@ -11,14 +11,17 @@ export class FirebaseUserClass {
  emailVerified: boolean;
  metadata: any;
 
- constructor(su: SupabaseUser | null) {
- this.uid = su?.id || '';
- this.email = su?.email || null;
- this.displayName = su?.user_metadata?.display_name || su?.user_metadata?.full_name || null;
- this.photoURL = su?.user_metadata?.avatar_url || su?.user_metadata?.picture || null;
- this.emailVerified = su?.email_confirmed_at ? true : false;
- this.metadata = {};
- }
+  isGoogleUser: boolean;
+
+  constructor(su: SupabaseUser | null) {
+  this.uid = su?.id || '';
+  this.email = su?.email || null;
+  this.displayName = su?.user_metadata?.display_name || su?.user_metadata?.full_name || null;
+  this.photoURL = su?.user_metadata?.avatar_url || su?.user_metadata?.picture || null;
+  this.emailVerified = su?.email_confirmed_at ? true : false;
+  this.metadata = {};
+  this.isGoogleUser = su?.app_metadata?.provider === 'google';
+  }
 }
 
 export type User = FirebaseUserClass;
@@ -178,9 +181,18 @@ export async function addDoc(ref: CollectionRef, data: any): Promise<{ id: strin
 }
 
 export async function setDoc(ref: DocRef, data: any, options?: { merge?: boolean }): Promise<void> {
- const snakeData = convertKeys(data, camelToSnake);
- const { error } = await supabase.from(ref.table).upsert({ id: ref.id, ...snakeData }, { onConflict: 'id' });
- if (error) throw new Error(`setDoc failed: ${error.message}`);
+  const snakeData = convertKeys(data, camelToSnake);
+  if (options?.merge) {
+    const { data: existing } = await supabase.from(ref.table).select('*').eq('id', ref.id).maybeSingle();
+    if (existing) {
+      const merged = { ...existing, ...snakeData };
+      const { error } = await supabase.from(ref.table).upsert({ id: ref.id, ...merged }, { onConflict: 'id' });
+      if (error) throw new Error(`setDoc failed: ${error.message}`);
+      return;
+    }
+  }
+  const { error } = await supabase.from(ref.table).upsert({ id: ref.id, ...snakeData }, { onConflict: 'id' });
+  if (error) throw new Error(`setDoc failed: ${error.message}`);
 }
 
 export async function updateDoc(ref: DocRef, data: any): Promise<void> {

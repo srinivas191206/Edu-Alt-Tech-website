@@ -376,6 +376,21 @@ const TeacherApplication: React.FC = () => {
       return;
     }
 
+    // Validation
+    const phoneDigits = phone.replace(/\D/g, '');
+    if (phone && phoneDigits.length < 10) {
+      toast.error('Phone number must have at least 10 digits');
+      return;
+    }
+    if (experience && (isNaN(Number(experience)) || Number(experience) < 0)) {
+      toast.error('Experience must be a valid non-negative number');
+      return;
+    }
+    if (!subjects.trim()) {
+      toast.error('Please enter the subjects you teach');
+      return;
+    }
+
     const finalLanguagesList = [
       ...selectedLanguages,
       ...customLanguages.split(',').map(s => s.trim()).filter(Boolean)

@@ -272,15 +272,17 @@ const Profile: React.FC = () => {
  <div className="pt-10 mt-10 border-t border-slate-100 ">
  <div className="flex items-center justify-between mb-6">
  <div>
- <h3 className="text-xl font-bold text-slate-900 ">Security</h3>
- <p className="text-sm text-slate-500">Manage your account credentials.</p>
- </div>
- <button 
- onClick={() => setShowPasswordSection(!showPasswordSection)} 
- className="text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
- >
- {showPasswordSection ? 'Cancel' : 'Change Password'}
- </button>
+      <h3 className="text-xl font-bold text-slate-900 ">Security</h3>
+  <p className="text-sm text-slate-500">{user?.isGoogleUser ? 'Signed in with Google — password not applicable.' : 'Manage your account credentials.'}</p>
+  </div>
+  {!user?.isGoogleUser && (
+  <button 
+  onClick={() => setShowPasswordSection(!showPasswordSection)} 
+  className="text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
+  >
+  {showPasswordSection ? 'Cancel' : 'Change Password'}
+  </button>
+  )}
  </div>
 
  {showPasswordSection && (
