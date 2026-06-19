@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const SEO_TITLE = 'Edu Alt Tech | Courses, Learning Resources, AI Tools & School Technology Solutions';
+const SEO_DESCRIPTION = 'Edu Alt Tech provides learning resources, online courses, AI tools, school ERP software, educational websites';
 import { 
   ArrowRight, CheckCircle, GraduationCap, Globe, Smartphone, Brain, Zap, BookOpen, 
   ShieldCheck, Users, Star, Download, FileText, Award, Lightbulb, Code2, 
@@ -125,6 +128,17 @@ const Home: React.FC = () => {
       setHeroWordIndex((prev) => (prev + 1) % heroWords.length);
     }, 3000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    document.title = SEO_TITLE;
+    let meta = document.querySelector('meta[name="description"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'description');
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', SEO_DESCRIPTION);
   }, []);
 
   return (
