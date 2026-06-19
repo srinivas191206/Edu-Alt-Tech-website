@@ -1,6 +1,7 @@
 
 import React, { Suspense, lazy, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { Toaster } from 'react-hot-toast';
@@ -93,12 +94,14 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => {
- return (
-  <Router>
-   <ScrollToTop />
-   <AppContent />
-  </Router>
- );
+  return (
+   <HelmetProvider>
+   <Router>
+    <ScrollToTop />
+    <AppContent />
+   </Router>
+   </HelmetProvider>
+  );
 };
 
 export default App;

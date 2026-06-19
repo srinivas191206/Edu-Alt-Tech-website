@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const SEO_TITLE = 'Edu Alt Tech | Courses, Learning Resources, AI Tools & School Technology Solutions';
-const SEO_DESCRIPTION = 'Edu Alt Tech provides learning resources, online courses, AI tools, school ERP software, educational websites';
 import { 
   ArrowRight, CheckCircle, GraduationCap, Globe, Smartphone, Brain, Zap, BookOpen, 
   ShieldCheck, Users, Star, Download, FileText, Award, Lightbulb, Code2, 
@@ -130,18 +128,30 @@ const Home: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    document.title = SEO_TITLE;
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.setAttribute('name', 'description');
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute('content', SEO_DESCRIPTION);
-  }, []);
-
   return (
+    <>
+    <Helmet>
+      <title>Edu Alt Tech | Learning Resources, Courses & AI Tools</title>
+      <meta name="description" content="Edu Alt Tech provides learning resources, online courses, AI tools, educational websites and technology solutions." />
+      <link rel="canonical" href="https://www.edualttech.com/" />
+      <meta property="og:title" content="Edu Alt Tech" />
+      <meta property="og:description" content="Learning Resources, Courses, AI Tools & School Technology Solutions" />
+      <meta property="og:image" content="https://www.edualttech.com/og-image.jpg" />
+      <meta property="og:url" content="https://www.edualttech.com/" />
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "EducationalOrganization",
+          "name": "Edu Alt Tech",
+          "url": "https://www.edualttech.com",
+          "description": "Learning Resources, Courses, AI Tools and School Technology Solutions",
+          "sameAs": [
+            "https://in.linkedin.com/company/edu-alt-tech",
+            "https://www.instagram.com/edu_alt_tech/"
+          ]
+        })}
+      </script>
+    </Helmet>
     <div className="bg-slate-50 text-slate-900 overflow-hidden min-h-screen relative">
       
       {/* ═══════════════════════════════════════════════════════ Hero Section (Spatial Design) */}
@@ -1005,6 +1015,7 @@ const Home: React.FC = () => {
       </section>
 
     </div>
+    </>
   );
 };
 
