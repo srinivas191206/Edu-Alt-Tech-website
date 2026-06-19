@@ -1,21 +1,46 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Lock, Mail, Loader2, Eye, EyeOff } from 'lucide-react';
-import { auth, db, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, doc, getDoc, setDoc, serverTimestamp } from '../lib/firebase';
+import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, doc, getDoc, setDoc, serverTimestamp } from '../lib/firebase';
 import { motion } from 'framer-motion';
 
 const Login: React.FC = () => {
- const [email, setEmail] = useState('');
- const [password, setPassword] = useState('');
- const [loading, setLoading] = useState(false);
- const [googleLoading, setGoogleLoading] = useState(false);
- const [showPassword, setShowPassword] = useState(false);
- const [resetLoading, setResetLoading] = useState(false);
- const [resetMessage, setResetMessage] = useState('');
- const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetMessage, setResetMessage] = useState('');
+  const [error, setError] = useState('');
 
- const navigate = useNavigate();
- const formRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const formRef = useRef<HTMLDivElement>(null);
+
+  // Detect existing session after OAuth redirect
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (u) => {
+      if (u) {
+        // Create profile doc if new user
+        const userRef = doc(db, 'users', u.uid);
+        const userDoc = await getDoc(userRef);
+        if (!userDoc.exists()) {
+          await setDoc(userRef, {
+            name: u.displayName || 'User',
+            email: u.email,
+            photoURL: u.photoURL,
+            createdAt: serverTimestamp()
+          });
+        }
+        if (u.email === 'ukkukk97@gmail.com' || u.email === 'umakrishnakanthchokkapu15@gmail.com') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
+      }
+    });
+    return () => unsub();
+  }, [navigate]);
 
  const handleLogin = async (e: React.FormEvent) => {
  e.preventDefault();
@@ -42,45 +67,23 @@ const Login: React.FC = () => {
  }
  };
 
- const handleGoogleLogin = async () => {
- setGoogleLoading(true);
- setError('');
- const provider = new GoogleAuthProvider();
+  const handleGoogleLogin = async () => {
+  setGoogleLoading(true);
+  setError('');
+  const provider = new GoogleAuthProvider();
 
- try {
- const result = await signInWithPopup(auth, provider);
- if (result.user) {
- // Check if user is new (no Firestore doc)
- const userRef = doc(db, 'users', result.user.uid);
- const userDoc = await getDoc(userRef);
- 
- if (!userDoc.exists()) {
- // Create user profile
- await setDoc(userRef, {
- name: result.user.displayName || 'User',
- email: result.user.email,
- photoURL: result.user.photoURL,
- createdAt: serverTimestamp()
- });
-
-
- }
-
- if (result.user.email === 'ukkukk97@gmail.com' || result.user.email === 'umakrishnakanthchokkapu15@gmail.com') {
- navigate('/admin');
- } else {
- navigate('/dashboard');
- }
- }
- } catch (err: any) {
- console.error(err);
- if (err.code !== 'auth/popup-closed-by-user') {
- setError('Failed to sign in with Google. Please try again.');
- }
- } finally {
- setGoogleLoading(false);
- }
- };
+  try {
+  const result = await signInWithPopup(auth, provider);
+  // For Supabase OAuth, the browser redirects to Google.
+  // The auth listener (useEffect above) will handle navigation when user returns.
+  // If result.user is null, the redirect is in progress.
+  } catch (err: any) {
+  console.error(err);
+  setError('Failed to sign in with Google. Please try again.');
+  } finally {
+  setGoogleLoading(false);
+  }
+  };
 
  const handleForgotPassword = async () => {
  if (!email) {
