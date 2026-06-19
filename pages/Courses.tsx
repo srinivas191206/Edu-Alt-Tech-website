@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { auth, onAuthStateChanged, db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
 import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Code, Clock, CircleDollarSign } from 'lucide-react';
@@ -169,12 +170,17 @@ const Courses: React.FC = () => {
  return !user ? filteredCourses.slice(0, 3) : filteredCourses;
  }, [filteredCourses, user]);
 
- return (
- <div className="min-h-screen bg-slate-50 selection:bg-emerald-500/30">
- <div className="fixed inset-0 overflow-hidden pointer-events-none">
- <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
- <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-500/5 blur-[60px] rounded-full" />
- </div>
+  return (
+  <>
+  <Helmet>
+    <title>Courses | Edu Alt Tech</title>
+    <link rel="canonical" href="https://www.edualttech.com/#/courses" />
+  </Helmet>
+  <div className="min-h-screen bg-slate-50 selection:bg-emerald-500/30">
+  <div className="fixed inset-0 overflow-hidden pointer-events-none">
+  <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
+  <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-500/5 blur-[60px] rounded-full" />
+  </div>
 
  <div className="max-w-[1400px] mx-auto relative z-10 px-6 py-24 md:py-32">
  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12 md:mb-16">
@@ -431,10 +437,11 @@ const Courses: React.FC = () => {
  className="px-8 py-3.5 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:-translate-y-0.5 transition-transform">Reset Filters</button>
  </motion.div>
  )}
- <LoginModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
- </div>
- </div>
- );
+  <LoginModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+  </div>
+  </div>
+  </>
+  );
 };
 
 const AI_COURSES = [

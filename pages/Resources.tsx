@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { Search, Download, FileText, BookOpen, Brain, FileSpreadsheet, Lock, Sparkles, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -186,8 +187,13 @@ const Resources: React.FC = () => {
  return !user ? filtered.slice(0, 3) : filtered;
  }, [filtered, user]);
 
- return (
- <div className="min-h-screen pt-32 pb-32 px-6 bg-white relative overflow-hidden">
+  return (
+  <>
+  <Helmet>
+    <title>Learning Resources | Edu Alt Tech</title>
+    <link rel="canonical" href="https://www.edualttech.com/#/resources" />
+  </Helmet>
+  <div className="min-h-screen pt-32 pb-32 px-6 bg-white relative overflow-hidden">
  <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
  <div className="max-w-[1400px] mx-auto relative z-10">
  <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mb-16">
@@ -344,9 +350,10 @@ const Resources: React.FC = () => {
  </Link>
  </motion.div>
  </div>
- <LoginModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
- </div>
- );
+  <LoginModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+  </div>
+  </>
+  );
 };
 
 export default Resources;
