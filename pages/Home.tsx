@@ -146,8 +146,8 @@ const Home: React.FC = () => {
           "url": "https://www.edualttech.com",
           "description": "Learning Resources, Courses, AI Tools and School Technology Solutions",
           "sameAs": [
-            "https://www.linkedin.com/company/edualttech",
-            "https://www.instagram.com/edualttech"
+            "https://in.linkedin.com/company/edu-alt-tech",
+            "https://www.instagram.com/edu_alt_tech/"
           ]
         })}
       </script>
