@@ -330,12 +330,15 @@ export class GoogleAuthProvider {
 }
 
 export async function signInWithPopup(authObj: any, provider: any): Promise<{ user: FirebaseUserClass | null }> {
- const { data, error } = await supabase.auth.signInWithOAuth({
- provider: 'google',
- options: { redirectTo: window.location.origin },
- });
- if (error) throw error;
- throw new Error('redirecting');
+  const { data, error } = await supabase.auth.signInWithOAuth({
+  provider: 'google',
+  options: { redirectTo: window.location.origin },
+  });
+  // On success, Supabase redirects the browser to Google.
+  // After the OAuth flow completes, the browser returns to redirectTo.
+  // At that point, the auth listener in createAuth() picks up the session.
+  if (error) throw error;
+  return { user: null };
 }
 
 export async function sendPasswordResetEmail(authObj: any, email: string): Promise<void> {
