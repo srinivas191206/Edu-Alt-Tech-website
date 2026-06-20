@@ -74,13 +74,21 @@ const Signup: React.FC = () => {
  navigate('/dashboard');
  }
  } catch (err: any) {
- console.error(err);
- if (err.code === 'auth/email-already-in-use') {
- setError('User already exists. Please sign in');
- } else {
-      setError('Failed to create account. Please try again.');
- }
- } finally {
+  console.error('Signup error:', err);
+  if (err.code === 'auth/email-already-in-use') {
+  setError('User already exists. Please sign in');
+  } else if (err.code === 'auth/weak-password') {
+  setError('Password is too weak. Use at least 6 characters.');
+  } else if (err.code === 'auth/invalid-email') {
+  setError('Invalid email address.');
+  } else if (err.code === 'auth/configuration-not-found') {
+  setError('Authentication is not configured. Please contact support.');
+  } else if (err.message?.includes('index')) {
+  setError('Account created but phone verification unavailable. Contact support.');
+  } else {
+  setError(err.message || 'Failed to create account. Please try again.');
+  }
+  } finally {
  setLoading(false);
  }
  };
