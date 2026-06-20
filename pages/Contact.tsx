@@ -24,33 +24,34 @@ const Contact: React.FC = () => {
  return () => unsub();
  }, []);
 
- const handleSubmit = async (e: React.FormEvent) => {
- e.preventDefault();
- if (!currentUser) {
- toast.error('Please log in to send a message');
- return;
- }
- if (!message.trim()) {
- toast.error('Please enter a message');
- return;
- }
- setSending(true);
- try {
- await db.from('chat_messages').insert({
- user_id: currentUser.uid,
- content: message.trim(),
- role: 'user',
- created_at: new Date().toISOString()
- });
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!currentUser) {
+  toast.error('Please log in to send a message');
+  return;
+  }
+  if (!message.trim()) {
+  toast.error('Please enter a message');
+  return;
+  }
+  setSending(true);
+  try {
+  // Only insert chat message — never update user profile
+  await db.from('chat_messages').insert({
+  user_id: currentUser.uid,
+  content: message.trim(),
+  role: 'user',
+  created_at: new Date().toISOString()
+  });
 
- toast.success('Message sent!');
- setMessage('');
- } catch (e) {
- toast.error('Failed to send message');
- } finally {
- setSending(false);
- }
- };
+  toast.success('Message sent!');
+  setMessage('');
+  } catch (e) {
+  toast.error('Failed to send message');
+  } finally {
+  setSending(false);
+  }
+  };
 
  return (
  <div className="pt-32 pb-32 px-6 bg-slate-50 [#020617] min-h-screen relative overflow-hidden">

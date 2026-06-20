@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { auth, onAuthStateChanged, db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
-import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Code, Clock, CircleDollarSign } from 'lucide-react';
+import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Code, Clock, CircleDollarSign, X } from 'lucide-react';
+import { normalizeSearch } from '../lib/search';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoginModal from '../components/LoginModal';
@@ -140,28 +141,32 @@ const Courses: React.FC = () => {
  fetchCourses();
  }, []);
 
- const filteredCourses = useMemo(() => courses.filter(course => {
- if ((course.folder || '') === 'Marketing') return false;
-  const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-  (course.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-  (course.provider || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-  (course.folder || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-  (course.category || '').toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredCourses = useMemo(() => {
+  const normalizedSearch = normalizeSearch(searchTerm);
+  return courses.filter(course => {
+  if ((course.folder || '') === 'Marketing') return false;
+   const matchesSearch = !normalizedSearch ||
+   normalizeSearch(course.title).includes(normalizedSearch) ||
+   normalizeSearch(course.description || '').includes(normalizedSearch) ||
+   normalizeSearch(course.provider || '').includes(normalizedSearch) ||
+   normalizeSearch(course.folder || '').includes(normalizedSearch) ||
+   normalizeSearch(course.category || '').includes(normalizedSearch);
  
- let matchesCategory = true;
- if (activeFilter === 'education') {
- matchesCategory = EDUCATION_FOLDERS.has(course.folder || '');
- } else if (activeFilter === 'alternative') {
- matchesCategory = !EDUCATION_FOLDERS.has(course.folder || '');
- }
- 
-  let matchesPrice = true;
-  const price = course.price ?? -1;
-  if (priceFilter === 'free') matchesPrice = price === 0;
-  else if (priceFilter === 'paid') matchesPrice = price > 0;
+  let matchesCategory = true;
+  if (activeFilter === 'education') {
+  matchesCategory = EDUCATION_FOLDERS.has(course.folder || '');
+  } else if (activeFilter === 'alternative') {
+  matchesCategory = !EDUCATION_FOLDERS.has(course.folder || '');
+  }
+  
+   let matchesPrice = true;
+   const price = course.price ?? -1;
+   if (priceFilter === 'free') matchesPrice = price === 0;
+   else if (priceFilter === 'paid') matchesPrice = price > 0;
 
-  return matchesSearch && matchesCategory && matchesPrice;
-  }), [courses, searchTerm, activeFilter, priceFilter]);
+   return matchesSearch && matchesCategory && matchesPrice;
+   });
+   }, [courses, searchTerm, activeFilter, priceFilter]);
 
  const providerCourses = useMemo(() => filteredCourses.filter(c => c.id.startsWith('ai-')), [filteredCourses]);
  const dbCourses = useMemo(() => filteredCourses.filter(c => !c.id.startsWith('ai-')), [filteredCourses]);
@@ -196,13 +201,19 @@ const Courses: React.FC = () => {
  </p>
  </motion.div>
 
- <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8">
- <div className="relative max-w-md">
- <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
- <input type="text" placeholder="Search courses or providers..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full pl-14 pr-6 py-4 bg-white backdrop-blur-xl rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-shadow font-medium placeholder:text-slate-400" />
- </div>
- </motion.div>
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8 flex flex-wrap items-center gap-3">
+  <div className="relative max-w-md flex-1 min-w-[200px]">
+  <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+  <input type="text" placeholder="Search courses or providers..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+  className="w-full pl-14 pr-6 py-4 bg-white backdrop-blur-xl rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-shadow font-medium placeholder:text-slate-400" />
+  </div>
+  {(searchTerm || activeFilter !== 'all' || priceFilter !== 'all') && (
+    <button onClick={() => { setSearchTerm(''); setActiveFilter('all'); setPriceFilter('all'); }}
+      className="flex items-center gap-1.5 px-4 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:text-red-500 hover:border-red-200 transition-colors">
+      <X className="w-3.5 h-3.5" /> Clear
+    </button>
+  )}
+  </motion.div>
 
  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
  className="flex flex-wrap gap-3 mb-6">
