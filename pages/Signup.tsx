@@ -73,7 +73,7 @@ const Signup: React.FC = () => {
  } else {
  navigate('/dashboard');
  }
- } catch (err: any) {
+  } catch (err: any) {
   console.error('Signup error:', err);
   if (err.code === 'auth/email-already-in-use') {
   setError('User already exists. Please sign in');
@@ -85,6 +85,8 @@ const Signup: React.FC = () => {
   setError('Authentication is not configured. Please contact support.');
   } else if (err.message?.includes('index')) {
   setError('Account created but phone verification unavailable. Contact support.');
+  } else if (err.name === 'AuthRetryableFetchError') {
+  setError('Signup service unavailable (server error). Please check Supabase SMTP settings or disable email confirmation.');
   } else {
   setError(err.message || 'Failed to create account. Please try again.');
   }
