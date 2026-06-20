@@ -141,9 +141,10 @@ const Home: React.FC = () => {
       <script type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "EducationalOrganization",
+          "@type": "Organization",
           "name": "Edu Alt Tech",
           "url": "https://www.edualttech.com",
+          "logo": "https://www.edualttech.com/edulogo.png",
           "description": "Learning Resources, Courses, AI Tools and School Technology Solutions",
           "sameAs": [
             "https://in.linkedin.com/company/edu-alt-tech",
