@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { auth, db, doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs, onAuthStateChanged } from '../lib/firebase';
 import { Course, CourseEnrollment } from '../types';
+import { PLATFORM_COURSES } from '../data/platformCourses';
 import { ArrowLeft, CheckCircle2, Clock, Users, BookOpen, AlertCircle, Loader2, ArrowRight, Sparkles } from 'lucide-react';
 import type { User } from '../lib/firebase';
 import { motion } from 'framer-motion';
@@ -24,11 +25,21 @@ const CourseDetails: React.FC = () => {
  useEffect(() => {
  const fetchCourseAndEnrollment = async (currentUser: User | null) => {
  if (!courseId) return;
- try {
- const courseDoc = await getDoc(doc(db, 'courses', courseId));
- if (courseDoc.exists()) {
- setCourse({ id: courseDoc.id, ...courseDoc.data() } as Course);
- }
+  try {
+  let found = false;
+  const courseDoc = await getDoc(doc(db, 'courses', courseId));
+  if (courseDoc.exists()) {
+  setCourse({ id: courseDoc.id, ...courseDoc.data() } as Course);
+  found = true;
+  }
+  if (!found) {
+  const idx = PLATFORM_COURSES.findIndex((_, i) => `pc-${i}` === courseId);
+  if (idx !== -1) {
+  const overrides = JSON.parse(localStorage.getItem('platformCourseOverrides') || '{}');
+  setCourse({ id: `pc-${idx}`, ...PLATFORM_COURSES[idx], ...(overrides[`pc-${idx}`] || {}) } as Course);
+  found = true;
+  }
+  }
 
  if (currentUser) {
  // Check if already enrolled or applied
