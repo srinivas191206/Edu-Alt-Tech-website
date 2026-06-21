@@ -73,17 +73,49 @@ const AdminDashboard: React.FC = () => {
 
   const isPlatformCourse = (id: string) => id.startsWith('pc-');
 
+  const savePlatformOverrides = (overrides: Record<string, any>) => {
+  localStorage.setItem('platformCourseOverrides', JSON.stringify(overrides));
+  };
+
+  const applyPlatformOverrides = (list: any[]) => {
+  try {
+  const raw = localStorage.getItem('platformCourseOverrides');
+  if (!raw) return list;
+  const overrides = JSON.parse(raw);
+  return list.map(c => overrides[c.id] ? { ...c, ...overrides[c.id] } : c);
+  } catch { return list; }
+  };
+
+  const deletePlatformFromStorage = (id: string) => {
+  try {
+  const raw = localStorage.getItem('platformCourseOverrides');
+  if (raw) {
+  const overrides = JSON.parse(raw);
+  delete overrides[id];
+  localStorage.setItem('platformCourseOverrides', JSON.stringify(overrides));
+  }
+  const deleted = JSON.parse(localStorage.getItem('platformCourseDeletions') || '[]');
+  if (!deleted.includes(id)) {
+  deleted.push(id);
+  localStorage.setItem('platformCourseDeletions', JSON.stringify(deleted));
+  }
+  } catch {}
+  };
+
   const handleSaveCourse = async () => {
   if (!courseForm.title.trim()) { toast.error('Title is required'); return; }
-  if (editingCourse && isPlatformCourse(editingCourse.id)) {
-  toast.error('Platform courses cannot be edited here. Update data/platformCourses.ts instead.');
-  return;
-  }
   setSavingCourse(true);
   try {
   if (editingCourse) {
+  if (isPlatformCourse(editingCourse.id)) {
+  const overrides = { ...courseForm, comingSoon: editingCourse.comingSoon };
+  savePlatformOverrides({ ...JSON.parse(localStorage.getItem('platformCourseOverrides') || '{}'), [editingCourse.id]: overrides });
+  setCoursesList(prev => applyPlatformOverrides(prev.map(c => c.id === editingCourse.id ? { ...c, ...courseForm } : c)));
+  toast.success('Platform course updated (temporary — edit data/platformCourses.ts to make permanent)');
+  } else {
   await updateDoc(doc(db, 'courses', editingCourse.id), courseForm);
   toast.success('Course updated');
+  }
   } else {
   await addDoc(collection(db, 'courses'), { ...courseForm, createdAt: serverTimestamp(), createdBy: auth.currentUser?.uid || 'admin' });
   toast.success('Course created');
@@ -99,7 +131,9 @@ const AdminDashboard: React.FC = () => {
 
   const handleDeleteCourse = async (courseId: string, title: string) => {
   if (isPlatformCourse(courseId)) {
-  toast.error('Platform courses cannot be deleted here. Remove from data/platformCourses.ts instead.');
+  deletePlatformFromStorage(courseId);
+  setCoursesList(prev => prev.filter(c => c.id !== courseId));
+  toast.success('Platform course hidden (temporary — remove from data/platformCourses.ts to make permanent)');
   return;
   }
   if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
@@ -113,11 +147,14 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleToggleComingSoon = async (course: any) => {
+  const newVal = !course.comingSoon;
   if (isPlatformCourse(course.id)) {
-  toast.error('Platform courses cannot be toggled here. Update data/platformCourses.ts instead.');
+  const overrides = { comingSoon: newVal };
+  savePlatformOverrides({ ...JSON.parse(localStorage.getItem('platformCourseOverrides') || '{}'), [course.id]: overrides });
+  setCoursesList(prev => applyPlatformOverrides(prev.map(c => c.id === course.id ? { ...c, ...overrides } : c)));
+  toast.success(newVal ? 'Marked as Coming Soon' : 'Course released');
   return;
   }
-  const newVal = !course.comingSoon;
   try {
   await updateDoc(doc(db, 'courses', course.id), { comingSoon: newVal });
   toast.success(newVal ? 'Marked as Coming Soon' : 'Course released');
@@ -146,8 +183,13 @@ const AdminDashboard: React.FC = () => {
  ]);
 
   const dbCourses = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-  const platformCourses = PLATFORM_COURSES.map((pc, i) => ({ id: `pc-${i}`, ...pc }));
-  setCoursesList([...dbCourses, ...platformCourses]);
+   const platformCourses = applyPlatformOverrides(PLATFORM_COURSES.map((pc, i) => ({ id: `pc-${i}`, ...pc }))).filter((c: any) => {
+  try {
+  const deleted = JSON.parse(localStorage.getItem('platformCourseDeletions') || '[]');
+  return !deleted.includes(c.id);
+  } catch { return true; }
+  });
+   setCoursesList([...dbCourses, ...platformCourses]);
 
  const enrollmentsData = eSnap.docs.map(d => ({ id: d.id, ...d.data() }));
  setEnrollments(enrollmentsData);
