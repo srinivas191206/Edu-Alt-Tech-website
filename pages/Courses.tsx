@@ -128,20 +128,23 @@ const Courses: React.FC = () => {
  } as Course & { provider?: string });
  });
   });
-  // Add platform courses
-  PLATFORM_COURSES.forEach((course, pi) => {
-  fetchedCourses.push({
-  id: `pc-${pi}`,
-  ...course,
-  createdAt: new Date().toISOString(),
-  createdBy: 'admin',
-  } as Course);
-  });
-  // Sort: provider courses first (with their order preserved), then DB courses
-  const providerCourses = fetchedCourses.filter(c => c.id.startsWith('ai-'));
-  const dbCourses = fetchedCourses.filter(c => !c.id.startsWith('ai-') && !c.id.startsWith('pc-'));
-  const platformCourses = fetchedCourses.filter(c => c.id.startsWith('pc-'));
-  setCourses([...providerCourses, ...platformCourses, ...dbCourses]);
+   // Add platform courses with admin overrides
+   let platformCourses = PLATFORM_COURSES.map((pc, pi) => ({ id: `pc-${pi}`, ...pc } as Course));
+   try {
+   const raw = localStorage.getItem('platformCourseOverrides');
+   if (raw) {
+   const overrides = JSON.parse(raw);
+   platformCourses = platformCourses.map(c => overrides[c.id] ? { ...c, ...overrides[c.id] } : c);
+   }
+   const deleted = JSON.parse(localStorage.getItem('platformCourseDeletions') || '[]');
+   platformCourses = platformCourses.filter(c => !deleted.includes(c.id));
+   } catch {}
+   fetchedCourses.push(...platformCourses);
+   // Sort: provider courses first (with their order preserved), then DB courses
+   const providerCourses = fetchedCourses.filter(c => c.id.startsWith('ai-'));
+   const dbCourses = fetchedCourses.filter(c => !c.id.startsWith('ai-') && !c.id.startsWith('pc-'));
+   const plCourses = fetchedCourses.filter(c => c.id.startsWith('pc-'));
+   setCourses([...providerCourses, ...plCourses, ...dbCourses]);
  } catch (err) {
  console.error("Failed to fetch courses", err);
  } finally {
