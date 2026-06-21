@@ -16,9 +16,10 @@ interface ChatProps {
  currentUser: any;
  mentorId: string;
  role: 'student' | 'teacher';
+ paymentStatus?: string;
 }
 
-const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role }) => {
+const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role, paymentStatus }) => {
  const [activeTab, setActiveTab] = useState<'community' | 'direct'>('community');
  const [messages, setMessages] = useState<Message[]>([]);
  const [newMessage, setNewMessage] = useState('');
@@ -30,6 +31,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
 
  const scrollRef = useRef<HTMLDivElement>(null);
+ const [chatBlocked, setChatBlocked] = useState<{ blocked: boolean; reason: string }>({ blocked: false, reason: '' });
 
  // Fetch student list if mentor
  useEffect(() => {
@@ -125,9 +127,39 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  return () => unsubscribe();
  }, [chatId]);
 
+ // Check if trial student's chat is expired (24h after last scheduled class)
+ const checkChatAccess = async () => {
+ if (role !== 'student' || paymentStatus !== 'trial') {
+ setChatBlocked({ blocked: false, reason: '' });
+ return;
+ }
+ try {
+ const { data: classes } = await db.from('scheduled_classes')
+ .select('scheduled_at')
+ .eq('course_id', courseId)
+ .order('scheduled_at', { ascending: false })
+ .limit(1);
+ if (classes && classes.length > 0) {
+ const lastClassTime = new Date(classes[0].scheduled_at).getTime();
+ const now = Date.now();
+ if (now - lastClassTime > 24 * 60 * 60 * 1000) {
+ setChatBlocked({ blocked: true, reason: 'Your trial chat access has expired. Please upgrade to continue messaging.' });
+ return;
+ }
+ }
+ setChatBlocked({ blocked: false, reason: '' });
+ } catch (e) {
+ console.error("Failed to check chat access", e);
+ setChatBlocked({ blocked: false, reason: '' });
+ }
+ };
+
+ useEffect(() => { checkChatAccess(); }, [role, paymentStatus, courseId, activeTab]);
+
  const handleSendMessage = async (e: React.FormEvent) => {
  e.preventDefault();
  if (!newMessage.trim() || !chatId) return;
+ if (chatBlocked.blocked) return;
 
  const text = newMessage;
  setNewMessage('');
@@ -218,6 +250,13 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  <Search className="w-12 h-12 opacity-20" />
  <p className="text-sm font-medium">Select a student from the sidebar to start a direct conversation.</p>
  </div>
+ ) : chatBlocked.blocked ? (
+ <div className="h-full flex flex-col items-center justify-center text-center p-8">
+ <div className="w-16 h-16 rounded-2xl bg-amber-100 flex items-center justify-center mb-4"><MessageCircle className="w-7 h-7 text-amber-600" /></div>
+ <h4 className="text-base font-black text-amber-700 mb-1">Chat Access Expired</h4>
+ <p className="text-sm text-amber-600 max-w-xs">{chatBlocked.reason}</p>
+ <p className="text-xs text-slate-400 mt-4">Contact your mentor to upgrade your access.</p>
+ </div>
  ) : messages.length === 0 ? (
  <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-2 opacity-50">
  <MessageCircle className="w-12 h-12" />
@@ -250,6 +289,11 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
 
  {/* Input Area */}
  {(chatId || activeTab === 'community') && (
+ chatBlocked.blocked ? (
+ <div className="p-4 bg-white border-t border-slate-200 flex items-center justify-center">
+ <p className="text-xs font-bold text-amber-600">Chat closed — upgrade to continue messaging</p>
+ </div>
+ ) : (
  <form onSubmit={handleSendMessage} className="p-4 bg-white border-t border-slate-200 flex gap-3">
  <input 
  value={newMessage}
@@ -265,6 +309,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  <Send className="w-5 h-5" />
  </button>
  </form>
+ )
  )}
  </div>
  </div>

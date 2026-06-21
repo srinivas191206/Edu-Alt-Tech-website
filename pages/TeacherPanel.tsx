@@ -733,17 +733,20 @@ const TeacherPanel: React.FC = () => {
  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center font-black text-white text-lg shrink-0">
  {s.name.charAt(0).toUpperCase()}
  </div>
- <div className="flex-1 min-w-0">
- <p className="font-bold text-slate-900 truncate">{s.name}</p>
- <p className="text-xs text-slate-400 font-medium truncate">{s.email}</p>
- </div>
- <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
- s.student_status === 'active'
- ? 'bg-emerald-100 /30 text-emerald-600 '
- : 'bg-slate-100 text-slate-500'
- }`}>
- {s.student_status || 'active'}
- </span>
+  <div className="flex-1 min-w-0">
+    <p className="font-bold text-slate-900 truncate flex items-center gap-2">
+      {s.name}
+      {s.payment_status === 'trial' && <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-[9px] font-bold uppercase tracking-wider">Trial</span>}
+    </p>
+    <p className="text-xs text-slate-400 font-medium truncate">{s.email}</p>
+  </div>
+  <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
+   s.student_status === 'active'
+   ? 'bg-emerald-100 /30 text-emerald-600 '
+   : 'bg-slate-100 text-slate-500'
+  }`}>
+   {s.student_status || 'active'}
+  </span>
  </div>
  ))}
  </div>
