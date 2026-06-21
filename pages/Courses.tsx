@@ -278,87 +278,21 @@ const Courses: React.FC = () => {
  </div>
  ) : filteredCourses.length > 0 ? (
  <>
- {/* Provider Courses Section */}
- {showComingSoon && providerCourses.length > 0 && (
- <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-12">
- <div className="flex items-center gap-3 mb-6">
- <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20">
- <Globe className="w-5 h-5" />
- </div>
- <div>
- <h2 className="text-xl font-black text-slate-900">Free Courses from Industry Leaders</h2>
- <p className="text-xs text-slate-500 font-medium">Free, high-quality courses from top providers — start learning today</p>
- </div>
- <div className="ml-auto hidden sm:flex items-center gap-2">
- <span className="text-xs text-slate-400 font-bold">{providerCourses.length} courses</span>
- <div className="flex -space-x-2">
- {AI_COURSES.slice(0, 5).map((p, i) => (
- <img key={i} src={p.logo} loading="lazy" decoding="async" alt={p.name} className="w-6 h-6 rounded-full border-2 border-white bg-white"
- onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
- ))}
- </div>
- </div>
- </div>
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
- {providerCourses.map((course) => {
- const provider = course.provider || '';
- return (
- <motion.div key={course.id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
- className="group relative bg-white rounded-2xl border border-slate-200 hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-500/5 transition-all duration-300 overflow-hidden">
- <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
- <div className="p-5 relative">
- <div className="flex items-center gap-3 mb-3">
- <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-emerald-600 shrink-0">
- {PROVIDER_LOGOS[provider] ? (
- <img src={PROVIDER_LOGOS[provider]} loading="lazy" decoding="async" alt={provider} className="w-5 h-5 rounded"
- onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).parentElement!.innerHTML = '<div class="w-5 h-5 flex items-center justify-center text-xs font-bold">' + provider.charAt(0) + '</div>'; }} />
- ) : (
- <span className="text-xs font-bold">{provider.charAt(0)}</span>
- )}
- </div>
- <div className="min-w-0">
- <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">{provider}</p>
- <p className="text-xs text-slate-400 font-medium truncate">{course.duration}</p>
- </div>
- </div>
- <h3 className="font-bold text-slate-900 mb-2 leading-snug text-sm line-clamp-2 group-hover:text-emerald-600 transition-colors">
- {course.title}
- </h3>
- <p className="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-4">
- {course.description}
- </p>
- <div className="flex items-center justify-between">
- <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-bold uppercase tracking-wider">
- <Sparkles className="w-3 h-3" /> Free
- </span>
- <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
- className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-600 transition-colors">
- Start Free <ExternalLink className="w-3 h-3" />
- </a>
- </div>
- </div>
- </motion.div>
- );
- })}
- </div>
- </motion.div>
- )}
-
- {/* Available Courses Section */}
- {dbCourses.length > 0 && (
- <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
- <div className="flex items-center gap-3 mb-6">
- <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20">
- <Book className="w-5 h-5" />
- </div>
- <div>
- <h2 className="text-xl font-black text-slate-900">Available Now</h2>
- <p className="text-xs text-slate-500 font-medium">Enroll and start learning today</p>
- </div>
- </div>
- <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
- <AnimatePresence mode="popLayout">
- {displayedCourses.filter(c => !c.id.startsWith('ai-')).map((course) => (
+  {/* Available Courses Section — paid first, then free */}
+  {dbCourses.length > 0 && (
+  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+  <div className="flex items-center gap-3 mb-6">
+  <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20">
+  <Book className="w-5 h-5" />
+  </div>
+  <div>
+  <h2 className="text-xl font-black text-slate-900">Available Now</h2>
+  <p className="text-xs text-slate-500 font-medium">Enroll and start learning today</p>
+  </div>
+  </div>
+  <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+  <AnimatePresence mode="popLayout">
+  {displayedCourses.filter(c => !c.id.startsWith('ai-')).map((course) => (
  <motion.div layout key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
  className="group bg-white backdrop-blur-xl rounded-3xl overflow-hidden border border-slate-200 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-all duration-500 flex flex-col">
  <div className="relative h-48 overflow-hidden bg-slate-100">
@@ -424,7 +358,73 @@ const Courses: React.FC = () => {
  </motion.div>
  )}
 
- {/* Guest Lock Overlay */}
+  {/* Provider Courses Section — free, shown after paid */}
+  {showComingSoon && providerCourses.length > 0 && (
+  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-12">
+  <div className="flex items-center gap-3 mb-6">
+  <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20">
+  <Globe className="w-5 h-5" />
+  </div>
+  <div>
+  <h2 className="text-xl font-black text-slate-900">Free Courses from Industry Leaders</h2>
+  <p className="text-xs text-slate-500 font-medium">Free, high-quality courses from top providers — start learning today</p>
+  </div>
+  <div className="ml-auto hidden sm:flex items-center gap-2">
+  <span className="text-xs text-slate-400 font-bold">{providerCourses.length} courses</span>
+  <div className="flex -space-x-2">
+  {AI_COURSES.slice(0, 5).map((p, i) => (
+  <img key={i} src={p.logo} loading="lazy" decoding="async" alt={p.name} className="w-6 h-6 rounded-full border-2 border-white bg-white"
+  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+  ))}
+  </div>
+  </div>
+  </div>
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+  {providerCourses.map((course) => {
+  const provider = course.provider || '';
+  return (
+  <motion.div key={course.id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+  className="group relative bg-white rounded-2xl border border-slate-200 hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-500/5 transition-all duration-300 overflow-hidden">
+  <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+  <div className="p-5 relative">
+  <div className="flex items-center gap-3 mb-3">
+  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-emerald-600 shrink-0">
+  {PROVIDER_LOGOS[provider] ? (
+  <img src={PROVIDER_LOGOS[provider]} loading="lazy" decoding="async" alt={provider} className="w-5 h-5 rounded"
+  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).parentElement!.innerHTML = '<div class="w-5 h-5 flex items-center justify-center text-xs font-bold">' + provider.charAt(0) + '</div>'; }} />
+  ) : (
+  <span className="text-xs font-bold">{provider.charAt(0)}</span>
+  )}
+  </div>
+  <div className="min-w-0">
+  <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">{provider}</p>
+  <p className="text-xs text-slate-400 font-medium truncate">{course.duration}</p>
+  </div>
+  </div>
+  <h3 className="font-bold text-slate-900 mb-2 leading-snug text-sm line-clamp-2 group-hover:text-emerald-600 transition-colors">
+  {course.title}
+  </h3>
+  <p className="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-4">
+  {course.description}
+  </p>
+  <div className="flex items-center justify-between">
+  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+  <Sparkles className="w-3 h-3" /> Free
+  </span>
+  <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
+  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-600 transition-colors">
+  Start Free <ExternalLink className="w-3 h-3" />
+  </a>
+  </div>
+  </div>
+  </motion.div>
+  );
+  })}
+  </div>
+  </motion.div>
+  )}
+
+  {/* Guest Lock Overlay */}
  {!user && filteredCourses.length > 3 && (
  <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
  className="relative mt-12 py-16 px-8 rounded-3xl bg-white/20 border border-slate-200/50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
