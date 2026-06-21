@@ -377,13 +377,34 @@ const TeacherApplication: React.FC = () => {
     }
 
     // Validation
+    if (!name.trim()) {
+      toast.error('Full name is required');
+      return;
+    }
+    if (name.trim().length < 2) {
+      toast.error('Full name must be at least 2 characters');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
     const phoneDigits = phone.replace(/\D/g, '');
-    if (phone && phoneDigits.length < 10) {
+    if (!phoneDigits || phoneDigits.length < 10) {
       toast.error('Phone number must have at least 10 digits');
       return;
     }
-    if (experience && (isNaN(Number(experience)) || Number(experience) < 0)) {
-      toast.error('Experience must be a valid non-negative number');
+    if (/^0+$/.test(phoneDigits)) {
+      toast.error('Phone number cannot be all zeros');
+      return;
+    }
+    if (!experience || isNaN(Number(experience)) || Number(experience) < 0) {
+      toast.error('Please enter valid years of experience');
+      return;
+    }
+    if (!qualification.trim()) {
+      toast.error('Please enter your highest qualification');
       return;
     }
     if (!subjects.trim()) {

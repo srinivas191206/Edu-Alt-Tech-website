@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { Search, Download, FileText, BookOpen, Brain, FileSpreadsheet, Lock, Sparkles, ArrowRight } from 'lucide-react';
+import { Search, Download, FileText, BookOpen, Brain, FileSpreadsheet, Lock, Sparkles, ArrowRight, X } from 'lucide-react';
+import { normalizeSearch } from '../lib/search';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, onAuthStateChanged, db, collection, getDocs } from '../lib/firebase';
 import LoginModal from '../components/LoginModal';
@@ -174,14 +175,17 @@ const Resources: React.FC = () => {
  } catch (e) { console.error("Download track failed", e); }
  };
 
-  const filtered = useMemo(() => allResources.filter(r => {
-  const haystack = (r.title + ' ' + r.description + ' ' + (r.category || '') + ' ' + (r.classLevel || '')).toLowerCase();
-  const matchSearch = !search || haystack.includes(search.toLowerCase());
-  const matchCat = filter === 'All' || r.category === filter;
-  const matchPremium = showPremium === 'all' || (showPremium === 'free' && !r.premium) || (showPremium === 'premium' && r.premium);
-  const matchClass = classFilter === 'All' || r.classLevel === classFilter;
-  return matchSearch && matchCat && matchPremium && matchClass;
-  }), [allResources, search, filter, showPremium, classFilter]);
+   const filtered = useMemo(() => {
+   const normalizedSearch = normalizeSearch(search);
+   return allResources.filter(r => {
+   const haystack = normalizeSearch(r.title + ' ' + r.description + ' ' + (r.category || '') + ' ' + (r.classLevel || ''));
+   const matchSearch = !normalizedSearch || haystack.includes(normalizedSearch);
+   const matchCat = filter === 'All' || r.category === filter;
+   const matchPremium = showPremium === 'all' || (showPremium === 'free' && !r.premium) || (showPremium === 'premium' && r.premium);
+   const matchClass = classFilter === 'All' || r.classLevel === classFilter;
+   return matchSearch && matchCat && matchPremium && matchClass;
+   });
+   }, [allResources, search, filter, showPremium, classFilter]);
 
  const displayedResources = useMemo(() => {
  return !user ? filtered.slice(0, 3) : filtered;
@@ -225,14 +229,20 @@ const Resources: React.FC = () => {
  }`}>{c}</button>
  ))}
  </div>
- <div className="flex gap-2">
- {(['all', 'free', 'premium'] as const).map(s => (
- <button key={s} onClick={() => setShowPremium(s)} className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-colors ${
- showPremium === s ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
- }`}>{s}</button>
- ))}
- </div>
- </motion.div>
+  <div className="flex gap-2">
+  {(['all', 'free', 'premium'] as const).map(s => (
+  <button key={s} onClick={() => setShowPremium(s)} className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-colors ${
+  showPremium === s ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
+  }`}>{s}</button>
+  ))}
+  </div>
+  {(search || filter !== 'All' || showPremium !== 'all' || classFilter !== 'All') && (
+    <button onClick={() => { setSearch(''); setFilter('All'); setShowPremium('all'); setClassFilter('All'); }}
+      className="flex items-center gap-1.5 px-4 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:text-red-500 hover:border-red-200 transition-colors">
+      <X className="w-3.5 h-3.5" /> Clear All
+    </button>
+  )}
+  </motion.div>
 
  {/* Class Level Filters */}
  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}

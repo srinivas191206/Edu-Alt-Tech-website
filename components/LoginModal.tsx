@@ -89,9 +89,13 @@ export default function LoginModal({ isOpen, onClose, title = "Sign In Required"
  return;
  }
 
- if (!userCredential.user) return;
- 
- // Save additional user info to Firestore
+  if (!userCredential.user) {
+  setError('Account creation failed. Please try again.');
+  setLoading(false);
+  return;
+  }
+  
+  // Save additional user info to Firestore
  await setDoc(doc(db, 'users', userCredential.user.uid), {
  name,
  email,
