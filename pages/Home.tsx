@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowRight, CheckCircle, GraduationCap, Globe, Smartphone, Brain, Zap, BookOpen, 
-  ShieldCheck, Users, Star, Download, FileText, Award, Lightbulb, Code2, 
+  Users, Star, Download, FileText, Award, Lightbulb, Code2, 
   TrendingUp, Calculator, Atom, Music, Palette, Briefcase, Compass, Sparkles, 
   Play, Hammer, MapPin, MessageCircle, Code, Rocket, RefreshCw, Target, 
   Volume2, Languages, Video, Cpu, School, Sparkle
@@ -168,15 +168,7 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6 relative z-10 w-full grid lg:grid-cols-12 gap-12 items-center">
           {/* Hero Left: Rich Typography & Staggered Elements */}
           <div className="lg:col-span-7 text-left space-y-8">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-700 font-bold uppercase tracking-widest text-[10px] shadow-sm animate-pulse-soft"
-            >
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              Trusted Alternative Education Ecosystem
-            </motion.div>
+
 
             <motion.h1 
               initial={{ opacity: 0, y: 30 }}
