@@ -406,3 +406,8 @@ ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS meeting_link TEXT;
 ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS meeting_date TIMESTAMPTZ;
 ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS languages TEXT;
 ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS languages_count INTEGER;
+ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS highest_qualification TEXT;
+ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS phone TEXT;
+ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS subjects TEXT;
+ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS teaching_mode TEXT;
+ALTER TABLE teacher_applications ADD COLUMN IF NOT EXISTS agree_terms BOOLEAN DEFAULT false;
