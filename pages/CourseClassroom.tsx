@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { auth, db, storage, doc, getDoc, collection, query, where, getDocs, addDoc, updateDoc, serverTimestamp, orderBy, arrayUnion, arrayRemove, ref, uploadBytes, getDownloadURL, onAuthStateChanged } from '../lib/firebase';
 import { Course, CourseEnrollment, CourseModule, ModuleLecture, CourseResource } from '../types';
-import { ArrowLeft, BookOpen, Video, FileText, Plus, Link as LinkIcon, Loader2, PlayCircle, CheckCircle2, Circle, ChevronRight, Clock, Award, Layout, Zap, X, Upload, ExternalLink, MessageCircle, Target, Calendar } from 'lucide-react';
+import { ArrowLeft, BookOpen, Video, FileText, Plus, Link as LinkIcon, Loader2, PlayCircle, CheckCircle2, Circle, ChevronRight, Clock, Award, Layout, Zap, X, Upload, ExternalLink, MessageCircle, Target, Calendar, Sparkles } from 'lucide-react';
 import type { User } from '../lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -21,6 +21,7 @@ const CourseClassroom: React.FC = () => {
  const [role, setRole] = useState<'student' | 'teacher' | null>(null);
  const [enrollment, setEnrollment] = useState<CourseEnrollment | null>(null);
  const [loading, setLoading] = useState(true);
+ const [upgradeLoading, setUpgradeLoading] = useState(false);
 
  // Classroom Data
  const [modules, setModules] = useState<CourseModule[]>([]);
@@ -143,6 +144,130 @@ const CourseClassroom: React.FC = () => {
   const safetyTimer = setTimeout(() => setLoading(false), 8000);
   return () => { unsubscribe(); clearTimeout(safetyTimer); };
   }, [courseId, navigate]);
+
+ const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+   const script = document.createElement("script");
+   script.src = "https://checkout.razorpay.com/v1/checkout.js";
+   script.onload = () => resolve(true);
+   script.onerror = () => resolve(false);
+   document.body.appendChild(script);
+  });
+ };
+
+ const handleUpgradeFullAccess = async () => {
+  if (!user || !course) return;
+  setUpgradeLoading(true);
+  try {
+   const amountInPaise = (course.price || 0) * 100;
+   const resOrder = await fetch('/api/createOrder', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ amount: amountInPaise })
+   });
+   
+   if (!resOrder.ok) {
+    if (resOrder.status === 404) {
+     throw new Error("Payment API not found. If running locally, please use 'npx vercel dev' instead of 'npm run dev'.");
+    }
+    const errorData = await resOrder.json().catch(() => ({}));
+    throw new Error(errorData.error || `Server error (${resOrder.status})`);
+   }
+
+   const orderData = await resOrder.json();
+   const scriptLoaded = await loadRazorpayScript();
+   if (!scriptLoaded) {
+    alert("Payment gateway failed to load. Please check your internet connection.");
+    setUpgradeLoading(false);
+    return;
+   }
+
+   const options = {
+    key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_T2D67OLLpfRjtJ",
+    amount: amountInPaise,
+    currency: "INR",
+    name: "Edu Alt Tech",
+    description: `Upgrade subscription for ${course.title}`,
+    image: "/edulogo.png",
+    order_id: orderData.id,
+    handler: async function (response: any) {
+     try {
+      const resVerify = await fetch('/api/verifyPayment', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_signature: response.razorpay_signature
+       })
+      });
+      
+      if (!resVerify.ok) {
+       const verifyErrorData = await resVerify.json().catch(() => ({}));
+       throw new Error(verifyErrorData.error || "Payment verification failed on server");
+      }
+
+      const verifyData = await resVerify.json();
+
+      if (verifyData.success) {
+       if (enrollment) {
+        const enrRef = doc(db, 'enrollments', enrollment.id);
+        await updateDoc(enrRef, {
+         paymentStatus: 'paid'
+        });
+        setEnrollment({
+         ...enrollment,
+         paymentStatus: 'paid'
+        });
+        toast.success("Successfully upgraded to full access!");
+        try {
+         await addDoc(collection(db, 'mail'), {
+          to: user.email,
+          message: {
+           subject: `Subscription Upgraded: ${course.title}`,
+           text: `Hi ${user.displayName || 'Student'},\n\nThank you for upgrading! Your subscription to ${course.title} is now fully active. You have full access to all classes, community forums, and assets.\n\nHappy Learning,\nEdu-Alt-Tech`
+          }
+         });
+        } catch (e) {
+         console.error("Email notification failed", e);
+        }
+       }
+      } else {
+       throw new Error(verifyData.error || "Invalid Security Signature");
+      }
+     } catch (e: any) {
+      console.error("Verification error:", e);
+      alert(`Payment processed, but upgrade failed: ${e.message}`);
+     }
+    },
+    prefill: {
+     name: user.displayName || "",
+     email: user.email || "",
+    },
+    theme: { color: "#10b981" }
+   };
+
+   const rzp = new (window as any).Razorpay(options);
+   rzp.on('payment.failed', (resp: any) => alert(`Payment Failed: ${resp.error.description}`));
+   rzp.open();
+
+  } catch (err: any) {
+   console.error("Payment flow error:", err);
+   alert(err.message || "An unexpected error occurred during payment.");
+  } finally {
+   setUpgradeLoading(false);
+  }
+ };
+
+ const handleTabClick = (tabName: 'roadmap' | 'chat' | 'path' | 'live') => {
+  if (tabName !== 'roadmap' && role === 'student' && enrollment?.paymentStatus === 'trial') {
+   if (confirm(`Community chat, AI roadmap, and live classes require full course access. Upgrade now to unlock?`)) {
+    handleUpgradeFullAccess();
+   }
+   return;
+  }
+  setActiveTab(tabName);
+ };
 
  const toggleModule = (id: string) => {
  setExpandedModules(prev => prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]);
@@ -275,6 +400,27 @@ const CourseClassroom: React.FC = () => {
  </div>
 
  <div className="max-w-[1400px] mx-auto relative z-10">
+      {role === 'student' && enrollment?.paymentStatus === 'trial' && (
+        <div className="mb-8 p-5 bg-gradient-to-r from-amber-500/15 via-orange-500/15 to-rose-500/15 border border-amber-300/40 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md backdrop-blur-xl animate-pulse">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0">
+              <Sparkles className="w-5 h-5 animate-spin" style={{ animationDuration: '3s' }} />
+            </div>
+            <div>
+              <span className="block font-bold text-slate-900 text-sm">Trial Active: 1st Class Unlocked</span>
+              <span className="block text-xs text-slate-500 font-medium">Upgrade to full access to unlock the second class and all features.</span>
+            </div>
+          </div>
+          <button
+            onClick={handleUpgradeFullAccess}
+            disabled={upgradeLoading}
+            className="px-6 py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-black rounded-2xl transition-all shadow-lg shadow-amber-500/20 text-sm flex items-center gap-2 shrink-0 hover:scale-[1.02]"
+          >
+            {upgradeLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+            Upgrade Full Access (₹{course.price || 0}/mo)
+          </button>
+        </div>
+      )}
  {/* Navigation & Title */}
  <header className="mb-12">
  <Link to="/dashboard" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 :text-white transition-colors text-sm font-bold mb-6 group">
@@ -317,27 +463,27 @@ const CourseClassroom: React.FC = () => {
  {/* Tab Navigation */}
  <div className="flex items-center gap-4 p-2 bg-white rounded-3xl border border-slate-200 w-fit">
  <button 
- onClick={() => setActiveTab('roadmap')}
+ onClick={() => handleTabClick('roadmap')}
  className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'roadmap' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' : 'text-slate-500 hover:bg-slate-50 :bg-slate-800'}`}
  >
  <Layout className="w-4 h-4" /> Curriculum Roadmap
  </button>
  <button 
- onClick={() => setActiveTab('chat')}
+ onClick={() => handleTabClick('chat')}
  className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'chat' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'text-slate-500 hover:bg-slate-50 :bg-slate-800'}`}
  >
  <MessageCircle className="w-4 h-4" /> Intelligence Exchange
  </button>
  {role === 'student' && (
  <button 
- onClick={() => setActiveTab('path')}
+ onClick={() => handleTabClick('path')}
  className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'path' ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20' : 'text-slate-500 hover:bg-slate-50 :bg-slate-800'}`}
  >
  <Target className="w-4 h-4" /> AI Roadmap
  </button>
  )}
  <button 
- onClick={() => setActiveTab('live')}
+ onClick={() => handleTabClick('live')}
  className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'live' ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' : 'text-slate-500 hover:bg-slate-50 :bg-slate-800'}`}
  >
  <Calendar className="w-4 h-4" /> Live Classes
@@ -443,33 +589,61 @@ const CourseClassroom: React.FC = () => {
  <p className="text-sm text-slate-400 italic font-medium">No sessions scheduled for this module yet.</p>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
- {mod.lectures.map((lec, lIdx) => (
- <div key={lec.id} className="p-5 bg-slate-50/50 /30 rounded-3xl border border-transparent hover:border-purple-500/20 hover:bg-white :bg-slate-800 transition-colors group/lec">
- <div className="flex justify-between items-start mb-4">
- <span className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center text-xs font-black">
- {lIdx + 1}
- </span>
- <div className="flex gap-2">
- {lec.meetingLink && (
- <a href={lec.meetingLink} target="_blank" rel="noreferrer" className="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
- <Video className="w-4 h-4" />
- </a>
- )}
- {lec.recordedLink && (
- <a href={lec.recordedLink} target="_blank" rel="noreferrer" className="p-2 bg-rose-500/10 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-colors">
- <PlayCircle className="w-4 h-4" />
- </a>
- )}
- </div>
- </div>
- <h4 className="font-bold text-slate-900 mb-1 group-hover/lec:text-purple-500 transition-colors">
- {lec.title}
- </h4>
- <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">
- {lec.meetingLink ? 'Live Interactive' : 'Recorded Session'}
- </p>
- </div>
- ))}
+ {mod.lectures.map((lec, lIdx) => {
+   const isLocked = role === 'student' && enrollment?.paymentStatus === 'trial' && (idx > 0 || lIdx > 0);
+   return (
+    <div 
+     key={lec.id}
+     onClick={() => {
+      if (isLocked) {
+       if (confirm(`Upgrade to unlock "${lec.title}" and all remaining classes in this course?`)) {
+        handleUpgradeFullAccess();
+       }
+      }
+     }}
+     className={`p-5 rounded-3xl border border-transparent transition-colors group/lec relative ${
+      isLocked 
+       ? 'opacity-65 cursor-pointer bg-slate-50/50 hover:border-amber-500/30 hover:bg-amber-500/5' 
+       : 'bg-slate-50/50 hover:border-purple-500/20 hover:bg-white :bg-slate-800 transition-colors'
+     }`}
+    >
+     <div className="flex justify-between items-start mb-4">
+      <span className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center text-xs font-black">
+       {lIdx + 1}
+      </span>
+      <div className="flex gap-2">
+       {isLocked ? (
+        <span className="p-2 bg-amber-500/10 text-amber-500 rounded-lg">
+         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+         </svg>
+        </span>
+       ) : (
+        <>
+         {lec.meetingLink && (
+          <a href={lec.meetingLink} target="_blank" rel="noreferrer" className="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
+           <Video className="w-4 h-4" />
+          </a>
+         )}
+         {lec.recordedLink && (
+          <a href={lec.recordedLink} target="_blank" rel="noreferrer" className="p-2 bg-rose-500/10 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-colors">
+           <PlayCircle className="w-4 h-4" />
+          </a>
+         )}
+        </>
+       )}
+      </div>
+     </div>
+     <h4 className="font-bold text-slate-900 mb-1 group-hover/lec:text-purple-500 transition-colors flex items-center gap-2">
+      {lec.title}
+      {isLocked && <span className="text-[9px] px-2 py-0.5 bg-amber-500/15 text-amber-600 rounded-full font-black uppercase tracking-wider">Locked</span>}
+     </h4>
+     <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">
+      {isLocked ? 'Upgrade to Unlock' : (lec.meetingLink ? 'Live Interactive' : 'Recorded Session')}
+     </p>
+    </div>
+   );
+  })}
  </div>
  )}
  </div>
@@ -604,32 +778,52 @@ const CourseClassroom: React.FC = () => {
  <p className="text-sm text-slate-400 font-medium italic">Vault is currently empty.</p>
  ) : (
  <div className="space-y-3">
- {resources.map((res, i) => (
- <motion.a 
- initial={{ opacity: 0, y: 10 }}
- animate={{ opacity: 1, y: 0 }}
- transition={{ delay: i * 0.1 }}
- key={res.id} 
- href={res.url} 
- target="_blank" 
- rel="noreferrer"
- onClick={() => {
- if (user) {
- (async () => { try { await db.from('user_downloads').insert({ user_id: user.uid, resource_title: res.title, resource_url: res.url, resource_type: 'link', course_id: courseId, downloaded_at: new Date().toISOString() }); } catch {} })();
- }
- }}
- className="flex items-center gap-4 p-4 bg-slate-50 /50 rounded-2xl border border-transparent hover:border-purple-500/30 hover:bg-white :bg-slate-800 transition-colors group"
- >
- <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform">
- <LinkIcon className="w-4 h-4" />
- </div>
- <div className="flex-1 min-w-0">
- <p className="font-bold text-sm text-slate-800 truncate group-hover:text-purple-500 transition-colors">{res.title}</p>
- <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">External Asset</p>
- </div>
- <ExternalLink className="w-4 h-4 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
- </motion.a>
- ))}
+ {resources.map((res, i) => {
+   const isResourceLocked = role === 'student' && enrollment?.paymentStatus === 'trial';
+   return (
+    <motion.a 
+     initial={{ opacity: 0, y: 10 }}
+     animate={{ opacity: 1, y: 0 }}
+     transition={{ delay: i * 0.1 }}
+     key={res.id} 
+     href={isResourceLocked ? undefined : res.url} 
+     target={isResourceLocked ? undefined : "_blank"} 
+     rel="noreferrer"
+     onClick={(e) => {
+      if (isResourceLocked) {
+       e.preventDefault();
+       if (confirm("Vault resources require full course access. Upgrade now to unlock?")) {
+        handleUpgradeFullAccess();
+       }
+       return;
+      }
+      if (user) {
+       (async () => { try { await db.from('user_downloads').insert({ user_id: user.uid, resource_title: res.title, resource_url: res.url, resource_type: 'link', course_id: courseId, downloaded_at: new Date().toISOString() }); } catch {} })();
+      }
+     }}
+     className={`flex items-center gap-4 p-4 rounded-2xl border border-transparent transition-colors group ${
+      isResourceLocked 
+       ? 'opacity-65 cursor-pointer bg-slate-50/50 hover:border-amber-500/30 hover:bg-amber-500/5' 
+       : 'bg-slate-50/50 hover:border-purple-500/30 hover:bg-white :bg-slate-800'
+     }`}
+    >
+     <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+      {isResourceLocked ? (
+       <svg className="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+       </svg>
+      ) : (
+       <LinkIcon className="w-4 h-4" />
+      )}
+     </div>
+     <div className="flex-1 min-w-0">
+      <p className="font-bold text-sm text-slate-800 truncate group-hover:text-purple-500 transition-colors">{res.title}</p>
+      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{isResourceLocked ? 'Locked (Trial)' : 'External Asset'}</p>
+     </div>
+     {!isResourceLocked && <ExternalLink className="w-4 h-4 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />}
+    </motion.a>
+   );
+  })}
  </div>
  )}
  </div>

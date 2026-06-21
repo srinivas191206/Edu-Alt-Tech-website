@@ -58,7 +58,7 @@ export interface Course {
 
 // Enrollment / Application Types
 export type StudentStatus = 'waitlisted' | 'active' | 'completed';
-export type PaymentStatus = 'pending' | 'paid' | 'not-required';
+export type PaymentStatus = 'pending' | 'paid' | 'not-required' | 'trial';
 
 export interface CourseEnrollment {
  id: string;
