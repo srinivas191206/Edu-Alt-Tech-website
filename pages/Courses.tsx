@@ -386,7 +386,7 @@ const Courses: React.FC = () => {
  )}
  </div>
   <div className={`absolute top-4 right-4 px-3 py-1.5 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-wider ${course.comingSoon ? 'bg-amber-500/90 text-white' : 'bg-emerald-500/90 text-white'}`}>
-    {course.comingSoon ? 'Coming Soon' : course.price === 0 ? 'Free' : `₹${course.price}`}
+    {course.comingSoon ? 'Coming Soon' : course.price === 0 ? 'Free' : `₹${course.price}/month`}
   </div>
  </div>
  <div className="p-6 flex flex-col flex-1">
