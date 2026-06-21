@@ -108,10 +108,11 @@ const AdminDashboard: React.FC = () => {
   try {
   if (editingCourse) {
   if (isPlatformCourse(editingCourse.id)) {
-  const overrides = { ...courseForm, comingSoon: editingCourse.comingSoon };
-  savePlatformOverrides({ ...JSON.parse(localStorage.getItem('platformCourseOverrides') || '{}'), [editingCourse.id]: overrides });
-  setCoursesList(prev => applyPlatformOverrides(prev.map(c => c.id === editingCourse.id ? { ...c, ...courseForm } : c)));
-  toast.success('Platform course updated (temporary — edit data/platformCourses.ts to make permanent)');
+   const overrides = { ...courseForm, comingSoon: editingCourse.comingSoon };
+   savePlatformOverrides({ ...JSON.parse(localStorage.getItem('platformCourseOverrides') || '{}'), [editingCourse.id]: overrides });
+   setCoursesList(prev => applyPlatformOverrides(prev.map(c => c.id === editingCourse.id ? { ...c, ...courseForm } : c)));
+   await setDoc(doc(db, 'courses', editingCourse.id), { ...overrides, isPlatform: true });
+   toast.success('Platform course updated');
   } else {
   await updateDoc(doc(db, 'courses', editingCourse.id), courseForm);
   toast.success('Course updated');
@@ -149,11 +150,12 @@ const AdminDashboard: React.FC = () => {
   const handleToggleComingSoon = async (course: any) => {
   const newVal = !course.comingSoon;
   if (isPlatformCourse(course.id)) {
-  const overrides = { comingSoon: newVal };
-  savePlatformOverrides({ ...JSON.parse(localStorage.getItem('platformCourseOverrides') || '{}'), [course.id]: overrides });
-  setCoursesList(prev => applyPlatformOverrides(prev.map(c => c.id === course.id ? { ...c, ...overrides } : c)));
-  toast.success(newVal ? 'Marked as Coming Soon' : 'Course released');
-  return;
+   const overrides = { comingSoon: newVal };
+   savePlatformOverrides({ ...JSON.parse(localStorage.getItem('platformCourseOverrides') || '{}'), [course.id]: overrides });
+   setCoursesList(prev => applyPlatformOverrides(prev.map(c => c.id === course.id ? { ...c, ...overrides } : c)));
+   await updateDoc(doc(db, 'courses', course.id), { comingSoon: newVal });
+   toast.success(newVal ? 'Marked as Coming Soon' : 'Course released');
+   return;
   }
   try {
   await updateDoc(doc(db, 'courses', course.id), { comingSoon: newVal });
@@ -182,7 +184,7 @@ const AdminDashboard: React.FC = () => {
  getDocs(collection(db, 'enrollments'))
  ]);
 
-  const dbCourses = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+   const dbCourses = cSnap.docs.map(d => ({ id: d.id, ...d.data() })).filter((c: any) => !c.id.startsWith('pc-'));
    const platformCourses = applyPlatformOverrides(PLATFORM_COURSES.map((pc, i) => ({ id: `pc-${i}`, ...pc }))).filter((c: any) => {
   try {
   const deleted = JSON.parse(localStorage.getItem('platformCourseDeletions') || '[]');
