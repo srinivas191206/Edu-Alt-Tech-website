@@ -995,9 +995,9 @@ const AdminDashboard: React.FC = () => {
  <tr key={course.id} className="hover:bg-slate-50/80 :bg-slate-800/40 transition-colors">
  <td className="px-4 sm:px-8 py-4 sm:py-5">
  <div className="flex items-center gap-3 sm:gap-4">
- <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0 overflow-hidden">
- {course.thumbnailUrl ? <img src={course.thumbnailUrl} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover" /> : course.title?.charAt(0) || 'C'}
- </div>
+  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
+  {course.title?.charAt(0) || 'C'}
+  </div>
  <div className="min-w-0">
  <div className="flex items-center gap-2">
  <p className="font-bold text-sm sm:text-base text-slate-900 truncate">{course.title || 'Untitled'}</p>
@@ -1283,26 +1283,7 @@ const AdminDashboard: React.FC = () => {
  <div>
  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Class Level</label>
  <input value={courseForm.classLevel} onChange={e => setCourseForm(f => ({ ...f, classLevel: e.target.value }))} placeholder="e.g. 6-8" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
- </div>
- <div className="sm:col-span-2">
- <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Thumbnail URL</label>
- <div className="flex gap-4 items-start">
- <div className="flex-1">
- <input value={courseForm.thumbnailUrl} onChange={e => setCourseForm(f => ({ ...f, thumbnailUrl: e.target.value }))} placeholder="https://picsum.photos/seed/..." className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
- </div>
- <button type="button" onClick={() => {
- const seed = (courseForm.title || 'course').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
- setCourseForm(f => ({ ...f, thumbnailUrl: `https://picsum.photos/seed/${seed}/400/225` }));
- }} className="px-4 py-4 bg-slate-100 hover:bg-emerald-100 :bg-emerald-900/30 rounded-2xl font-bold text-xs transition-colors shrink-0">
- Generate
- </button>
- {courseForm.thumbnailUrl && (
- <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200 ">
-  <img src={courseForm.thumbnailUrl} loading="lazy" decoding="async" alt="preview" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23ddd" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%23999" font-size="10">N/A</text></svg>' }} />
- </div>
- )}
- </div>
- </div>
+  </div>
  <div className="sm:col-span-2">
  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">External URL (for provider courses)</label>
  <input value={courseForm.externalUrl} onChange={e => setCourseForm(f => ({ ...f, externalUrl: e.target.value }))} placeholder="https://..." className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
