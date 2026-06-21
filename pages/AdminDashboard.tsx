@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL, createEnrollment } from '../lib/firebase';
+import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, updateDoc, deleteDoc, addDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL, createEnrollment } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical, Calendar, Video, Pencil, Trash2, Plus, Image, Save, Eye, EyeOff } from 'lucide-react';
 import { TeacherApplication } from '../types';
@@ -111,7 +111,7 @@ const AdminDashboard: React.FC = () => {
    const overrides = { ...courseForm, comingSoon: editingCourse.comingSoon };
    savePlatformOverrides({ ...JSON.parse(localStorage.getItem('platformCourseOverrides') || '{}'), [editingCourse.id]: overrides });
    setCoursesList(prev => applyPlatformOverrides(prev.map(c => c.id === editingCourse.id ? { ...c, ...courseForm } : c)));
-   await setDoc(doc(db, 'courses', editingCourse.id), { ...overrides, isPlatform: true });
+   try { await db.from('platform_overrides').upsert({ id: editingCourse.id, data: overrides }, { onConflict: 'id' }); } catch {}
    toast.success('Platform course updated');
   } else {
   await updateDoc(doc(db, 'courses', editingCourse.id), courseForm);
@@ -131,11 +131,12 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleDeleteCourse = async (courseId: string, title: string) => {
-  if (isPlatformCourse(courseId)) {
-  deletePlatformFromStorage(courseId);
-  setCoursesList(prev => prev.filter(c => c.id !== courseId));
-  toast.success('Platform course hidden (temporary — remove from data/platformCourses.ts to make permanent)');
-  return;
+   if (isPlatformCourse(courseId)) {
+   deletePlatformFromStorage(courseId);
+   setCoursesList(prev => prev.filter(c => c.id !== courseId));
+   try { await db.from('platform_overrides').upsert({ id: courseId, data: { __deleted: true } }, { onConflict: 'id' }); } catch {}
+   toast.success('Platform course hidden');
+   return;
   }
   if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
   try {
@@ -147,16 +148,16 @@ const AdminDashboard: React.FC = () => {
   }
   };
 
-  const handleToggleComingSoon = async (course: any) => {
-  const newVal = !course.comingSoon;
-  if (isPlatformCourse(course.id)) {
-   const overrides = { comingSoon: newVal };
-   savePlatformOverrides({ ...JSON.parse(localStorage.getItem('platformCourseOverrides') || '{}'), [course.id]: overrides });
-   setCoursesList(prev => applyPlatformOverrides(prev.map(c => c.id === course.id ? { ...c, ...overrides } : c)));
-   await updateDoc(doc(db, 'courses', course.id), { comingSoon: newVal });
-   toast.success(newVal ? 'Marked as Coming Soon' : 'Course released');
-   return;
-  }
+   const handleToggleComingSoon = async (course: any) => {
+   const newVal = !course.comingSoon;
+   if (isPlatformCourse(course.id)) {
+    const overrides = { comingSoon: newVal };
+    savePlatformOverrides({ ...JSON.parse(localStorage.getItem('platformCourseOverrides') || '{}'), [course.id]: overrides });
+    setCoursesList(prev => applyPlatformOverrides(prev.map(c => c.id === course.id ? { ...c, ...overrides } : c)));
+    try { await db.from('platform_overrides').upsert({ id: course.id, data: overrides }, { onConflict: 'id' }); } catch {}
+    toast.success(newVal ? 'Marked as Coming Soon' : 'Course released');
+    return;
+   }
   try {
   await updateDoc(doc(db, 'courses', course.id), { comingSoon: newVal });
   toast.success(newVal ? 'Marked as Coming Soon' : 'Course released');
