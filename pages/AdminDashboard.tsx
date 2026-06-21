@@ -3,6 +3,7 @@ import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc
 import { useNavigate } from 'react-router-dom';
 import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical, Calendar, Video, Pencil, Trash2, Plus, Image, Save, Eye, EyeOff } from 'lucide-react';
 import { TeacherApplication } from '../types';
+import { PLATFORM_COURSES } from '../data/platformCourses';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -130,8 +131,9 @@ const AdminDashboard: React.FC = () => {
  getDocs(collection(db, 'enrollments'))
  ]);
 
- const courses = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
- setCoursesList(courses);
+  const dbCourses = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  const platformCourses = PLATFORM_COURSES.map((pc, i) => ({ id: `pc-${i}`, ...pc }));
+  setCoursesList([...dbCourses, ...platformCourses]);
 
  const enrollmentsData = eSnap.docs.map(d => ({ id: d.id, ...d.data() }));
  setEnrollments(enrollmentsData);
@@ -139,7 +141,7 @@ const AdminDashboard: React.FC = () => {
  const rawApps = aSnap.docs.map((d) => {
  const data = d.data() as TeacherApplication;
  const courseIdVal = data.qualification || '';
- const cFind = courses.find((c: any) => c.id === courseIdVal);
+  const cFind = dbCourses.find((c: any) => c.id === courseIdVal);
  return {
  ...data,
  id: d.id,

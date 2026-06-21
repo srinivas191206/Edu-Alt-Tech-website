@@ -7,6 +7,7 @@ import { normalizeSearch } from '../lib/search';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoginModal from '../components/LoginModal';
+import { PLATFORM_COURSES } from '../data/platformCourses';
 
 const FOLDER_MAP: Record<string, 'education' | 'alternative'> = {
  'Core Education': 'education',
@@ -127,11 +128,21 @@ const Courses: React.FC = () => {
  createdBy: 'provider',
  } as Course & { provider?: string });
  });
- });
- // Sort: provider courses first (with their order preserved), then DB courses
- const providerCourses = fetchedCourses.filter(c => c.id.startsWith('ai-'));
- const dbCourses = fetchedCourses.filter(c => !c.id.startsWith('ai-'));
- setCourses([...providerCourses, ...dbCourses]);
+  });
+  // Add platform courses
+  PLATFORM_COURSES.forEach((course, pi) => {
+  fetchedCourses.push({
+  id: `pc-${pi}`,
+  ...course,
+  createdAt: new Date().toISOString(),
+  createdBy: 'admin',
+  } as Course);
+  });
+  // Sort: provider courses first (with their order preserved), then DB courses
+  const providerCourses = fetchedCourses.filter(c => c.id.startsWith('ai-'));
+  const dbCourses = fetchedCourses.filter(c => !c.id.startsWith('ai-') && !c.id.startsWith('pc-'));
+  const platformCourses = fetchedCourses.filter(c => c.id.startsWith('pc-'));
+  setCourses([...providerCourses, ...platformCourses, ...dbCourses]);
  } catch (err) {
  console.error("Failed to fetch courses", err);
  } finally {
@@ -527,9 +538,8 @@ const AI_COURSES = [
  { title: "ML for Games Course", url: "https://huggingface.co/learn/ml-games-course" },
  { title: "Robotics Course", url: "https://huggingface.co/learn/robotics-course" },
  { title: "a smol course", url: "https://huggingface.co/learn/smol-course" },
- { title: "Open-Source AI Cookbook", url: "https://huggingface.co/learn/cookbook" },
-  ] },
+  { title: "Open-Source AI Cookbook", url: "https://huggingface.co/learn/cookbook" },
+   ] },
 ];
-
 
 export default Courses;
