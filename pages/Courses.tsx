@@ -66,7 +66,6 @@ const Courses: React.FC = () => {
  const [loading, setLoading] = useState(true);
  const [searchTerm, setSearchTerm] = useState('');
  const [activeFilter, setActiveFilter] = useState<'all' | 'education' | 'alternative'>('all');
-  const [showComingSoon, setShowComingSoon] = useState(true);
   const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
  const [user, setUser] = useState<any>(auth.currentUser);
  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -239,16 +238,7 @@ const Courses: React.FC = () => {
  <f.icon className="w-4 h-4" /> {f.label}
  </button>
  ))}
- {activeFilter !== 'education' && (
- <button onClick={() => setShowComingSoon(!showComingSoon)}
- className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-colors border ${
- showComingSoon
- ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:border-emerald-400'
- : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-400'
- }`}>
-      <Globe className="w-4 h-4" /> Provider Courses
-    </button>
-    )}
+
     <div className="w-px h-8 bg-slate-200 self-center" />
     {[
       { id: 'all', label: 'All Prices', icon: CircleDollarSign },
@@ -356,7 +346,7 @@ const Courses: React.FC = () => {
  )}
 
   {/* Provider Courses Section — free, shown after paid */}
-  {showComingSoon && providerCourses.length > 0 && (
+  {providerCourses.length > 0 && (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-12">
   <div className="flex items-center gap-3 mb-6">
   <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20">
