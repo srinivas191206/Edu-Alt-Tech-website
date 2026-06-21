@@ -158,7 +158,7 @@ const CourseDetails: React.FC = () => {
  });
  };
 
- const finalizeEnrollment = async (isPaid: boolean = false) => {
+ const finalizeEnrollment = async (isPaid: boolean = false, isTrial: boolean = false) => {
  setEnrollLoading(true);
  try {
  const enrollmentRef = doc(collection(db, 'enrollments'));
@@ -168,7 +168,7 @@ const CourseDetails: React.FC = () => {
  courseId: courseId!,
  role: 'student',
  studentStatus: 'active',
- paymentStatus: isPaid ? 'paid' : 'not-required',
+ paymentStatus: isPaid ? 'paid' : (isTrial ? 'trial' : 'not-required'),
  mentorId: selectedMentor || undefined,
  createdAt: serverTimestamp()
  };
@@ -316,6 +316,17 @@ const CourseDetails: React.FC = () => {
 
  };
 
+ const handleStartFreeTrial = async () => {
+ if (!user) {
+ navigate('/login');
+ return;
+ }
+ if (!selectedMentor) {
+ alert("Please select a mentor first.");
+ return;
+ }
+ await finalizeEnrollment(false, true);
+ };
 
  const handleApplyToTeach = () => {
  if (!user) {
@@ -460,18 +471,32 @@ const CourseDetails: React.FC = () => {
  )}
  </div>
  ))}
- <button 
- onClick={handleJoinAsStudent}
- disabled={enrollLoading || !selectedMentor}
- className="w-full bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 :bg-emerald-500 transition-colors shadow-md disabled:opacity-50 mt-4 flex justify-center items-center gap-2"
- >
- {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 
- (!course?.price || course.price === 0 ? 
- (selectedMentor ? 'Enroll Now (Free)' : 'Select a Mentor') : 
-  (selectedMentor ? `Pay ₹${course.price}/month` : 'Select a Mentor to Pay')
- )
- }
- </button>
+ {!course?.price || course.price === 0 ? (
+  <button 
+  onClick={handleJoinAsStudent}
+  disabled={enrollLoading || !selectedMentor}
+  className="w-full bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 :bg-emerald-500 transition-colors shadow-md disabled:opacity-50 mt-4 flex justify-center items-center gap-2"
+  >
+  {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'Enroll Now (Free)' : 'Select a Mentor')}
+  </button>
+  ) : (
+  <div className="flex flex-col sm:flex-row gap-3 mt-4 w-full">
+    <button 
+    onClick={handleJoinAsStudent}
+    disabled={enrollLoading || !selectedMentor}
+    className="flex-1 bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
+    >
+    {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? `Pay ₹${course.price}/month` : 'Select Mentor to Pay')}
+    </button>
+    <button 
+    onClick={handleStartFreeTrial}
+    disabled={enrollLoading || !selectedMentor}
+    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
+    >
+    {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'Start with Free 1st Class' : 'Select Mentor for Free 1st Class')}
+    </button>
+  </div>
+  )}
 
  </div>
  )}
