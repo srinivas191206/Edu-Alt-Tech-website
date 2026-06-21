@@ -260,8 +260,12 @@ const CourseClassroom: React.FC = () => {
  };
 
  const handleTabClick = (tabName: 'roadmap' | 'chat' | 'path' | 'live') => {
+  if (tabName === 'chat' && role === 'student' && enrollment?.paymentStatus === 'trial') {
+   setActiveTab(tabName);
+   return;
+  }
   if (tabName !== 'roadmap' && role === 'student' && enrollment?.paymentStatus === 'trial') {
-   if (confirm(`Community chat, AI roadmap, and live classes require full course access. Upgrade now to unlock?`)) {
+   if (confirm(`AI roadmap and live classes require full course access. Upgrade now to unlock?`)) {
     handleUpgradeFullAccess();
    }
    return;
@@ -724,12 +728,13 @@ const CourseClassroom: React.FC = () => {
  <LearningPathView courseId={courseId!} courseTitle={course.title} courseDescription={course.description} />
  ) : (
  <div className="animate-in fade-in slide-in-from-bottom-5 duration-700">
- <CourseChat 
- courseId={courseId!} 
- currentUser={user} 
- mentorId={role === 'teacher' ? user!.uid : enrollment?.mentorId || ''} 
- role={role as 'student' | 'teacher'} 
- />
+  <CourseChat 
+  courseId={courseId!} 
+  currentUser={user} 
+  mentorId={role === 'teacher' ? user!.uid : enrollment?.mentorId || ''} 
+  role={role as 'student' | 'teacher'} 
+  paymentStatus={enrollment?.paymentStatus}
+  />
  </div>
  )}
  </div>
