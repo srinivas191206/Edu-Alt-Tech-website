@@ -399,10 +399,17 @@ const Courses: React.FC = () => {
   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-bold uppercase tracking-wider">
   <Sparkles className="w-3 h-3" /> Free
   </span>
-  <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
-  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-600 transition-colors">
-  Start Free <ExternalLink className="w-3 h-3" />
-  </a>
+   {!user ? (
+   <button onClick={() => setIsAuthModalOpen(true)}
+   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-600 transition-colors">
+   Start Free <ExternalLink className="w-3 h-3" />
+   </button>
+   ) : (
+   <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
+   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-600 transition-colors">
+   Start Free <ExternalLink className="w-3 h-3" />
+   </a>
+   )}
   </div>
   </div>
   </motion.div>
