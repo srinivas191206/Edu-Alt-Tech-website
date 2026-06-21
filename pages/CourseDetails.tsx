@@ -32,14 +32,22 @@ const CourseDetails: React.FC = () => {
   setCourse({ id: courseDoc.id, ...courseDoc.data() } as Course);
   found = true;
   }
-  if (!found) {
-  const idx = PLATFORM_COURSES.findIndex((_, i) => `pc-${i}` === courseId);
-  if (idx !== -1) {
-  const overrides = JSON.parse(localStorage.getItem('platformCourseOverrides') || '{}');
-  setCourse({ id: `pc-${idx}`, ...PLATFORM_COURSES[idx], ...(overrides[`pc-${idx}`] || {}) } as Course);
-  found = true;
-  }
-  }
+   if (!found) {
+   const idx = PLATFORM_COURSES.findIndex((_, i) => `pc-${i}` === courseId);
+   if (idx !== -1) {
+   let base = { id: `pc-${idx}`, ...PLATFORM_COURSES[idx] } as Course;
+   try {
+   const { data: rows } = await db.from('platform_overrides').select('*').eq('id', courseId).maybeSingle();
+   if (rows?.data && !rows.data.__deleted) base = { ...base, ...rows.data };
+   } catch {}
+   try {
+   const localOverrides = JSON.parse(localStorage.getItem('platformCourseOverrides') || '{}');
+   if (localOverrides[courseId]) base = { ...base, ...localOverrides[courseId] };
+   } catch {}
+   setCourse(base);
+   found = true;
+   }
+   }
 
  if (currentUser) {
  // Check if already enrolled or applied
