@@ -212,75 +212,75 @@ const Courses: React.FC = () => {
   <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-500/5 blur-[60px] rounded-full" />
   </div>
 
- <div className="max-w-[1400px] mx-auto relative z-10 px-6 py-24 md:py-32">
- <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12 md:mb-16">
- <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 text-slate-800 text-[10px] font-black tracking-[0.2em] uppercase mb-6 shadow-sm">
- <Sparkles className="w-4 h-4 text-emerald-500" /> Course Catalog
- </div>
- <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tighter leading-[0.85]">
- Explore Our{' '}
- <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500">Learning</span> Pathways.
- </h1>
- <p className="text-lg text-slate-500 leading-relaxed font-medium max-w-xl">
- Curated courses from top providers and our own curriculum. Master in-demand skills with structured learning paths.
- </p>
- </motion.div>
+  <div className="max-w-[1400px] mx-auto relative z-10 px-4 sm:px-6 py-16 md:py-24">
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 md:mb-12">
+  <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-white border border-slate-200 text-slate-800 text-[9px] md:text-[10px] font-black tracking-[0.2em] uppercase mb-4 md:mb-6 shadow-sm">
+  <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-500" /> Course Catalog
+  </div>
+  <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 mb-4 md:mb-6 tracking-tighter leading-[1] md:leading-[0.85]">
+  Explore Our{' '}
+  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500">Learning</span> Pathways.
+  </h1>
+  <p className="text-sm sm:text-base md:text-lg text-slate-500 leading-relaxed font-medium max-w-xl">
+  Curated courses from top providers and our own curriculum. Master in-demand skills with structured learning paths.
+  </p>
+  </motion.div>
 
-  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8 flex flex-wrap items-center gap-3">
-  <div className="relative max-w-md flex-1 min-w-[200px]">
-  <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-  <input type="text" placeholder="Search courses or providers..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-  className="w-full pl-14 pr-6 py-4 bg-white backdrop-blur-xl rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-shadow font-medium placeholder:text-slate-400" />
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-6 flex flex-wrap items-center gap-2 sm:gap-3">
+  <div className="relative w-full sm:max-w-md sm:flex-1">
+  <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
+  <input type="text" placeholder="Search courses..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+  className="w-full pl-11 sm:pl-14 pr-4 sm:pr-6 py-3 sm:py-4 bg-white backdrop-blur-xl rounded-xl sm:rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-shadow font-medium placeholder:text-slate-400 text-sm" />
   </div>
   {(searchTerm || activeFilter !== 'all' || priceFilter !== 'all') && (
     <button onClick={() => { setSearchTerm(''); setActiveFilter('all'); setPriceFilter('all'); }}
-      className="flex items-center gap-1.5 px-4 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:text-red-500 hover:border-red-200 transition-colors">
-      <X className="w-3.5 h-3.5" /> Clear
+      className="flex items-center gap-1.5 px-3 py-2.5 sm:px-4 sm:py-3 bg-white border border-slate-200 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold text-slate-500 hover:text-red-500 hover:border-red-200 transition-colors">
+      <X className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Clear
     </button>
   )}
   </motion.div>
 
  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
- className="flex flex-wrap gap-3 mb-6">
+ className="flex flex-wrap gap-2 sm:gap-3 mb-6">
  {[
  { id: 'all', label: 'All Courses', icon: Compass },
  { id: 'education', label: 'Subjective', icon: GraduationCap },
  { id: 'alternative', label: 'Alternative', icon: Sparkles },
  ].map((f) => (
  <button key={f.id} onClick={() => setActiveFilter(f.id as any)}
- className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-colors ${
+ className={`flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-bold transition-colors ${
  activeFilter === f.id
  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25'
  : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-500/50'
  }`}>
- <f.icon className="w-4 h-4" /> {f.label}
+ <f.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> {f.label}
  </button>
  ))}
 
-    <div className="w-px h-8 bg-slate-200 self-center" />
+    <div className="w-px h-7 sm:h-8 bg-slate-200 self-center" />
     {[
       { id: 'all', label: 'All Prices', icon: CircleDollarSign },
       { id: 'free', label: 'Free', icon: CircleDollarSign },
       { id: 'paid', label: 'Paid', icon: CircleDollarSign },
     ].map((f) => (
       <button key={f.id} onClick={() => setPriceFilter(f.id as any)}
-        className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold transition-colors ${
+        className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-bold transition-colors ${
           priceFilter === f.id
             ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25'
             : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-500/50'
         }`}>
-        <f.icon className="w-3.5 h-3.5" /> {f.label}
+        <f.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> {f.label}
       </button>
     ))}
   </motion.div>
 
  {loading ? (
- <div className="flex flex-col items-center justify-center py-40 gap-4">
- <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} style={{ willChange: 'transform' }}>
- <Sparkles className="w-12 h-12 text-emerald-500" />
- </motion.div>
- <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Loading courses...</p>
- </div>
+  <div className="flex flex-col items-center justify-center py-24 sm:py-40 gap-3 sm:gap-4">
+  <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} style={{ willChange: 'transform' }}>
+  <Sparkles className="w-8 h-8 sm:w-12 sm:h-12 text-emerald-500" />
+  </motion.div>
+  <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Loading courses...</p>
+  </div>
  ) : filteredCourses.length > 0 ? (
  <>
   {/* Available Courses Section — paid first, then free */}
@@ -298,53 +298,53 @@ const Courses: React.FC = () => {
   <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
   <AnimatePresence mode="popLayout">
   {displayedCourses.filter(c => !c.id.startsWith('ai-')).map((course) => (
- <motion.div layout key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
- className="group bg-white backdrop-blur-xl rounded-3xl overflow-hidden border border-slate-200 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-all duration-500 flex flex-col">
-  <div className="relative h-48 overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-  <Book className="w-6 h-6 text-white/80" />
+  <motion.div layout key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+  className="group bg-white backdrop-blur-xl rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-all duration-500 flex flex-col">
+   <div className="relative h-32 sm:h-40 md:h-48 overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/20 flex items-center justify-center">
+   <Book className="w-5 h-5 sm:w-6 sm:h-6 text-white/80" />
   </div>
- <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
- <div className="px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 border border-slate-200/50">
- {course.folder || course.category}
- </div>
- {course.classLevel && (
- <div className="px-3 py-1.5 bg-indigo-600/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-white border border-indigo-500/20">
- {course.classLevel}
- </div>
- )}
- </div>
-  <div className={`absolute top-4 right-4 px-3 py-1.5 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-wider ${course.comingSoon ? 'bg-amber-500/90 text-white' : 'bg-emerald-500/90 text-white'}`}>
+  <div className="absolute top-2 sm:top-4 left-2 sm:left-4 flex gap-1.5 sm:gap-2 flex-wrap">
+  <div className="px-2 sm:px-3 py-1 sm:py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-slate-900 border border-slate-200/50">
+  {course.folder || course.category}
+  </div>
+  {course.classLevel && (
+  <div className="px-2 sm:px-3 py-1 sm:py-1.5 bg-indigo-600/90 backdrop-blur-md rounded-full text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-white border border-indigo-500/20">
+  {course.classLevel}
+  </div>
+  )}
+  </div>
+   <div className={`absolute top-2 sm:top-4 right-2 sm:right-4 px-2 sm:px-3 py-1 sm:py-1.5 backdrop-blur-md rounded-full text-[8px] sm:text-[10px] font-black uppercase tracking-wider ${course.comingSoon ? 'bg-amber-500/90 text-white' : 'bg-emerald-500/90 text-white'}`}>
     {course.comingSoon ? 'Coming Soon' : course.price === 0 ? 'Free' : `₹${course.price}/month`}
   </div>
- </div>
- <div className="p-6 flex flex-col flex-1">
- <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tight leading-tight group-hover:text-emerald-500 transition-colors line-clamp-2">
+  </div>
+  <div className="p-4 sm:p-5 md:p-6 flex flex-col flex-1">
+  <h3 className="text-base sm:text-lg md:text-xl font-black text-slate-900 mb-2 sm:mb-3 tracking-tight leading-tight group-hover:text-emerald-500 transition-colors line-clamp-2">
  {course.title}
  </h3>
- <p className="text-sm text-slate-500 mb-5 font-medium leading-relaxed line-clamp-2 flex-1">
- {course.description}
- </p>
-  {course.comingSoon ? (
-    <span className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-amber-100 text-amber-600 rounded-xl font-bold text-sm tracking-wide cursor-not-allowed">
-      <Clock className="w-4 h-4" /> Coming Soon
-    </span>
-  ) : !user ? (
-    <button onClick={() => setIsAuthModalOpen(true)}
-      className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-all active:scale-[0.98]">
-      Explore Course →
-    </button>
-  ) : course.externalUrl ? (
- <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
- className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-bold text-sm tracking-wide hover:from-emerald-600 hover:to-teal-600 transition-all active:scale-[0.98]">
- Start Free <ExternalLink className="w-4 h-4" />
- </a>
- ) : (
- <Link to={`/courses/${course.id}`}
- className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white rounded-xl font-bold text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-all active:scale-[0.98]">
- Explore Course →
- </Link>
- )}
+  <p className="text-xs sm:text-sm text-slate-500 mb-3 sm:mb-4 font-medium leading-relaxed line-clamp-2 flex-1">
+  {course.description}
+  </p>
+   {course.comingSoon ? (
+     <span className="inline-flex items-center justify-center gap-2 w-full py-3 sm:py-3.5 bg-amber-100 text-amber-600 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm tracking-wide cursor-not-allowed">
+       <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Coming Soon
+     </span>
+   ) : !user ? (
+     <button onClick={() => setIsAuthModalOpen(true)}
+       className="inline-flex items-center justify-center gap-2 w-full py-3 sm:py-3.5 bg-slate-900 text-white rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-all active:scale-[0.98]">
+       Explore Course →
+     </button>
+   ) : course.externalUrl ? (
+  <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
+  className="inline-flex items-center justify-center gap-2 w-full py-3 sm:py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm tracking-wide hover:from-emerald-600 hover:to-teal-600 transition-all active:scale-[0.98]">
+  Start Free <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+  </a>
+  ) : (
+  <Link to={`/courses/${course.id}`}
+  className="inline-flex items-center justify-center gap-2 w-full py-3 sm:py-3.5 bg-slate-900 text-white rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-all active:scale-[0.98]">
+  Explore Course →
+  </Link>
+  )}
  </div>
  </motion.div>
  ))}
@@ -355,16 +355,18 @@ const Courses: React.FC = () => {
 
   {/* Provider Courses Section — free, shown after paid */}
   {providerCourses.length > 0 && (
-  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-12">
-  <div className="flex items-center gap-3 mb-6">
-  <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20">
-  <Globe className="w-5 h-5" />
+  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-8 sm:mb-12">
+  <div className="flex items-start sm:items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-col sm:flex-row">
+  <div className="flex items-center gap-2 sm:gap-3">
+  <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20">
+  <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
   </div>
   <div>
-  <h2 className="text-xl font-black text-slate-900">Free Courses from Industry Leaders</h2>
-  <p className="text-xs text-slate-500 font-medium">Free, high-quality courses from top providers — start learning today</p>
+  <h2 className="text-base sm:text-xl font-black text-slate-900">Free Courses</h2>
+  <p className="text-[10px] sm:text-xs text-slate-500 font-medium">From industry leaders</p>
   </div>
-  <div className="ml-auto hidden sm:flex items-center gap-2">
+  </div>
+  <div className="hidden sm:flex ml-auto items-center gap-2">
   <span className="text-xs text-slate-400 font-bold">{providerCourses.length} courses</span>
   <div className="flex -space-x-2">
   {AI_COURSES.slice(0, 5).map((p, i) => (
@@ -429,13 +431,13 @@ const Courses: React.FC = () => {
 
  </>
  ) : (
- <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-24 bg-white backdrop-blur-xl rounded-3xl border border-slate-200">
- <Search className="w-12 h-12 text-slate-300 mx-auto mb-6" />
- <h3 className="text-2xl font-black text-slate-900 mb-2">No courses found</h3>
- <p className="text-slate-500 mb-6">Try a different search or filter.</p>
- <button onClick={() => { setSearchTerm(''); setActiveFilter('all'); setPriceFilter('all'); }}
- className="px-8 py-3.5 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:-translate-y-0.5 transition-transform">Reset Filters</button>
- </motion.div>
+  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16 sm:py-24 px-4 bg-white backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-slate-200">
+  <Search className="w-8 h-8 sm:w-12 sm:h-12 text-slate-300 mx-auto mb-4 sm:mb-6" />
+  <h3 className="text-lg sm:text-2xl font-black text-slate-900 mb-2">No courses found</h3>
+  <p className="text-sm sm:text-base text-slate-500 mb-4 sm:mb-6">Try a different search or filter.</p>
+  <button onClick={() => { setSearchTerm(''); setActiveFilter('all'); setPriceFilter('all'); }}
+  className="px-6 sm:px-8 py-3 sm:py-3.5 bg-emerald-500 text-white rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm hover:-translate-y-0.5 transition-transform">Reset Filters</button>
+  </motion.div>
  )}
   <LoginModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
   </div>
