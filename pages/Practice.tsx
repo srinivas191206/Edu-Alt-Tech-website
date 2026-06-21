@@ -336,7 +336,7 @@ const Practice: React.FC = () => {
  <Sparkles className="w-4 h-4" />
  Practice & Interview Prep
  </div>
- <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tighter leading-[0.9]">
+ <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 mb-6 tracking-tighter leading-[0.9]">
  Master Coding &<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500">English Grammar</span>
  </h1>
  <p className="text-lg text-slate-500 max-w-xl font-medium">

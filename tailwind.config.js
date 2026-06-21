@@ -7,6 +7,13 @@ export default {
   ],
   theme: {
     extend: {
+      fontSize: {
+        '4xl': ['2rem', { lineHeight: '2.25rem' }],
+        '5xl': ['2.75rem', { lineHeight: '1.1' }],
+        '6xl': ['3.375rem', { lineHeight: '1.1' }],
+        '7xl': ['4.125rem', { lineHeight: '1' }],
+        '8xl': ['5.25rem', { lineHeight: '1' }],
+      },
       colors: {
         brand: {
           50: '#f0fdf4',
