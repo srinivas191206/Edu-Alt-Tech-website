@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { auth, onAuthStateChanged, db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
-import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Code, Clock, CircleDollarSign } from 'lucide-react';
+import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Code, Clock, CircleDollarSign, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoginModal from '../components/LoginModal';
@@ -151,7 +151,8 @@ const Courses: React.FC = () => {
  fetchCourses();
  }, []);
 
-  const filteredCourses = useMemo(() => courses
+  const filteredCourses = useMemo(() => {
+  return courses
   .filter(course => {
   if ((course.folder || '') === 'Marketing') return false;
    const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -178,7 +179,8 @@ const Courses: React.FC = () => {
   const aPaid = (a.price ?? 0) > 0 ? 1 : 0;
   const bPaid = (b.price ?? 0) > 0 ? 1 : 0;
   return bPaid - aPaid;
-  }), [courses, searchTerm, activeFilter, priceFilter]);
+  });
+  }, [courses, searchTerm, activeFilter, priceFilter]);
 
  const providerCourses = useMemo(() => filteredCourses.filter(c => c.id.startsWith('ai-')), [filteredCourses]);
  const dbCourses = useMemo(() => filteredCourses.filter(c => !c.id.startsWith('ai-')), [filteredCourses]);
