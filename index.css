@@ -190,6 +190,19 @@ code, pre, .font-mono {
     animation: none !important;
   }
 }
-
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.practice-page-container {
+  font-family: 'Inter', sans-serif !important;
+}
+
+.practice-page-container h1,
+.practice-page-container h2,
+.practice-page-container h3,
+.practice-page-container h4,
+.practice-page-container h5,
+.practice-page-container h6,
+.practice-page-container .font-display {
+  font-family: 'Poppins', sans-serif !important;
+}
