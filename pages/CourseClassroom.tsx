@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import CourseChat from '../components/CourseChat';
 import { recordModuleComplete, getOrCreateMetrics } from '../lib/userProgress';
+import { PLATFORM_COURSES } from '../data/platformCourses';
 import { adaptDifficulty } from '../lib/learningPath';
 import DoubtSolver from '../components/DoubtSolver';
 import LearningPathView from '../components/LearningPathView';
@@ -88,9 +89,14 @@ const CourseClassroom: React.FC = () => {
  navigate('/login');
  return;
  }
- try {
- const courseDoc = await getDoc(doc(db, 'courses', courseId));
- if (courseDoc.exists()) setCourse({ id: courseDoc.id, ...courseDoc.data() } as Course);
+      try {
+        const courseDoc = await getDoc(doc(db, 'courses', courseId));
+        if (courseDoc.exists()) {
+          setCourse({ id: courseDoc.id, ...courseDoc.data() } as Course);
+        } else {
+          const idx = PLATFORM_COURSES.findIndex((_, i) => `pc-${i}` === courseId);
+          if (idx !== -1) setCourse({ id: `pc-${idx}`, ...PLATFORM_COURSES[idx] } as Course);
+        }
 
  const eQ = query(collection(db, 'enrollments'), where('userId', '==', currentUser.uid), where('courseId', '==', courseId));
  const eSnap = await getDocs(eQ);
@@ -134,8 +140,9 @@ const CourseClassroom: React.FC = () => {
  init(currentUser);
  });
 
- return () => unsubscribe();
- }, [courseId, navigate]);
+  const safetyTimer = setTimeout(() => setLoading(false), 8000);
+  return () => { unsubscribe(); clearTimeout(safetyTimer); };
+  }, [courseId, navigate]);
 
  const toggleModule = (id: string) => {
  setExpandedModules(prev => prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]);
