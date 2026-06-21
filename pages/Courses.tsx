@@ -181,9 +181,7 @@ const Courses: React.FC = () => {
  const providerCourses = useMemo(() => filteredCourses.filter(c => c.id.startsWith('ai-')), [filteredCourses]);
  const dbCourses = useMemo(() => filteredCourses.filter(c => !c.id.startsWith('ai-')), [filteredCourses]);
 
- const displayedCourses = useMemo(() => {
- return !user ? filteredCourses.slice(0, 3) : filteredCourses;
- }, [filteredCourses, user]);
+  const displayedCourses = useMemo(() => filteredCourses, [filteredCourses]);
 
   return (
   <>
@@ -414,31 +412,7 @@ const Courses: React.FC = () => {
   </motion.div>
   )}
 
-  {/* Guest Lock Overlay */}
- {!user && filteredCourses.length > 3 && (
- <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
- className="relative mt-12 py-16 px-8 rounded-3xl bg-white/20 border border-slate-200/50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
- <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
- <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[50px] rounded-full pointer-events-none" />
- <div className="relative z-10 max-w-md mx-auto">
- <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-indigo-500 text-white mb-6 shadow-xl shadow-emerald-500/20">
- <Book className="w-8 h-8" />
- </div>
- <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">
- Unlock {filteredCourses.length - 3} More Courses
- </h2>
- <p className="text-slate-500 mb-8 font-medium leading-relaxed">
- Join our premium community to gain full access to all curricular pathways, practice materials, and advanced resources.
- </p>
- <button
- onClick={() => setIsAuthModalOpen(true)}
- className="px-8 py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 hover:from-emerald-600 hover:via-teal-600 hover:to-indigo-600 text-white rounded-2xl font-extrabold tracking-wide shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
- >
- Unlock All Content
- </button>
- </div>
- </motion.div>
- )}
+
  </>
  ) : (
  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-24 bg-white backdrop-blur-xl rounded-3xl border border-slate-200">
