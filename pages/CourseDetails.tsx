@@ -86,7 +86,8 @@ const CourseDetails: React.FC = () => {
  const data = doc.data();
  return {
  appId: doc.id,
- userId: data.userId,
+ userId: data.userId || data.user_id,
+ highestQualification: data.highestQualification || data.highest_qualification || '',
  name: data.name || 'Mentor',
  email: data.email || '',
  experience: data.experience || 'Experienced Professional',
@@ -119,7 +120,8 @@ const CourseDetails: React.FC = () => {
  const data = doc.data();
  return {
  appId: doc.id,
- userId: data.userId,
+ userId: data.userId || data.user_id,
+ highestQualification: data.highestQualification || data.highest_qualification || '',
  name: data.name || 'Mentor',
  email: data.email || '',
  experience: data.experience || 'Experienced Professional',
@@ -442,6 +444,7 @@ const CourseDetails: React.FC = () => {
  {selectedMentor === m.userId && <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
  </div>
  <p className="text-sm text-slate-500 mb-1 leading-snug"><strong>Experience:</strong> {m.experience}</p>
+ {m.highestQualification && <p className="text-sm text-slate-500 mb-1 leading-snug"><strong>Qualification:</strong> {m.highestQualification}</p>}
  <p className="text-sm text-slate-500 leading-snug"><strong>Skills:</strong> {m.skills}</p>
  {m.message && <p className="text-xs text-slate-400 mt-2 italic">"{m.message}"</p>}
  

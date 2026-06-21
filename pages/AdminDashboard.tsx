@@ -200,7 +200,7 @@ const AdminDashboard: React.FC = () => {
  const rawApps = aSnap.docs.map((d) => {
  const data = d.data() as TeacherApplication;
  const courseIdVal = data.qualification || '';
-  const cFind = dbCourses.find((c: any) => c.id === courseIdVal);
+ const cFind = [...dbCourses, ...platformCourses].find((c: any) => c.id === courseIdVal);
  return {
  ...data,
  id: d.id,
@@ -329,7 +329,7 @@ const AdminDashboard: React.FC = () => {
  const enrollmentId = crypto.randomUUID();
  await createEnrollment({
  id: enrollmentId,
- userId: data.userId,
+ userId: data.userId || data.user_id,
  courseId: courseIdVal,
  role: 'teacher',
  studentStatus: 'active',
@@ -1093,6 +1093,10 @@ const AdminDashboard: React.FC = () => {
  <p className="text-sm font-black text-slate-400 uppercase mb-1">Target Curriculum</p>
  <p className="font-bold text-base sm:text-lg">{selectedApp.courseTitle}</p>
  </div>
+ <div>
+ <p className="text-sm font-black text-slate-400 uppercase mb-1">Highest Qualification</p>
+ <p className="font-bold text-base sm:text-lg">{selectedApp.highestQualification || (selectedApp as any).highest_qualification || 'Not specified'}</p>
+ </div>
  <div className="sm:col-span-2">
  <p className="text-sm font-black text-slate-400 uppercase mb-1">Languages to Teach (Total: {selectedApp.languagesCount || 0})</p>
  <p className="font-bold text-base text-emerald-600">{selectedApp.languages || 'Not specified'}</p>
@@ -1210,7 +1214,7 @@ const AdminDashboard: React.FC = () => {
  <label className="block text-xs font-black text-rose-600 uppercase tracking-widest mb-2">Active Mentor</label>
  <p className="text-sm text-slate-600 mb-6 font-medium">This mentor is currently assigned to teach this course.</p>
  <button
- onClick={() => handleRemoveTeacher(selectedApp.id, selectedApp.userId, selectedApp.courseId || selectedApp.qualification)}
+ onClick={() => handleRemoveTeacher(selectedApp.id, selectedApp.userId || (selectedApp as any).user_id, selectedApp.courseId || selectedApp.qualification)}
  className="w-full py-4 bg-rose-500 text-white font-black rounded-2xl hover:bg-rose-600 transition-colors"
  >
  REMOVE TEACHER
