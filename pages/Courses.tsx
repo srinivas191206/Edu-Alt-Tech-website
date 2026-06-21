@@ -151,27 +151,33 @@ const Courses: React.FC = () => {
  fetchCourses();
  }, []);
 
- const filteredCourses = useMemo(() => courses.filter(course => {
- if ((course.folder || '') === 'Marketing') return false;
-  const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-  (course.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-  (course.provider || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-  (course.folder || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-  (course.category || '').toLowerCase().includes(searchTerm.toLowerCase());
- 
- let matchesCategory = true;
- if (activeFilter === 'education') {
- matchesCategory = EDUCATION_FOLDERS.has(course.folder || '');
- } else if (activeFilter === 'alternative') {
- matchesCategory = !EDUCATION_FOLDERS.has(course.folder || '');
- }
- 
-  let matchesPrice = true;
-  const price = course.price ?? -1;
-  if (priceFilter === 'free') matchesPrice = price === 0;
-  else if (priceFilter === 'paid') matchesPrice = price > 0;
+  const filteredCourses = useMemo(() => courses
+  .filter(course => {
+  if ((course.folder || '') === 'Marketing') return false;
+   const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+   (course.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+   (course.provider || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+   (course.folder || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+   (course.category || '').toLowerCase().includes(searchTerm.toLowerCase());
+  
+  let matchesCategory = true;
+  if (activeFilter === 'education') {
+  matchesCategory = EDUCATION_FOLDERS.has(course.folder || '');
+  } else if (activeFilter === 'alternative') {
+  matchesCategory = !EDUCATION_FOLDERS.has(course.folder || '');
+  }
+  
+   let matchesPrice = true;
+   const price = course.price ?? -1;
+   if (priceFilter === 'free') matchesPrice = price === 0;
+   else if (priceFilter === 'paid') matchesPrice = price > 0;
 
-  return matchesSearch && matchesCategory && matchesPrice;
+   return matchesSearch && matchesCategory && matchesPrice;
+   })
+  .sort((a, b) => {
+  const aPaid = (a.price ?? 0) > 0 ? 1 : 0;
+  const bPaid = (b.price ?? 0) > 0 ? 1 : 0;
+  return bPaid - aPaid;
   }), [courses, searchTerm, activeFilter, priceFilter]);
 
  const providerCourses = useMemo(() => filteredCourses.filter(c => c.id.startsWith('ai-')), [filteredCourses]);
