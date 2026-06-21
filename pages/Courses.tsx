@@ -128,18 +128,20 @@ const Courses: React.FC = () => {
  } as Course & { provider?: string });
  });
   });
-   // Add platform courses with admin overrides
-   let platformCourses = PLATFORM_COURSES.map((pc, pi) => ({ id: `pc-${pi}`, ...pc } as Course));
-   try {
-   const raw = localStorage.getItem('platformCourseOverrides');
-   if (raw) {
-   const overrides = JSON.parse(raw);
-   platformCourses = platformCourses.map(c => overrides[c.id] ? { ...c, ...overrides[c.id] } : c);
-   }
-   const deleted = JSON.parse(localStorage.getItem('platformCourseDeletions') || '[]');
-   platformCourses = platformCourses.filter(c => !deleted.includes(c.id));
-   } catch {}
-   fetchedCourses.push(...platformCourses);
+    // Add platform courses (skip any already saved to Supabase)
+    const existingIds = new Set(fetchedCourses.map((c: any) => c.id));
+    let platformCourses = PLATFORM_COURSES.map((pc, pi) => ({ id: `pc-${pi}`, ...pc } as Course))
+    .filter(c => !existingIds.has(c.id));
+    try {
+    const raw = localStorage.getItem('platformCourseOverrides');
+    if (raw) {
+    const overrides = JSON.parse(raw);
+    platformCourses = platformCourses.map(c => overrides[c.id] ? { ...c, ...overrides[c.id] } : c);
+    }
+    const deleted = JSON.parse(localStorage.getItem('platformCourseDeletions') || '[]');
+    platformCourses = platformCourses.filter(c => !deleted.includes(c.id));
+    } catch {}
+    fetchedCourses.push(...platformCourses);
    // Sort: provider courses first (with their order preserved), then DB courses
    const providerCourses = fetchedCourses.filter(c => c.id.startsWith('ai-'));
    const dbCourses = fetchedCourses.filter(c => !c.id.startsWith('ai-') && !c.id.startsWith('pc-'));
