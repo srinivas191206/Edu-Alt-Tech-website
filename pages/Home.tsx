@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
+import { PLATFORM_COURSES } from '../data/platformCourses';
 import { 
   ArrowRight, CheckCircle, GraduationCap, Globe, Smartphone, Brain, Zap, BookOpen, 
   Users, Star, Download, FileText, Award, Lightbulb, Code2, 
@@ -496,51 +497,59 @@ const Home: React.FC = () => {
           </motion.div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {[
-              { title: "Artificial Intelligence Fundamentals", icon: <Brain className="w-6 h-6" />, color: "from-emerald-500 to-teal-500", glow: "rgba(16, 185, 129, 0.15)" },
-              { title: "Full Stack Development", icon: <Code2 className="w-6 h-6" />, color: "from-blue-500 to-indigo-500", glow: "rgba(59, 130, 246, 0.15)" },
-              { title: "Entrepreneurship & Startups", icon: <Lightbulb className="w-6 h-6" />, color: "from-amber-500 to-orange-500", glow: "rgba(245, 158, 11, 0.15)" },
-              { title: "Digital Marketing Growth", icon: <TrendingUp className="w-6 h-6" />, color: "from-purple-500 to-pink-500", glow: "rgba(168, 85, 247, 0.15)" },
-              { title: "Advanced Mathematics", icon: <Calculator className="w-6 h-6" />, color: "from-red-500 to-rose-500", glow: "rgba(239, 68, 68, 0.15)" },
-              { title: "Physics Excellence Module", icon: <Atom className="w-6 h-6" />, color: "from-cyan-500 to-blue-500", glow: "rgba(6, 182, 212, 0.15)" },
-              { title: "Music & Creative Arts", icon: <Music className="w-6 h-6" />, color: "from-violet-500 to-purple-500", glow: "rgba(139, 92, 246, 0.15)" },
-              { title: "Creative Digital Design", icon: <Palette className="w-6 h-6" />, color: "from-pink-500 to-rose-500", glow: "rgba(236, 72, 153, 0.15)" },
-            ].map((course, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 35 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.06, duration: 0.6 }}
-                whileHover={{ 
-                  y: -10,
-                  boxShadow: `0 20px 40px ${course.glow}`,
-                  scale: 1.02
-                }}
-                className="group bg-white border border-slate-200/80 rounded-[2.5rem] p-7 transition-all duration-300 hover:border-slate-300 relative flex flex-col justify-between h-[280px]"
-              >
-                <div>
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${course.color} flex items-center justify-center text-white mb-6 shadow-lg shadow-emerald-500/5 group-hover:scale-110 transition-transform duration-300`}>
-                    {course.icon}
-                  </div>
-                  <h3 className="text-xl font-black text-slate-900 tracking-tight leading-snug">
-                    {course.title}
-                  </h3>
-                  <p className="text-xs text-slate-400 font-semibold mt-2">
-                    Industry aligned curriculum
-                  </p>
-                </div>
-                
-                <div className="flex justify-between items-center pt-4 border-t border-slate-100">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    Level: Beginner-Adv
-                  </span>
-                  <span className="text-xs font-black text-emerald-600 group-hover:text-emerald-500 inline-flex items-center gap-1">
-                    Details <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </div>
-              </motion.div>
-            ))}
+            {(() => {
+              const featured = [
+                { title: "Artificial Intelligence Fundamentals", icon: <Brain className="w-6 h-6" />, color: "from-emerald-500 to-teal-500", glow: "rgba(16, 185, 129, 0.15)", courseIdx: 0 },
+                { title: "Full Stack Development", icon: <Code2 className="w-6 h-6" />, color: "from-blue-500 to-indigo-500", glow: "rgba(59, 130, 246, 0.15)", courseIdx: 1 },
+                { title: "Entrepreneurship & Startups", icon: <Lightbulb className="w-6 h-6" />, color: "from-amber-500 to-orange-500", glow: "rgba(245, 158, 11, 0.15)", courseIdx: 3 },
+                { title: "Digital Marketing Growth", icon: <TrendingUp className="w-6 h-6" />, color: "from-purple-500 to-pink-500", glow: "rgba(168, 85, 247, 0.15)", courseIdx: 2 },
+                { title: "Advanced Mathematics", icon: <Calculator className="w-6 h-6" />, color: "from-red-500 to-rose-500", glow: "rgba(239, 68, 68, 0.15)", courseIdx: 7 },
+                { title: "Physics Excellence Module", icon: <Atom className="w-6 h-6" />, color: "from-cyan-500 to-blue-500", glow: "rgba(6, 182, 212, 0.15)", courseIdx: 8 },
+                { title: "Music & Creative Arts", icon: <Music className="w-6 h-6" />, color: "from-violet-500 to-purple-500", glow: "rgba(139, 92, 246, 0.15)", courseIdx: 9 },
+                { title: "Creative Digital Design", icon: <Palette className="w-6 h-6" />, color: "from-pink-500 to-rose-500", glow: "rgba(236, 72, 153, 0.15)", courseIdx: 5 },
+              ];
+              return featured.map((course, idx) => {
+                const courseId = `pc-${course.courseIdx}`;
+                const courseData = PLATFORM_COURSES[course.courseIdx];
+                return (
+                  <Link key={idx} to={`/courses/${courseId}`} className="block">
+                    <motion.div
+                      initial={{ opacity: 0, y: 35 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.06, duration: 0.6 }}
+                      whileHover={{ 
+                        y: -10,
+                        boxShadow: `0 20px 40px ${course.glow}`,
+                        scale: 1.02
+                      }}
+                      className="group bg-white border border-slate-200/80 rounded-[2.5rem] p-7 transition-all duration-300 hover:border-slate-300 relative flex flex-col justify-between h-[280px]"
+                    >
+                      <div>
+                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${course.color} flex items-center justify-center text-white mb-6 shadow-lg shadow-emerald-500/5 group-hover:scale-110 transition-transform duration-300`}>
+                          {course.icon}
+                        </div>
+                        <h3 className="text-xl font-black text-slate-900 tracking-tight leading-snug">
+                          {course.title}
+                        </h3>
+                        <p className="text-xs text-slate-400 font-semibold mt-2">
+                          {courseData?.duration || 'Industry aligned curriculum'}
+                        </p>
+                      </div>
+                      
+                      <div className="flex justify-between items-center pt-4 border-t border-slate-100">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          Level: {courseData?.level || 'Beginner-Adv'}
+                        </span>
+                        <span className="text-xs font-black text-emerald-600 group-hover:text-emerald-500 inline-flex items-center gap-1">
+                          Details <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                        </span>
+                      </div>
+                    </motion.div>
+                  </Link>
+                );
+              });
+            })()}
           </div>
 
           <motion.div 
