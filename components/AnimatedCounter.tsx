@@ -10,7 +10,7 @@ interface AnimatedCounterProps {
 
 const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, suffix = '', prefix = '', duration = 2000, loop = true }) => {
   const [display, setDisplay] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false);
+  const [started, setStarted] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
   const frameRef = useRef<number>(0);
 
@@ -20,8 +20,8 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, suffix = '', p
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasStarted) {
-          setHasStarted(true);
+        if (entry.isIntersecting) {
+          setStarted(true);
         }
       },
       { threshold: 0.3 }
@@ -29,14 +29,13 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, suffix = '', p
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [hasStarted]);
+  }, []);
 
   useEffect(() => {
-    if (!hasStarted) return;
+    if (!started) return;
 
     const startTime = performance.now();
     let loopPhase = false;
-    let loopDirection = 1;
     let loopBase = 0;
 
     const animate = (now: number) => {
@@ -63,7 +62,7 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, suffix = '', p
 
     frameRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frameRef.current);
-  }, [hasStarted, value, duration, loop]);
+  }, [started, value, duration, loop]);
 
   return (
     <span ref={ref}>

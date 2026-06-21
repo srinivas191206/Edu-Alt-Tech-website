@@ -283,20 +283,9 @@ const Courses: React.FC = () => {
   {displayedCourses.filter(c => !c.id.startsWith('ai-')).map((course) => (
  <motion.div layout key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
  className="group bg-white backdrop-blur-xl rounded-3xl overflow-hidden border border-slate-200 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-all duration-500 flex flex-col">
- <div className="relative h-48 overflow-hidden bg-slate-100">
- {course.price === 0 ? (
- <img src={course.thumbnailUrl} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
- onError={(e) => { const el = e.target as HTMLImageElement; if (!el.dataset.fallback) { el.dataset.fallback = '1'; el.src = getFallbackThumbnail(course.title, course.folder || ''); } }} />
- ) : (
- <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
- <div className="text-center px-6">
- <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/10 flex items-center justify-center">
- <Book className="w-8 h-8 text-white/60" />
- </div>
- <h4 className="text-white font-bold text-sm leading-tight line-clamp-2">{course.title}</h4>
- </div>
- </div>
- )}
+  <div className="relative h-48 overflow-hidden bg-slate-100">
+  <img src={course.thumbnailUrl} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+  onError={(e) => { const el = e.target as HTMLImageElement; if (!el.dataset.fallback) { el.dataset.fallback = '1'; el.src = getFallbackThumbnail(course.title, course.folder || ''); } }} />
  <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
  <div className="px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 border border-slate-200/50">
  {course.folder || course.category}
