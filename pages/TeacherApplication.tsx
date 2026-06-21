@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { auth, db, onAuthStateChanged } from '../lib/firebase';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { auth, db, onAuthStateChanged, doc, getDoc } from '../lib/firebase';
 import { ArrowLeft, Loader2, Check } from 'lucide-react';
 import type { User } from '../lib/firebase';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import type { Course } from '../types';
+import { PLATFORM_COURSES } from '../data/platformCourses';
 
 // ════════════════════════════════════════════════════════════ Languages Config
 const LANGUAGES_CONFIG = [
@@ -335,6 +337,9 @@ const formTranslations: Record<LangCode, {
 
 const TeacherApplication: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const targetCourseId = searchParams.get('courseId') || '';
+  const [targetCourse, setTargetCourse] = useState<Course | null>(null);
 
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -367,6 +372,28 @@ const TeacherApplication: React.FC = () => {
     });
     return () => unsubscribe();
   }, [navigate]);
+
+  useEffect(() => {
+    const fetchTargetCourse = async () => {
+      if (!targetCourseId) return;
+      try {
+        let foundCourse: Course | null = null;
+        const courseDoc = await getDoc(doc(db, 'courses', targetCourseId));
+        if (courseDoc.exists()) {
+          foundCourse = { id: courseDoc.id, ...courseDoc.data() } as Course;
+        } else {
+          const idx = PLATFORM_COURSES.findIndex((_, i) => `pc-${i}` === targetCourseId);
+          if (idx !== -1) {
+            foundCourse = { id: `pc-${idx}`, ...PLATFORM_COURSES[idx] } as Course;
+          }
+        }
+        setTargetCourse(foundCourse);
+      } catch (err) {
+        console.error("Failed to load target course details", err);
+      }
+    };
+    fetchTargetCourse();
+  }, [targetCourseId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -426,7 +453,8 @@ const TeacherApplication: React.FC = () => {
         name,
         email,
         phone,
-        qualification,
+        qualification: targetCourseId || '',
+        highest_qualification: qualification,
         experience,
         subjects,
         languages: languagesStr,
@@ -476,6 +504,33 @@ const TeacherApplication: React.FC = () => {
               <p className="text-sm text-slate-500 font-medium">{t.subtitle}</p>
             </div>
           </div>
+
+          {targetCourse && (
+            <div className="mb-6 p-5 bg-gradient-to-br from-emerald-50 to-teal-50/50 border border-emerald-200/60 rounded-3xl flex items-center gap-4 shadow-sm relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-2 opacity-5 pointer-events-none">
+                <svg className="w-20 h-20 text-emerald-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+              </div>
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 shrink-0">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest block mb-1">Applying for Course</span>
+                <h3 className="font-black text-lg text-slate-900 truncate leading-tight mb-1 group-hover:text-emerald-700 transition-colors">{targetCourse.title}</h3>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="inline-block px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[9px] font-extrabold uppercase tracking-wider rounded-md">
+                    {targetCourse.category}
+                  </span>
+                  {targetCourse.duration && (
+                    <span className="text-[10px] text-slate-400 font-bold">
+                      · {targetCourse.duration}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Form manual language switcher */}
           <div className="flex flex-wrap gap-2 mb-8 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/60 justify-center">

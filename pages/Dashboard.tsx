@@ -4,6 +4,7 @@ import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, Arro
 import { Link, useNavigate } from 'react-router-dom';
 import { UserObject, CourseEnrollment, Course, TeacherApplication } from '../types';
 import { motion } from 'framer-motion';
+import { PLATFORM_COURSES } from '../data/platformCourses';
 
 const getGreeting = () => {
  const h = new Date().getHours();
@@ -86,7 +87,10 @@ const Dashboard: React.FC = () => {
  const apps = appSnap.docs.map(d => {
  const data = d.data() as TeacherApplication;
  const courseIdVal = data.qualification || '';
- const course = coursesMap.get(courseIdVal);
+ const course = coursesMap.get(courseIdVal) || (() => {
+   const idx = PLATFORM_COURSES.findIndex((_, i) => `pc-${i}` === courseIdVal);
+   return idx !== -1 ? { id: `pc-${idx}`, ...PLATFORM_COURSES[idx] } as Course : null;
+ })();
  return {
  ...data,
  id: d.id,
