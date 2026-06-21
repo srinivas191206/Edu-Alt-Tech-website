@@ -1,7 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as _motion, AnimatePresence } from 'framer-motion';
+
+function useIsMobile() {
+  const [mobile, setMobile] = React.useState(false);
+  React.useEffect(() => {
+    const check = () => setMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  return mobile;
+}
+function MotionH1({ children, ...props }: any) {
+  const isMobile = useIsMobile();
+  if (isMobile) {
+    const { initial, animate, whileInView, viewport, transition, whileHover, exit, layout, variants, onAnimationComplete, ...rest } = props;
+    return <h1 {...rest}>{children}</h1>;
+  }
+  return <_motion.h1 {...props}>{children}</_motion.h1>;
+}
+function MotionP({ children, ...props }: any) {
+  const isMobile = useIsMobile();
+  if (isMobile) {
+    const { initial, animate, whileInView, viewport, transition, whileHover, exit, layout, variants, onAnimationComplete, ...rest } = props;
+    return <p {...rest}>{children}</p>;
+  }
+  return <_motion.p {...props}>{children}</_motion.p>;
+}
+function MotionDiv({ children, ...props }: any) {
+  const isMobile = useIsMobile();
+  if (isMobile) {
+    const { initial, animate, whileInView, viewport, transition, whileHover, exit, layout, variants, onAnimationComplete, ...rest } = props;
+    return <div {...rest}>{children}</div>;
+  }
+  return <_motion.div {...props}>{children}</_motion.div>;
+}
 import { PLATFORM_COURSES } from '../data/platformCourses';
 import { 
   ArrowRight, CheckCircle, GraduationCap, Globe, Smartphone, Brain, Zap, BookOpen, 
@@ -171,7 +206,7 @@ const Home: React.FC = () => {
           <div className="lg:col-span-7 text-left space-y-8">
 
 
-            <motion.h1 
+            <MotionH1 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 }}
@@ -181,18 +216,18 @@ const Home: React.FC = () => {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 animate-shimmer-text">
                 Innovate.
               </span>
-            </motion.h1>
+            </MotionH1>
 
-            <motion.p 
+            <MotionP 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-lg md:text-xl text-slate-600 leading-relaxed max-w-xl font-medium"
             >
               Alternative Education, Industry Skills, AI Learning, School Technology Solutions, and Future-Ready Courses are breaking language barriers for everything.
-            </motion.p>
+            </MotionP>
 
-            <motion.div 
+            <MotionDiv 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
@@ -205,10 +240,10 @@ const Home: React.FC = () => {
               <Link to="/contact" className="px-8 py-4 bg-white/80 backdrop-blur-md text-slate-900 rounded-2xl font-bold hover:bg-slate-100 border border-slate-200/80 hover:-translate-y-1 transition-all duration-300 shadow-sm">
                 Partner With Us
               </Link>
-            </motion.div>
+            </MotionDiv>
 
             {/* Quick Metrics */}
-            <motion.div 
+            <MotionDiv 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.4 }}
@@ -227,12 +262,12 @@ const Home: React.FC = () => {
                   <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{stat.label}</div>
                 </div>
               ))}
-            </motion.div>
+            </MotionDiv>
           </div>
 
           {/* Hero Right: Interactive Floating Skill Sphere */}
           <div className="lg:col-span-5 relative flex justify-center items-center h-[600px]">
-            <motion.div 
+            <MotionDiv 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
@@ -277,7 +312,7 @@ const Home: React.FC = () => {
               {/* Orbital Path rings */}
               <div className="absolute w-[400px] h-[400px] rounded-full border border-emerald-500/10 pointer-events-none" />
               <div className="absolute w-[480px] h-[480px] rounded-full border border-blue-500/5 pointer-events-none" />
-            </motion.div>
+            </MotionDiv>
           </div>
         </div>
       </section>
@@ -451,7 +486,7 @@ const Home: React.FC = () => {
                   border: "hover:border-amber-500/30"
                 }
               ].map((feature, i) => (
-                <motion.div
+                <MotionDiv
                   key={i}
                   initial={{ opacity: 0, x: 30 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -466,7 +501,7 @@ const Home: React.FC = () => {
                     <h3 className="text-lg font-black text-slate-900 tracking-tight">{feature.title}</h3>
                     <p className="text-sm text-slate-500 leading-relaxed font-medium">{feature.desc}</p>
                   </div>
-                </motion.div>
+                </MotionDiv>
               ))}
             </div>
 
@@ -478,7 +513,7 @@ const Home: React.FC = () => {
       <section className="py-32 px-6 relative">
         <div className="max-w-7xl mx-auto">
           
-          <motion.div 
+          <MotionDiv 
             initial={{ opacity: 0, y: 30 }} 
             whileInView={{ opacity: 1, y: 0 }} 
             viewport={{ once: true }} 
@@ -494,7 +529,7 @@ const Home: React.FC = () => {
             <p className="text-lg text-slate-500 max-w-xl mx-auto font-medium">
               Join industry-led training modules designed to prepare you for building real solutions.
             </p>
-          </motion.div>
+          </MotionDiv>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {(() => {
@@ -513,7 +548,7 @@ const Home: React.FC = () => {
                 const courseData = PLATFORM_COURSES[course.courseIdx];
                 return (
                   <Link key={idx} to={`/courses/${courseId}`} className="block">
-                    <motion.div
+                    <MotionDiv
                       initial={{ opacity: 0, y: 35 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
@@ -545,14 +580,14 @@ const Home: React.FC = () => {
                           Details <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                         </span>
                       </div>
-                    </motion.div>
+                    </MotionDiv>
                   </Link>
                 );
               });
             })()}
           </div>
 
-          <motion.div 
+          <MotionDiv 
             initial={{ opacity: 0, y: 20 }} 
             whileInView={{ opacity: 1, y: 0 }} 
             viewport={{ once: true }} 
@@ -561,7 +596,7 @@ const Home: React.FC = () => {
             <Link to="/courses" className="inline-flex items-center gap-2 px-8 py-4 bg-slate-950 text-white rounded-2xl font-bold hover:bg-slate-900 transition-all hover:-translate-y-1 shadow-xl shadow-slate-950/10">
               View All Courses <ArrowRight className="w-5 h-5" />
             </Link>
-          </motion.div>
+          </MotionDiv>
         </div>
       </section>
 
@@ -569,7 +604,7 @@ const Home: React.FC = () => {
       <section className="py-32 px-6 bg-slate-100/50 border-y border-slate-200/40 relative">
         <div className="max-w-7xl mx-auto">
           
-          <motion.div 
+          <MotionDiv 
             initial={{ opacity: 0, y: 30 }} 
             whileInView={{ opacity: 1, y: 0 }} 
             viewport={{ once: true }} 
@@ -585,7 +620,7 @@ const Home: React.FC = () => {
             <p className="text-lg text-slate-500 max-w-xl mx-auto font-medium">
               From academic mastery to high-growth career tracks, discover tailored curriculum structures.
             </p>
-          </motion.div>
+          </MotionDiv>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
@@ -606,7 +641,7 @@ const Home: React.FC = () => {
                 items: ["Instrumental Music", "Choreography & Dance", "Visual UI/UX Design", "Cinematography Basics"]
               },
             ].map((cat, idx) => (
-              <motion.div
+              <MotionDiv
                 key={idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -633,7 +668,7 @@ const Home: React.FC = () => {
                   <span>Syllabus Available</span>
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 </div>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
         </div>
@@ -750,7 +785,7 @@ const Home: React.FC = () => {
       <section className="py-32 px-6 relative bg-white border-y border-slate-200/50">
         <div className="max-w-7xl mx-auto">
           
-          <motion.div 
+          <MotionDiv 
             initial={{ opacity: 0, y: 30 }} 
             whileInView={{ opacity: 1, y: 0 }} 
             viewport={{ once: true }} 
@@ -763,7 +798,7 @@ const Home: React.FC = () => {
             <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.9]">
               One Ecosystem. Endless Opportunities.
             </h2>
-          </motion.div>
+          </MotionDiv>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
@@ -774,7 +809,7 @@ const Home: React.FC = () => {
               "Bespoke School Platforms",
               "Verified Degree Pathways",
             ].map((item, idx) => (
-              <motion.div
+              <MotionDiv
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -786,7 +821,7 @@ const Home: React.FC = () => {
                   <CheckCircle className="w-5 h-5 text-emerald-500" />
                 </div>
                 <span className="font-bold text-slate-900 text-sm">{item}</span>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
         </div>
@@ -796,7 +831,7 @@ const Home: React.FC = () => {
       <section className="py-32 px-6 relative bg-slate-50/50">
         <div className="max-w-7xl mx-auto">
           
-          <motion.div 
+          <MotionDiv 
             initial={{ opacity: 0, y: 30 }} 
             whileInView={{ opacity: 1, y: 0 }} 
             viewport={{ once: true }} 
@@ -814,7 +849,7 @@ const Home: React.FC = () => {
             <Link to="/resources" className="inline-flex items-center gap-2 text-emerald-600 font-black hover:text-emerald-500 transition-colors">
               Browse All Resources <ArrowRight className="w-5 h-5 animate-pulse-soft" />
             </Link>
-          </motion.div>
+          </MotionDiv>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
@@ -825,7 +860,7 @@ const Home: React.FC = () => {
               { icon: <Compass className="w-6 h-6" />, title: "Professional Roadmaps", desc: "Follow progressive flowcharts for engineering and design tracks." },
               { icon: <Sparkles className="w-6 h-6" />, title: "AI Learning Manuals", desc: "Unlock prompt guidelines, tutorial sheets, and code logs." },
             ].map((item, i) => (
-              <motion.div
+              <MotionDiv
                 key={i} 
                 initial={{ opacity: 0, y: 30 }} 
                 whileInView={{ opacity: 1, y: 0 }} 
@@ -838,7 +873,7 @@ const Home: React.FC = () => {
                   <h3 className="text-lg font-bold text-slate-900 mb-2 leading-tight">{item.title}</h3>
                   <p className="text-xs text-slate-400 font-semibold leading-relaxed">{item.desc}</p>
                 </div>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
         </div>
@@ -848,7 +883,7 @@ const Home: React.FC = () => {
       <section className="py-32 px-6 relative bg-white border-y border-slate-200/50">
         <div className="max-w-7xl mx-auto">
           
-          <motion.div 
+          <MotionDiv 
             initial={{ opacity: 0, y: 30 }} 
             whileInView={{ opacity: 1, y: 0 }} 
             viewport={{ once: true }} 
@@ -861,7 +896,7 @@ const Home: React.FC = () => {
             <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.9]">
               Your Path to Success
             </h2>
-          </motion.div>
+          </MotionDiv>
 
           {/* For Students */}
           <div className="mb-24">
@@ -876,7 +911,7 @@ const Home: React.FC = () => {
                 { step: 3, icon: <Hammer className="w-6 h-6" />, title: "3. Complete Lab Projects", desc: "Translate theoretical learning into working software or systems." },
                 { step: 4, icon: <Award className="w-6 h-6" />, title: "4. Earn Qualifications", desc: "Secure industry-recognized credits and build portfolio assets." },
               ].map((item, idx) => (
-                <motion.div
+                <MotionDiv
                   key={idx}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -890,7 +925,7 @@ const Home: React.FC = () => {
                   {idx < 3 && <div className="hidden lg:block absolute top-8 left-[60%] w-[calc(100%-80px)] h-px bg-slate-200" />}
                   <h4 className="text-lg font-black text-slate-900 mb-2 leading-tight">{item.title}</h4>
                   <p className="text-xs text-slate-500 leading-relaxed font-semibold">{item.desc}</p>
-                </motion.div>
+                </MotionDiv>
               ))}
             </div>
           </div>
@@ -908,7 +943,7 @@ const Home: React.FC = () => {
                 { step: 3, icon: <Rocket className="w-6 h-6" />, title: "3. Deployment & Training", desc: "Setup portal directories and onboard academic departments." },
                 { step: 4, icon: <RefreshCw className="w-6 h-6" />, title: "4. Core Support", desc: "Provide secure cloud hosting and regular patch updates." },
               ].map((item, idx) => (
-                <motion.div
+                <MotionDiv
                   key={idx}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -922,7 +957,7 @@ const Home: React.FC = () => {
                   {idx < 3 && <div className="hidden lg:block absolute top-8 left-[60%] w-[calc(100%-80px)] h-px bg-slate-200" />}
                   <h4 className="text-lg font-black text-slate-900 mb-2 leading-tight">{item.title}</h4>
                   <p className="text-xs text-slate-500 leading-relaxed font-semibold">{item.desc}</p>
-                </motion.div>
+                </MotionDiv>
               ))}
             </div>
           </div>
@@ -935,7 +970,7 @@ const Home: React.FC = () => {
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/3 animate-drift-reverse" />
         <div className="max-w-7xl mx-auto relative z-10">
           
-          <motion.div 
+          <MotionDiv 
             initial={{ opacity: 0, y: 30 }} 
             whileInView={{ opacity: 1, y: 0 }} 
             viewport={{ once: true }} 
@@ -948,7 +983,7 @@ const Home: React.FC = () => {
             <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-[0.9]">
               Our Global Footprint
             </h2>
-          </motion.div>
+          </MotionDiv>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -957,7 +992,7 @@ const Home: React.FC = () => {
               { value: 100, label: "Learning Roadmaps", icon: <BookOpen className="w-6 h-6" />, suffix: "+" },
               { value: 20, label: "Expert Instructors", icon: <Star className="w-6 h-6" />, suffix: "+" },
             ].map((metric, idx) => (
-              <motion.div
+              <MotionDiv
                 key={idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -972,7 +1007,7 @@ const Home: React.FC = () => {
                   <AnimatedCounter value={metric.value} suffix={metric.suffix || ''} />
                 </div>
                 <div className="text-xs text-emerald-300/80 font-bold uppercase tracking-wider">{metric.label}</div>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
         </div>
@@ -981,7 +1016,7 @@ const Home: React.FC = () => {
       {/* ═══════════════════════════════════════════════════════ Final CTA */}
       <section className="py-32 px-6 relative bg-white">
         <div className="max-w-7xl mx-auto">
-          <motion.div 
+          <MotionDiv 
             initial={{ opacity: 0, y: 30 }} 
             whileInView={{ opacity: 1, y: 0 }} 
             viewport={{ once: true }}
@@ -1012,7 +1047,7 @@ const Home: React.FC = () => {
                 </Link>
               </div>
             </div>
-          </motion.div>
+          </MotionDiv>
         </div>
       </section>
 
