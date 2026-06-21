@@ -266,7 +266,7 @@ const Home: React.FC = () => {
           </div>
 
           {/* Hero Right: Interactive Floating Skill Sphere */}
-          <div className="lg:col-span-5 relative flex justify-center items-center h-[320px] sm:h-[450px] md:h-[500px] lg:h-[600px]">
+          <div className="hidden md:flex lg:col-span-5 relative justify-center items-center h-[500px] lg:h-[600px]">
             <MotionDiv 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
