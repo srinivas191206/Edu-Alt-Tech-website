@@ -71,47 +71,61 @@ const AdminDashboard: React.FC = () => {
  setIsCourseModalOpen(true);
  };
 
- const handleSaveCourse = async () => {
- if (!courseForm.title.trim()) { toast.error('Title is required'); return; }
- setSavingCourse(true);
- try {
- if (editingCourse) {
- await updateDoc(doc(db, 'courses', editingCourse.id), courseForm);
- toast.success('Course updated');
- } else {
- await addDoc(collection(db, 'courses'), { ...courseForm, createdAt: serverTimestamp(), createdBy: auth.currentUser?.uid || 'admin' });
- toast.success('Course created');
- }
- setIsCourseModalOpen(false);
- fetchData();
- } catch (e: any) {
- toast.error(e?.message || 'Failed to save course');
- } finally {
- setSavingCourse(false);
- }
- };
+  const isPlatformCourse = (id: string) => id.startsWith('pc-');
 
- const handleDeleteCourse = async (courseId: string, title: string) => {
- if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
- try {
- await deleteDoc(doc(db, 'courses', courseId));
- toast.success('Course deleted');
- fetchData();
- } catch (e: any) {
- toast.error(e?.message || 'Failed to delete course');
- }
- };
+  const handleSaveCourse = async () => {
+  if (!courseForm.title.trim()) { toast.error('Title is required'); return; }
+  if (editingCourse && isPlatformCourse(editingCourse.id)) {
+  toast.error('Platform courses cannot be edited here. Update data/platformCourses.ts instead.');
+  return;
+  }
+  setSavingCourse(true);
+  try {
+  if (editingCourse) {
+  await updateDoc(doc(db, 'courses', editingCourse.id), courseForm);
+  toast.success('Course updated');
+  } else {
+  await addDoc(collection(db, 'courses'), { ...courseForm, createdAt: serverTimestamp(), createdBy: auth.currentUser?.uid || 'admin' });
+  toast.success('Course created');
+  }
+  setIsCourseModalOpen(false);
+  fetchData();
+  } catch (e: any) {
+  toast.error(e?.message || 'Failed to save course');
+  } finally {
+  setSavingCourse(false);
+  }
+  };
 
- const handleToggleComingSoon = async (course: any) => {
- const newVal = !course.comingSoon;
- try {
- await updateDoc(doc(db, 'courses', course.id), { comingSoon: newVal });
- toast.success(newVal ? 'Marked as Coming Soon' : 'Course released');
- fetchData();
- } catch (e: any) {
- toast.error(e?.message || 'Failed to update course');
- }
- };
+  const handleDeleteCourse = async (courseId: string, title: string) => {
+  if (isPlatformCourse(courseId)) {
+  toast.error('Platform courses cannot be deleted here. Remove from data/platformCourses.ts instead.');
+  return;
+  }
+  if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+  try {
+  await deleteDoc(doc(db, 'courses', courseId));
+  toast.success('Course deleted');
+  fetchData();
+  } catch (e: any) {
+  toast.error(e?.message || 'Failed to delete course');
+  }
+  };
+
+  const handleToggleComingSoon = async (course: any) => {
+  if (isPlatformCourse(course.id)) {
+  toast.error('Platform courses cannot be toggled here. Update data/platformCourses.ts instead.');
+  return;
+  }
+  const newVal = !course.comingSoon;
+  try {
+  await updateDoc(doc(db, 'courses', course.id), { comingSoon: newVal });
+  toast.success(newVal ? 'Marked as Coming Soon' : 'Course released');
+  fetchData();
+  } catch (e: any) {
+  toast.error(e?.message || 'Failed to update course');
+  }
+  };
 
  const filteredCoursesList = useMemo(() => {
  return coursesList.filter((c: any) => {
