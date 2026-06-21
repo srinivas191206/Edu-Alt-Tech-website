@@ -1,6 +1,8 @@
 -- 1. Add missing columns to enrollments
 ALTER TABLE enrollments ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'student';
 ALTER TABLE enrollments ADD COLUMN IF NOT EXISTS student_status TEXT DEFAULT 'active';
+ALTER TABLE enrollments ADD COLUMN IF NOT EXISTS payment_status TEXT DEFAULT 'not-required';
+ALTER TABLE enrollments ADD COLUMN IF NOT EXISTS mentor_id TEXT;
 
 -- 2. Drop the old restrictive INSERT policy (requires exact user_id match)
 DROP POLICY IF EXISTS "Users can insert own enrollments" ON enrollments;
