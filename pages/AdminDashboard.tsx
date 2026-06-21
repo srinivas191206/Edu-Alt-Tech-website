@@ -69,9 +69,8 @@ const AdminDashboard: React.FC = () => {
  });
  setEditingCourse(course);
  setIsCourseModalOpen(true);
- };
+  };
 
-<<<<<<< HEAD
   const isPlatformCourse = (id: string) => id.startsWith('pc-');
 
   const savePlatformOverrides = (overrides: Record<string, any>) => {
@@ -163,48 +162,6 @@ const AdminDashboard: React.FC = () => {
   } catch (e: any) {
   toast.error(e?.message || 'Failed to update course');
   }
-=======
- const handleSaveCourse = async () => {
- if (!courseForm.title.trim()) { toast.error('Title is required'); return; }
- setSavingCourse(true);
- try {
- if (editingCourse) {
- await updateDoc(doc(db, 'courses', editingCourse.id), courseForm);
- toast.success('Course updated');
- } else {
- await addDoc(collection(db, 'courses'), { ...courseForm, createdAt: serverTimestamp(), createdBy: auth.currentUser?.uid || 'admin' });
- toast.success('Course created');
- }
-    setIsCourseModalOpen(false);
-  } catch (e: any) {
-    toast.error(e?.message || 'Failed to save course');
-  } finally {
-    setSavingCourse(false);
-  }
-  await fetchData();
- };
-
-const handleDeleteCourse = async (courseId: string, title: string) => {
-  if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
-  try {
-  await deleteDoc(doc(db, 'courses', courseId));
-  toast.success('Course deleted');
-  } catch (e: any) {
-  toast.error(e?.message || 'Failed to delete course');
-  }
-  await fetchData();
-  };
-
-const handleToggleComingSoon = async (course: any) => {
-  const newVal = !course.comingSoon;
-  try {
-  await updateDoc(doc(db, 'courses', course.id), { comingSoon: newVal });
-  toast.success(newVal ? 'Marked as Coming Soon' : 'Course released');
-  } catch (e: any) {
-  toast.error(e?.message || 'Failed to update course');
-  }
-  await fetchData();
->>>>>>> 0787376 (Fix admin portal thumbnail URL not updating after save)
   };
 
  const filteredCoursesList = useMemo(() => {
