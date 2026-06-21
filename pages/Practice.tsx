@@ -328,21 +328,21 @@ const Practice: React.FC = () => {
  }, [filteredEnglish, user]);
 
  return (
- <div className="min-h-screen pt-32 pb-32 px-4 md:px-6 bg-white relative overflow-hidden">
- <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
- <div className="max-w-[1400px] mx-auto relative z-10">
- <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mb-12">
- <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 /30 border border-emerald-200 /50 text-emerald-700 font-bold uppercase tracking-widest text-[10px] mb-6">
- <Sparkles className="w-4 h-4" />
- Practice & Interview Prep
- </div>
- <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 mb-6 tracking-tighter leading-[0.9]">
- Master Coding &<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500">English Grammar</span>
- </h1>
- <p className="text-lg text-slate-500 max-w-xl font-medium">
- 460+ LeetCode problems, 52 English grammar topics, video solutions, full courses, and interview prep.
- </p>
- </motion.div>
+  <div className="practice-page-container min-h-screen pt-32 pb-32 px-4 md:px-6 bg-white relative overflow-hidden">
+  <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
+  <div className="max-w-[1400px] mx-auto relative z-10">
+  <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mb-12">
+  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 /30 border border-emerald-200 /50 text-emerald-700 font-bold uppercase tracking-widest text-[10px] mb-6">
+  <Sparkles className="w-4 h-4" />
+  Practice & Interview Prep
+  </div>
+  <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tighter leading-[0.9]">
+  Master Coding &<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500">English Grammar</span>
+  </h1>
+  <p className="text-lg text-slate-500 max-w-xl font-medium">
+  460+ LeetCode problems, 52 English grammar topics, video solutions, full courses, and interview prep.
+  </p>
+  </motion.div>
 
  {/* Tabs */}
  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex gap-2 mb-8 border-b border-slate-200 pb-4 overflow-x-auto">
