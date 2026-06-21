@@ -172,10 +172,24 @@ const CourseDetails: React.FC = () => {
  mentorId: selectedMentor || undefined,
  createdAt: serverTimestamp()
  };
- await setDoc(enrollmentRef, newEnrollment as any);
- setEnrollment(newEnrollment);
+  await setDoc(enrollmentRef, newEnrollment as any);
+  setEnrollment(newEnrollment);
 
- // Trigger Emails
+  // In-app notification for student
+  try {
+    await db.from('notifications').insert({
+      user_id: user!.uid,
+      title: 'Course Enrolled',
+      message: `You have successfully enrolled in "${course?.title || 'Unknown Course'}". Start learning now!`,
+      type: 'enrollment',
+      is_read: false,
+      created_at: new Date().toISOString()
+    });
+  } catch (e) {
+    console.error("Notification insert failed", e);
+  }
+
+  // Trigger Emails
  try {
  // 1. Notify Student
  await setDoc(doc(collection(db, 'mail')), {

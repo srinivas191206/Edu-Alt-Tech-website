@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db, onAuthStateChanged, doc, onSnapshot, collection, query, where, getDocs, getDoc } from '../lib/firebase';
-import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, ArrowRight, Clock, Star, TrendingUp, CheckCircle, Library, Sparkles, Video, CalendarCheck, AlertCircle, Users, Lightbulb, Target, MessageSquare, Send, Code2, History } from 'lucide-react';
+import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, ArrowRight, Clock, Star, TrendingUp, CheckCircle, Library, Sparkles, Video, CalendarCheck, AlertCircle, Users, Lightbulb, Target, MessageSquare, Send, Code2, History, Bell, Calendar } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserObject, CourseEnrollment, Course, TeacherApplication } from '../types';
 import { motion } from 'framer-motion';
@@ -39,8 +39,10 @@ const Dashboard: React.FC = () => {
  const [rejectionCounts, setRejectionCounts] = useState<Record<string, number>>({});
  const [leetcodeCount, setLeetcodeCount] = useState(0);
  const [englishCount, setEnglishCount] = useState(0);
- const [practiceHistory, setPracticeHistory] = useState<any[]>([]);
- const navigate = useNavigate();
+  const [practiceHistory, setPracticeHistory] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [upcomingClasses, setUpcomingClasses] = useState<any[]>([]);
+  const navigate = useNavigate();
 
  useEffect(() => {
  let cancelled = false;
@@ -138,8 +140,22 @@ const Dashboard: React.FC = () => {
  const { data: pHistory } = await db.from('practice_history').select('*').eq('user_id', u.uid).order('opened_at', { ascending: false }).limit(30);
  if (pHistory && !cancelled) setPracticeHistory(pHistory);
  } catch (_) {}
- } catch (err) { console.error("Dashboard init error", err); }
- if (!cancelled) setLoading(false);
+  // Fetch notifications
+  try {
+    const { data: notifData } = await db.from('notifications').select('*').eq('user_id', u.uid).order('created_at', { ascending: false }).limit(20);
+    if (notifData && !cancelled) setNotifications(notifData);
+  } catch (_) {}
+
+  // Fetch upcoming classes
+  try {
+    const enrolledCourseIds = studentEnr.map(e => e.courseId);
+    if (enrolledCourseIds.length > 0) {
+      const { data: classData } = await db.from('scheduled_classes').select('*').in('course_id', enrolledCourseIds).gte('scheduled_at', new Date().toISOString()).order('scheduled_at', { ascending: true }).limit(10);
+      if (classData && !cancelled) setUpcomingClasses(classData);
+    }
+  } catch (_) {}
+  } catch (err) { console.error("Dashboard init error", err); }
+  if (!cancelled) setLoading(false);
  });
  return () => { cancelled = true; unsubscribeAuth(); };
  }, []);
@@ -430,10 +446,77 @@ const Dashboard: React.FC = () => {
  </Link>
  </motion.div>
 
- {/* Quick Actions */}
- <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}
- className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"
- >
+  {/* Notifications */}
+  {notifications.length > 0 && (
+  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }}
+    className="bg-white border border-slate-200 rounded-2xl shadow-sm"
+  >
+    <div className="flex items-center justify-between px-5 pt-5 pb-2">
+      <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
+        <Bell className="w-4 h-4 text-amber-500" /> Notifications
+      </h3>
+      <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-[10px] font-bold">{notifications.length}</span>
+    </div>
+    <div className="max-h-60 overflow-y-auto custom-scrollbar divide-y divide-slate-100">
+      {notifications.slice(0, 10).map((n) => (
+      <div key={n.id} className="flex items-start gap-3 px-5 py-3 hover:bg-slate-50 transition-colors">
+        <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 text-xs font-black shadow-sm">
+          {n.type === 'schedule' ? <Calendar className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold text-slate-900">{n.title}</p>
+          <p className="text-xs text-slate-500">{n.message}</p>
+          <p className="text-[10px] text-slate-400 mt-0.5">{new Date(n.created_at).toLocaleDateString()} {new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+        </div>
+      </div>
+      ))}
+    </div>
+  </motion.div>
+  )}
+
+  {/* Upcoming Classes */}
+  {upcomingClasses.length > 0 && (
+  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+    className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"
+  >
+    <h3 className="font-bold text-sm text-slate-900 mb-3 flex items-center gap-2">
+      <Calendar className="w-4 h-4 text-blue-500" /> Upcoming Classes
+    </h3>
+    <div className="space-y-3">
+      {upcomingClasses.map((cls) => (
+      <div key={cls.id} className="flex items-start gap-3 p-3 rounded-xl bg-blue-50/50 border border-blue-100/30">
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center shrink-0 text-xs font-black shadow-sm">
+          <Calendar className="w-4 h-4" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold text-slate-900">{cls.title}</p>
+          <p className="text-xs text-slate-500">{cls.description}</p>
+          <div className="flex items-center gap-2 mt-1.5">
+            <span className="text-[10px] font-bold text-blue-600">
+              {new Date(cls.scheduled_at).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })}
+            </span>
+            <span className="text-[10px] font-bold text-blue-600">
+              {new Date(cls.scheduled_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          </div>
+          {cls.meeting_link && (
+          <a href={cls.meeting_link.startsWith('http') ? cls.meeting_link : `https://${cls.meeting_link}`} target="_blank" rel="noreferrer"
+            className="inline-flex items-center gap-1 mt-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold transition-colors"
+          >
+            <Video className="w-3 h-3" /> Join
+          </a>
+          )}
+        </div>
+      </div>
+      ))}
+    </div>
+  </motion.div>
+  )}
+
+  {/* Quick Actions */}
+  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}
+  className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"
+  >
  <h3 className="font-bold text-sm text-slate-900 mb-3">Quick Actions</h3>
  <div className="grid grid-cols-2 gap-2">
  <Link to="/practice" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 /10 /10 border border-blue-100 /30 hover:shadow-md transition-all group">

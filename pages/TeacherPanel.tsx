@@ -359,12 +359,31 @@ const TeacherPanel: React.FC = () => {
  scheduled_at: sDate || new Date().toISOString(),
  created_at: new Date().toISOString()
  });
- const teacherName = user.displayName || user.email || 'A teacher';
- await notifyAdmins(courseTitle, sTitle, sMeetLink, teacherName);
- setShowScheduleModal(false);
- setSTitle(''); setSDesc(''); setSMeetLink(''); setSDate('');
- await fetchScheduledClasses(courseId);
- toast.success("Class scheduled! Admin notified.");
+  const teacherName = user.displayName || user.email || 'A teacher';
+  await notifyAdmins(courseTitle, sTitle, sMeetLink, teacherName);
+
+  // Notify enrolled students
+  try {
+    const { data: enrolledStudents } = await db.from('enrollments').select('user_id').eq('course_id', courseId).eq('role', 'student');
+    if (enrolledStudents && enrolledStudents.length > 0) {
+      const notifInsert = enrolledStudents.map((s: any) => ({
+        user_id: s.user_id,
+        title: 'New Class Scheduled',
+        message: `A new class "${sTitle}" has been scheduled for "${courseTitle}" on ${new Date(sDate || new Date()).toLocaleDateString()}. Join link: ${sMeetLink}`,
+        type: 'schedule',
+        is_read: false,
+        created_at: new Date().toISOString()
+      }));
+      await db.from('notifications').insert(notifInsert);
+    }
+  } catch (e) {
+    console.warn("Failed to notify students", e);
+  }
+
+  setShowScheduleModal(false);
+  setSTitle(''); setSDesc(''); setSMeetLink(''); setSDate('');
+  await fetchScheduledClasses(courseId);
+  toast.success("Class scheduled! Students notified.");
  } catch (e) {
  toast.error("Failed to schedule class");
  }
