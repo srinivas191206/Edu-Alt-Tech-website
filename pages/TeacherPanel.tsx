@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { auth, db, storage, doc, getDoc, collection, query, where, getDocs, addDoc, updateDoc, serverTimestamp, ref, uploadBytes, getDownloadURL, onAuthStateChanged } from '../lib/firebase';
 import { Course, CourseEnrollment, CourseModule, ModuleLecture, CourseResource } from '../types';
+import { PLATFORM_COURSES } from '../data/platformCourses';
 import { ArrowLeft, BookOpen, Video, FileText, Plus, Link as LinkIcon, Loader2, Users, Clock, X, Upload, ExternalLink, Calendar, GraduationCap, Trash2, Edit, Save, Send, MessageSquare, UserCheck, ListOrdered, DollarSign, BarChart3, Copy, CheckCircle, Repeat } from 'lucide-react';
 import type { User } from '../lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -210,8 +211,11 @@ const TeacherPanel: React.FC = () => {
 
  for (const ds of tSnap.docs) {
  const data = ds.data();
- const course = coursesMap.get(data.courseId);
- if (!course) continue;
+  const course = coursesMap.get(data.courseId) || (() => {
+    const idx = PLATFORM_COURSES.findIndex((_, i) => `pc-${i}` === data.courseId);
+    return idx !== -1 ? { id: `pc-${idx}`, ...PLATFORM_COURSES[idx] } as Course : null;
+  })();
+  if (!course) continue;
  const { count } = await db.from('enrollments').select('id', { count: 'exact', head: true }).eq('course_id', data.courseId).neq('user_id', u.uid);
  teacherCourses.push({ id: ds.id, ...data, courseData: course, studentCount: count || 0 });
  }
