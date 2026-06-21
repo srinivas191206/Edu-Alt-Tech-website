@@ -20,12 +20,14 @@ const Profile: React.FC = () => {
  const [selectedFile, setSelectedFile] = useState<File | null>(null);
  const [successMsg, setSuccessMsg] = useState('');
 
- // Password Change State
- const [showPasswordSection, setShowPasswordSection] = useState(false);
- const [oldPassword, setOldPassword] = useState('');
- const [newPassword, setNewPassword] = useState('');
- const [confirmNewPassword, setConfirmNewPassword] = useState('');
- const [passwordLoading, setPasswordLoading] = useState(false);
+  // Password Change State
+  const [showPasswordSection, setShowPasswordSection] = useState(false);
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  // Check if user is Google-authenticated
+  const isGoogleUser = user?.isGoogleUser === true;
 
  const navigate = useNavigate();
  const containerRef = useRef<HTMLDivElement>(null);
@@ -63,44 +65,53 @@ const Profile: React.FC = () => {
  return () => unsubscribeAuth();
  }, [navigate]);
 
- const handleSaveProfile = async () => {
- if (!user) return;
- setSaving(true);
- setSuccessMsg('');
- try {
- let newPicUrl = userProfile?.profilePic;
- 
- if (selectedFile) {
- const reader = new FileReader();
- newPicUrl = await new Promise<string>((resolve, reject) => {
- reader.onload = () => resolve(reader.result as string);
- reader.onerror = reject;
- reader.readAsDataURL(selectedFile);
- });
- }
+  const handleSaveProfile = async () => {
+  if (!user) return;
+  setSaving(true);
+  setSuccessMsg('');
+  try {
+  let newPicUrl = userProfile?.profilePic;
+  
+  if (selectedFile) {
+  const reader = new FileReader();
+  newPicUrl = await new Promise<string>((resolve, reject) => {
+  reader.onload = () => resolve(reader.result as string);
+  reader.onerror = reject;
+  reader.readAsDataURL(selectedFile);
+  });
+  }
 
- const prefArray = editInterests.split(',')
- .map(s => s.trim())
- .filter(s => s.length > 0);
+  const prefArray = editInterests.split(',')
+  .map(s => s.trim())
+  .filter(s => s.length > 0);
 
- await setDoc(doc(db, 'users', user.uid), {
- classLevel: editClass,
- location: editLocation,
- preferences: prefArray,
- name: userProfile?.name || user.displayName || 'User',
- email: user.email,
- ...(newPicUrl && { profilePic: newPicUrl })
- }, { merge: true });
- 
- setIsEditing(false);
- setSuccessMsg('Profile updated successfully!');
- setSelectedFile(null);
- } catch (e: any) {
- console.error("Error updating profile", e);
- toast.error(e?.message || "Failed to update profile. Make sure you are logged in.");
- }
- setSaving(false);
- };
+  await setDoc(doc(db, 'users', user.uid), {
+  classLevel: editClass,
+  location: editLocation,
+  preferences: prefArray,
+  name: userProfile?.name || user.displayName || 'User',
+  email: user.email,
+  ...(newPicUrl && { profilePic: newPicUrl })
+  }, { merge: true });
+  
+  // Immediately update local state
+  setUserProfile(prev => prev ? {
+    ...prev,
+    classLevel: editClass,
+    location: editLocation,
+    preferences: prefArray,
+    ...(newPicUrl && { profilePic: newPicUrl }),
+  } : prev);
+  
+  setIsEditing(false);
+  setSuccessMsg('Profile updated successfully!');
+  setSelectedFile(null);
+  } catch (e: any) {
+  console.error("Error updating profile", e);
+  toast.error(e?.message || "Failed to update profile. Make sure you are logged in.");
+  }
+  setSaving(false);
+  };
 
  const handleChangePassword = async (e: React.FormEvent) => {
  e.preventDefault();
@@ -268,14 +279,14 @@ const Profile: React.FC = () => {
  )}
  </div>
 
- {/* Password Management Section */}
- <div className="pt-10 mt-10 border-t border-slate-100 ">
- <div className="flex items-center justify-between mb-6">
- <div>
-      <h3 className="text-xl font-bold text-slate-900 ">Security</h3>
-  <p className="text-sm text-slate-500">{user?.isGoogleUser ? 'Signed in with Google — password not applicable.' : 'Manage your account credentials.'}</p>
+  {/* Password Management Section */}
+  <div className="pt-10 mt-10 border-t border-slate-100 ">
+  <div className="flex items-center justify-between mb-6">
+  <div>
+       <h3 className="text-xl font-bold text-slate-900 ">Security</h3>
+  <p className="text-sm text-slate-500">{isGoogleUser ? 'Signed in with Google — password not applicable.' : 'Manage your account credentials.'}</p>
   </div>
-  {!user?.isGoogleUser && (
+  {!isGoogleUser && (
   <button 
   onClick={() => setShowPasswordSection(!showPasswordSection)} 
   className="text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
@@ -283,7 +294,7 @@ const Profile: React.FC = () => {
   {showPasswordSection ? 'Cancel' : 'Change Password'}
   </button>
   )}
- </div>
+  </div>
 
  {showPasswordSection && (
  <form onSubmit={handleChangePassword} className="space-y-4 animate-in slide-in-from-top-2 duration-300">

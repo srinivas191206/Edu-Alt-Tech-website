@@ -3,7 +3,7 @@ import { Users, Globe, BookOpen, Brain, Smartphone, ShieldCheck, GraduationCap, 
 
 export const LINKS = {
  enroll: "https://docs.google.com/forms/d/e/1FAIpQLSeQXyJQQjPwLJt-2E1P1PYBKC89z_NsX4UJewQymFPW0C0IIw/viewform",
-  whatsapp: "https://wa.me/919121505879",
+   whatsapp: "https://wa.me/919121505879?text=Hi%20Edu%20Alt%20Tech!%20I%27d%20like%20to%20know%20more%20about%20your%20platform.",
  instagram: "https://www.instagram.com/edu_alt_tech/",
  linkedin: "https://www.linkedin.com/company/edu-alt-tech/"
 };
@@ -94,7 +94,7 @@ export const TEAM: TeamMember[] = [
  role: "Human Resources",
  specialization: "Talent & Culture",
  bio: "Shapes our company culture and recruits top talent. Believes a strong team is the core of any successful mission.",
- email: "gnanasribathinagmail.com",
+  email: "gnanasribathina@gmail.com",
  image: "/images/team/gnanasri.jpg"
  }
 ];

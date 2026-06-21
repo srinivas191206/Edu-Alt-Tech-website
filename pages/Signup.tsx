@@ -45,14 +45,18 @@ const Signup: React.FC = () => {
  return;
  }
 
- if (!userCredential.user) return;
- // Save additional user info to Firestore
- await setDoc(doc(db, 'users', userCredential.user.uid), {
- name,
- email,
- phone,
- createdAt: serverTimestamp()
- });
+  if (!userCredential.user) {
+  setError('Account creation failed. Please check your email confirmation settings and try again.');
+  setLoading(false);
+  return;
+  }
+  // Save additional user info to Firestore
+  await setDoc(doc(db, 'users', userCredential.user.uid), {
+  name,
+  email,
+  phone,
+  createdAt: serverTimestamp()
+  });
 
 
  // Update the user profile with the name

@@ -196,7 +196,7 @@ const Home: React.FC = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-lg md:text-xl text-slate-600 leading-relaxed max-w-xl font-medium"
             >
-              Alternative Education, Industry Skills, AI Learning, School Technology Solutions, and Future-Ready Courses — breaking language barriers for everything.
+              Alternative Education, Industry Skills, AI Learning, School Technology Solutions, and Future-Ready Courses are breaking language barriers for everything.
             </motion.p>
 
             <motion.div 

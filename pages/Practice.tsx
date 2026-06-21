@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Youtube, Code2, BookOpen, Briefcase, Sparkles, ExternalLink, GraduationCap } from 'lucide-react';
+import { Search, Youtube, Code2, BookOpen, Briefcase, Sparkles, ExternalLink, GraduationCap, X } from 'lucide-react';
+import { normalizeSearch } from '../lib/search';
 import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, YOUTUBE_CHANNELS, ENGLISH_EXERCISES } from '../data/problems';
 import type { LeetCodeProblem, CourseLink, InterviewExperience, EnglishExercise, YouTubeChannel } from '../data/problems';
 import { auth, onAuthStateChanged, db, collection, getDocs, query, orderBy } from '../lib/firebase';
@@ -279,14 +280,15 @@ const Practice: React.FC = () => {
  return Array.from(companies).sort();
  }, [problemSet]);
 
-  const filteredProblems = useMemo(() => {
-  return currentProblems.filter(p => {
-    const matchSearch = !search || p.title.toLowerCase().includes(search.toLowerCase()) || String(p.num).includes(search);
-    const matchTopic = !topicFilter || p.topic === topicFilter;
-    const matchDiff = !diffFilter || p.difficulty === diffFilter;
-    return matchSearch && matchTopic && matchDiff;
-  });
-  }, [currentProblems, search, topicFilter, diffFilter]);
+   const filteredProblems = useMemo(() => {
+   const normalizedSearch = normalizeSearch(search);
+   return currentProblems.filter(p => {
+     const matchSearch = !normalizedSearch || normalizeSearch(p.title).includes(normalizedSearch) || String(p.num).includes(search);
+     const matchTopic = !topicFilter || p.topic === topicFilter;
+     const matchDiff = !diffFilter || p.difficulty === diffFilter;
+     return matchSearch && matchTopic && matchDiff;
+   });
+   }, [currentProblems, search, topicFilter, diffFilter]);
 
  const displayedProblems = useMemo(() => {
  return !user ? filteredProblems.slice(0, 3) : filteredProblems;
@@ -312,13 +314,14 @@ const Practice: React.FC = () => {
  return Array.from(new Set(ENGLISH_EXERCISES.map(e => e.level))).sort();
  }, []);
 
-  const filteredEnglish = useMemo(() => {
-  return ENGLISH_EXERCISES.filter(e => {
-    const matchSearch = !englishSearch || e.title.toLowerCase().includes(englishSearch.toLowerCase()) || e.level.toLowerCase().includes(englishSearch.toLowerCase()) || String(e.num).includes(englishSearch);
-    const matchLevel = !levelFilter || e.level === levelFilter;
-    return matchSearch && matchLevel;
-  });
-  }, [englishSearch, levelFilter]);
+   const filteredEnglish = useMemo(() => {
+   const normalizedSearch = normalizeSearch(englishSearch);
+   return ENGLISH_EXERCISES.filter(e => {
+     const matchSearch = !normalizedSearch || normalizeSearch(e.title).includes(normalizedSearch) || normalizeSearch(e.level).includes(normalizedSearch) || String(e.num).includes(englishSearch);
+     const matchLevel = !levelFilter || e.level === levelFilter;
+     return matchSearch && matchLevel;
+   });
+   }, [englishSearch, levelFilter]);
 
  const displayedEnglish = useMemo(() => {
  return !user ? filteredEnglish.slice(0, 3) : filteredEnglish;
@@ -372,9 +375,9 @@ const Practice: React.FC = () => {
  <button onClick={() => setProblemSet('top150')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
  problemSet === 'top150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
  }`}>Top Interview 150 ({TOP_INTERVIEW_150.length})</button>
- <button onClick={() => setProblemSet('admin')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
- problemSet === 'admin' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
- }`}>Custom ({adminProblems.length})</button>
+  {adminProblems.length > 0 && <button onClick={() => setProblemSet('admin')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+  problemSet === 'admin' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
+  }`}>Custom ({adminProblems.length})</button>}
  </motion.div>
 
   {/* Filters */}
@@ -400,6 +403,12 @@ const Practice: React.FC = () => {
   <option value="Medium">Medium</option>
   <option value="Hard">Hard</option>
   </select>
+  {(search || topicFilter || diffFilter) && (
+    <button onClick={() => { setSearch(''); setTopicFilter(''); setDiffFilter(''); }}
+      className="flex items-center gap-1.5 px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:text-red-500 hover:border-red-200 transition-colors">
+      <X className="w-3.5 h-3.5" /> Clear
+    </button>
+  )}
   </div>
   </motion.div>
 
@@ -415,14 +424,24 @@ const Practice: React.FC = () => {
  </>
  )}
 
- {/* Full Courses Tab */}
- {tab === 'courses' && (
- <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
- {displayedCourses.map(c => (
- <CourseCard key={c.num} course={c} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
- ))}
- </motion.div>
- )}
+  {/* Full Courses Tab */}
+  {tab === 'courses' && (
+  <>
+  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-4 mb-6">
+    <div className="relative flex-1 min-w-[200px] max-w-sm">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+      <input type="text" placeholder="Search full courses..." value={search} onChange={e => setSearch(e.target.value)}
+        className="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder-slate-400"
+      />
+    </div>
+  </motion.div>
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+  {displayedCourses.filter(c => !search || normalizeSearch(c.title).includes(normalizeSearch(search))).map(c => (
+  <CourseCard key={c.num} course={c} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
+  ))}
+  </motion.div>
+  </>
+  )}
 
  {/* Interview Experiences Tab */}
  {tab === 'interviews' && (
@@ -443,13 +462,19 @@ const Practice: React.FC = () => {
  className="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder-slate-400"
  />
  </div>
- <select value={levelFilter} onChange={e => setLevelFilter(e.target.value)}
- className="px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none"
- >
- <option value="">All Levels</option>
- {allLevels.map(l => <option key={l} value={l}>{l}</option>)}
- </select>
- </motion.div>
+  <select value={levelFilter} onChange={e => setLevelFilter(e.target.value)}
+  className="px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none"
+  >
+  <option value="">All Levels</option>
+  {allLevels.map(l => <option key={l} value={l}>{l}</option>)}
+  </select>
+  {(englishSearch || levelFilter) && (
+    <button onClick={() => { setEnglishSearch(''); setLevelFilter(''); }}
+      className="flex items-center gap-1.5 px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:text-red-500 hover:border-red-200 transition-colors">
+      <X className="w-3.5 h-3.5" /> Clear
+    </button>
+  )}
+  </motion.div>
  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
  {displayedEnglish.map(e => (
  <EnglishExerciseCard key={e.num} exercise={e} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
