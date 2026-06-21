@@ -266,22 +266,22 @@ const Home: React.FC = () => {
           </div>
 
           {/* Hero Right: Interactive Floating Skill Sphere */}
-          <div className="lg:col-span-5 relative flex justify-center items-center h-[600px]">
+          <div className="lg:col-span-5 relative flex justify-center items-center h-[320px] sm:h-[450px] md:h-[500px] lg:h-[600px]">
             <MotionDiv 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="relative w-[420px] h-[420px] rounded-full bg-gradient-to-br from-emerald-500/10 to-blue-500/10 flex items-center justify-center border border-emerald-500/20 shadow-2xl backdrop-blur-xl"
+              className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] md:w-[420px] md:h-[420px] rounded-full bg-gradient-to-br from-emerald-500/10 to-blue-500/10 flex items-center justify-center border border-emerald-500/20 shadow-2xl backdrop-blur-xl"
               style={{ willChange: 'transform' }}
             >
               {/* Central Logo Orb */}
-              <div className="w-44 h-44 rounded-full bg-white flex items-center justify-center shadow-2xl border border-slate-100 z-20 group relative overflow-hidden">
+              <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full bg-white flex items-center justify-center shadow-2xl border border-slate-100 z-20 group relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-tr from-emerald-50 to-teal-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <img src="/edulogo.png" loading="lazy" decoding="async" alt="EduAltTech Logo" className="w-24 h-24 object-contain z-10 animate-float" />
+                <img src="/edulogo.png" loading="lazy" decoding="async" alt="EduAltTech Logo" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain z-10 animate-float" />
               </div>
 
               {/* Orbiting Language Characters representing barrier breaking */}
-              <div className="absolute inset-0 w-full h-full pointer-events-none">
+              <div className="hidden md:block absolute inset-0 w-full h-full pointer-events-none">
                 <div className="absolute inset-0 animate-orbit-1 flex items-center justify-center">
                   <span className="bg-white px-4 py-2 rounded-full border border-slate-100 shadow-md font-bold text-emerald-600 text-base flex items-center gap-1.5 select-none pointer-events-auto">
                     <span>अ</span> <span className="text-xs text-slate-400 font-medium">Hindi</span>
@@ -310,8 +310,8 @@ const Home: React.FC = () => {
               </div>
 
               {/* Orbital Path rings */}
-              <div className="absolute w-[400px] h-[400px] rounded-full border border-emerald-500/10 pointer-events-none" />
-              <div className="absolute w-[480px] h-[480px] rounded-full border border-blue-500/5 pointer-events-none" />
+              <div className="hidden md:block absolute w-[400px] h-[400px] rounded-full border border-emerald-500/10 pointer-events-none" />
+              <div className="hidden md:block absolute w-[480px] h-[480px] rounded-full border border-blue-500/5 pointer-events-none" />
             </MotionDiv>
           </div>
         </div>

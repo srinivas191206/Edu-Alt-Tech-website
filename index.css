@@ -173,5 +173,14 @@ h3 {
     animation: none !important;
   }
 }
+
+@media (max-width: 767px) {
+  .animate-float, .animate-float-slow, .animate-drift, .animate-drift-reverse,
+  .animate-pulse-soft, .animate-blur-oscillate, .animate-grid-scroll,
+  .animate-morph-blob, .animate-rotate-gradient, .soundwave-bar {
+    animation: none !important;
+  }
+}
+
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
