@@ -338,7 +338,7 @@ const CourseDetails: React.FC = () => {
  </div>
  <div className="flex flex-col items-start md:items-end flex-shrink-0">
  <span className="text-3xl font-bold text-emerald-600 mb-2">
- {course.price === 0 || !course.price ? 'Free' : `₹${course.price}`}
+  {course.price === 0 || !course.price ? 'Free' : `₹${course.price}/month`}
  </span>
  <span className="text-sm font-medium text-slate-500 flex items-center gap-1"><Users className="w-4 h-4" /> Open for enrollment</span>
  </div>
@@ -376,7 +376,7 @@ const CourseDetails: React.FC = () => {
  A mentor is ready to teach you. Please complete the payment to start learning.
  </p>
  <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-colors w-full md:w-auto">
- Pay ₹{course.price || 0} Now
+  Pay ₹{course.price || 0}/month
  </button>
  </>
  ) : (
@@ -446,7 +446,7 @@ const CourseDetails: React.FC = () => {
  {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 
  (!course?.price || course.price === 0 ? 
  (selectedMentor ? 'Enroll Now (Free)' : 'Select a Mentor') : 
- (selectedMentor ? `Pay ₹${course.price} & Enroll` : 'Select a Mentor to Pay')
+  (selectedMentor ? `Pay ₹${course.price}/month` : 'Select a Mentor to Pay')
  )
  }
  </button>

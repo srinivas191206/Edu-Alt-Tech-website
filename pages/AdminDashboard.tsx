@@ -867,7 +867,7 @@ const AdminDashboard: React.FC = () => {
  </td>
  <td className="px-4 sm:px-8 py-4 sm:py-5 hidden sm:table-cell">
  <span className={`text-xs font-bold ${!course.price || course.price === 0 ? 'text-emerald-500' : 'text-slate-700 '}`}>
- {!course.price || course.price === 0 ? 'Free' : `₹${course.price}`}
+  {!course.price || course.price === 0 ? 'Free' : `₹${course.price}/month`}
  </span>
  </td>
  <td className="px-4 sm:px-8 py-4 sm:py-5 hidden sm:table-cell">
@@ -1009,7 +1009,7 @@ const AdminDashboard: React.FC = () => {
  </td>
  <td className="px-4 sm:px-8 py-4 sm:py-5">
  <span className={`text-xs font-bold ${!course.price || course.price === 0 ? 'text-emerald-500' : 'text-slate-700 '}`}>
- {!course.price || course.price === 0 ? 'Free' : `₹${course.price}`}
+  {!course.price || course.price === 0 ? 'Free' : `₹${course.price}/month`}
  </span>
  </td>
  <td className="px-4 sm:px-8 py-4 sm:py-5 text-right">
@@ -1250,7 +1250,7 @@ const AdminDashboard: React.FC = () => {
  <textarea value={courseForm.description} onChange={e => setCourseForm(f => ({ ...f, description: e.target.value }))} rows={3} placeholder="Course description..." className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors resize-none" />
  </div>
  <div>
- <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Price (₹)</label>
+  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Price (₹/month)</label>
  <input type="number" value={courseForm.price} onChange={e => setCourseForm(f => ({ ...f, price: Number(e.target.value) }))} placeholder="0 = Free" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
  </div>
  <div>
