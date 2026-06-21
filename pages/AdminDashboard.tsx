@@ -627,7 +627,7 @@ const AdminDashboard: React.FC = () => {
  <motion.div 
  layout
  key={app.id} 
- className="group bg-white p-6 sm:p-8 rounded-[2.5rem] border border-slate-200/50 /50 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] :shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] transition-shadow duration-500 relative overflow-hidden"
+ className="group bg-white p-6 sm:p-8 rounded-[2.5rem] border border-slate-200/50 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] transition-shadow duration-500 relative"
  >
  <div className="absolute top-0 right-0 p-6 flex items-center gap-2">
  <div className={`w-2 h-2 rounded-full animate-pulse ${

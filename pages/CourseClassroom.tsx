@@ -421,14 +421,15 @@ const CourseClassroom: React.FC = () => {
  </div>
  </div>
 
- <AnimatePresence>
- {isExpanded && (
- <motion.div
- initial={{ maxHeight: 0, opacity: 0 }}
- animate={{ maxHeight: "1000px", opacity: 1 }}
- exit={{ maxHeight: 0, opacity: 0 }}
- className="overflow-hidden max-h-[1000px]"
- >
+ <AnimatePresence mode="wait">
+  {isExpanded && (
+  <motion.div
+  initial={{ height: 0, opacity: 0 }}
+  animate={{ height: 'auto', opacity: 1 }}
+  exit={{ height: 0, opacity: 0 }}
+  transition={{ duration: 0.3 }}
+  className="overflow-hidden will-change-transform"
+  >
  <div className="px-8 pb-10 md:px-10 space-y-6">
  <div className="pt-8 border-t border-slate-100 ">
  {(!mod.lectures || mod.lectures.length === 0) ? (

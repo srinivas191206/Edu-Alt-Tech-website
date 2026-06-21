@@ -581,9 +581,9 @@ const TeacherPanel: React.FC = () => {
  </div>
  </button>
 
- <AnimatePresence>
- {expandedCourse === course.courseId && (
- <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden">
+ <AnimatePresence mode="wait">
+  {expandedCourse === course.courseId && (
+  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden will-change-transform">
  <div className="px-8 pb-8 border-t border-slate-100 ">
  {/* Course Tabs */}
  <div className="flex gap-1 -mx-8 px-8 pt-4 pb-2 border-b border-slate-100 mb-6 overflow-x-auto">
