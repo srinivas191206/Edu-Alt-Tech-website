@@ -442,7 +442,7 @@ const TeacherPanel: React.FC = () => {
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
  <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none mb-2">
- {viewMode === 'overview' ? 'Dashboard' : 'My <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-indigo-500">Courses</span>'}
+  {viewMode === 'overview' ? 'Dashboard' : <>My <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-indigo-500">Courses</span></>}
  </h1>
  <p className="text-lg text-slate-500 font-medium max-w-xl">
  {viewMode === 'overview' ? 'Your teaching at a glance.' : 'Manage your courses, students, chat, and schedule live classes.'}
