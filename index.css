@@ -10,24 +10,29 @@ html, body {
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
   font-size: clamp(16px, 1vw + 14px, 18px);
   line-height: 1.6;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', 'Poppins', sans-serif;
+}
+
 h1 {
-  font-family: 'Poppins', sans-serif;
   font-size: clamp(2rem, 5vw, 4rem);
 }
 
 h2 {
-  font-family: 'Poppins', sans-serif;
   font-size: clamp(1.5rem, 4vw, 3rem);
 }
 
 h3 {
-  font-family: 'Poppins', sans-serif;
   font-size: clamp(1.25rem, 3vw, 2rem);
+}
+
+code, pre, .font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 .bg-primary { background-color: #90EE90; }
 .text-primary { color: #90EE90; }
@@ -177,7 +182,7 @@ h3 {
 @media (max-width: 767px) {
   .animate-float, .animate-float-slow, .animate-drift, .animate-drift-reverse,
   .animate-pulse-soft, .animate-blur-oscillate, .animate-grid-scroll,
-  .animate-morph-blob, .animate-rotate-gradient, .soundwave-bar {
+  .animate-morph-blob, .animate-rotate-gradient {
     animation: none !important;
   }
 }
