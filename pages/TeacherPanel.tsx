@@ -136,17 +136,10 @@ const TeacherPanel: React.FC = () => {
   };
 
   const chatUnsubRef = useRef<(() => void) | null>(null);
+  const chatPollRef = useRef<number | null>(null);
 
-  const subscribeChat = (courseId: string) => {
-  chatUnsubRef.current?.();
-  const q = query(
-  collection(db, 'course_chat_messages'),
-  where('courseId', '==', courseId),
-  orderBy('createdAt', 'asc')
-  );
-  const unsub = onSnapshot(q, async (snap: any) => {
-  const raw = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
-  const enriched = await Promise.all(raw.map(async (msg: any) => {
+  const enrichMessages = async (raw: any[]) => {
+  return Promise.all(raw.map(async (msg: any) => {
   let senderName = msg.senderName || msg.sender_name || 'User';
   if (msg.role === 'teacher' && msg.userId === user?.uid) senderName = 'You';
   else if (msg.role === 'teacher') senderName = senderName || 'Teacher';
@@ -158,9 +151,35 @@ const TeacherPanel: React.FC = () => {
   }
   return { ...msg, senderName };
   }));
+  };
+
+  const fetchChatDirect = async (courseId: string) => {
+  try {
+  const { data, error } = await db.from('course_chat_messages').select('*').eq('course_id', courseId).order('created_at', { ascending: true });
+  if (!error && data) {
+  const enriched = await enrichMessages(data);
+  setCourseChatMessages(enriched);
+  }
+  } catch (_) {}
+  };
+
+  const subscribeChat = (courseId: string) => {
+  chatUnsubRef.current?.();
+  if (chatPollRef.current) { clearInterval(chatPollRef.current); chatPollRef.current = null; }
+  const q = query(
+  collection(db, 'course_chat_messages'),
+  where('courseId', '==', courseId),
+  orderBy('createdAt', 'asc')
+  );
+  const unsub = onSnapshot(q, async (snap: any) => {
+  const raw = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
+  const enriched = await enrichMessages(raw);
   setCourseChatMessages(enriched);
   }, (e: any) => console.error("Chat subscription error", e));
   chatUnsubRef.current = unsub;
+  // Polling fallback every 4s
+  fetchChatDirect(courseId);
+  chatPollRef.current = window.setInterval(() => fetchChatDirect(courseId), 4000);
   };
 
  const fetchScheduledClasses = async (courseId: string) => {
@@ -279,7 +298,7 @@ const TeacherPanel: React.FC = () => {
  setLoading(false);
  }
  });
-  return () => { unsub(); chatUnsubRef.current?.(); };
+  return () => { unsub(); chatUnsubRef.current?.(); if (chatPollRef.current) clearInterval(chatPollRef.current); };
   }, [navigate]);
 
   const toggleCourse = async (courseId: string) => {
@@ -298,7 +317,7 @@ const TeacherPanel: React.FC = () => {
   const switchTab = async (tab: typeof activeCourseTab, courseId: string) => {
   setActiveCourseTab(tab);
   if (tab === 'chat') subscribeChat(courseId);
-  else chatUnsubRef.current?.();
+  else { chatUnsubRef.current?.(); if (chatPollRef.current) { clearInterval(chatPollRef.current); chatPollRef.current = null; } }
   if (tab === 'students') await fetchStudents(courseId);
   if (tab === 'schedule') await fetchScheduledClasses(courseId);
   if (tab === 'modules') await fetchModulesAndResources(courseId);

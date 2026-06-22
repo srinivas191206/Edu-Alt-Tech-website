@@ -53,18 +53,16 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  }
  }, [role, courseId]);
 
- // Listen for messages from course_chat_messages table
- useEffect(() => {
- setLoading(true);
-
- const msgQ = query(
- collection(db, 'course_chat_messages'),
- where('courseId', '==', courseId),
- orderBy('createdAt', 'asc'),
- limit(100)
- );
-
-  const unsubscribe = onSnapshot(msgQ, async (snap) => {
+  // Fetch messages directly (for polling fallback)
+  const fetchAndSetMessages = async () => {
+  try {
+  const msgQ = query(
+  collection(db, 'course_chat_messages'),
+  where('courseId', '==', courseId),
+  orderBy('createdAt', 'asc'),
+  limit(100)
+  );
+  const snap = await getDocs(msgQ);
   const nameMap = { ...userNames };
   nameMap['ai'] = 'EduAI';
   let msgs = await Promise.all(snap.docs.map(async (d: any) => {
@@ -86,30 +84,94 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
   } as Message;
   }));
   setUserNames(nameMap);
-
- // For direct messages, filter to show only conversations between the two participants
- if (activeTab === 'direct') {
- const targetId = role === 'teacher' ? selectedStudentId : mentorId;
- if (targetId) {
+  if (activeTab === 'direct') {
+  const targetId = role === 'teacher' ? selectedStudentId : mentorId;
+  if (targetId) {
   msgs = msgs.filter((m: Message) =>
   (m.senderId === currentUser.uid || m.senderId === targetId)
   );
- }
- }
+  }
+  }
+  setMessages(msgs);
+  setLoading(false);
+  } catch (_) {}
+  };
 
- setMessages(msgs);
- setLoading(false);
- setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
- }, (error: any) => {
- console.error("Chat snapshot error", error);
- setLoading(false);
- });
+  // Listen for messages from course_chat_messages table
+  useEffect(() => {
+  setLoading(true);
 
- return () => unsubscribe();
- }, [courseId, activeTab, currentUser.uid, mentorId, role, selectedStudentId]);
+  const msgQ = query(
+  collection(db, 'course_chat_messages'),
+  where('courseId', '==', courseId),
+  orderBy('createdAt', 'asc'),
+  limit(100)
+  );
+
+   const unsubscribe = onSnapshot(msgQ, async (snap) => {
+   const nameMap = { ...userNames };
+   nameMap['ai'] = 'EduAI';
+   let msgs = await Promise.all(snap.docs.map(async (d: any) => {
+   const data = d.data();
+   const senderId = data.userId || '';
+   if (senderId && senderId !== 'ai' && !nameMap[senderId]) {
+   try {
+   const uDoc = await getDoc(doc(db, 'users', senderId));
+   if (uDoc.exists()) nameMap[senderId] = uDoc.data().displayName || uDoc.data().name || 'User';
+   } catch (_) {}
+   if (!nameMap[senderId]) nameMap[senderId] = 'User';
+   }
+   return {
+   id: d.id,
+   senderId,
+   senderName: nameMap[senderId] || 'EduAI',
+   text: data.content || '',
+   timestamp: data.createdAt || data.timestamp
+   } as Message;
+   }));
+   setUserNames(nameMap);
+
+  // For direct messages, filter to show only conversations between the two participants
+  if (activeTab === 'direct') {
+  const targetId = role === 'teacher' ? selectedStudentId : mentorId;
+  if (targetId) {
+   msgs = msgs.filter((m: Message) =>
+   (m.senderId === currentUser.uid || m.senderId === targetId)
+   );
+  }
+  }
+
+  setMessages(msgs);
+  setLoading(false);
+  setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+  }, (error: any) => {
+  console.error("Chat snapshot error", error);
+  setLoading(false);
+  });
+
+  // Polling fallback every 4s
+  const pollId = window.setInterval(() => fetchAndSetMessages(), 4000);
+
+  return () => { unsubscribe(); clearInterval(pollId); };
+  }, [courseId, activeTab, currentUser.uid, mentorId, role, selectedStudentId]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
-
+  e.preventDefault();
+  if (!newMessage.trim() || !currentUser?.uid) return;
+  const text = newMessage;
+  setNewMessage('');
+  try {
+  await addDoc(collection(db, 'course_chat_messages'), {
+  course_id: courseId,
+  user_id: currentUser.uid,
+  content: text,
+  sender_name: currentUser.displayName || 'User',
+  role: role,
+  created_at: serverTimestamp()
+  });
+  } catch (err) {
+  console.error("Send error", err);
+  }
   };
 
  return (
