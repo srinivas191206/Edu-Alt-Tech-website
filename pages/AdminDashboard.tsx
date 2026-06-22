@@ -435,15 +435,23 @@ const AdminDashboard: React.FC = () => {
  await loadChatMessages(contact.id);
  };
 
- const activeCount = useMemo(() => enrollments.filter((e: any) => e.status === 'active').length, [enrollments]);
- const enrollmentCounts = useMemo(() => {
- const counts: Record<string, number> = {};
- enrollments.forEach((e: any) => {
- const id = e.course_id || e.courseId;
- counts[id] = (counts[id] || 0) + 1;
- });
- return counts;
- }, [enrollments]);
+  const activeCount = useMemo(() => enrollments.filter((e: any) => e.status === 'active').length, [enrollments]);
+  const enrollmentCounts = useMemo(() => {
+  const counts: Record<string, number> = {};
+  enrollments.forEach((e: any) => {
+  const id = e.course_id || e.courseId;
+  counts[id] = (counts[id] || 0) + 1;
+  });
+  return counts;
+  }, [enrollments]);
+  const planBreakdown = useMemo(() => {
+   const counts = { trial: 0, first_class: 0, full: 0 };
+   enrollments.forEach((e: any) => {
+    const p = e.plan || 'trial';
+    if (p in counts) counts[p as keyof typeof counts]++;
+   });
+   return counts;
+  }, [enrollments]);
 
  if (loading) {
  return (
@@ -815,13 +823,29 @@ const AdminDashboard: React.FC = () => {
  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Enrollments</span>
  <p className="text-3xl sm:text-4xl font-black mt-2 text-emerald-500">{enrollments.length}</p>
  </div>
- <div className="bg-white p-6 rounded-2xl border border-slate-200 ">
- <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Active Enrollments</span>
- <p className="text-3xl sm:text-4xl font-black mt-2 text-blue-500">{activeCount}</p>
- </div>
- </div>
+   <div className="bg-white p-6 rounded-2xl border border-slate-200 ">
+   <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Active Enrollments</span>
+   <p className="text-3xl sm:text-4xl font-black mt-2 text-blue-500">{activeCount}</p>
+   </div>
+   </div>
 
- {/* Course enrollment table */}
+  {/* Plan Breakdown */}
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="bg-blue-50 p-6 rounded-2xl border border-blue-200">
+      <span className="text-[10px] font-black uppercase tracking-widest text-blue-600">Trial</span>
+      <p className="text-3xl sm:text-4xl font-black mt-2 text-blue-700">{planBreakdown.trial}</p>
+    </div>
+    <div className="bg-amber-50 p-6 rounded-2xl border border-amber-200">
+      <span className="text-[10px] font-black uppercase tracking-widest text-amber-600">First Class</span>
+      <p className="text-3xl sm:text-4xl font-black mt-2 text-amber-700">{planBreakdown.first_class}</p>
+    </div>
+    <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-200">
+      <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Full Access</span>
+      <p className="text-3xl sm:text-4xl font-black mt-2 text-emerald-700">{planBreakdown.full}</p>
+    </div>
+  </div>
+
+   {/* Course enrollment table */}
  <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden">
  <div className="p-4 sm:p-8 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <h3 className="text-xl font-black tracking-tight">Enrollments by Course</h3>

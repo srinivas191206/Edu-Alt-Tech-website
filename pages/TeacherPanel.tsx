@@ -103,6 +103,7 @@ const TeacherPanel: React.FC = () => {
   let name = 'Unknown Student';
   let email = '';
   let paymentStatus = s.payment_status || 'not-required';
+  let plan: string = 'trial';
   let enrolledAt = s.created_at || '';
   try {
   const uDoc = await getDoc(doc(db, 'users', s.user_id));
@@ -117,10 +118,11 @@ const TeacherPanel: React.FC = () => {
   if (!eSnap.empty) {
   const eData = eSnap.docs[0].data();
   if (eData.paymentStatus) paymentStatus = eData.paymentStatus;
+  if (eData.plan) plan = eData.plan;
   if (eData.createdAt) enrolledAt = eData.createdAt?.toDate?.()?.toISOString() || eData.createdAt;
   }
   } catch (_) {}
-  return { ...s, name, email, payment_status: paymentStatus, created_at: enrolledAt };
+  return { ...s, name, email, payment_status: paymentStatus, plan, created_at: enrolledAt };
   }));
   setStudents(studentList);
   } catch (e) {
@@ -744,35 +746,45 @@ const TeacherPanel: React.FC = () => {
  <p className="text-slate-400 font-medium text-sm py-12 text-center bg-slate-50 /30 rounded-2xl">No students enrolled yet.</p>
  ) : (
  <div className="space-y-3">
- {students.map((s) => (
- <div key={s.id} className="flex items-center gap-4 p-5 bg-slate-50 /30 rounded-2xl border border-slate-200 /50">
- <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center font-black text-white text-lg shrink-0">
- {s.name.charAt(0).toUpperCase()}
- </div>
-  <div className="flex-1 min-w-0">
-    <p className="font-bold text-slate-900 truncate">{s.name}</p>
-    <p className="text-xs text-slate-400 font-medium truncate">{s.email}</p>
-    <div className="flex items-center gap-2 mt-1">
-      {s.payment_status === 'paid' && (
-        <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[9px] font-bold uppercase tracking-wider">Paid</span>
-      )}
-      {s.payment_status === 'not-required' && (
-        <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[9px] font-bold uppercase tracking-wider">Free</span>
-      )}
-      {s.created_at && (
-        <span className="text-[9px] text-slate-400 font-medium">Joined {new Date(s.created_at).toLocaleDateString()}</span>
-      )}
-    </div>
+  {students.map((s) => (
+  <div key={s.id} className="flex items-center gap-4 p-5 bg-slate-50 /30 rounded-2xl border border-slate-200 /50">
+  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center font-black text-white text-lg shrink-0">
+  {s.name.charAt(0).toUpperCase()}
   </div>
-  <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
-   s.student_status === 'active'
-   ? 'bg-emerald-100 /30 text-emerald-600 '
-   : 'bg-slate-100 text-slate-500'
-  }`}>
-   {s.student_status || 'active'}
-  </span>
- </div>
- ))}
+   <div className="flex-1 min-w-0">
+     <p className="font-bold text-slate-900 truncate">{s.name}</p>
+     <p className="text-xs text-slate-400 font-medium truncate">{s.email}</p>
+     <div className="flex items-center gap-2 mt-1 flex-wrap">
+       {s.plan === 'full' && (
+         <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[9px] font-bold uppercase tracking-wider">Full</span>
+       )}
+       {s.plan === 'first_class' && (
+         <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-[9px] font-bold uppercase tracking-wider">First Class</span>
+       )}
+       {s.plan === 'trial' && (
+         <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-[9px] font-bold uppercase tracking-wider">Trial</span>
+       )}
+       {s.created_at && (
+         <span className="text-[9px] text-slate-400 font-medium">Joined {new Date(s.created_at).toLocaleDateString()}</span>
+       )}
+     </div>
+   </div>
+   <div className="flex items-center gap-2 shrink-0">
+     {s.plan === 'trial' || s.plan === 'first_class' ? (
+       <button className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-[10px] transition-colors whitespace-nowrap">
+         Upgrade
+       </button>
+     ) : null}
+     <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
+      s.student_status === 'active'
+      ? 'bg-emerald-100 /30 text-emerald-600 '
+      : 'bg-slate-100 text-slate-500'
+     }`}>
+      {s.student_status || 'active'}
+     </span>
+   </div>
+  </div>
+  ))}
  </div>
  )}
  </div>
