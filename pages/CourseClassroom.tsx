@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { auth, db, storage, doc, getDoc, collection, query, where, getDocs, addDoc, updateDoc, serverTimestamp, orderBy, arrayUnion, arrayRemove, ref, uploadBytes, getDownloadURL, onAuthStateChanged } from '../lib/firebase';
 import { Course, CourseEnrollment, CourseModule, ModuleLecture, CourseResource } from '../types';
-import { ArrowLeft, BookOpen, Video, FileText, Plus, Link as LinkIcon, Loader2, PlayCircle, CheckCircle2, Circle, ChevronRight, Clock, Award, Layout, Zap, X, Upload, ExternalLink, MessageCircle, Target, Calendar, Sparkles } from 'lucide-react';
+import { ArrowLeft, BookOpen, Video, FileText, Plus, Link as LinkIcon, Loader2, PlayCircle, CheckCircle2, Circle, ChevronRight, Clock, Award, Layout, Zap, X, Upload, ExternalLink, MessageCircle, Target, Calendar, Sparkles, Users } from 'lucide-react';
 import type { User } from '../lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -25,9 +25,10 @@ const CourseClassroom: React.FC = () => {
   const [upgradeLoading, setUpgradeLoading] = useState(false);
 
  // Classroom Data
- const [modules, setModules] = useState<CourseModule[]>([]);
- const [resources, setResources] = useState<CourseResource[]>([]);
- const [activeTab, setActiveTab] = useState<'roadmap' | 'chat' | 'path' | 'live'>('roadmap');
+  const [modules, setModules] = useState<CourseModule[]>([]);
+  const [resources, setResources] = useState<CourseResource[]>([]);
+  const [activeTab, setActiveTab] = useState<'roadmap' | 'chat' | 'path' | 'live'>('roadmap');
+  const [enrolledCount, setEnrolledCount] = useState(0);
 
  // Active Expand States
  const [expandedModules, setExpandedModules] = useState<string[]>([]);
@@ -124,6 +125,12 @@ const CourseClassroom: React.FC = () => {
   return;
   }
   setEnrollment(primaryEnr);
+
+  // Fetch enrolled student count
+  try {
+    const { count } = await db.from('enrollments').select('id', { count: 'exact', head: true }).eq('course_id', courseId).eq('role', 'student');
+    setEnrolledCount(count || 0);
+  } catch (_) {}
 
   if (primaryEnr.role === 'teacher') {
   const tQ = query(collection(db, 'teacher_applications'), where('userId', '==', currentUser.uid), where('status', '==', 'approved'));
@@ -762,10 +769,28 @@ const CourseClassroom: React.FC = () => {
  <p className="text-xs font-bold opacity-80 uppercase tracking-widest">
  {completedCount} of {totalCount} milestones mastered
  </p>
- </div>
- </div>
+  </div>
+  </div>
 
- {/* Resources Card */}
+  {/* Enrolled Students Card (teacher only) */}
+  {role === 'teacher' && (
+    <div className="bg-white /80 backdrop-blur-xl p-8 rounded-[2.5rem] border border-slate-200 shadow-xl">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-xl font-black tracking-tight flex items-center gap-3">
+          <Users className="w-5 h-5 text-purple-500" />
+          Students
+        </h3>
+        <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-[10px] font-black uppercase tracking-widest">
+          {enrolledCount} enrolled
+        </span>
+      </div>
+      <p className="text-xs text-slate-400 font-medium">
+        Monitor student progress and engagement from the Teacher Panel.
+      </p>
+    </div>
+  )}
+
+  {/* Resources Card */}
  <div className="bg-white /80 backdrop-blur-xl p-8 rounded-[2.5rem] border border-slate-200 shadow-xl">
  <div className="flex items-center justify-between mb-8">
  <h3 className="text-xl font-black tracking-tight flex items-center gap-3">

@@ -21,3 +21,6 @@ CREATE POLICY "Authenticated users can read direct_messages"
 CREATE POLICY "Authenticated users can insert direct_messages"
   ON direct_messages FOR INSERT
   WITH CHECK (auth.role() = 'authenticated');
+
+-- Enable realtime (required for onSnapshot to work)
+ALTER PUBLICATION supabase_realtime ADD TABLE direct_messages;
