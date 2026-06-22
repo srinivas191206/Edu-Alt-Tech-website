@@ -10,6 +10,7 @@ import CourseChat from '../components/CourseChat';
 import { recordModuleComplete, getOrCreateMetrics } from '../lib/userProgress';
 import { PLATFORM_COURSES } from '../data/platformCourses';
 import { adaptDifficulty } from '../lib/learningPath';
+import type { EnrollmentPlan } from '../types';
 import DoubtSolver from '../components/DoubtSolver';
 import LearningPathView from '../components/LearningPathView';
 
@@ -231,16 +232,18 @@ const CourseClassroom: React.FC = () => {
 
       const verifyData = await resVerify.json();
 
-      if (verifyData.success) {
-       if (enrollment) {
-        const enrRef = doc(db, 'enrollments', enrollment.id);
-        await updateDoc(enrRef, {
-         paymentStatus: 'paid'
-        });
-        setEnrollment({
-         ...enrollment,
-         paymentStatus: 'paid'
-        });
+       if (verifyData.success) {
+        if (enrollment) {
+         const enrRef = doc(db, 'enrollments', enrollment.id);
+         await updateDoc(enrRef, {
+          paymentStatus: 'paid',
+          plan: 'full'
+         });
+         setEnrollment({
+          ...enrollment,
+          paymentStatus: 'paid',
+          plan: 'full'
+         });
         toast.success("Successfully upgraded to full access!");
         try {
          await addDoc(collection(db, 'mail'), {
@@ -403,11 +406,16 @@ const CourseClassroom: React.FC = () => {
  
  if (!course) return null;
 
- const completedCount = enrollment?.completedModules?.length || 0;
- const totalCount = modules.length;
- const progressPercent = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
+  const completedCount = enrollment?.completedModules?.length || 0;
+  const totalCount = modules.length;
+  const progressPercent = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
 
- return (
+  const plan = enrollment?.plan || 'full';
+  const planLimits: Record<EnrollmentPlan, number> = { trial: 1, first_class: 2, full: Infinity };
+  const maxModuleIndex = planLimits[plan] ?? Infinity;
+  const isRestricted = plan !== 'full';
+
+  return (
  <div className="min-h-screen pt-28 pb-32 px-6 bg-slate-50 [#020617] selection:bg-purple-500/30">
  {/* Background Ambience */}
  <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -599,8 +607,8 @@ const CourseClassroom: React.FC = () => {
  <p className="text-sm text-slate-400 italic font-medium">No sessions scheduled for this module yet.</p>
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
- {mod.lectures.map((lec, lIdx) => {
-   const isLocked = false;
+  {mod.lectures.map((lec, lIdx) => {
+    const isLocked = idx >= maxModuleIndex;
    return (
     <div 
      key={lec.id}
@@ -769,10 +777,34 @@ const CourseClassroom: React.FC = () => {
  <p className="text-xs font-bold opacity-80 uppercase tracking-widest">
  {completedCount} of {totalCount} milestones mastered
  </p>
-  </div>
-  </div>
+   </div>
+   </div>
 
-  {/* Enrolled Students Card (teacher only) */}
+   {/* Upgrade Banner (student only) */}
+   {role === 'student' && isRestricted && (
+     <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-amber-600/20 overflow-hidden relative">
+       <div className="relative z-10">
+         <h3 className="text-xl font-black mb-2 uppercase tracking-tight">
+           {plan === 'trial' ? 'Trial Mode' : 'First Class'}
+         </h3>
+         <p className="text-sm font-medium text-white/80 mb-6">
+           {plan === 'trial'
+             ? 'You\'re viewing module 1. Upgrade to full access and unlock the complete course.'
+             : 'You have access to beginner modules. Upgrade to unlock all advanced content.'}
+         </p>
+         <button
+           onClick={handleUpgradeFullAccess}
+           disabled={upgradeLoading}
+           className="w-full py-4 bg-white text-amber-700 font-black rounded-2xl hover:bg-amber-50 transition-colors shadow-lg flex items-center justify-center gap-2"
+         >
+           {upgradeLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+           {upgradeLoading ? 'Processing...' : `Upgrade to Full — ₹${course?.price || 0}/mo`}
+         </button>
+       </div>
+     </div>
+   )}
+
+   {/* Enrolled Students Card (teacher only) */}
   {role === 'teacher' && (
     <div className="bg-white /80 backdrop-blur-xl p-8 rounded-[2.5rem] border border-slate-200 shadow-xl">
       <div className="flex items-center justify-between mb-6">
@@ -806,8 +838,8 @@ const CourseClassroom: React.FC = () => {
  <p className="text-sm text-slate-400 font-medium italic">Vault is currently empty.</p>
  ) : (
  <div className="space-y-3">
- {resources.map((res, i) => {
-    const isResourceLocked = false;
+  {resources.map((res, i) => {
+     const isResourceLocked = isRestricted;
    return (
     <motion.a 
      initial={{ opacity: 0, y: 10 }}

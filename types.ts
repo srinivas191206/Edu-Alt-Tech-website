@@ -59,6 +59,7 @@ export interface Course {
 // Enrollment / Application Types
 export type StudentStatus = 'waitlisted' | 'active' | 'completed';
 export type PaymentStatus = 'pending' | 'paid' | 'not-required' | 'trial';
+export type EnrollmentPlan = 'trial' | 'first_class' | 'full';
 
 export interface CourseEnrollment {
  id: string;
@@ -69,6 +70,7 @@ export interface CourseEnrollment {
  // Student specific
  studentStatus?: StudentStatus;
  paymentStatus?: PaymentStatus;
+ plan?: EnrollmentPlan;
  mentorId?: string; // Teacher's UID
  
  // Timestamps

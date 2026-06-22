@@ -157,20 +157,21 @@ const CourseDetails: React.FC = () => {
  });
  };
 
- const finalizeEnrollment = async (isPaid: boolean = false) => {
-  setEnrollLoading(true);
-  try {
-    const enrollmentRef = doc(collection(db, 'enrollments'));
-    const newEnrollment: CourseEnrollment = {
-      id: enrollmentRef.id,
-      userId: user!.uid,
-      courseId: courseId!,
-      role: 'student',
-      studentStatus: 'active',
-      paymentStatus: isPaid ? 'paid' : 'not-required',
-      mentorId: selectedMentor || undefined,
-      createdAt: serverTimestamp()
-    };
+  const finalizeEnrollment = async (plan: 'trial' | 'first_class' | 'full' = 'full') => {
+   setEnrollLoading(true);
+   try {
+     const enrollmentRef = doc(collection(db, 'enrollments'));
+     const newEnrollment: CourseEnrollment = {
+       id: enrollmentRef.id,
+       userId: user!.uid,
+       courseId: courseId!,
+       role: 'student',
+       studentStatus: 'active',
+       paymentStatus: plan === 'trial' ? 'not-required' : 'paid',
+       plan,
+       mentorId: selectedMentor || undefined,
+       createdAt: serverTimestamp()
+     };
   await setDoc(enrollmentRef, newEnrollment as any);
   setEnrollment(newEnrollment);
 
@@ -237,13 +238,14 @@ const CourseDetails: React.FC = () => {
  }
 
  // Free Course
- if (!course?.price || course.price === 0) {
- await finalizeEnrollment(false);
- return;
- }
+  // Free Course → full plan
+  if (!course?.price || course.price === 0) {
+  await finalizeEnrollment('full');
+  return;
+  }
 
- // Paid Course
- setEnrollLoading(true);
+  // Paid Course — Full
+  setEnrollLoading(true);
  try {
  // 1. Create Order
  const amountInPaise = (course.price || 0) * 100;
@@ -300,25 +302,25 @@ const CourseDetails: React.FC = () => {
  const verifyData = await resVerify.json();
 
  if (verifyData.success) {
- await finalizeEnrollment(true);
- } else {
- throw new Error(verifyData.error || "Invalid Security Signature");
- }
- } catch (e: any) {
- console.error("Verification error:", e);
- alert(`Payment processed, but enrollment failed: ${e.message}`);
- }
- },
- prefill: {
- name: user.displayName || "",
- email: user.email || "",
- },
- theme: { color: "#10b981" }
- };
+await finalizeEnrollment('full');
+  } else {
+  throw new Error(verifyData.error || "Invalid Security Signature");
+  }
+  } catch (e: any) {
+  console.error("Verification error:", e);
+  alert(`Payment processed, but enrollment failed: ${e.message}`);
+  }
+  },
+  prefill: {
+  name: user.displayName || "",
+  email: user.email || "",
+  },
+  theme: { color: "#10b981" }
+  };
 
- const rzp = new (window as any).Razorpay(options);
- rzp.on('payment.failed', (resp: any) => alert(`Payment Failed: ${resp.error.description}`));
- rzp.open();
+  const rzp = new (window as any).Razorpay(options);
+  rzp.on('payment.failed', (resp: any) => alert(`Payment Failed: ${resp.error.description}`));
+  rzp.open();
 
  } catch (err: any) {
  console.error("Payment flow error:", err);
@@ -375,7 +377,7 @@ const CourseDetails: React.FC = () => {
   });
   if (!resVerify.ok) { throw new Error("Payment verification failed on server"); }
   const verifyData = await resVerify.json();
-  if (verifyData.success) { await finalizeEnrollment(true); }
+  if (verifyData.success) { await finalizeEnrollment('first_class'); }
   else { throw new Error(verifyData.error || "Invalid Security Signature"); }
   } catch (e: any) { console.error("Verification error:", e); alert(`Payment processed, but enrollment failed: ${e.message}`); }
   },
@@ -393,7 +395,13 @@ const CourseDetails: React.FC = () => {
   }
  };
 
- const handleApplyToTeach = () => {
+  const handleFreeTrial = async () => {
+   if (!user) { navigate('/login'); return; }
+   if (!selectedMentor) { alert("Please select a mentor first."); return; }
+   await finalizeEnrollment('trial');
+  };
+
+  const handleApplyToTeach = () => {
  if (!user) {
  navigate('/login');
  return;
@@ -500,32 +508,31 @@ const CourseDetails: React.FC = () => {
       <p className="text-sm text-slate-500 leading-snug"><strong>Skills:</strong> {m.skills}</p>
     </div>
     ))}
-    {!course?.price || course.price === 0 ? (
+    <div className="flex flex-col sm:flex-row gap-3">
+      <button
+      onClick={handleFreeTrial}
+      disabled={enrollLoading || !selectedMentor}
+      className="flex-1 bg-white border-2 border-slate-200 text-slate-700 font-bold py-4 px-8 rounded-xl hover:border-emerald-500 hover:text-emerald-600 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
+      >
+      {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'Free Trial (1 Day)' : 'Select Mentor')}
+      </button>
+      <button
+      onClick={handleFirstClassPayment}
+      disabled={enrollLoading || !selectedMentor}
+      className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
+      >
+      {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'First Class — ₹10' : 'Select Mentor')}
+      </button>
+      {course?.price && course.price > 0 && (
       <button
       onClick={handleJoinAsStudent}
       disabled={enrollLoading || !selectedMentor}
-      className="w-full bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2"
+      className="flex-1 bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
       >
-      {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'Enroll with this Mentor (Free)' : 'Select a Mentor')}
+      {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? `Pay ₹${course.price}/mo — Full` : 'Select Mentor')}
       </button>
-    ) : (
-      <div className="flex flex-col sm:flex-row gap-3">
-        <button
-        onClick={handleJoinAsStudent}
-        disabled={enrollLoading || !selectedMentor}
-        className="flex-1 bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
-        >
-        {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? `Pay ₹${course.price}/mo — Full Course` : 'Select Mentor')}
-        </button>
-        <button
-        onClick={handleFirstClassPayment}
-        disabled={enrollLoading || !selectedMentor}
-        className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
-        >
-        {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'First Class — ₹10' : 'Select Mentor')}
-        </button>
-      </div>
-    )}
+      )}
+    </div>
   </div>
   </>
   )
@@ -580,32 +587,31 @@ const CourseDetails: React.FC = () => {
  )}
  </div>
  ))}
- {!course?.price || course.price === 0 ? (
-  <button 
-  onClick={handleJoinAsStudent}
-  disabled={enrollLoading || !selectedMentor}
-  className="w-full bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 :bg-emerald-500 transition-colors shadow-md disabled:opacity-50 mt-4 flex justify-center items-center gap-2"
-  >
-  {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'Enroll Now (Free)' : 'Select a Mentor')}
-  </button>
-  ) : (
   <div className="flex flex-col sm:flex-row gap-3 mt-4 w-full">
-    <button 
+    <button
+    onClick={handleFreeTrial}
+    disabled={enrollLoading || !selectedMentor}
+    className="flex-1 bg-white border-2 border-slate-200 text-slate-700 font-bold py-4 px-8 rounded-xl hover:border-emerald-500 hover:text-emerald-600 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
+    >
+    {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'Free Trial (1 Day)' : 'Select Mentor')}
+    </button>
+    <button
+    onClick={handleFirstClassPayment}
+    disabled={enrollLoading || !selectedMentor}
+    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
+    >
+    {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'First Class — ₹10' : 'Select Mentor for First Class')}
+    </button>
+    {course?.price && course.price > 0 && (
+    <button
     onClick={handleJoinAsStudent}
     disabled={enrollLoading || !selectedMentor}
-     className="flex-1 bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
+    className="flex-1 bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
     >
-     {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? `Pay ₹${course.price}/mo — Full Course` : 'Select Mentor to Pay')}
+    {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? `Pay ₹${course.price}/mo — Full` : 'Select Mentor')}
     </button>
-    <button 
-     onClick={handleFirstClassPayment}
-     disabled={enrollLoading || !selectedMentor}
-     className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
-    >
-     {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'First Class — ₹10' : 'Select Mentor for First Class')}
-    </button>
+    )}
   </div>
-  )}
 
  </div>
  )}
