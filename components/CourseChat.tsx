@@ -60,12 +60,13 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
 
   // Fetch messages
   useEffect(() => {
+    if (!currentUser?.uid) { setLoading(false); return; }
     setLoading(true);
     if (activeTab === 'community') {
       const msgQ = query(
         collection(db, 'course_chat_messages'),
-        where('course_id', '==', courseId),
-        orderBy('created_at', 'asc'),
+        where('courseId', '==', courseId),
+        orderBy('createdAt', 'asc'),
         limit(100)
       );
       const unsub = onSnapshot(msgQ, (snap) => {
@@ -87,8 +88,8 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
 
       const dmQ = query(
         collection(db, 'direct_messages'),
-        where('course_id', '==', courseId),
-        orderBy('created_at', 'asc'),
+        where('courseId', '==', courseId),
+        orderBy('createdAt', 'asc'),
         limit(100)
       );
       const unsub = onSnapshot(dmQ, (snap) => {
@@ -114,11 +115,11 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
       }, () => setLoading(false));
       return () => unsub();
     }
-  }, [courseId, activeTab, currentUser.uid, mentorId, role, selectedStudentId]);
+  }, [courseId, activeTab, currentUser?.uid, mentorId, role, selectedStudentId]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !currentUser?.uid) return;
 
     const text = newMessage;
     setNewMessage('');
