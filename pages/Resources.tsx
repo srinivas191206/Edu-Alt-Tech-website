@@ -16,6 +16,7 @@ export interface ResourceItem {
  premium: boolean;
  downloads: string;
  url?: string;
+ viewUrl?: string;
  classLevel?: string;
 }
 
@@ -71,41 +72,42 @@ const Resources: React.FC = () => {
  }, []);
 
   useEffect(() => {
-  const fetchDrive = async () => {
-  try {
-  const folders = await getDriveSubfolders();
-  const items: ResourceItem[] = [];
-  for (const folder of folders) {
-  const category = getDriveFileCategory(folder.name);
-  const folderLower = folder.name.toLowerCase();
-  const isJee = folderLower.includes('jee') || folderLower.includes('iit') || folderLower.includes('jeee');
-  for (const file of folder.files) {
-  if (file.mimeType === 'application/vnd.google-apps.folder') continue;
-  const name = file.name.replace(/\.pdf$/i, '');
-  const sizeLabel = file.size ? ` (${(Number(file.size) / 1024 / 1024).toFixed(1)} MB)` : '';
-  const fileLower = name.toLowerCase();
-  const isJeeFile = fileLower.includes('jee') || fileLower.includes('iit') || fileLower.includes('advance') || fileLower.includes('mains') || (['physics', 'chemistry', 'mathematics', 'math'].includes(category.toLowerCase()) && (fileLower.includes('revision') || fileLower.includes('revison')));
-  items.push({
-  title: name,
-  description: `${category} resource from Google Drive${sizeLabel}`,
-  type: 'pdf',
-  category,
-  premium: false,
-  downloads: '0',
-  url: getDriveDownloadUrl(file.id),
-   classLevel: isJee || isJeeFile ? 'JEE Main' : 'College/Engineering',
-  });
+   const fetchDrive = async () => {
+   try {
+   const folders = await getDriveSubfolders();
+   const items: ResourceItem[] = [];
+   for (const folder of folders) {
+   const category = getDriveFileCategory(folder.name);
+   const folderLower = folder.name.toLowerCase();
+   const isJee = folderLower.includes('jee') || folderLower.includes('iit') || folderLower.includes('jeee');
+   for (const file of folder.files) {
+   if (file.mimeType === 'application/vnd.google-apps.folder') continue;
+   const name = file.name.replace(/\.pdf$/i, '');
+   const sizeLabel = file.size ? ` (${(Number(file.size) / 1024 / 1024).toFixed(1)} MB)` : '';
+   const fileLower = name.toLowerCase();
+   const isJeeFile = fileLower.includes('jee') || fileLower.includes('iit') || fileLower.includes('advance') || fileLower.includes('mains') || (['physics', 'chemistry', 'mathematics', 'math'].includes(category.toLowerCase()) && (fileLower.includes('revision') || fileLower.includes('revison')));
+   items.push({
+   title: name,
+   description: `${category} resource from Google Drive${sizeLabel}`,
+   type: 'pdf',
+   category,
+   premium: false,
+   downloads: '0',
+   url: file.webContentLink || getDriveDownloadUrl(file.id),
+   viewUrl: file.webViewLink || getDriveDownloadUrl(file.id).replace('uc?export=download', 'file/d') + '/view',
+    classLevel: isJee || isJeeFile ? 'JEE Main' : 'College/Engineering',
+   });
+   }
+   }
+   setDriveResources(items);
+  } catch (e) {
+  console.error('Failed to load Drive resources', e);
+  } finally {
+  setLoadingDrive(false);
   }
-  }
-  setDriveResources(items);
- } catch (e) {
- console.error('Failed to load Drive resources', e);
- } finally {
- setLoadingDrive(false);
- }
- };
- fetchDrive();
- }, []);
+  };
+  fetchDrive();
+  }, []);
 
  const allResources = useMemo(() => [...STATIC_RESOURCES, ...firebaseResources.filter(fr => !STATIC_RESOURCES.find(r => r.title === fr.title)), ...driveResources.filter(dr => !STATIC_RESOURCES.find(r => r.title === dr.title) && !firebaseResources.find(fr => fr.title === dr.title))], [firebaseResources, driveResources]);
 
@@ -236,32 +238,60 @@ const Resources: React.FC = () => {
  )}
  </div>
  </div>
- <h3 className="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
- <p className="text-sm text-slate-500 mb-4 leading-relaxed">{item.description}</p>
- <div className="flex items-center justify-between">
- <span className="text-xs text-slate-400">{item.downloads} downloads</span>
- {!user ? (
- <button onClick={() => setIsAuthModalOpen(true)} className="flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-colors bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20">
- <Download className="w-3 h-3" /> Download
- </button>
- ) : item.url ? (
- <a href={item.url} download onClick={() => trackDownload(item)} className={`flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-colors ${
- item.premium
- ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
- : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20'
- }`}>
- <Download className="w-3 h-3" /> {item.premium ? 'Unlock' : 'Download'}
- </a>
- ) : (
- <button className={`flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl transition-colors ${
- item.premium
- ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
- : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20'
- }`}>
- <Download className="w-3 h-3" /> {item.premium ? 'Unlock' : 'Download'}
- </button>
- )}
- </div>
+  <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">
+   {!user ? (
+    <span onClick={() => setIsAuthModalOpen(true)} className="cursor-pointer">
+     {item.title}
+    </span>
+   ) : (item.viewUrl || item.url) ? (
+    <a href={item.viewUrl || item.url} target="_blank" rel="noopener noreferrer">
+     {item.title}
+    </a>
+   ) : (
+    item.title
+   )}
+  </h3>
+  <p className="text-sm text-slate-500 mb-4 leading-relaxed">{item.description}</p>
+  <div className="flex items-center justify-between flex-wrap gap-2">
+  <span className="text-xs text-slate-400">{item.downloads} downloads</span>
+  <div className="flex gap-2">
+  {!user ? (
+   <>
+    <button onClick={() => setIsAuthModalOpen(true)} className="flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl transition-colors bg-indigo-600 hover:bg-indigo-50 text-white shadow-lg shadow-indigo-600/20">
+     <BookOpen className="w-3 h-3" /> View
+    </button>
+    <button onClick={() => setIsAuthModalOpen(true)} className="flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl transition-colors bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20">
+     <Download className="w-3 h-3" /> Download
+    </button>
+   </>
+  ) : (
+   <>
+    {(item.viewUrl || item.url) && (
+     <a href={item.viewUrl || item.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl transition-colors bg-indigo-600 hover:bg-indigo-50 text-white shadow-lg shadow-indigo-600/20">
+      <BookOpen className="w-3 h-3" /> View
+     </a>
+    )}
+    {item.url ? (
+     <a href={item.url} download onClick={() => trackDownload(item)} className={`flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl transition-colors ${
+      item.premium
+      ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
+      : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20'
+     }`}>
+      <Download className="w-3 h-3" /> {item.premium ? 'Unlock' : 'Download'}
+     </a>
+    ) : (
+     <button className={`flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl transition-colors ${
+      item.premium
+      ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
+      : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20'
+     }`}>
+      <Download className="w-3 h-3" /> {item.premium ? 'Unlock' : 'Download'}
+     </button>
+    )}
+   </>
+  )}
+  </div>
+  </div>
  </motion.div>
  ))}
  </div>
