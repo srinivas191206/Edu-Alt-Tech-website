@@ -56,10 +56,12 @@ const Dashboard: React.FC = () => {
  if (docObj.exists() && !cancelled) setUserProfile({ uid: docObj.id, ...docObj.data() } as UserObject);
  } catch (_) {}
 
- // Fetch all courses for lookups
- const coursesSnap = await getDocs(collection(db, 'courses'));
- const coursesMap = new Map<string, Course>();
- coursesSnap.docs.forEach(d => coursesMap.set(d.id, { id: d.id, ...d.data() } as Course));
+  // Fetch all courses for lookups
+  const coursesSnap = await getDocs(collection(db, 'courses'));
+  const coursesMap = new Map<string, Course>();
+  coursesSnap.docs.forEach(d => coursesMap.set(d.id, { id: d.id, ...d.data() } as Course));
+  // Include platform courses
+  PLATFORM_COURSES.forEach((pc, i) => { const id = `pc-${i}`; if (!coursesMap.has(id)) coursesMap.set(id, { id, ...pc } as Course); });
 
  // Student enrollments
  const sq = query(collection(db, 'enrollments'), where('userId', '==', u.uid), where('role', '==', 'student'));
