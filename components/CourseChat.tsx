@@ -109,34 +109,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  }, [courseId, activeTab, currentUser.uid, mentorId, role, selectedStudentId]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!newMessage.trim()) return;
 
-  const text = newMessage;
-  setNewMessage('');
-
-  try {
-  await addDoc(collection(db, 'course_chat_messages'), {
-  courseId,
-  userId: currentUser.uid,
-  content: text,
-  role: 'user',
-  createdAt: serverTimestamp()
-  });
-
-  const aiRes = await sendAIChat(text, 'course');
-  if (aiRes?.content) {
-  await addDoc(collection(db, 'course_chat_messages'), {
-  courseId,
-  userId: 'ai',
-  content: aiRes.content,
-  role: 'assistant',
-  createdAt: serverTimestamp()
-  });
-  }
-  } catch (err) {
-  console.error("Send error", err);
-  }
   };
 
  return (
