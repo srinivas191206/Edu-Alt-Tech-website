@@ -19,9 +19,10 @@ const CourseClassroom: React.FC = () => {
  const [course, setCourse] = useState<Course | null>(null);
  const [user, setUser] = useState<User | null>(null);
  const [role, setRole] = useState<'student' | 'teacher' | null>(null);
- const [enrollment, setEnrollment] = useState<CourseEnrollment | null>(null);
- const [loading, setLoading] = useState(true);
- const [upgradeLoading, setUpgradeLoading] = useState(false);
+  const [enrollment, setEnrollment] = useState<CourseEnrollment | null>(null);
+  const [allEnrollments, setAllEnrollments] = useState<CourseEnrollment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
 
  // Classroom Data
  const [modules, setModules] = useState<CourseModule[]>([]);
@@ -99,33 +100,47 @@ const CourseClassroom: React.FC = () => {
           if (idx !== -1) setCourse({ id: `pc-${idx}`, ...PLATFORM_COURSES[idx] } as Course);
         }
 
- const eQ = query(collection(db, 'enrollments'), where('userId', '==', currentUser.uid), where('courseId', '==', courseId));
- const eSnap = await getDocs(eQ);
- 
- if (eSnap.empty) {
- navigate(`/courses/${courseId}`);
- return;
- }
+  const eQ = query(collection(db, 'enrollments'), where('userId', '==', currentUser.uid), where('courseId', '==', courseId));
+  const eSnap = await getDocs(eQ);
+  
+  if (eSnap.empty) {
+  navigate(`/courses/${courseId}`);
+  return;
+  }
 
- const enrollData = { id: eSnap.docs[0].id, ...eSnap.docs[0].data() } as CourseEnrollment;
- setEnrollment(enrollData);
- 
- if (enrollData.role === 'teacher') {
- const tQ = query(collection(db, 'teacher_applications'), where('userId', '==', currentUser.uid), where('status', '==', 'approved'));
- const tSnap = await getDocs(tQ);
- const isApprovedForCourse = tSnap.docs.some(d => (d.data().qualification || '') === courseId);
- if (!isApprovedForCourse) {
- navigate(`/courses/${courseId}`);
- return;
- }
- setRole('teacher');
- } else {
- if (enrollData.studentStatus !== 'active') {
- navigate(`/courses/${courseId}`);
- return;
- }
- setRole('student');
- }
+  const allDocs = eSnap.docs.map(d => ({ id: d.id, ...d.data() } as CourseEnrollment));
+  const studentEnrs = allDocs.filter(d => d.role === 'student' && d.studentStatus === 'active');
+  const teacherEnr = allDocs.find(d => d.role === 'teacher');
+
+  let primaryEnr: CourseEnrollment;
+  if (teacherEnr) {
+  primaryEnr = teacherEnr;
+  setAllEnrollments([teacherEnr]);
+  } else if (studentEnrs.length > 0) {
+  primaryEnr = studentEnrs[0];
+  setAllEnrollments(studentEnrs);
+  } else {
+  navigate(`/courses/${courseId}`);
+  return;
+  }
+  setEnrollment(primaryEnr);
+
+  if (primaryEnr.role === 'teacher') {
+  const tQ = query(collection(db, 'teacher_applications'), where('userId', '==', currentUser.uid), where('status', '==', 'approved'));
+  const tSnap = await getDocs(tQ);
+  const isApprovedForCourse = tSnap.docs.some(d => (d.data().qualification || '') === courseId);
+  if (!isApprovedForCourse) {
+  navigate(`/courses/${courseId}`);
+  return;
+  }
+  setRole('teacher');
+  } else {
+  if (primaryEnr.studentStatus !== 'active') {
+  navigate(`/courses/${courseId}`);
+  return;
+  }
+  setRole('student');
+  }
 
  await fetchClassroomData(courseId);
 
@@ -405,12 +420,26 @@ const CourseClassroom: React.FC = () => {
  <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
  <div className="max-w-3xl">
  <div className="flex items-center gap-3 mb-4">
- <span className="px-4 py-1.5 bg-purple-500/10 text-purple-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-purple-500/20">
- {role === 'teacher' ? 'Instructional Mode' : 'Learning Pathway'}
- </span>
- <span className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
- <Clock className="w-3 h-3" /> Updated 2d ago
- </span>
+  <span className="px-4 py-1.5 bg-purple-500/10 text-purple-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-purple-500/20">
+  {role === 'teacher' ? 'Instructional Mode' : 'Learning Pathway'}
+  </span>
+  {role === 'student' && allEnrollments.length > 1 && (
+    <select
+      value={enrollment?.id || ''}
+      onChange={(e) => {
+        const sel = allEnrollments.find(en => en.id === e.target.value);
+        if (sel) setEnrollment(sel);
+      }}
+      className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-[10px] font-bold text-slate-600 uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+    >
+      {allEnrollments.map((en, i) => (
+        <option key={en.id} value={en.id}>Mentor {i + 1}</option>
+      ))}
+    </select>
+  )}
+  <span className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+  <Clock className="w-3 h-3" /> Updated 2d ago
+  </span>
  </div>
  <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none mb-6">
  {course.title}

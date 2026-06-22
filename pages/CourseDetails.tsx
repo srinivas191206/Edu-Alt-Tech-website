@@ -102,15 +102,12 @@ const CourseDetails: React.FC = () => {
  setSelectedMentor(loadedMentors[0].userId);
  }
 
- // --- AUTO REDIRECT TO CLASSROOM ---
- const isApprovedMentor = loadedMentors.some(m => m.userId === currentUser.uid);
- const isActiveStudent = enrData?.studentStatus === 'active';
- const hasEnrollment = !!enrData;
- 
- if ((isApprovedMentor && hasEnrollment) || isActiveStudent) {
- navigate(`/classroom/${courseId}`);
- return;
- }
+  // --- AUTO REDIRECT TO CLASSROOM (mentors only) ---
+  const isApprovedMentor = loadedMentors.some(m => m.userId === currentUser.uid);
+  if (isApprovedMentor && enrData) {
+  navigate(`/classroom/${courseId}`);
+  return;
+  }
  } else {
  // For guests, just fetch mentors to show who is teaching
  const appsQ = query(collection(db, 'teacher_applications'), where('status', '==', 'approved'));
@@ -477,15 +474,59 @@ const CourseDetails: React.FC = () => {
   Pay ₹{course.price || 0}/month
  </button>
  </>
- ) : (
- <>
- <CheckCircle2 className="w-16 h-16 text-emerald-500 mb-4" />
- <h2 className="text-2xl font-bold text-slate-900 mb-2">You are enrolled!</h2>
- <Link to="/dashboard" className="text-emerald-600 hover:underline mt-2 font-medium flex items-center gap-1">
- Go to Dashboard <ArrowRight className="w-4 h-4" />
- </Link>
- </>
- )
+  ) : (
+  <>
+  <CheckCircle2 className="w-16 h-16 text-emerald-500 mb-4" />
+  <h2 className="text-2xl font-bold text-slate-900 mb-2">You are enrolled!</h2>
+  <Link to="/dashboard" className="text-emerald-600 hover:underline mt-2 font-medium flex items-center gap-1">
+  Go to Dashboard <ArrowRight className="w-4 h-4" />
+  </Link>
+  <p className="text-xs text-slate-400 mt-4">Want to learn from a different mentor? Select one below and enroll again.</p>
+  <div className="w-full mt-4 space-y-4">
+    {mentors.map(m => (
+      <div
+      key={m.userId}
+      onClick={() => setSelectedMentor(m.userId)}
+      className={`p-4 border-2 rounded-xl cursor-pointer transition-colors ${selectedMentor === m.userId ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 hover:border-slate-300'}`}
+      >
+      <div className="flex justify-between items-start mb-2">
+        <p className="font-bold text-slate-900 text-lg">{m.name}</p>
+        {selectedMentor === m.userId && <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
+      </div>
+      <p className="text-sm text-slate-500 mb-1 leading-snug"><strong>Experience:</strong> {m.experience}</p>
+      {m.highestQualification && <p className="text-sm text-slate-500 mb-1 leading-snug"><strong>Qualification:</strong> {m.highestQualification}</p>}
+      <p className="text-sm text-slate-500 leading-snug"><strong>Skills:</strong> {m.skills}</p>
+    </div>
+    ))}
+    {!course?.price || course.price === 0 ? (
+      <button
+      onClick={handleJoinAsStudent}
+      disabled={enrollLoading || !selectedMentor}
+      className="w-full bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2"
+      >
+      {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'Enroll with this Mentor (Free)' : 'Select a Mentor')}
+      </button>
+    ) : (
+      <div className="flex flex-col sm:flex-row gap-3">
+        <button
+        onClick={handleJoinAsStudent}
+        disabled={enrollLoading || !selectedMentor}
+        className="flex-1 bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
+        >
+        {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? `Pay ₹${course.price}/mo — Full Course` : 'Select Mentor')}
+        </button>
+        <button
+        onClick={handleFirstClassPayment}
+        disabled={enrollLoading || !selectedMentor}
+        className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
+        >
+        {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'First Class — ₹10' : 'Select Mentor')}
+        </button>
+      </div>
+    )}
+  </div>
+  </>
+  )
  ) : (
  <>
  <CheckCircle2 className="w-16 h-16 text-purple-500 mb-4" />
