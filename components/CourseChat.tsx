@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { db, auth, collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, getDocs, limit } from '../lib/firebase';
-import { Send, Hash, MessageCircle, User, Loader2, Search } from 'lucide-react';
+import { db, auth, collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, getDocs, doc, getDoc, limit } from '../lib/firebase';
+import { sendAIChat } from '../lib/ai';
+import { Send, Hash, MessageCircle, User, Loader2, Search, Bot } from 'lucide-react';
 
 interface Message {
  id: string;
@@ -19,9 +20,10 @@ interface ChatProps {
 
 const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role }) => {
  const [activeTab, setActiveTab] = useState<'community' | 'direct'>('community');
- const [messages, setMessages] = useState<Message[]>([]);
- const [newMessage, setNewMessage] = useState('');
- const [loading, setLoading] = useState(true);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [userNames, setUserNames] = useState<Record<string, string>>({});
 
  // Mentor Specific
  const [students, setStudents] = useState<{uid: string, name: string}[]>([]);
@@ -62,17 +64,28 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  limit(100)
  );
 
- const unsubscribe = onSnapshot(msgQ, (snap) => {
- let msgs = snap.docs.map((d: any) => {
- const data = d.data();
- return {
- id: d.id,
- senderId: data.senderId || data.userId || '',
- senderName: data.senderName || 'User',
- text: data.content || '',
- timestamp: data.createdAt || data.timestamp
- } as Message;
- });
+  const unsubscribe = onSnapshot(msgQ, async (snap) => {
+  const nameMap = { ...userNames };
+  nameMap['ai'] = 'EduAI';
+  let msgs = await Promise.all(snap.docs.map(async (d: any) => {
+  const data = d.data();
+  const senderId = data.userId || '';
+  if (senderId && senderId !== 'ai' && !nameMap[senderId]) {
+  try {
+  const uDoc = await getDoc(doc(db, 'users', senderId));
+  if (uDoc.exists()) nameMap[senderId] = uDoc.data().displayName || uDoc.data().name || 'User';
+  } catch (_) {}
+  if (!nameMap[senderId]) nameMap[senderId] = 'User';
+  }
+  return {
+  id: d.id,
+  senderId,
+  senderName: nameMap[senderId] || 'EduAI',
+  text: data.content || '',
+  timestamp: data.createdAt || data.timestamp
+  } as Message;
+  }));
+  setUserNames(nameMap);
 
  // For direct messages, filter to show only conversations between the two participants
  if (activeTab === 'direct') {
@@ -95,33 +108,36 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  return () => unsubscribe();
  }, [courseId, activeTab, currentUser.uid, mentorId, role, selectedStudentId]);
 
- const handleSendMessage = async (e: React.FormEvent) => {
- e.preventDefault();
- if (!newMessage.trim()) return;
+  const handleSendMessage = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!newMessage.trim()) return;
 
- const text = newMessage;
- setNewMessage('');
+  const text = newMessage;
+  setNewMessage('');
 
- try {
- const msgData: any = {
- courseId,
- userId: currentUser.uid,
- senderName: currentUser.displayName || 'User',
- content: text,
- role: 'user',
- createdAt: serverTimestamp()
- };
+  try {
+  await addDoc(collection(db, 'course_chat_messages'), {
+  courseId,
+  userId: currentUser.uid,
+  content: text,
+  role: 'user',
+  createdAt: serverTimestamp()
+  });
 
- if (activeTab === 'direct') {
- const targetId = role === 'teacher' ? selectedStudentId : mentorId;
- if (targetId) msgData.senderId = currentUser.uid;
- }
-
- await addDoc(collection(db, 'course_chat_messages'), msgData);
- } catch (err) {
- console.error("Send error", err);
- }
- };
+  const aiRes = await sendAIChat(text, 'course');
+  if (aiRes?.content) {
+  await addDoc(collection(db, 'course_chat_messages'), {
+  courseId,
+  userId: 'ai',
+  content: aiRes.content,
+  role: 'assistant',
+  createdAt: serverTimestamp()
+  });
+  }
+  } catch (err) {
+  console.error("Send error", err);
+  }
+  };
 
  return (
  <div className="flex flex-col h-[600px] bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl overflow-hidden">
@@ -202,8 +218,11 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
   const showName = idx === 0 || messages[idx-1].senderId !== msg.senderId;
   return (
   <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-  {showName && !isMe && (
+   {showName && !isMe && (
   <div className="flex items-center gap-2 ml-2 mb-1">
+  {msg.senderId === 'ai' ? (
+  <Bot className="w-3.5 h-3.5 text-emerald-500" />
+  ) : null}
   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{msg.senderName}</span>
   {msg.senderId === mentorId && (
   <span className="text-[8px] font-black text-emerald-500 border border-emerald-500/30 px-1.5 rounded uppercase">Mentor</span>
