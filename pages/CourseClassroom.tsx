@@ -206,7 +206,7 @@ const CourseClassroom: React.FC = () => {
    }
 
    const options = {
-    key: import.meta.env.VITE_RAZORPAY_KEY_ID || "VqWrEH8v0udXa59YhZ7OdcYC",
+    key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_T4jaXd9nkSffIH",
     amount: amountInPaise,
     currency: "INR",
     name: "Edu Alt Tech",
