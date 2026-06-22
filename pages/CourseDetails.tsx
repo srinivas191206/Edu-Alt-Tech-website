@@ -55,11 +55,13 @@ const CourseDetails: React.FC = () => {
  const q = query(enrollmentsRef, where('userId', '==', currentUser.uid), where('courseId', '==', courseId));
  const querySnapshot = await getDocs(q);
  
- let enrData: CourseEnrollment | null = null;
- if (!querySnapshot.empty) {
- enrData = { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() } as CourseEnrollment;
- setEnrollment(enrData);
- }
+  let enrData: CourseEnrollment | null = null;
+  if (!querySnapshot.empty) {
+  const sorted = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() } as CourseEnrollment))
+    .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+  enrData = sorted[0];
+  setEnrollment(enrData);
+  }
 
  // Fetch Approved Mentors for this course
  const appsQ = query(collection(db, 'teacher_applications'), where('status', '==', 'approved'));
@@ -470,9 +472,9 @@ const CourseDetails: React.FC = () => {
  <p className="text-slate-600 max-w-md mx-auto mb-6">
  A mentor is ready to teach you. Please complete the payment to start learning.
  </p>
- <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-colors w-full md:w-auto">
-  Pay ₹{course.price || 0}/month
- </button>
+  <button onClick={handleJoinAsStudent} className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-colors w-full md:w-auto">
+   Pay ₹{course.price || 0}/month
+  </button>
  </>
   ) : (
   <>

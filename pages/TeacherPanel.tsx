@@ -108,7 +108,7 @@ const TeacherPanel: React.FC = () => {
   const uDoc = await getDoc(doc(db, 'users', s.user_id));
   if (uDoc.exists()) {
   const uData = uDoc.data();
-  name = uData.display_name || uData.email || 'Unknown Student';
+  name = uData.displayName || uData.name || uData.email || 'Unknown Student';
   email = uData.email || '';
   }
   // Get payment info from Firestore enrollment
@@ -163,10 +163,16 @@ const TeacherPanel: React.FC = () => {
  }
  };
 
- const fetchOverviewStats = async (teacherId: string) => {
- try {
- const { count: students } = await db.from('enrollments').select('id', { count: 'exact', head: true }).eq('role', 'student');
- setTotalStudents(students || 0);
+  const fetchOverviewStats = async (teacherId: string) => {
+  try {
+  // Count only students enrolled in this teacher's courses
+  const myCourseIds = courses.map(c => c.courseId);
+  let total = 0;
+  if (myCourseIds.length > 0) {
+    const { count } = await db.from('enrollments').select('id', { count: 'exact', head: true }).in('course_id', myCourseIds).eq('role', 'student');
+    total = count || 0;
+  }
+  setTotalStudents(total);
  const { data: earningsData } = await db.from('teacher_earnings').select('amount, created_at').eq('teacher_id', teacherId);
  if (earningsData) {
  const total = earningsData.reduce((s, r) => s + Number(r.amount || 0), 0);
