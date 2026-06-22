@@ -206,31 +206,31 @@ const Dashboard: React.FC = () => {
  const approvedApps = myApplications.filter(a => a.status === 'approved').length;
 
  return (
- <div className="min-h-screen pt-28 pb-20 px-4 md:px-8 bg-slate-50 ">
+ <div className="min-h-screen pt-24 sm:pt-28 pb-16 sm:pb-20 px-3 sm:px-4 md:px-8 bg-slate-50 ">
  <div className="max-w-7xl mx-auto">
 
  {/* ── Hero Row: Greeting + Mini Strip ── */}
  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
- <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tighter">
+ <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tighter">
  {getGreeting()}, {userProfile?.name || 'Learner'}
  </h1>
  <p className="text-sm text-slate-500 mt-0.5">Your learning command center</p>
  </div>
  <div className="flex items-center gap-3 flex-wrap">
- <span className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full text-sm font-bold text-slate-700 shadow-sm">
+ <span className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white border border-slate-200 rounded-full text-xs sm:text-sm font-bold text-slate-700 shadow-sm">
  <GraduationCap className="w-4 h-4 text-emerald-500" /> {enrollments.length} Learning
  </span>
  {totalTeaching > 0 && (
- <span className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full text-sm font-bold text-slate-700 shadow-sm">
+ <span className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white border border-slate-200 rounded-full text-xs sm:text-sm font-bold text-slate-700 shadow-sm">
  <Users className="w-4 h-4 text-purple-500" /> {totalTeaching} Teaching
  </span>
  )}
- <span className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full text-sm font-bold text-slate-700 shadow-sm">
+ <span className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white border border-slate-200 rounded-full text-xs sm:text-sm font-bold text-slate-700 shadow-sm">
  <Download className="w-4 h-4 text-blue-500" /> {resourceCount} Resources
  </span>
- <Link to="/practice" className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full text-sm font-bold text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+ <Link to="/practice" className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full text-xs sm:text-sm font-bold text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
  <Code2 className="w-4 h-4" /> {leetcodeCount + englishCount > 0 ? `${leetcodeCount + englishCount} Practiced` : 'Practice'}
  </Link>
  </div>
@@ -243,7 +243,7 @@ const Dashboard: React.FC = () => {
  const mDate = extractMeetingDate(scheduledApp.message, scheduledApp.meetingDate);
  return (
  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
- <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-5 md:p-6 text-white shadow-lg shadow-blue-500/20 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+ <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-4 sm:p-5 md:p-6 text-white shadow-lg shadow-blue-500/20 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div className="absolute top-0 right-0 p-2 opacity-5"><Video className="w-28 h-28" /></div>
  <div className="relative z-10 flex items-start gap-4">
  <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0"><Video className="w-5 h-5" /></div>
@@ -251,7 +251,7 @@ const Dashboard: React.FC = () => {
  <div className="flex items-center gap-2 mb-1">
  <span className="px-2 py-0.5 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest">Action Required</span>
  </div>
- <h2 className="text-lg font-black">Interview Scheduled</h2>
+ <h2 className="text-base sm:text-lg font-black">Interview Scheduled</h2>
  <p className="text-blue-100 text-sm">{scheduledApp.courseTitle}{mDate ? <> — <strong>{new Date(mDate).toLocaleString()}</strong></> : ''}</p>
  </div>
  </div>
@@ -267,7 +267,7 @@ const Dashboard: React.FC = () => {
  {/* ── Next Step (compact) ── */}
  {!scheduledApp && nextSteps.length > 0 && (
  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
- <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/15 relative overflow-hidden">
+ <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-4 sm:p-5 text-white shadow-lg shadow-emerald-500/15 relative overflow-hidden">
  <div className="absolute top-0 right-0 p-3 opacity-10"><Lightbulb className="w-20 h-20" /></div>
  <div className="relative z-10 flex items-start gap-3">
  <Lightbulb className="w-6 h-6 text-emerald-200 shrink-0 mt-0.5" />
@@ -296,14 +296,14 @@ const Dashboard: React.FC = () => {
  {/* My Learning */}
  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
  <div className="flex items-center justify-between mb-4">
- <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
+ <h2 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
  <GraduationCap className="w-5 h-5 text-emerald-500" /> My Learning
  </h2>
  {enrollments.length > 0 && <Link to="/courses" className="text-xs font-bold text-emerald-600 hover:text-emerald-500 transition-colors">Browse All</Link>}
  </div>
 
  {enrollments.length === 0 ? (
- <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 text-center">
+ <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 md:p-8 text-center">
  <div className="w-14 h-14 rounded-2xl bg-emerald-50 /20 text-emerald-500 flex items-center justify-center mx-auto mb-4"><BookOpen className="w-7 h-7" /></div>
  <h3 className="text-lg font-bold text-slate-900 mb-1">No Enrollments Yet</h3>
  <p className="text-sm text-slate-500 mb-5">Start your learning journey by enrolling in a course.</p>
@@ -315,7 +315,7 @@ const Dashboard: React.FC = () => {
  <div className="grid gap-3">
  {enrollments.map((enr, idx) => (
  <motion.div key={enr.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.04 }}
- className="group bg-white border border-slate-200 rounded-xl p-4 hover:border-emerald-500 hover:shadow-md transition-all duration-200"
+ className="group bg-white border border-slate-200 rounded-xl p-3 sm:p-4 hover:border-emerald-500 hover:shadow-md transition-all duration-200"
  >
  <div className="flex items-center justify-between gap-3">
  <div className="flex items-center gap-3 min-w-0">
@@ -341,7 +341,7 @@ const Dashboard: React.FC = () => {
  {practiceHistory.length > 0 && (
  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
  <div className="flex items-center justify-between mb-4">
- <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
+ <h2 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
  <History className="w-5 h-5 text-blue-500" /> Recent Activity
  </h2>
  </div>
@@ -371,7 +371,7 @@ const Dashboard: React.FC = () => {
  {/* Messages (compact) */}
  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
  <div className="flex items-center justify-between mb-4">
- <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
+ <h2 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
  <MessageSquare className="w-5 h-5 text-blue-500" /> Messages
  </h2>
  </div>
@@ -428,7 +428,7 @@ const Dashboard: React.FC = () => {
 
  {/* Profile Card */}
  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}
- className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"
+ className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm"
  >
  <div className="flex items-center gap-3 mb-4">
  <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 text-white rounded-2xl flex items-center justify-center font-black text-lg overflow-hidden shadow-md shrink-0">
@@ -453,7 +453,7 @@ const Dashboard: React.FC = () => {
     className="bg-white border border-slate-200 rounded-2xl shadow-sm"
   >
     <div className="flex items-center justify-between px-5 pt-5 pb-2">
-      <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
+      <h3 className="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-2">
         <Bell className="w-4 h-4 text-amber-500" /> Notifications
       </h3>
       <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-[10px] font-bold">{notifications.length}</span>
@@ -478,9 +478,9 @@ const Dashboard: React.FC = () => {
   {/* Upcoming Classes */}
   {upcomingClasses.length > 0 && (
   <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-    className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"
+    className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm"
   >
-    <h3 className="font-bold text-sm text-slate-900 mb-3 flex items-center gap-2">
+    <h3 className="font-bold text-xs sm:text-sm text-slate-900 mb-3 flex items-center gap-2">
       <Calendar className="w-4 h-4 text-blue-500" /> Upcoming Classes
     </h3>
     <div className="space-y-3">
@@ -516,7 +516,7 @@ const Dashboard: React.FC = () => {
 
   {/* Quick Actions */}
   <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}
-  className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"
+  className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm"
   >
  <h3 className="font-bold text-sm text-slate-900 mb-3">Quick Actions</h3>
  <div className="grid grid-cols-2 gap-2">
@@ -542,7 +542,7 @@ const Dashboard: React.FC = () => {
  </div>
 
  {/* Highlighted: Apply as Teacher */}
- <Link to="/teacher-application" className="mt-3 block w-full p-4 rounded-2xl bg-gradient-to-br from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-500 hover:via-violet-500 hover:to-indigo-500 text-white shadow-lg shadow-purple-500/20 hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-300 group relative overflow-hidden">
+ <Link to="/teacher-application" className="mt-3 block w-full p-3 sm:p-4 rounded-2xl bg-gradient-to-br from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-500 hover:via-violet-500 hover:to-indigo-500 text-white shadow-lg shadow-purple-500/20 hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-300 group relative overflow-hidden">
   <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.15),transparent_60%)] pointer-events-none" />
   <div className="relative z-10 flex items-center gap-4">
    <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform shrink-0">
@@ -562,9 +562,9 @@ const Dashboard: React.FC = () => {
  {/* Applications (if any) */}
  {totalApplications > 0 && (
  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
- className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"
+ className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm"
  >
- <h3 className="font-bold text-sm text-slate-900 mb-3 flex items-center gap-2"><FileText className="w-4 h-4 text-amber-500" /> Applications</h3>
+ <h3 className="font-bold text-xs sm:text-sm text-slate-900 mb-3 flex items-center gap-2"><FileText className="w-4 h-4 text-amber-500" /> Applications</h3>
  <div className="space-y-2">
  {pendingApps > 0 && (
  <div className="flex items-center justify-between p-3 bg-amber-50 /10 rounded-xl">
@@ -590,7 +590,7 @@ const Dashboard: React.FC = () => {
  {/* My Teaching (if any) */}
  {totalTeaching > 0 && teachingEnrollments.map((enr) => (
  <motion.div key={enr.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}
- className="bg-white border-2 border-purple-200 /40 rounded-2xl p-5 shadow-sm"
+ className="bg-white border-2 border-purple-200 /40 rounded-2xl p-4 sm:p-5 shadow-sm"
  >
  <div className="flex items-center justify-between gap-3">
  <div className="flex items-center gap-3 min-w-0">
@@ -611,7 +611,7 @@ const Dashboard: React.FC = () => {
 
  {/* Courses / Resources CTA */}
  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }}
- className="bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/15"
+ className="bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl p-4 sm:p-5 text-white shadow-lg shadow-emerald-500/15"
  >
  <Download className="w-6 h-6 mb-2 text-emerald-200" />
  <h3 className="font-black text-sm mb-0.5">Free Resources</h3>
