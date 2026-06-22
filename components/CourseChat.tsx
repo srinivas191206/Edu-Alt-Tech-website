@@ -28,8 +28,18 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  // Mentor Specific
  const [students, setStudents] = useState<{uid: string, name: string}[]>([]);
  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
+ const [mentorName, setMentorName] = useState('Mentor');
 
  const scrollRef = useRef<HTMLDivElement>(null);
+
+ // Fetch mentor name
+ useEffect(() => {
+  if (mentorId) {
+   getDoc(doc(db, 'users', mentorId)).then(snap => {
+    if (snap.exists()) setMentorName(snap.data().display_name || snap.data().name || 'Mentor');
+   }).catch(() => {});
+  }
+ }, [mentorId]);
 
  // Fetch student list if mentor
  useEffect(() => {
@@ -158,7 +168,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  onClick={() => setActiveTab('direct')}
  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'direct' ? 'bg-white text-purple-600 shadow-md' : 'text-slate-500 hover:bg-slate-100 :bg-slate-900'}`}
  >
- <MessageCircle className="w-4 h-4" /> {role === 'teacher' ? 'Private DMs' : 'DM Mentor'}
+  <MessageCircle className="w-4 h-4" /> {role === 'teacher' ? 'Private DMs' : `DM ${mentorName}`}
  </button>
  </div>
 
@@ -193,12 +203,12 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  <User className="w-4 h-4 text-slate-500" />
  </div>
  <div>
- <h4 className="text-sm font-bold truncate">
- {activeTab === 'community' ? 'Course Broadcast' : (role === 'teacher' ? (students.find(s => s.uid === selectedStudentId)?.name || 'Select Student') : 'Course Mentor')}
- </h4>
- <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
- {activeTab === 'community' ? 'Whole Students Channel' : (role === 'teacher' ? 'Student Participant' : 'Primary Instructor')}
- </p>
+  <h4 className="text-sm font-bold truncate">
+  {activeTab === 'community' ? 'Course Broadcast' : (role === 'teacher' ? (students.find(s => s.uid === selectedStudentId)?.name || 'Select Student') : mentorName)}
+  </h4>
+  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+  {activeTab === 'community' ? 'Whole Students Channel' : (role === 'teacher' ? 'Student Participant' : 'Primary Instructor')}
+  </p>
  </div>
  </div>
  {activeTab === 'community' && role === 'teacher' && (
@@ -233,9 +243,9 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  {showName && !isMe && (
  <div className="flex items-center gap-2 ml-2 mb-1">
  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{msg.senderName}</span>
- {msg.senderId === mentorId && (
- <span className="text-[8px] font-black text-emerald-500 border border-emerald-500/30 px-1.5 rounded uppercase">Mentor</span>
- )}
+  {msg.senderId === mentorId && (
+  <span className="text-[8px] font-black text-emerald-500 border border-emerald-500/30 px-1.5 rounded uppercase">{mentorName}</span>
+  )}
  </div>
  )}
  <div className={`max-w-[85%] px-5 py-3 rounded-2xl text-sm leading-relaxed shadow-sm ${isMe ? 'bg-slate-900 text-white rounded-tr-none' : 'bg-white text-slate-800 border border-slate-100 rounded-tl-none'}`}>
