@@ -272,7 +272,7 @@ const Resources: React.FC = () => {
      </a>
     )}
     {item.url ? (
-     <a href={item.url} download onClick={() => trackDownload(item)} className={`flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl transition-colors ${
+     <a href={item.viewUrl || item.url} target="_blank" rel="noopener noreferrer" onClick={() => trackDownload(item)} className={`flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl transition-colors ${
       item.premium
       ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
       : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20'
@@ -280,7 +280,7 @@ const Resources: React.FC = () => {
       <Download className="w-3 h-3" /> {item.premium ? 'Unlock' : 'Download'}
      </a>
     ) : (
-     <button className={`flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl transition-colors ${
+     <button className={`flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl transition-colors ${
       item.premium
       ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg shadow-amber-500/20'
       : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/20'

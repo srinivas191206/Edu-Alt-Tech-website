@@ -463,7 +463,7 @@ const TeacherPanel: React.FC = () => {
  }
 
  return (
- <div className="min-h-screen pt-28 pb-32 px-6 bg-slate-50 [#020617] selection:bg-purple-500/30">
+ <div className="min-h-screen pt-24 sm:pt-28 pb-24 sm:pb-32 px-4 sm:px-6 bg-slate-50 [#020617] selection:bg-purple-500/30">
  <div className="fixed inset-0 overflow-hidden pointer-events-none">
  <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-500/10 blur-[60px] rounded-full" />
  <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/10 blur-[60px] rounded-full" />
@@ -482,18 +482,18 @@ const TeacherPanel: React.FC = () => {
  </div>
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none mb-2">
+ <h1 className="text-[2rem] sm:text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none mb-2">
   {viewMode === 'overview' ? 'Dashboard' : <>My <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-indigo-500">Courses</span></>}
  </h1>
- <p className="text-lg text-slate-500 font-medium max-w-xl">
+ <p className="text-sm sm:text-lg text-slate-500 font-medium max-w-xl">
  {viewMode === 'overview' ? 'Your teaching at a glance.' : 'Manage your courses, students, chat, and schedule live classes.'}
  </p>
  </div>
- <div className="flex gap-2">
- <button onClick={() => setViewMode('overview')} className={`px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${viewMode === 'overview' ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 :bg-slate-700'}`}>
+ <div className="flex gap-2 w-full sm:w-auto">
+ <button onClick={() => setViewMode('overview')} className={`flex-1 sm:flex-initial px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${viewMode === 'overview' ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 :bg-slate-700'}`}>
  <BarChart3 className="w-4 h-4 inline mr-2" />Overview
  </button>
- <button onClick={() => setViewMode('courses')} className={`px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${viewMode === 'courses' ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 :bg-slate-700'}`}>
+ <button onClick={() => setViewMode('courses')} className={`flex-1 sm:flex-initial px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${viewMode === 'courses' ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 :bg-slate-700'}`}>
  <BookOpen className="w-4 h-4 inline mr-2" />Courses
  </button>
  </div>
@@ -504,37 +504,37 @@ const TeacherPanel: React.FC = () => {
  <div className="space-y-8">
  {/* Stats cards */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
- <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
- <Users className="w-8 h-8 text-purple-500 mb-3" />
- <p className="text-3xl font-black text-slate-900 ">{totalStudents}</p>
+  <div className="bg-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200 shadow-sm">
+  <Users className="w-6 h-6 sm:w-8 sm:h-8 text-purple-500 mb-3" />
+  <p className="text-2xl sm:text-3xl font-black text-slate-900 ">{totalStudents}</p>
  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Total Students</p>
  </div>
- <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
- <BookOpen className="w-8 h-8 text-emerald-500 mb-3" />
- <p className="text-3xl font-black text-slate-900 ">{courses.length}</p>
+  <div className="bg-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200 shadow-sm">
+  <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-500 mb-3" />
+  <p className="text-2xl sm:text-3xl font-black text-slate-900 ">{courses.length}</p>
  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Total Courses</p>
  </div>
- <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
- <DollarSign className="w-8 h-8 text-amber-500 mb-3" />
- <p className="text-3xl font-black text-slate-900 ">₹{earnings.monthly.toLocaleString()}</p>
+  <div className="bg-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200 shadow-sm">
+  <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-amber-500 mb-3" />
+  <p className="text-2xl sm:text-3xl font-black text-slate-900 ">₹{earnings.monthly.toLocaleString()}</p>
  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Monthly Earnings</p>
  </div>
- <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
- <Calendar className="w-8 h-8 text-blue-500 mb-3" />
- <p className="text-3xl font-black text-slate-900 ">{upcomingClasses.length}</p>
+  <div className="bg-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200 shadow-sm">
+  <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500 mb-3" />
+  <p className="text-2xl sm:text-3xl font-black text-slate-900 ">{upcomingClasses.length}</p>
  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Upcoming Classes</p>
  </div>
  </div>
 
  {/* Total earnings & Upcoming classes */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
- <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
- <h3 className="font-black text-lg mb-4 flex items-center gap-2"><DollarSign className="w-5 h-5 text-amber-500" /> Total Earnings</h3>
- <p className="text-4xl font-black text-slate-900 ">₹{earnings.total.toLocaleString()}</p>
+  <div className="bg-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200 shadow-sm">
+  <h3 className="font-black text-lg mb-4 flex items-center gap-2"><DollarSign className="w-5 h-5 text-amber-500" /> Total Earnings</h3>
+  <p className="text-3xl sm:text-4xl font-black text-slate-900 ">₹{earnings.total.toLocaleString()}</p>
  <p className="text-xs text-slate-400 font-medium mt-1">Lifetime earnings from all courses</p>
  </div>
- <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
- <h3 className="font-black text-lg mb-4 flex items-center gap-2"><Calendar className="w-5 h-5 text-blue-500" /> Upcoming Classes</h3>
+  <div className="bg-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200 shadow-sm">
+  <h3 className="font-black text-lg mb-4 flex items-center gap-2"><Calendar className="w-5 h-5 text-blue-500" /> Upcoming Classes</h3>
  {upcomingClasses.length === 0 ? (
  <p className="text-slate-400 font-medium text-sm py-6">No upcoming classes scheduled.</p>
  ) : (
@@ -564,7 +564,7 @@ const TeacherPanel: React.FC = () => {
  ) : (
  <div className="space-y-3">
  {recurringClasses.map((rc) => (
- <div key={rc.id} className="flex items-center justify-between p-4 bg-slate-50 /50 rounded-2xl border border-slate-200 /50">
+ <div key={rc.id} className="flex items-center justify-between p-3 sm:p-4 bg-slate-50 /50 rounded-2xl border border-slate-200 /50">
  <div className="flex-1">
  <div className="flex items-center gap-2 mb-1">
  <span className="px-2 py-0.5 bg-purple-100 /30 text-purple-600 rounded-lg text-[10px] font-bold uppercase">{rc.repeat_type}</span>
@@ -601,7 +601,7 @@ const TeacherPanel: React.FC = () => {
  transition={{ delay: idx * 0.05 }}
  className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm"
  >
- <button onClick={() => toggleCourse(course.courseId!)} className="w-full p-8 flex items-center justify-between hover:bg-slate-50 :bg-slate-800/30 transition-colors text-left">
+ <button onClick={() => toggleCourse(course.courseId!)} className="w-full p-5 sm:p-8 flex items-center justify-between hover:bg-slate-50 :bg-slate-800/30 transition-colors text-left">
  <div className="flex-1">
  <div className="flex items-center gap-3 mb-2">
  <span className="px-3 py-1 bg-purple-100 /30 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider">Teacher</span>
@@ -609,7 +609,7 @@ const TeacherPanel: React.FC = () => {
  <Users className="w-4 h-4" /> {course.studentCount} enrolled
  </span>
  </div>
- <h3 className="text-2xl font-black text-slate-900 ">{course.courseData?.title || 'Unknown Course'}</h3>
+ <h3 className="text-xl sm:text-2xl font-black text-slate-900 ">{course.courseData?.title || 'Unknown Course'}</h3>
  <p className="text-slate-500 font-medium mt-1 line-clamp-1">{course.courseData?.description}</p>
  </div>
  <div className="flex items-center gap-3 shrink-0 ml-6">
@@ -625,9 +625,9 @@ const TeacherPanel: React.FC = () => {
  <AnimatePresence mode="wait">
   {expandedCourse === course.courseId && (
   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden will-change-transform">
- <div className="px-8 pb-8 border-t border-slate-100 ">
+ <div className="px-5 sm:px-8 pb-5 sm:pb-8 border-t border-slate-100 ">
  {/* Course Tabs */}
- <div className="flex gap-1 -mx-8 px-8 pt-4 pb-2 border-b border-slate-100 mb-6 overflow-x-auto">
+ <div className="flex gap-1 -mx-5 sm:-mx-8 px-5 sm:px-8 pt-4 pb-2 border-b border-slate-100 mb-6 overflow-x-auto">
  {courseTabs.map(tab => (
  <button
  key={tab.id}
@@ -670,7 +670,7 @@ const TeacherPanel: React.FC = () => {
  ) : (
  <div className="space-y-3">
  {modules.map((mod) => (
- <div key={mod.id} className="bg-slate-50 /30 rounded-2xl p-5 border border-slate-200 /50">
+ <div key={mod.id} className="bg-slate-50 /30 rounded-2xl p-4 sm:p-5 border border-slate-200 /50">
  <div className="flex items-start justify-between gap-4">
  <div className="flex-1">
  <h5 className="font-bold text-slate-900 ">{mod.title}</h5>
@@ -716,7 +716,7 @@ const TeacherPanel: React.FC = () => {
  ) : (
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
  {resources.map((r) => (
- <div key={r.id} className="flex items-center gap-3 p-4 bg-slate-50 /30 rounded-2xl border border-slate-200 /50">
+ <div key={r.id} className="flex items-center gap-3 p-3 sm:p-4 bg-slate-50 /30 rounded-2xl border border-slate-200 /50">
  <FileText className="w-5 h-5 text-blue-500 shrink-0" />
  <div className="flex-1 min-w-0">
  <p className="font-bold text-sm text-slate-900 truncate">{r.title}</p>
@@ -747,7 +747,7 @@ const TeacherPanel: React.FC = () => {
  ) : (
  <div className="space-y-3">
   {students.map((s) => (
-  <div key={s.id} className="flex items-center gap-4 p-5 bg-slate-50 /30 rounded-2xl border border-slate-200 /50">
+  <div key={s.id} className="flex items-center gap-4 p-4 sm:p-5 bg-slate-50 /30 rounded-2xl border border-slate-200 /50">
   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center font-black text-white text-lg shrink-0">
   {s.name.charAt(0).toUpperCase()}
   </div>
@@ -894,9 +894,9 @@ const TeacherPanel: React.FC = () => {
  {showModuleModal && (
  <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModuleModal(null)} className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
- <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl p-8">
- <div className="flex justify-between items-center mb-6">
- <h3 className="text-2xl font-black">New Module</h3>
+  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl p-6 sm:p-8">
+  <div className="flex justify-between items-center mb-6">
+  <h3 className="text-2xl font-black">New Module</h3>
  <button onClick={() => setShowModuleModal(null)} className="p-2 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"><X className="w-5 h-5" /></button>
  </div>
  <form onSubmit={handleCreateModule} className="space-y-5">
@@ -924,9 +924,9 @@ const TeacherPanel: React.FC = () => {
  {showLectureModal && (
  <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowLectureModal(null)} className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
- <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl p-8">
- <div className="flex justify-between items-center mb-6">
- <h3 className="text-2xl font-black">New Lecture</h3>
+  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl p-6 sm:p-8">
+  <div className="flex justify-between items-center mb-6">
+  <h3 className="text-2xl font-black">New Lecture</h3>
  <button onClick={() => setShowLectureModal(null)} className="p-2 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"><X className="w-5 h-5" /></button>
  </div>
  <form onSubmit={handleAddLecture} className="space-y-5">
@@ -954,9 +954,9 @@ const TeacherPanel: React.FC = () => {
  {showResourceModal && (
  <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowResourceModal(null)} className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
- <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl p-8">
- <div className="flex justify-between items-center mb-6">
- <h3 className="text-2xl font-black">Add Resource</h3>
+  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl p-6 sm:p-8">
+  <div className="flex justify-between items-center mb-6">
+  <h3 className="text-2xl font-black">Add Resource</h3>
  <button onClick={() => setShowResourceModal(null)} className="p-2 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"><X className="w-5 h-5" /></button>
  </div>
  <form onSubmit={handleCreateResource} className="space-y-5">
