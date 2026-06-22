@@ -79,7 +79,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
         setMessages(msgs);
         setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
         setLoading(false);
-      });
+      }, () => setLoading(false));
       return () => unsub();
     } else {
       const targetId = role === 'teacher' ? selectedStudentId : mentorId;
@@ -111,7 +111,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
         setMessages(filtered);
         setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
         setLoading(false);
-      });
+      }, () => setLoading(false));
       return () => unsub();
     }
   }, [courseId, activeTab, currentUser.uid, mentorId, role, selectedStudentId]);
