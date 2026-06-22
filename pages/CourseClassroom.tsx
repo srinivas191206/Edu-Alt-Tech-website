@@ -411,7 +411,7 @@ const CourseClassroom: React.FC = () => {
   const progressPercent = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
 
   const plan = enrollment?.plan || 'full';
-  const planLimits: Record<EnrollmentPlan, number> = { trial: 1, first_class: 2, full: Infinity };
+  const planLimits: Record<EnrollmentPlan, number> = { trial: 1, first_class: 1, full: Infinity };
   const maxModuleIndex = planLimits[plan] ?? Infinity;
   const isRestricted = plan !== 'full';
 
@@ -784,13 +784,9 @@ const CourseClassroom: React.FC = () => {
    {role === 'student' && isRestricted && (
      <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-amber-600/20 overflow-hidden relative">
        <div className="relative z-10">
-         <h3 className="text-xl font-black mb-2 uppercase tracking-tight">
-           {plan === 'trial' ? 'Trial Mode' : 'First Class'}
-         </h3>
+         <h3 className="text-xl font-black mb-2 uppercase tracking-tight">First Class</h3>
          <p className="text-sm font-medium text-white/80 mb-6">
-           {plan === 'trial'
-             ? 'You\'re viewing module 1. Upgrade to full access and unlock the complete course.'
-             : 'You have access to beginner modules. Upgrade to unlock all advanced content.'}
+           You have access to module 1. Upgrade to full access and unlock the complete course.
          </p>
          <button
            onClick={handleUpgradeFullAccess}

@@ -761,16 +761,13 @@ const TeacherPanel: React.FC = () => {
        {s.plan === 'first_class' && (
          <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-[9px] font-bold uppercase tracking-wider">First Class</span>
        )}
-       {s.plan === 'trial' && (
-         <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-[9px] font-bold uppercase tracking-wider">Trial</span>
-       )}
        {s.created_at && (
          <span className="text-[9px] text-slate-400 font-medium">Joined {new Date(s.created_at).toLocaleDateString()}</span>
        )}
      </div>
    </div>
    <div className="flex items-center gap-2 shrink-0">
-     {s.plan === 'trial' || s.plan === 'first_class' ? (
+     {s.plan === 'first_class' ? (
        <button className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-[10px] transition-colors whitespace-nowrap">
          Upgrade
        </button>

@@ -157,7 +157,7 @@ const CourseDetails: React.FC = () => {
  });
  };
 
-  const finalizeEnrollment = async (plan: 'trial' | 'first_class' | 'full' = 'full') => {
+  const finalizeEnrollment = async (plan: 'first_class' | 'full' = 'full') => {
    setEnrollLoading(true);
    try {
      const enrollmentRef = doc(collection(db, 'enrollments'));
@@ -167,7 +167,7 @@ const CourseDetails: React.FC = () => {
        courseId: courseId!,
        role: 'student',
        studentStatus: 'active',
-       paymentStatus: plan === 'trial' ? 'not-required' : 'paid',
+       paymentStatus: 'paid',
        plan,
        mentorId: selectedMentor || undefined,
        createdAt: serverTimestamp()
@@ -395,12 +395,6 @@ await finalizeEnrollment('full');
   }
  };
 
-  const handleFreeTrial = async () => {
-   if (!user) { navigate('/login'); return; }
-   if (!selectedMentor) { alert("Please select a mentor first."); return; }
-   await finalizeEnrollment('trial');
-  };
-
   const handleApplyToTeach = () => {
  if (!user) {
  navigate('/login');
@@ -510,13 +504,6 @@ await finalizeEnrollment('full');
     ))}
     <div className="flex flex-col sm:flex-row gap-3">
       <button
-      onClick={handleFreeTrial}
-      disabled={enrollLoading || !selectedMentor}
-      className="flex-1 bg-white border-2 border-slate-200 text-slate-700 font-bold py-4 px-8 rounded-xl hover:border-emerald-500 hover:text-emerald-600 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
-      >
-      {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'Free Trial (1 Day)' : 'Select Mentor')}
-      </button>
-      <button
       onClick={handleFirstClassPayment}
       disabled={enrollLoading || !selectedMentor}
       className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
@@ -588,13 +575,6 @@ await finalizeEnrollment('full');
  </div>
  ))}
   <div className="flex flex-col sm:flex-row gap-3 mt-4 w-full">
-    <button
-    onClick={handleFreeTrial}
-    disabled={enrollLoading || !selectedMentor}
-    className="flex-1 bg-white border-2 border-slate-200 text-slate-700 font-bold py-4 px-8 rounded-xl hover:border-emerald-500 hover:text-emerald-600 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
-    >
-    {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'Free Trial (1 Day)' : 'Select Mentor')}
-    </button>
     <button
     onClick={handleFirstClassPayment}
     disabled={enrollLoading || !selectedMentor}
