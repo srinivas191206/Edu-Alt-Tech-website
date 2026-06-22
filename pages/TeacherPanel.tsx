@@ -20,9 +20,11 @@ const TeacherPanel: React.FC = () => {
  const [activeCourseTab, setActiveCourseTab] = useState<'modules' | 'students' | 'chat' | 'schedule'>('modules');
 
  // Overview stats
- const [totalStudents, setTotalStudents] = useState(0);
- const [earnings, setEarnings] = useState<{ total: number; monthly: number }>({ total: 0, monthly: 0 });
- const [upcomingClasses, setUpcomingClasses] = useState<any[]>([]);
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [firstClassStudents, setFirstClassStudents] = useState(0);
+  const [fullAccessStudents, setFullAccessStudents] = useState(0);
+  const [earnings, setEarnings] = useState<{ total: number; monthly: number }>({ total: 0, monthly: 0 });
+  const [upcomingClasses, setUpcomingClasses] = useState<any[]>([]);
 
  // Recurring classes
  const [recurringClasses, setRecurringClasses] = useState<any[]>([]);
@@ -171,34 +173,59 @@ const TeacherPanel: React.FC = () => {
  }
  };
 
-  const fetchOverviewStats = async (teacherId: string) => {
-  try {
-  // Count only students enrolled in this teacher's courses
-  const myCourseIds = courses.map(c => c.courseId);
-  let total = 0;
-  if (myCourseIds.length > 0) {
-    const { count } = await db.from('enrollments').select('id', { count: 'exact', head: true }).in('course_id', myCourseIds).eq('role', 'student');
-    total = count || 0;
-  }
-  setTotalStudents(total);
- const { data: earningsData } = await db.from('teacher_earnings').select('amount, created_at').eq('teacher_id', teacherId);
- if (earningsData) {
- const total = earningsData.reduce((s, r) => s + Number(r.amount || 0), 0);
- const thisMonth = earningsData.filter(r => {
- const d = new Date(r.created_at);
- const now = new Date();
- return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
- }).reduce((s, r) => s + Number(r.amount || 0), 0);
- setEarnings({ total, monthly: thisMonth });
- }
- const { data: upcoming } = await db.from('scheduled_classes').select('*').eq('teacher_id', teacherId).gte('scheduled_at', new Date().toISOString()).order('scheduled_at', { ascending: true }).limit(5);
- setUpcomingClasses(upcoming || []);
- const { data: recur } = await db.from('teacher_recurring_classes').select('*').eq('teacher_id', teacherId).eq('is_active', true);
- setRecurringClasses(recur || []);
- } catch (e) {
- console.error("Failed to load overview stats", e);
- }
- };
+   const fetchOverviewStats = async (teacherId: string) => {
+   try {
+   const myCourseIds = courses.map(c => c.courseId);
+   let total = 0, fcCount = 0, fullCount = 0;
+   let earningsTotal = 0, earningsMonthly = 0;
+   const now = new Date();
+   const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+   if (myCourseIds.length > 0) {
+   // Fetch plan info from firebase-compat enrollments (has plan field)
+   const planMap = new Map<string, string>();
+   for (const cid of myCourseIds) {
+   const eSnap = await getDocs(query(collection(db, 'enrollments'), where('courseId', '==', cid), where('role', '==', 'student')));
+   eSnap.docs.forEach(d => planMap.set(d.data().userId, d.data().plan || 'full'));
+   }
+
+   // Fetch base enrollment data from supabase
+   const { data: enrollData } = await db.from('enrollments').select('user_id, created_at').in('course_id', myCourseIds).eq('role', 'student');
+   const enrollments = enrollData || [];
+   total = enrollments.length;
+
+   for (const e of enrollments) {
+   const plan = planMap.get(e.user_id) || e.plan || 'full';
+   if (plan === 'first_class') fcCount++;
+   else fullCount++;
+   }
+
+   for (const course of courses) {
+   const courseEnrolls = enrollments.filter((e: any) => e.course_id === course.courseId);
+   for (const e of courseEnrolls) {
+   const plan = planMap.get(e.user_id) || 'full';
+   const amount = plan === 'first_class' ? 10 : (course.courseData?.price || 0);
+   const createdAt = e.created_at || '';
+   if (amount) {
+   earningsTotal += amount;
+   if (createdAt >= thisMonthStart) earningsMonthly += amount;
+   }
+   }
+   }
+   }
+   setTotalStudents(total);
+   setFirstClassStudents(fcCount);
+   setFullAccessStudents(fullCount);
+   setEarnings({ total: earningsTotal, monthly: earningsMonthly });
+
+   const { data: upcoming } = await db.from('scheduled_classes').select('*').eq('teacher_id', teacherId).gte('scheduled_at', new Date().toISOString()).order('scheduled_at', { ascending: true }).limit(5);
+   setUpcomingClasses(upcoming || []);
+   const { data: recur } = await db.from('teacher_recurring_classes').select('*').eq('teacher_id', teacherId).eq('is_active', true);
+   setRecurringClasses(recur || []);
+   } catch (e) {
+   console.error("Failed to load overview stats", e);
+   }
+   };
 
  const notifyAdmins = async (courseTitle: string, className: string, meetingLink: string, teacherName: string) => {
  try {
@@ -511,28 +538,38 @@ const TeacherPanel: React.FC = () => {
  {viewMode === 'overview' && (
  <div className="space-y-8">
  {/* Stats cards */}
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-  <div className="bg-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200 shadow-sm">
-  <Users className="w-6 h-6 sm:w-8 sm:h-8 text-purple-500 mb-3" />
-  <p className="text-2xl sm:text-3xl font-black text-slate-900 ">{totalStudents}</p>
- <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Total Students</p>
- </div>
-  <div className="bg-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200 shadow-sm">
-  <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-500 mb-3" />
-  <p className="text-2xl sm:text-3xl font-black text-slate-900 ">{courses.length}</p>
- <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Total Courses</p>
- </div>
-  <div className="bg-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200 shadow-sm">
-  <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-amber-500 mb-3" />
-  <p className="text-2xl sm:text-3xl font-black text-slate-900 ">₹{earnings.monthly.toLocaleString()}</p>
- <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Monthly Earnings</p>
- </div>
-  <div className="bg-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200 shadow-sm">
-  <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500 mb-3" />
-  <p className="text-2xl sm:text-3xl font-black text-slate-900 ">{upcomingClasses.length}</p>
- <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Upcoming Classes</p>
- </div>
- </div>
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+   <div className="bg-white p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-slate-200 shadow-sm">
+   <Users className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500 mb-2" />
+   <p className="text-xl sm:text-2xl font-black text-slate-900 ">{totalStudents}</p>
+  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Total Students</p>
+  </div>
+   <div className="bg-white p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-slate-200 shadow-sm">
+   <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500 mb-2" />
+   <p className="text-xl sm:text-2xl font-black text-slate-900 ">{courses.length}</p>
+  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Courses</p>
+  </div>
+   <div className="bg-white p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-slate-200 shadow-sm">
+   <Users className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 mb-2" />
+   <p className="text-xl sm:text-2xl font-black text-slate-900 ">{firstClassStudents}</p>
+  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">First Class</p>
+  </div>
+   <div className="bg-white p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-slate-200 shadow-sm">
+   <Users className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 mb-2" />
+   <p className="text-xl sm:text-2xl font-black text-slate-900 ">{fullAccessStudents}</p>
+  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Full Access</p>
+  </div>
+   <div className="bg-white p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-slate-200 shadow-sm">
+   <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 mb-2" />
+   <p className="text-xl sm:text-2xl font-black text-slate-900 ">₹{earnings.monthly.toLocaleString()}</p>
+  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Monthly Earnings</p>
+  </div>
+   <div className="bg-white p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-slate-200 shadow-sm">
+   <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 mb-2" />
+   <p className="text-xl sm:text-2xl font-black text-slate-900 ">{upcomingClasses.length}</p>
+  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Upcoming Classes</p>
+  </div>
+  </div>
 
  {/* Total earnings & Upcoming classes */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
