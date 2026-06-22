@@ -95,31 +95,41 @@ const TeacherPanel: React.FC = () => {
  };
 
  const fetchStudents = async (courseId: string) => {
- setLoadingStudents(true);
- try {
- const { data, error } = await db.from('enrollments').select('*').eq('course_id', courseId).eq('role', 'student');
- if (error) throw error;
- const studentList = await Promise.all((data || []).map(async (s: any) => {
- let name = 'Unknown Student';
- let email = '';
- try {
- const uDoc = await getDoc(doc(db, 'users', s.user_id));
- if (uDoc.exists()) {
- const uData = uDoc.data();
- name = uData.display_name || uData.email || 'Unknown Student';
- email = uData.email || '';
- }
- } catch (_) {}
- return { ...s, name, email };
- }));
- setStudents(studentList);
- } catch (e) {
- console.error("Failed to load students", e);
- toast.error("Failed to load students");
- } finally {
- setLoadingStudents(false);
- }
- };
+  setLoadingStudents(true);
+  try {
+  const { data, error } = await db.from('enrollments').select('*').eq('course_id', courseId).eq('role', 'student');
+  if (error) throw error;
+  const studentList = await Promise.all((data || []).map(async (s: any) => {
+  let name = 'Unknown Student';
+  let email = '';
+  let paymentStatus = s.payment_status || 'not-required';
+  let enrolledAt = s.created_at || '';
+  try {
+  const uDoc = await getDoc(doc(db, 'users', s.user_id));
+  if (uDoc.exists()) {
+  const uData = uDoc.data();
+  name = uData.display_name || uData.email || 'Unknown Student';
+  email = uData.email || '';
+  }
+  // Get payment info from Firestore enrollment
+  const eq = query(collection(db, 'enrollments'), where('userId', '==', s.user_id), where('courseId', '==', courseId), where('role', '==', 'student'));
+  const eSnap = await getDocs(eq);
+  if (!eSnap.empty) {
+  const eData = eSnap.docs[0].data();
+  if (eData.paymentStatus) paymentStatus = eData.paymentStatus;
+  if (eData.createdAt) enrolledAt = eData.createdAt?.toDate?.()?.toISOString() || eData.createdAt;
+  }
+  } catch (_) {}
+  return { ...s, name, email, payment_status: paymentStatus, created_at: enrolledAt };
+  }));
+  setStudents(studentList);
+  } catch (e) {
+  console.error("Failed to load students", e);
+  toast.error("Failed to load students");
+  } finally {
+  setLoadingStudents(false);
+  }
+  };
 
  const fetchChatMessages = async (courseId: string) => {
  try {
@@ -734,10 +744,19 @@ const TeacherPanel: React.FC = () => {
  {s.name.charAt(0).toUpperCase()}
  </div>
   <div className="flex-1 min-w-0">
-    <p className="font-bold text-slate-900 truncate flex items-center gap-2">
-      {s.name}
-    </p>
+    <p className="font-bold text-slate-900 truncate">{s.name}</p>
     <p className="text-xs text-slate-400 font-medium truncate">{s.email}</p>
+    <div className="flex items-center gap-2 mt-1">
+      {s.payment_status === 'paid' && (
+        <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[9px] font-bold uppercase tracking-wider">Paid</span>
+      )}
+      {s.payment_status === 'not-required' && (
+        <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[9px] font-bold uppercase tracking-wider">Free</span>
+      )}
+      {s.created_at && (
+        <span className="text-[9px] text-slate-400 font-medium">Joined {new Date(s.created_at).toLocaleDateString()}</span>
+      )}
+    </div>
   </div>
   <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
    s.student_status === 'active'
