@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { auth, db, storage, doc, getDoc, collection, query, where, getDocs, addDoc, updateDoc, serverTimestamp, ref, uploadBytes, getDownloadURL, onAuthStateChanged } from '../lib/firebase';
+import { auth, db, storage, doc, getDoc, collection, query, where, getDocs, addDoc, updateDoc, serverTimestamp, ref, uploadBytes, getDownloadURL, onAuthStateChanged, orderBy, onSnapshot } from '../lib/firebase';
 import { Course, CourseEnrollment, CourseModule, ModuleLecture, CourseResource } from '../types';
 import { PLATFORM_COURSES } from '../data/platformCourses';
 import { ArrowLeft, BookOpen, Video, FileText, Plus, Link as LinkIcon, Loader2, Users, Clock, X, Upload, ExternalLink, Calendar, GraduationCap, Trash2, Edit, Save, Send, MessageSquare, UserCheck, ListOrdered, DollarSign, BarChart3, Copy, CheckCircle, Repeat } from 'lucide-react';
@@ -133,27 +133,33 @@ const TeacherPanel: React.FC = () => {
   }
   };
 
- const fetchChatMessages = async (courseId: string) => {
- try {
- const { data, error } = await db.from('course_chat_messages').select('*').eq('course_id', courseId).order('created_at', { ascending: true });
- if (error) throw error;
- const enriched = await Promise.all((data || []).map(async (msg: any) => {
- let senderName = msg.role === 'teacher' ? 'You' : 'Student';
- if (msg.role === 'teacher' && msg.user_id === user?.uid) senderName = 'You';
- else if (msg.role === 'teacher') senderName = 'Teacher';
- else {
- try {
- const uDoc = await getDoc(doc(db, 'users', msg.user_id));
- if (uDoc.exists()) senderName = uDoc.data().display_name || 'Student';
- } catch (_) {}
- }
- return { ...msg, senderName };
- }));
- setCourseChatMessages(enriched);
- } catch (e) {
- console.error("Failed to load chat", e);
- }
- };
+  const chatUnsubRef = useRef<(() => void) | null>(null);
+
+  const subscribeChat = (courseId: string) => {
+  chatUnsubRef.current?.();
+  const q = query(
+  collection(db, 'course_chat_messages'),
+  where('courseId', '==', courseId),
+  orderBy('createdAt', 'asc')
+  );
+  const unsub = onSnapshot(q, async (snap: any) => {
+  const raw = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
+  const enriched = await Promise.all(raw.map(async (msg: any) => {
+  let senderName = msg.senderName || msg.sender_name || 'User';
+  if (msg.role === 'teacher' && msg.userId === user?.uid) senderName = 'You';
+  else if (msg.role === 'teacher') senderName = senderName || 'Teacher';
+  else if (!senderName || senderName === 'User') {
+  try {
+  const uDoc = await getDoc(doc(db, 'users', msg.userId || msg.user_id));
+  if (uDoc.exists()) senderName = uDoc.data().displayName || uDoc.data().display_name || 'Student';
+  } catch (_) {}
+  }
+  return { ...msg, senderName };
+  }));
+  setCourseChatMessages(enriched);
+  }, (e: any) => console.error("Chat subscription error", e));
+  chatUnsubRef.current = unsub;
+  };
 
  const fetchScheduledClasses = async (courseId: string) => {
  try {
@@ -246,14 +252,15 @@ const TeacherPanel: React.FC = () => {
  setLoading(false);
  }
  });
- return () => unsub();
- }, [navigate]);
+  return () => { unsub(); chatUnsubRef.current?.(); };
+  }, [navigate]);
 
- const toggleCourse = async (courseId: string) => {
- if (expandedCourse === courseId) {
- setExpandedCourse(null);
- return;
- }
+  const toggleCourse = async (courseId: string) => {
+  if (expandedCourse === courseId) {
+  chatUnsubRef.current?.();
+  setExpandedCourse(null);
+  return;
+  }
  setExpandedCourse(courseId);
  setActiveCourseTab('modules');
  await fetchModulesAndResources(courseId);
@@ -261,13 +268,14 @@ const TeacherPanel: React.FC = () => {
  await fetchScheduledClasses(courseId);
  };
 
- const switchTab = async (tab: typeof activeCourseTab, courseId: string) => {
- setActiveCourseTab(tab);
- if (tab === 'chat') await fetchChatMessages(courseId);
- if (tab === 'students') await fetchStudents(courseId);
- if (tab === 'schedule') await fetchScheduledClasses(courseId);
- if (tab === 'modules') await fetchModulesAndResources(courseId);
- };
+  const switchTab = async (tab: typeof activeCourseTab, courseId: string) => {
+  setActiveCourseTab(tab);
+  if (tab === 'chat') subscribeChat(courseId);
+  else chatUnsubRef.current?.();
+  if (tab === 'students') await fetchStudents(courseId);
+  if (tab === 'schedule') await fetchScheduledClasses(courseId);
+  if (tab === 'modules') await fetchModulesAndResources(courseId);
+  };
 
  const handleCreateModule = async (e: React.FormEvent) => {
  e.preventDefault();
@@ -345,18 +353,18 @@ const TeacherPanel: React.FC = () => {
  if (!chatInput.trim() || !user) return;
  setSendingMessage(true);
  try {
- const { error } = await db.from('course_chat_messages').insert({
- course_id: courseId,
- user_id: user.uid,
- content: chatInput,
- role: 'teacher',
- created_at: new Date().toISOString()
- });
+  const { error } = await db.from('course_chat_messages').insert({
+  course_id: courseId,
+  user_id: user.uid,
+  content: chatInput,
+  sender_name: user.displayName || 'Teacher',
+  role: 'teacher',
+  created_at: new Date().toISOString()
+  });
  if (error) throw error;
  setChatInput('');
- await fetchChatMessages(courseId);
- } catch (e) {
- toast.error("Failed to send message");
+  } catch (e) {
+  toast.error("Failed to send message");
  } finally {
  setSendingMessage(false);
  }

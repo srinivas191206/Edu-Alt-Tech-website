@@ -67,6 +67,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
         user_id: currentUser.uid,
         content: text,
         sender_name: currentUser.displayName || 'User',
+        role: role,
         created_at: serverTimestamp()
       });
     } catch (err) {
