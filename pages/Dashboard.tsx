@@ -324,7 +324,6 @@ const Dashboard: React.FC = () => {
  </div>
  <div className="min-w-0">
           <h3 className="text-sm font-bold text-slate-900 truncate">{enr.courseData?.title || 'Unknown Course'}</h3>
-           <p className="text-xs text-slate-500 truncate">{enr.courseData?.description}</p>
  </div>
  </div>
  <Link to={`/classroom/${enr.courseId}`}
