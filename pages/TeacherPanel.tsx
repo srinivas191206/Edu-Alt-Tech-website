@@ -190,7 +190,7 @@ const TeacherPanel: React.FC = () => {
    }
 
    // Fetch base enrollment data from supabase
-   const { data: enrollData } = await db.from('enrollments').select('user_id, created_at').in('course_id', myCourseIds).eq('role', 'student');
+   const { data: enrollData } = await db.from('enrollments').select('user_id, plan, created_at').in('course_id', myCourseIds).eq('role', 'student');
    const enrollments = enrollData || [];
    total = enrollments.length;
 
