@@ -158,20 +158,20 @@ const CourseDetails: React.FC = () => {
  });
  };
 
- const finalizeEnrollment = async (isPaid: boolean = false, isTrial: boolean = false) => {
- setEnrollLoading(true);
- try {
- const enrollmentRef = doc(collection(db, 'enrollments'));
- const newEnrollment: CourseEnrollment = {
- id: enrollmentRef.id,
- userId: user!.uid,
- courseId: courseId!,
- role: 'student',
- studentStatus: 'active',
- paymentStatus: isPaid ? 'paid' : (isTrial ? 'trial' : 'not-required'),
- mentorId: selectedMentor || undefined,
- createdAt: serverTimestamp()
- };
+ const finalizeEnrollment = async (isPaid: boolean = false) => {
+  setEnrollLoading(true);
+  try {
+    const enrollmentRef = doc(collection(db, 'enrollments'));
+    const newEnrollment: CourseEnrollment = {
+      id: enrollmentRef.id,
+      userId: user!.uid,
+      courseId: courseId!,
+      role: 'student',
+      studentStatus: 'active',
+      paymentStatus: isPaid ? 'paid' : 'not-required',
+      mentorId: selectedMentor || undefined,
+      createdAt: serverTimestamp()
+    };
   await setDoc(enrollmentRef, newEnrollment as any);
   setEnrollment(newEnrollment);
 
@@ -330,16 +330,68 @@ const CourseDetails: React.FC = () => {
 
  };
 
- const handleStartFreeTrial = async () => {
- if (!user) {
- navigate('/login');
- return;
- }
- if (!selectedMentor) {
- alert("Please select a mentor first.");
- return;
- }
- await finalizeEnrollment(false, true);
+ const handleFirstClassPayment = async () => {
+  if (!user) {
+  navigate('/login');
+  return;
+  }
+  if (!selectedMentor) {
+  alert("Please select a mentor first.");
+  return;
+  }
+  setEnrollLoading(true);
+  try {
+  const amountInPaise = 1000; // ₹10
+  const resOrder = await fetch('/api/createOrder', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ amount: amountInPaise })
+  });
+  if (!resOrder.ok) {
+  if (resOrder.status === 404) { throw new Error("Payment API not found. If running locally, please use 'npx vercel dev' instead of 'npm run dev'."); }
+  const errorData = await resOrder.json().catch(() => ({}));
+  throw new Error(errorData.error || `Server error (${resOrder.status})`);
+  }
+  const orderData = await resOrder.json();
+  const scriptLoaded = await loadRazorpayScript();
+  if (!scriptLoaded) { alert("Payment gateway failed to load."); return; }
+  const options = {
+  key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_T2D67OLLpfRjtJ",
+  amount: amountInPaise,
+  currency: "INR",
+  name: "Edu Alt Tech",
+  description: `First Class - ${course?.title || 'Course'}`,
+  image: "/edulogo.png",
+  order_id: orderData.id,
+  handler: async function (response: any) {
+  try {
+  const resVerify = await fetch('/api/verifyPayment', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+  razorpay_order_id: response.razorpay_order_id,
+  razorpay_payment_id: response.razorpay_payment_id,
+  razorpay_signature: response.razorpay_signature
+  })
+  });
+  if (!resVerify.ok) { throw new Error("Payment verification failed on server"); }
+  const verifyData = await resVerify.json();
+  if (verifyData.success) { await finalizeEnrollment(true); }
+  else { throw new Error(verifyData.error || "Invalid Security Signature"); }
+  } catch (e: any) { console.error("Verification error:", e); alert(`Payment processed, but enrollment failed: ${e.message}`); }
+  },
+  prefill: { name: user.displayName || "", email: user.email || "" },
+  theme: { color: "#10b981" }
+  };
+  const rzp = new (window as any).Razorpay(options);
+  rzp.on('payment.failed', (resp: any) => alert(`Payment Failed: ${resp.error.description}`));
+  rzp.open();
+  } catch (err: any) {
+  console.error("First class payment error:", err);
+  alert(err.message || "An unexpected error occurred.");
+  } finally {
+  setEnrollLoading(false);
+  }
  };
 
  const handleApplyToTeach = () => {
@@ -498,16 +550,16 @@ const CourseDetails: React.FC = () => {
     <button 
     onClick={handleJoinAsStudent}
     disabled={enrollLoading || !selectedMentor}
-    className="flex-1 bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
+     className="flex-1 bg-slate-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
     >
-    {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? `Pay ₹${course.price}/month` : 'Select Mentor to Pay')}
+     {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? `Pay ₹${course.price}/mo — Full Course` : 'Select Mentor to Pay')}
     </button>
     <button 
-    onClick={handleStartFreeTrial}
-    disabled={enrollLoading || !selectedMentor}
-    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
+     onClick={handleFirstClassPayment}
+     disabled={enrollLoading || !selectedMentor}
+     className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-sm"
     >
-    {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'Start with Free 1st Class' : 'Select Mentor for Free 1st Class')}
+     {enrollLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (selectedMentor ? 'First Class — ₹10' : 'Select Mentor for First Class')}
     </button>
   </div>
   )}

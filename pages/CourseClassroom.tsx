@@ -260,16 +260,6 @@ const CourseClassroom: React.FC = () => {
  };
 
  const handleTabClick = (tabName: 'roadmap' | 'chat' | 'path' | 'live') => {
-  if (tabName === 'chat' && role === 'student' && enrollment?.paymentStatus === 'trial') {
-   setActiveTab(tabName);
-   return;
-  }
-  if (tabName !== 'roadmap' && role === 'student' && enrollment?.paymentStatus === 'trial') {
-   if (confirm(`AI roadmap and live classes require full course access. Upgrade now to unlock?`)) {
-    handleUpgradeFullAccess();
-   }
-   return;
-  }
   setActiveTab(tabName);
  };
 
@@ -404,27 +394,7 @@ const CourseClassroom: React.FC = () => {
  </div>
 
  <div className="max-w-[1400px] mx-auto relative z-10">
-      {role === 'student' && enrollment?.paymentStatus === 'trial' && (
-        <div className="mb-8 p-5 bg-gradient-to-r from-amber-500/15 via-orange-500/15 to-rose-500/15 border border-amber-300/40 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md backdrop-blur-xl animate-pulse">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0">
-              <Sparkles className="w-5 h-5 animate-spin" style={{ animationDuration: '3s' }} />
-            </div>
-            <div>
-              <span className="block font-bold text-slate-900 text-sm">Trial Active: 1st Class Unlocked</span>
-              <span className="block text-xs text-slate-500 font-medium">Upgrade to full access to unlock the second class and all features.</span>
-            </div>
-          </div>
-          <button
-            onClick={handleUpgradeFullAccess}
-            disabled={upgradeLoading}
-            className="px-6 py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-black rounded-2xl transition-all shadow-lg shadow-amber-500/20 text-sm flex items-center gap-2 shrink-0 hover:scale-[1.02]"
-          >
-            {upgradeLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
-            Upgrade Full Access (₹{course.price || 0}/mo)
-          </button>
-        </div>
-      )}
+
  {/* Navigation & Title */}
  <header className="mb-12">
  <Link to="/dashboard" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 :text-white transition-colors text-sm font-bold mb-6 group">
@@ -594,7 +564,7 @@ const CourseClassroom: React.FC = () => {
  ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  {mod.lectures.map((lec, lIdx) => {
-   const isLocked = role === 'student' && enrollment?.paymentStatus === 'trial' && (idx > 0 || lIdx > 0);
+   const isLocked = false;
    return (
     <div 
      key={lec.id}
@@ -733,7 +703,6 @@ const CourseClassroom: React.FC = () => {
   currentUser={user} 
   mentorId={role === 'teacher' ? user!.uid : enrollment?.mentorId || ''} 
   role={role as 'student' | 'teacher'} 
-  paymentStatus={enrollment?.paymentStatus}
   />
  </div>
  )}
@@ -784,7 +753,7 @@ const CourseClassroom: React.FC = () => {
  ) : (
  <div className="space-y-3">
  {resources.map((res, i) => {
-   const isResourceLocked = role === 'student' && enrollment?.paymentStatus === 'trial';
+    const isResourceLocked = false;
    return (
     <motion.a 
      initial={{ opacity: 0, y: 10 }}

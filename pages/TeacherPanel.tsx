@@ -736,7 +736,6 @@ const TeacherPanel: React.FC = () => {
   <div className="flex-1 min-w-0">
     <p className="font-bold text-slate-900 truncate flex items-center gap-2">
       {s.name}
-      {s.payment_status === 'trial' && <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-[9px] font-bold uppercase tracking-wider">Trial</span>}
     </p>
     <p className="text-xs text-slate-400 font-medium truncate">{s.email}</p>
   </div>
