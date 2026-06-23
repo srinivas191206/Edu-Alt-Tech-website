@@ -438,7 +438,7 @@ const Home: React.FC = () => {
                       <School className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <div>
-                      <h4 className="text-xs sm:text-sm font-black text-slate-900 tracking-tight">St. Xavier Tech Portal</h4>
+                      <h4 className="text-xs sm:text-sm font-black text-slate-900 tracking-tight">Genesis Portal</h4>
                       <span className="text-[9px] sm:text-[10px] text-emerald-600 font-bold uppercase tracking-wider block">Alt-Tech ERP Active</span>
                     </div>
                   </div>
