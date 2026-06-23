@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { UserObject, CourseEnrollment, Course, TeacherApplication } from '../types';
 import { motion } from 'framer-motion';
 import { PLATFORM_COURSES } from '../data/platformCourses';
+import { getLastReadTimestamps, markCourseRead, computeUnreadCount } from '../lib/chatNotifications';
 
 const getGreeting = () => {
  const h = new Date().getHours();
@@ -42,6 +43,7 @@ const Dashboard: React.FC = () => {
   const [practiceHistory, setPracticeHistory] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [upcomingClasses, setUpcomingClasses] = useState<any[]>([]);
+  const [chatUnreadCounts, setChatUnreadCounts] = useState<Record<string, number>>({});
   const navigate = useNavigate();
 
  useEffect(() => {
@@ -196,9 +198,30 @@ const Dashboard: React.FC = () => {
  }
  };
 
- if (loading) {
- return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>;
- }
+  // Poll unread course chat counts for enrolled courses
+  useEffect(() => {
+  if (!user || enrollments.length === 0) return;
+  const timestamps = getLastReadTimestamps(user.uid);
+  const checkUnread = async () => {
+  const counts: Record<string, number> = {};
+  for (const enr of enrollments) {
+  if (!enr.courseId) continue;
+  const lastRead = timestamps[enr.courseId];
+  try {
+  const { count } = await db.from('course_chat_messages').select('id', { count: 'exact', head: true }).eq('course_id', enr.courseId).gt('created_at', lastRead || '1970-01-01');
+  if (count && count > 0) counts[enr.courseId] = count;
+  } catch (_) {}
+  }
+  setChatUnreadCounts(counts);
+  };
+  checkUnread();
+  const interval = setInterval(checkUnread, 10000);
+  return () => clearInterval(interval);
+  }, [user, enrollments]);
+
+  if (loading) {
+  return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>;
+  }
 
  const totalTeaching = teachingEnrollments.length;
  const totalApplications = myApplications.length;
@@ -322,14 +345,19 @@ const Dashboard: React.FC = () => {
  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center text-sm font-black shrink-0 shadow-sm">
  {enr.courseData?.title?.charAt(0) || 'C'}
  </div>
- <div className="min-w-0">
-          <h3 className="text-sm font-bold text-slate-900 truncate">{enr.courseData?.title || 'Unknown Course'}</h3>
- </div>
- </div>
- <Link to={`/classroom/${enr.courseId}`}
- className="shrink-0 px-4 py-2 bg-emerald-50 /20 text-emerald-600 rounded-lg font-bold text-xs hover:bg-emerald-100 :bg-emerald-900/30 transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100">
- Continue
- </Link>
+  <div className="min-w-0">
+           <h3 className="text-sm font-bold text-slate-900 truncate">{enr.courseData?.title || 'Unknown Course'}</h3>
+  </div>
+  {chatUnreadCounts[enr.courseId!] > 0 && (
+  <span className="ml-2 px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-black rounded-full shrink-0">
+  {chatUnreadCounts[enr.courseId!]} new
+  </span>
+  )}
+  </div>
+  <Link to={`/classroom/${enr.courseId}`}
+  className="shrink-0 px-4 py-2 bg-emerald-50 /20 text-emerald-600 rounded-lg font-bold text-xs hover:bg-emerald-100 :bg-emerald-900/30 transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100">
+  Continue
+  </Link>
  </div>
  </motion.div>
  ))}

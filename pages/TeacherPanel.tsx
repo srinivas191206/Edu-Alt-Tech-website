@@ -7,6 +7,7 @@ import { ArrowLeft, BookOpen, Video, FileText, Plus, Link as LinkIcon, Loader2, 
 import type { User } from '../lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import { getLastReadTimestamps, markCourseRead, computeUnreadCount } from '../lib/chatNotifications';
 
 const ADMIN_EMAILS = ['ukkukk97@gmail.com', 'umakrishnakanthchokkapu15@gmail.com'];
 
@@ -55,10 +56,11 @@ const TeacherPanel: React.FC = () => {
  const [students, setStudents] = useState<any[]>([]);
  const [loadingStudents, setLoadingStudents] = useState(false);
 
- // Chat tab
- const [courseChatMessages, setCourseChatMessages] = useState<any[]>([]);
- const [chatInput, setChatInput] = useState('');
- const [sendingMessage, setSendingMessage] = useState(false);
+  // Chat tab
+  const [courseChatMessages, setCourseChatMessages] = useState<any[]>([]);
+  const [chatInput, setChatInput] = useState('');
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
 
  // Schedule tab
  const [scheduledClasses, setScheduledClasses] = useState<any[]>([]);
@@ -164,6 +166,10 @@ const TeacherPanel: React.FC = () => {
   };
 
   const subscribeChat = (courseId: string) => {
+  if (user) {
+  markCourseRead(user.uid, courseId);
+  setUnreadCounts(prev => ({ ...prev, [courseId]: 0 }));
+  }
   chatUnsubRef.current?.();
   if (chatPollRef.current) { clearInterval(chatPollRef.current); chatPollRef.current = null; }
   const q = query(
@@ -298,8 +304,29 @@ const TeacherPanel: React.FC = () => {
  setLoading(false);
  }
  });
-  return () => { unsub(); chatUnsubRef.current?.(); if (chatPollRef.current) clearInterval(chatPollRef.current); };
-  }, [navigate]);
+   return () => { unsub(); chatUnsubRef.current?.(); if (chatPollRef.current) clearInterval(chatPollRef.current); };
+   }, [navigate]);
+
+   // Poll unread chat counts for all courses
+   useEffect(() => {
+   if (!user || courses.length === 0) return;
+   const checkUnread = async () => {
+   const timestamps = getLastReadTimestamps(user.uid);
+   const counts: Record<string, number> = {};
+   for (const course of courses) {
+   if (!course.courseId) continue;
+   const lastRead = timestamps[course.courseId];
+   try {
+   const { count } = await db.from('course_chat_messages').select('id', { count: 'exact', head: true }).eq('course_id', course.courseId).gt('created_at', lastRead || '1970-01-01');
+   if (count && count > 0) counts[course.courseId] = count;
+   } catch (_) {}
+   }
+   setUnreadCounts(counts);
+   };
+   checkUnread();
+   const interval = setInterval(checkUnread, 10000);
+   return () => clearInterval(interval);
+   }, [user, courses]);
 
   const toggleCourse = async (courseId: string) => {
   if (expandedCourse === courseId) {
@@ -669,17 +696,22 @@ const TeacherPanel: React.FC = () => {
  <div className="flex-1">
  <div className="flex items-center gap-3 mb-2">
  <span className="px-3 py-1 bg-purple-100 /30 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider">Teacher</span>
- <span className="flex items-center gap-1.5 text-sm font-bold text-slate-500">
- <Users className="w-4 h-4" /> {course.studentCount} enrolled
- </span>
- </div>
- <h3 className="text-xl sm:text-2xl font-black text-slate-900 ">{course.courseData?.title || 'Unknown Course'}</h3>
- <p className="text-slate-500 font-medium mt-1 line-clamp-1">{course.courseData?.description}</p>
- </div>
- <div className="flex items-center gap-3 shrink-0 ml-6">
- <Link to={`/classroom/${course.courseId}`} onClick={(e) => e.stopPropagation()} className="px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-2xl transition-colors text-sm">
- Open Classroom
- </Link>
+  <span className="flex items-center gap-1.5 text-sm font-bold text-slate-500">
+  <Users className="w-4 h-4" /> {course.studentCount} enrolled
+  </span>
+  {unreadCounts[course.courseId!] > 0 && (
+  <span className="ml-2 px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-black rounded-full">
+  {unreadCounts[course.courseId!]} new
+  </span>
+  )}
+  </div>
+  <h3 className="text-xl sm:text-2xl font-black text-slate-900 ">{course.courseData?.title || 'Unknown Course'}</h3>
+  <p className="text-slate-500 font-medium mt-1 line-clamp-1">{course.courseData?.description}</p>
+  </div>
+  <div className="flex items-center gap-3 shrink-0 ml-6">
+  <Link to={`/classroom/${course.courseId}`} onClick={(e) => e.stopPropagation()} className="px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-2xl transition-colors text-sm">
+  Open Classroom
+  </Link>
  <div className={`w-3 h-3 rounded-full transition-transform ${expandedCourse === course.courseId ? 'rotate-180' : ''}`}>
  <svg viewBox="0 0 24 24" className="w-3 h-3 fill-slate-400"><path d="M7 10l5 5 5-5z"/></svg>
  </div>
@@ -692,20 +724,25 @@ const TeacherPanel: React.FC = () => {
  <div className="px-5 sm:px-8 pb-5 sm:pb-8 border-t border-slate-100 ">
  {/* Course Tabs */}
  <div className="flex gap-1 -mx-5 sm:-mx-8 px-5 sm:px-8 pt-4 pb-2 border-b border-slate-100 mb-6 overflow-x-auto">
- {courseTabs.map(tab => (
- <button
- key={tab.id}
- onClick={() => switchTab(tab.id, course.courseId!)}
- className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold transition-colors whitespace-nowrap ${
- activeCourseTab === tab.id
- ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20'
- : 'text-slate-500 hover:bg-slate-100 :bg-slate-800'
- }`}
- >
- <tab.icon className="w-4 h-4" />
- {tab.label}
- </button>
- ))}
+  {courseTabs.map(tab => (
+  <button
+  key={tab.id}
+  onClick={() => switchTab(tab.id, course.courseId!)}
+  className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold transition-colors whitespace-nowrap ${
+  activeCourseTab === tab.id
+  ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20'
+  : 'text-slate-500 hover:bg-slate-100 :bg-slate-800'
+  }`}
+  >
+  <tab.icon className="w-4 h-4" />
+  {tab.label}
+  {tab.id === 'chat' && unreadCounts[course.courseId!] > 0 && activeCourseTab !== 'chat' && (
+  <span className="ml-1 px-1.5 py-0.5 bg-emerald-500 text-white text-[9px] font-black rounded-full min-w-[18px] text-center">
+  {unreadCounts[course.courseId!]}
+  </span>
+  )}
+  </button>
+  ))}
  </div>
 
  {/* Tab Content */}

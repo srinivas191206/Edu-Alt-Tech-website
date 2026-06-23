@@ -11,6 +11,7 @@ import { recordModuleComplete, getOrCreateMetrics } from '../lib/userProgress';
 import { PLATFORM_COURSES } from '../data/platformCourses';
 import { adaptDifficulty } from '../lib/learningPath';
 import type { EnrollmentPlan } from '../types';
+import { getLastReadTimestamps, markCourseRead, computeUnreadCount } from '../lib/chatNotifications';
 import DoubtSolver from '../components/DoubtSolver';
 import LearningPathView from '../components/LearningPathView';
 
@@ -34,9 +35,10 @@ const CourseClassroom: React.FC = () => {
  // Active Expand States
  const [expandedModules, setExpandedModules] = useState<string[]>([]);
 
- // Live Classes
- const [liveClasses, setLiveClasses] = useState<any[]>([]);
- const [loadingLiveClasses, setLoadingLiveClasses] = useState(false);
+  // Live Classes
+  const [liveClasses, setLiveClasses] = useState<any[]>([]);
+  const [loadingLiveClasses, setLoadingLiveClasses] = useState(false);
+  const [chatUnreadCount, setChatUnreadCount] = useState(0);
 
  const fetchLiveClasses = async (courseIdStr: string) => {
  setLoadingLiveClasses(true);
@@ -164,11 +166,28 @@ const CourseClassroom: React.FC = () => {
  init(currentUser);
  });
 
-  const safetyTimer = setTimeout(() => setLoading(false), 8000);
-  return () => { unsubscribe(); clearTimeout(safetyTimer); };
-  }, [courseId, navigate]);
+   const safetyTimer = setTimeout(() => setLoading(false), 8000);
+   return () => { unsubscribe(); clearTimeout(safetyTimer); };
+   }, [courseId, navigate]);
 
- const loadRazorpayScript = () => {
+   // Poll unread message count for this course
+   useEffect(() => {
+   if (!user || !courseId) return;
+   if (activeTab === 'chat') { setChatUnreadCount(0); return; }
+   const checkUnread = async () => {
+   const timestamps = getLastReadTimestamps(user.uid);
+   const lastRead = timestamps[courseId];
+   try {
+   const { count } = await db.from('course_chat_messages').select('id', { count: 'exact', head: true }).eq('course_id', courseId).gt('created_at', lastRead || '1970-01-01');
+   setChatUnreadCount(count || 0);
+   } catch (_) {}
+   };
+   checkUnread();
+   const interval = setInterval(checkUnread, 10000);
+   return () => clearInterval(interval);
+   }, [user, courseId, activeTab]);
+
+  const loadRazorpayScript = () => {
   return new Promise((resolve) => {
    const script = document.createElement("script");
    script.src = "https://checkout.razorpay.com/v1/checkout.js";
@@ -284,9 +303,13 @@ const CourseClassroom: React.FC = () => {
   }
  };
 
- const handleTabClick = (tabName: 'roadmap' | 'chat' | 'path' | 'live') => {
+  const handleTabClick = (tabName: 'roadmap' | 'chat' | 'path' | 'live') => {
   setActiveTab(tabName);
- };
+  if (tabName === 'chat' && user) {
+  markCourseRead(user.uid, courseId!);
+  setChatUnreadCount(0);
+  }
+  };
 
  const toggleModule = (id: string) => {
  setExpandedModules(prev => prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]);
@@ -486,12 +509,17 @@ const CourseClassroom: React.FC = () => {
  >
  <Layout className="w-4 h-4" /> Curriculum Roadmap
  </button>
- <button 
- onClick={() => handleTabClick('chat')}
- className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'chat' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'text-slate-500 hover:bg-slate-50 :bg-slate-800'}`}
- >
- <MessageCircle className="w-4 h-4" /> Intelligence Exchange
- </button>
+  <button 
+  onClick={() => handleTabClick('chat')}
+  className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'chat' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'text-slate-500 hover:bg-slate-50 :bg-slate-800'}`}
+  >
+  <MessageCircle className="w-4 h-4" /> Intelligence Exchange
+  {chatUnreadCount > 0 && activeTab !== 'chat' && (
+  <span className="px-1.5 py-0.5 bg-emerald-500 text-white text-[9px] font-black rounded-full min-w-[18px] text-center">
+  {chatUnreadCount}
+  </span>
+  )}
+  </button>
  {role === 'student' && (
  <button 
  onClick={() => handleTabClick('path')}
