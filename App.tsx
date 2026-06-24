@@ -29,6 +29,7 @@ const Resources = lazy(() => import('./pages/Resources'));
 const Practice = lazy(() => import('./pages/Practice'));
 const TeacherPanel = lazy(() => import('./pages/TeacherPanel'));
 const SearchHistory = lazy(() => import('./pages/SearchHistory'));
+const AI = lazy(() => import('./pages/AI'));
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -53,9 +54,10 @@ const ScrollToTop = () => {
 const AppContent: React.FC = () => {
  const location = useLocation();
  const isAdminPath = location.pathname.startsWith('/admin');
- const isClassroomPath = location.pathname.startsWith('/classroom');
- const isTeacherPath = location.pathname.startsWith('/teacher-panel');
- const isHideLayout = isAdminPath || isClassroomPath || isTeacherPath;
+  const isClassroomPath = location.pathname.startsWith('/classroom');
+  const isTeacherPath = location.pathname.startsWith('/teacher-panel');
+  const isAIPath = location.pathname.startsWith('/ai');
+  const isHideLayout = isAdminPath || isClassroomPath || isTeacherPath || isAIPath;
 
  return (
  <div className="flex flex-col min-h-screen">
@@ -86,11 +88,12 @@ const AppContent: React.FC = () => {
   <Route path="/practice" element={<Practice />} />
    <Route path="/teacher-panel" element={<TeacherPanel />} />
    <Route path="/search-history" element={<SearchHistory />} />
+   <Route path="/ai" element={<AI />} />
    </Routes>
   </Suspense>
   </div>
- {!isHideLayout && <Footer />}
- {!isHideLayout && <AIAssistant />}
+  {!isHideLayout && <Footer />}
+  {!isHideLayout && !isAIPath && <AIAssistant />}
  </div>
  );
 };

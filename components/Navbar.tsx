@@ -50,18 +50,20 @@ export default function Navbar() {
  return () => unsubscribe();
  }, []);
 
- const publicLinks = [
- { name: 'Home', path: '/' },
- { name: 'About', path: '/about' },
- { name: 'Services', path: '/services' },
- { name: 'Practice', path: '/practice' },
- { name: 'Resources', path: '/resources' },
- { name: 'Courses', path: '/courses' },
- { name: 'Contact', path: '/contact' },
- ];
+  const publicLinks = [
+  { name: 'Home', path: '/' },
+  { name: 'AI Chat', path: '/ai' },
+  { name: 'About', path: '/about' },
+  { name: 'Services', path: '/services' },
+  { name: 'Practice', path: '/practice' },
+  { name: 'Resources', path: '/resources' },
+  { name: 'Courses', path: '/courses' },
+  { name: 'Contact', path: '/contact' },
+  ];
 
   const studentLinks = [
   { name: 'Home', path: '/' },
+  { name: 'AI Chat', path: '/ai' },
   { name: 'Courses', path: '/courses' },
   { name: 'Practice', path: '/practice' },
   { name: 'Resources', path: '/resources' },
