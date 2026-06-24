@@ -64,7 +64,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
   );
   const snap = await getDocs(msgQ);
   const nameMap = { ...userNames };
-  nameMap['ai'] = 'EduAI';
+  nameMap['ai'] = 'Kyo Ai';
   let msgs = await Promise.all(snap.docs.map(async (d: any) => {
   const data = d.data();
   const senderId = data.userId || '';
@@ -78,7 +78,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
   return {
   id: d.id,
   senderId,
-  senderName: nameMap[senderId] || 'EduAI',
+  senderName: nameMap[senderId] || 'Kyo Ai',
   text: data.content || '',
   timestamp: data.createdAt || data.timestamp
   } as Message;
@@ -110,7 +110,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
 
    const unsubscribe = onSnapshot(msgQ, async (snap) => {
    const nameMap = { ...userNames };
-   nameMap['ai'] = 'EduAI';
+   nameMap['ai'] = 'Kyo Ai';
    let msgs = await Promise.all(snap.docs.map(async (d: any) => {
    const data = d.data();
    const senderId = data.userId || '';
@@ -124,7 +124,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
    return {
    id: d.id,
    senderId,
-   senderName: nameMap[senderId] || 'EduAI',
+   senderName: nameMap[senderId] || 'Kyo Ai',
    text: data.content || '',
    timestamp: data.createdAt || data.timestamp
    } as Message;

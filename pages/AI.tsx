@@ -75,7 +75,7 @@ const AI: React.FC = () => {
 
   useEffect(() => {
     if (messages.length === 0) {
-      setMessages([{ role: 'assistant', content: `Hello! I'm EduAI. I can help you find courses, study tips, or answer questions. Select a mode below to get started.` }]);
+      setMessages([{ role: 'assistant', content: `Hello! I'm Kyo Ai. I can help you find courses, study tips, or answer questions. Select a mode below to get started.` }]);
     }
   }, []);
 
@@ -194,7 +194,7 @@ const AI: React.FC = () => {
             <Bot className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-slate-900">EduAI</h1>
+            <h1 className="font-bold text-slate-900">Kyo Ai</h1>
             <p className="text-[10px] font-semibold text-slate-400">AI Assistant</p>
           </div>
         </div>
@@ -355,7 +355,7 @@ const AI: React.FC = () => {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask EduAI anything..."
+                placeholder="Ask Kyo Ai anything..."
                 disabled={loading}
                 rows={1}
                 className="flex-1 p-3.5 bg-slate-50 rounded-2xl outline-none font-medium text-sm border border-transparent focus:border-emerald-500 transition-colors disabled:opacity-50 resize-none min-h-[48px] max-h-[120px]"
@@ -375,7 +375,7 @@ const AI: React.FC = () => {
               </button>
             </div>
             <p className="text-[9px] text-slate-400 text-center mt-2 font-medium">
-              EduAI can make mistakes. Verify important information.
+              Kyo Ai can make mistakes. Verify important information.
             </p>
           </div>
         </div>

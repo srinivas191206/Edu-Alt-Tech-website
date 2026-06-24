@@ -86,7 +86,7 @@ const AIAssistant: React.FC = () => {
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       const greetings: Record<AIMode, string> = {
-        chat: 'Hello! I\'m EduAI. I can help you find the right courses, study tips, or answer questions. What are you looking to learn?',
+        chat: 'Hello! I\'m Kyo Ai. I can help you find the right courses, study tips, or answer questions. What are you looking to learn?',
         mentor: 'Welcome! I\'m your AI Mentor. I\'ve analyzed your learning progress and I\'m here to guide you. What would you like to work on today?',
         course: 'Hi there! I\'m your Course Assistant. Ask me about courses, learning paths, or concepts you\'re studying.',
         admin: 'Welcome, Admin. I\'m your admin assistant. I can help draft content, generate descriptions, or assist with platform management.',
@@ -188,7 +188,7 @@ const AIAssistant: React.FC = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm text-slate-900 ">EduAI</span>
+                  <span className="font-bold text-sm text-slate-900 ">Kyo Ai</span>
                   <span className="flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -293,7 +293,7 @@ const AIAssistant: React.FC = () => {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask EduAI anything..."
+                placeholder="Ask Kyo Ai anything..."
                 disabled={loading}
                 className="flex-1 p-3 bg-slate-50 rounded-2xl outline-none font-medium text-sm border border-transparent focus:border-emerald-500 transition-colors disabled:opacity-50"
               />
