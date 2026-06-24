@@ -129,11 +129,13 @@ export async function sendAIChat(
  const userMsg = { role: 'user', content: userMessage };
  const messages = [systemMessage, ...history, userMsg];
 
- try {
- return await callServerProxy(messages);
- } catch {
- return await callOpenRouterDirect(messages);
- }
+  try {
+  const res = await callServerProxy(messages);
+  return { ...res, content: res.content.replace(/\*+/g, '') };
+  } catch {
+  const res = await callOpenRouterDirect(messages);
+  return { ...res, content: res.content.replace(/\*+/g, '') };
+  }
 }
 
 export async function generateCourseDescription(title: string, category: string): Promise<string> {
