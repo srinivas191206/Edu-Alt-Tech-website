@@ -28,6 +28,7 @@ const Services = lazy(() => import('./pages/Services'));
 const Resources = lazy(() => import('./pages/Resources'));
 const Practice = lazy(() => import('./pages/Practice'));
 const TeacherPanel = lazy(() => import('./pages/TeacherPanel'));
+const SearchHistory = lazy(() => import('./pages/SearchHistory'));
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -83,8 +84,9 @@ const AppContent: React.FC = () => {
   <Route path="/flashcards" element={<FlashcardDeck />} />
   <Route path="/admin/behavior" element={<BehaviorInsights />} />
   <Route path="/practice" element={<Practice />} />
-  <Route path="/teacher-panel" element={<TeacherPanel />} />
-  </Routes>
+   <Route path="/teacher-panel" element={<TeacherPanel />} />
+   <Route path="/search-history" element={<SearchHistory />} />
+   </Routes>
   </Suspense>
   </div>
  {!isHideLayout && <Footer />}

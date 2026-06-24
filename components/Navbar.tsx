@@ -60,13 +60,14 @@ export default function Navbar() {
  { name: 'Contact', path: '/contact' },
  ];
 
- const studentLinks = [
- { name: 'Home', path: '/' },
- { name: 'Courses', path: '/courses' },
- { name: 'Practice', path: '/practice' },
- { name: 'Resources', path: '/resources' },
- { name: 'Dashboard', path: '/dashboard' },
- ];
+  const studentLinks = [
+  { name: 'Home', path: '/' },
+  { name: 'Courses', path: '/courses' },
+  { name: 'Practice', path: '/practice' },
+  { name: 'Resources', path: '/resources' },
+  { name: 'Dashboard', path: '/dashboard' },
+  { name: 'AI History', path: '/search-history' },
+  ];
 
  const adminLinks = [{ name: 'Admin Portal', path: '/admin' }];
 
