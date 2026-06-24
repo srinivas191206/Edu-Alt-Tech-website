@@ -312,8 +312,8 @@ const TeacherPanel: React.FC = () => {
    if (!user || courses.length === 0) return;
    const checkUnread = async () => {
    const timestamps = getLastReadTimestamps(user.uid);
-   const counts: Record<string, number> = {};
-   for (const course of courses) {
+    const counts: { [key: string]: number } = {};
+    for (const course of courses) {
    if (!course.courseId) continue;
    const lastRead = timestamps[course.courseId];
    try {

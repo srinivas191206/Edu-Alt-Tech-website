@@ -203,7 +203,7 @@ const Dashboard: React.FC = () => {
   if (!user || enrollments.length === 0) return;
   const timestamps = getLastReadTimestamps(user.uid);
   const checkUnread = async () => {
-  const counts: Record<string, number> = {};
+  const counts: { [key: string]: number } = {};
   for (const enr of enrollments) {
   if (!enr.courseId) continue;
   const lastRead = timestamps[enr.courseId];
