@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Bot, X, Send, Loader2, MessageCircle, BookOpen, Shield, ChevronDown, GraduationCap, History } from 'lucide-react';
+import { Bot, X, Send, Loader2, MessageCircle, BookOpen, Shield, ChevronDown, GraduationCap, History, Maximize2 } from 'lucide-react';
 import { sendAIChat, AIMode } from '../lib/ai';
 import { auth, db, onAuthStateChanged, collection, query, where, getDocs, orderBy, limit, addDoc, serverTimestamp } from '../lib/firebase';
 import { Link } from 'react-router-dom';
@@ -230,6 +230,14 @@ const AIAssistant: React.FC = () => {
                 title="Search History"
               >
                 <History className="w-4 h-4 text-slate-400" />
+              </Link>
+              <Link
+                to="/ai"
+                onClick={() => setIsOpen(false)}
+                className="p-2 hover:bg-slate-100 :bg-slate-800 rounded-xl transition-colors"
+                title="Open Full Page"
+              >
+                <Maximize2 className="w-4 h-4 text-slate-400" />
               </Link>
               <button
                 onClick={() => setIsOpen(false)}

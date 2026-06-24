@@ -52,7 +52,6 @@ export default function Navbar() {
 
   const publicLinks = [
   { name: 'Home', path: '/' },
-  { name: 'AI Chat', path: '/ai' },
   { name: 'About', path: '/about' },
   { name: 'Services', path: '/services' },
   { name: 'Practice', path: '/practice' },
@@ -63,7 +62,6 @@ export default function Navbar() {
 
   const studentLinks = [
   { name: 'Home', path: '/' },
-  { name: 'AI Chat', path: '/ai' },
   { name: 'Courses', path: '/courses' },
   { name: 'Practice', path: '/practice' },
   { name: 'Resources', path: '/resources' },
