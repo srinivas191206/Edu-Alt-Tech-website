@@ -21,7 +21,7 @@ export default async function handler(req: any, res: any) {
  return res.status(400).json({ error: 'Messages array is required in the body' });
  }
 
- const selectedModel = model || process.env.VITE_OPENROUTER_MODEL || 'google/gemma-3-27b-it';
+ const selectedModel = model || process.env.VITE_OPENROUTER_MODEL || 'z-ai/glm-4.5-air:free';
 
  try {
  const response = await fetch(OPENROUTER_URL, {

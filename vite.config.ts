@@ -32,7 +32,7 @@ export default defineConfig({
  const env = parseEnv(envPath);
  return {
  __OPENROUTER_API_KEY__: JSON.stringify(env.VITE_OPENROUTER_API_KEY || ''),
- __OPENROUTER_MODEL__: JSON.stringify(env.VITE_OPENROUTER_MODEL || 'google/gemma-3-27b-it'),
+ __OPENROUTER_MODEL__: JSON.stringify(env.VITE_OPENROUTER_MODEL || 'z-ai/glm-4.5-air:free'),
  };
  })(),
  build: {
