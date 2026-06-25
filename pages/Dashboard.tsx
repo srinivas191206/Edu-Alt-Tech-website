@@ -6,6 +6,7 @@ import { UserObject, CourseEnrollment, Course, TeacherApplication } from '../typ
 import { motion } from 'framer-motion';
 import { PLATFORM_COURSES } from '../data/platformCourses';
 import { getLastReadTimestamps, markCourseRead, computeUnreadCount } from '../lib/chatNotifications';
+import AnimatedList from '../components/AnimatedList';
 
 const getGreeting = () => {
  const h = new Date().getHours();
@@ -374,28 +375,32 @@ const Dashboard: React.FC = () => {
  {enrollments.length > 0 && <Link to="/courses" className="text-xs font-bold text-emerald-600 hover:text-emerald-500 transition-colors">Browse All</Link>}
  </div>
 
- {enrollments.length === 0 ? (
- <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 md:p-8 text-center">
- <div className="w-14 h-14 rounded-2xl bg-emerald-50 /20 text-emerald-500 flex items-center justify-center mx-auto mb-4"><BookOpen className="w-7 h-7" /></div>
- <h3 className="text-lg font-bold text-slate-900 mb-1">No Enrollments Yet</h3>
- <p className="text-sm text-slate-500 mb-5">Start your learning journey by enrolling in a course.</p>
- <Link to="/courses" className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-sm transition-colors shadow-lg shadow-emerald-600/20">
- Browse Courses <ArrowRight className="w-4 h-4" />
- </Link>
- </div>
- ) : (
- <div className="grid gap-3">
- {enrollments.map((enr, idx) => (
- <motion.div key={enr.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.04 }}
- className="group bg-white border border-slate-200 rounded-xl p-3 sm:p-4 hover:border-emerald-500 hover:shadow-md transition-all duration-200"
- >
- <div className="flex items-center justify-between gap-3">
- <div className="flex items-center gap-3 min-w-0">
- <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center text-sm font-black shrink-0 shadow-sm">
- {enr.courseData?.title?.charAt(0) || 'C'}
- </div>
+  {enrollments.length === 0 ? (
+  <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 md:p-8 text-center">
+  <div className="w-14 h-14 rounded-2xl bg-emerald-50 /20 text-emerald-500 flex items-center justify-center mx-auto mb-4"><BookOpen className="w-7 h-7" /></div>
+  <h3 className="text-lg font-bold text-slate-900 mb-1">No Enrollments Yet</h3>
+  <p className="text-sm text-slate-500 mb-5">Start your learning journey by enrolling in a course.</p>
+  <Link to="/courses" className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-sm transition-colors shadow-lg shadow-emerald-600/20">
+  Browse Courses <ArrowRight className="w-4 h-4" />
+  </Link>
+  </div>
+  ) : (
+  <AnimatedList
+  items={enrollments}
+  showGradients={false}
+  enableArrowNavigation={false}
+  displayScrollbar={false}
+  maxHeight="none"
+  renderItem={(enr: any) => (
+  <div className="group bg-white border border-slate-200 rounded-xl p-3 sm:p-4 hover:border-emerald-500 hover:shadow-md transition-all duration-200"
+   onClick={() => navigate(`/classroom/${enr.courseId}`)}>
+  <div className="flex items-center justify-between gap-3">
+  <div className="flex items-center gap-3 min-w-0">
+  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center text-sm font-black shrink-0 shadow-sm">
+  {enr.courseData?.title?.charAt(0) || 'C'}
+  </div>
   <div className="min-w-0">
-           <h3 className="text-sm font-bold text-slate-900 truncate">{enr.courseData?.title || 'Unknown Course'}</h3>
+  <h3 className="text-sm font-bold text-slate-900 truncate">{enr.courseData?.title || 'Unknown Course'}</h3>
   </div>
   {chatUnreadCounts[enr.courseId!] > 0 && (
   <span className="ml-2 px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-black rounded-full shrink-0">
@@ -403,47 +408,51 @@ const Dashboard: React.FC = () => {
   </span>
   )}
   </div>
-  <Link to={`/classroom/${enr.courseId}`}
-  className="shrink-0 px-4 py-2 bg-emerald-50 /20 text-emerald-600 rounded-lg font-bold text-xs hover:bg-emerald-100 :bg-emerald-900/30 transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100">
+  <span className="shrink-0 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-lg font-bold text-xs hover:bg-emerald-100 transition-colors">
   Continue
-  </Link>
- </div>
- </motion.div>
- ))}
- </div>
- )}
+  </span>
+  </div>
+  </div>
+  )}
+  />
+  )}
  </motion.div>
 
- {/* Practice History (compact timeline) */}
- {practiceHistory.length > 0 && (
- <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
- <div className="flex items-center justify-between mb-4">
- <h2 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
- <History className="w-5 h-5 text-blue-500" /> Recent Activity
- </h2>
- </div>
- <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
- <div className="max-h-64 overflow-y-auto custom-scrollbar divide-y divide-slate-100 ">
- {practiceHistory.slice(0, 15).map((h) => (
- <div key={h.id} className="flex items-center gap-4 px-5 py-3 hover:bg-slate-50 :bg-slate-800/30 transition-colors">
- <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs font-black shadow-sm ${
- h.practice_type === 'leetcode'
- ? 'bg-blue-100 /30 text-blue-600 '
- : 'bg-indigo-100 /30 text-indigo-600 '
- }`}>
- {h.practice_type === 'leetcode' ? 'LC' : 'EN'}
- </div>
- <div className="flex-1 min-w-0">
- <p className="text-sm font-bold text-slate-900 truncate">{h.item_title}</p>
- <p className="text-[11px] text-slate-400">{h.practice_type === 'leetcode' ? 'LeetCode Problem' : 'English Exercise'} · #{h.item_id}</p>
- </div>
- <span className="text-[11px] text-slate-400 shrink-0">{new Date(h.opened_at).toLocaleDateString()} {new Date(h.opened_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
- </div>
- ))}
- </div>
- </div>
- </motion.div>
- )}
+  {/* Practice History (compact timeline) */}
+  {practiceHistory.length > 0 && (
+  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+  <div className="flex items-center justify-between mb-4">
+  <h2 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+  <History className="w-5 h-5 text-blue-500" /> Recent Activity
+  </h2>
+  </div>
+  <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+  <AnimatedList
+  items={practiceHistory.slice(0, 15)}
+  showGradients={false}
+  enableArrowNavigation={false}
+  displayScrollbar
+  maxHeight="256px"
+  renderItem={(h: any) => (
+  <div className="flex items-center gap-4 px-5 py-3 hover:bg-slate-50 transition-colors">
+  <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs font-black shadow-sm ${
+  h.practice_type === 'leetcode'
+  ? 'bg-blue-100 text-blue-600'
+  : 'bg-indigo-100 text-indigo-600'
+  }`}>
+  {h.practice_type === 'leetcode' ? 'LC' : 'EN'}
+  </div>
+  <div className="flex-1 min-w-0">
+  <p className="text-sm font-bold text-slate-900 truncate">{h.item_title}</p>
+  <p className="text-[11px] text-slate-400">{h.practice_type === 'leetcode' ? 'LeetCode Problem' : 'English Exercise'} · #{h.item_id}</p>
+  </div>
+  <span className="text-[11px] text-slate-400 shrink-0">{new Date(h.opened_at).toLocaleDateString()} {new Date(h.opened_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+  </div>
+  )}
+  />
+  </div>
+  </motion.div>
+  )}
 
  {/* Messages (compact) */}
  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
