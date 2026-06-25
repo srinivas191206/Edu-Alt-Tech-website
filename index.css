@@ -17,9 +17,9 @@
   --heading-rgb: 2, 6, 23;
   --border-rgb: 226, 232, 240;
 
-  --primary-rgb: 37, 99, 235;
-  --primary-hover-rgb: 29, 78, 216;
-  --accent-rgb: 124, 58, 237;
+  --primary-rgb: 4, 120, 87;
+  --primary-hover-rgb: 6, 95, 70;
+  --accent-rgb: 13, 148, 136;
 
   --bg: rgb(var(--bg-rgb));
   --bg-secondary: rgb(var(--bg-secondary-rgb));
@@ -182,10 +182,6 @@ textarea::placeholder {
 .dark .border-slate-200\/80 { border-color: var(--border) !important; }
 
 /* ── Legacy class overrides ─────────────────────────────────────── */
-
-.bg-primary { background-color: #90EE90; }
-.text-primary { color: #90EE90; }
-.border-primary { border-color: #90EE90; }
 
 .glass {
   background: var(--nav-bg);
