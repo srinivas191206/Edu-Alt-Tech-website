@@ -331,18 +331,25 @@ await finalizeEnrollment('full');
 
  };
 
- const handleFirstClassPayment = async () => {
-  if (!user) {
-  navigate('/login');
-  return;
-  }
-  if (!selectedMentor) {
-  alert("Please select a mentor first.");
-  return;
-  }
-  setEnrollLoading(true);
-  try {
-  const amountInPaise = 1000; // ₹10
+  const handleFirstClassPayment = async () => {
+   if (!user) {
+   navigate('/login');
+   return;
+   }
+   if (!selectedMentor) {
+   alert("Please select a mentor first.");
+   return;
+   }
+   // Check first class limit (max 3 across all courses)
+   const fcQ = query(collection(db, 'enrollments'), where('userId', '==', user.uid), where('plan', '==', 'first_class'));
+   const fcSnap = await getDocs(fcQ);
+   if (fcSnap.size >= 3) {
+   toast.error("You have used all 3 first class attempts. Please enroll with Full Access.");
+   return;
+   }
+   setEnrollLoading(true);
+   try {
+   const amountInPaise = 1000; // ₹10
   const resOrder = await fetch('/api/createOrder', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },

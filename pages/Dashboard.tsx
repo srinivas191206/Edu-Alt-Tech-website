@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db, onAuthStateChanged, doc, onSnapshot, collection, query, where, getDocs, getDoc } from '../lib/firebase';
-import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, ArrowRight, Clock, Star, TrendingUp, CheckCircle, Library, Sparkles, Video, CalendarCheck, AlertCircle, Users, Lightbulb, Target, MessageSquare, Send, Code2, History, Bell, Calendar } from 'lucide-react';
+import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, ArrowRight, Clock, Star, TrendingUp, CheckCircle, Library, Sparkles, Video, CalendarCheck, AlertCircle, Users, Lightbulb, Target, MessageSquare, Send, Code2, History, Bell, Calendar, Lock, ArrowUpCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserObject, CourseEnrollment, Course, TeacherApplication } from '../types';
 import { motion } from 'framer-motion';
@@ -44,6 +44,8 @@ const Dashboard: React.FC = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [upcomingClasses, setUpcomingClasses] = useState<any[]>([]);
   const [chatUnreadCounts, setChatUnreadCounts] = useState<Record<string, number>>({});
+  const [firstClassLocked, setFirstClassLocked] = useState(false);
+  const [firstClassLockedCourse, setFirstClassLockedCourse] = useState<string | null>(null);
   const navigate = useNavigate();
 
  useEffect(() => {
@@ -74,9 +76,22 @@ const Dashboard: React.FC = () => {
  const course = coursesMap.get(data.courseId);
  if (course) studentEnr.push({ id: ds.id, ...data, courseData: course });
  });
- if (!cancelled) setEnrollments(studentEnr);
+  if (!cancelled) setEnrollments(studentEnr);
 
- // Teaching enrollments (role=teacher)
+  // First class lock check (24h after first_class enrollment)
+  const lockedFc = studentEnr.find(e => {
+   if (e.plan !== 'first_class') return false;
+   const raw = e.createdAt;
+   if (!raw) return false;
+   const created = raw?.toDate ? raw.toDate() : new Date(raw);
+   return (Date.now() - created.getTime()) > 24 * 60 * 60 * 1000;
+  });
+  if (!cancelled) {
+   setFirstClassLocked(!!lockedFc);
+   setFirstClassLockedCourse(lockedFc?.courseId || null);
+  }
+
+  // Teaching enrollments (role=teacher)
  const tq = query(collection(db, 'enrollments'), where('userId', '==', u.uid), where('role', '==', 'teacher'));
  const tSnap = await getDocs(tq);
  const teacherEnr: any[] = [];
@@ -310,8 +325,42 @@ const Dashboard: React.FC = () => {
  </motion.div>
  )}
 
- {/* ── Main 2‑col Layout ── */}
- <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+  {/* ── First Class Lock Overlay ── */}
+  {firstClassLocked && (
+  <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mb-6">
+  <div className="bg-white rounded-[2rem] border-2 border-rose-200 shadow-xl overflow-hidden">
+  <div className="bg-gradient-to-r from-rose-500 to-rose-700 p-8 sm:p-12 text-center relative">
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.15),transparent_70%)]" />
+  <div className="relative z-10">
+  <div className="w-20 h-20 mx-auto mb-6 bg-white/20 rounded-3xl flex items-center justify-center">
+  <Lock className="w-10 h-10 text-white" />
+  </div>
+  <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">First Class Trial Ended</h2>
+  <p className="text-rose-100 text-sm sm:text-base max-w-lg mx-auto">
+  Your 24-hour first class access has expired. Upgrade to full access to unlock your dashboard and continue learning.
+  </p>
+  </div>
+  </div>
+  <div className="p-6 sm:p-8 text-center">
+  <button
+  onClick={() => { if (firstClassLockedCourse) navigate(`/classroom/${firstClassLockedCourse}`); }}
+  className="inline-flex items-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl transition-all shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:scale-[1.02] active:scale-95"
+  >
+  <ArrowUpCircle className="w-6 h-6" /> Upgrade to Full Access — ₹{(() => {
+   const course = enrollments.find(e => e.courseId === firstClassLockedCourse)?.courseData;
+   return course?.price || '—';
+  })()}/mo
+  </button>
+  <p className="text-xs text-slate-400 mt-4 font-medium">
+  Full access unlocks all modules, resources, and live classes for this course.
+  </p>
+  </div>
+  </div>
+  </motion.div>
+  )}
+
+  {/* ── Main 2‑col Layout ── */}
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
  {/* ===== LEFT ===== */}
  <div className="lg:col-span-2 space-y-5">

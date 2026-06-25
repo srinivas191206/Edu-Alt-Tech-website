@@ -412,7 +412,19 @@ const AdminDashboard: React.FC = () => {
  }
  };
 
- const handleRemoveTeacher = async (appId: string, teacherUserId: string | undefined, courseId: string | undefined) => {
+  const handleDeleteApplication = async (appId: string, name?: string) => {
+   if (!confirm(`Permanently delete ${name || 'this'} application? This cannot be undone.`)) return;
+   try {
+   await deleteDoc(doc(db, 'teacher_applications', appId));
+   if (selectedApp?.id === appId) setSelectedApp(null);
+   fetchData();
+   toast.success("Application deleted");
+   } catch (e: any) {
+   toast.error(e?.message || "Failed to delete application");
+   }
+  };
+
+  const handleRemoveTeacher = async (appId: string, teacherUserId: string | undefined, courseId: string | undefined) => {
  if (!teacherUserId || !courseId) { toast.error("Missing teacher or course info"); return; }
  if (!confirm("Remove this teacher from the course? This will delete their enrollment.")) return;
  try {
@@ -640,18 +652,22 @@ const AdminDashboard: React.FC = () => {
  key={app.id} 
  className="group bg-white p-6 sm:p-8 rounded-[2.5rem] border border-slate-200/50 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] transition-shadow duration-500 relative"
  >
- <div className="absolute top-0 right-0 p-6 flex items-center gap-2">
- <div className={`w-2 h-2 rounded-full animate-pulse ${
- app.status === 'pending' ? 'bg-amber-500' :
- app.status === 'approved' ? 'bg-emerald-500' : 'bg-blue-500'
- }`} />
- <span className={`text-[10px] font-black uppercase tracking-widest ${
- app.status === 'pending' ? 'text-amber-500' :
- app.status === 'approved' ? 'text-emerald-500' : 'text-blue-500'
- }`}>
- {app.status}
- </span>
- </div>
+  <div className="absolute top-0 right-0 p-6 flex items-center gap-2">
+  <button onClick={(e) => { e.stopPropagation(); handleDeleteApplication(app.id, app.userName); }}
+   className="p-1.5 hover:bg-rose-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100" title="Delete application">
+   <Trash2 className="w-4 h-4 text-rose-500" />
+  </button>
+  <div className={`w-2 h-2 rounded-full animate-pulse ${
+  app.status === 'pending' ? 'bg-amber-500' :
+  app.status === 'approved' ? 'bg-emerald-500' : 'bg-blue-500'
+  }`} />
+  <span className={`text-[10px] font-black uppercase tracking-widest ${
+  app.status === 'pending' ? 'text-amber-500' :
+  app.status === 'approved' ? 'text-emerald-500' : 'text-blue-500'
+  }`}>
+  {app.status}
+  </span>
+  </div>
 
  <div className="mb-8">
  <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 block">Applicant</span>
@@ -1176,17 +1192,23 @@ const AdminDashboard: React.FC = () => {
  >
  APPROVE MENTOR NOW
  </button>
- <button
- onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
- className="flex-1 py-4 sm:py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
- >
- REJECT APPLICATION
- </button>
- </div>
- </div>
- )}
+  <button
+  onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
+  className="flex-1 py-4 sm:py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
+  >
+  REJECT APPLICATION
+  </button>
+  </div>
+  <button
+  onClick={() => handleDeleteApplication(selectedApp.id, selectedApp.userName)}
+  className="w-full mt-3 py-3 bg-rose-50 text-rose-600 font-bold rounded-2xl hover:bg-rose-100 transition-colors text-xs flex items-center justify-center gap-2 border border-rose-200"
+  >
+  <Trash2 className="w-3.5 h-3.5" /> DELETE APPLICATION PERMANENTLY
+  </button>
+  </div>
+  )}
 
- {selectedApp.status === 'scheduled' && (
+  {selectedApp.status === 'scheduled' && (
  <div className="pt-8 border-t border-slate-100 ">
  <div className="bg-blue-50 /20 p-4 sm:p-6 rounded-[2rem] mb-6 border border-blue-200 ">
  <label className="block text-xs font-black text-blue-600 uppercase tracking-widest mb-2">Scheduled Interview Link</label>
@@ -1222,32 +1244,44 @@ const AdminDashboard: React.FC = () => {
  >
  APPROVE MENTOR NOW
  </button>
- <button
- onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
- className="flex-1 py-4 sm:py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
- >
- REJECT APPLICATION
- </button>
- </div>
- </div>
- )}
+  <button
+  onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
+  className="flex-1 py-4 sm:py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
+  >
+  REJECT APPLICATION
+  </button>
+  </div>
+  <button
+  onClick={() => handleDeleteApplication(selectedApp.id, selectedApp.userName)}
+  className="w-full mt-3 py-3 bg-rose-50 text-rose-600 font-bold rounded-2xl hover:bg-rose-100 transition-colors text-xs flex items-center justify-center gap-2 border border-rose-200"
+  >
+  <Trash2 className="w-3.5 h-3.5" /> DELETE APPLICATION PERMANENTLY
+  </button>
+  </div>
+  )}
 
- {selectedApp.status === 'approved' && (
+  {selectedApp.status === 'approved' && (
  <div className="pt-8 border-t border-slate-100 ">
  <div className="bg-rose-50 /20 p-6 rounded-[2rem] border border-rose-200 ">
  <label className="block text-xs font-black text-rose-600 uppercase tracking-widest mb-2">Active Mentor</label>
  <p className="text-sm text-slate-600 mb-6 font-medium">This mentor is currently assigned to teach this course.</p>
- <button
- onClick={() => handleRemoveTeacher(selectedApp.id, selectedApp.userId || (selectedApp as any).user_id, selectedApp.courseId || selectedApp.qualification)}
- className="w-full py-4 bg-rose-500 text-white font-black rounded-2xl hover:bg-rose-600 transition-colors"
- >
- REMOVE TEACHER
- </button>
- </div>
- </div>
- )}
- </div>
- </div>
+  <button
+  onClick={() => handleRemoveTeacher(selectedApp.id, selectedApp.userId || (selectedApp as any).user_id, selectedApp.courseId || selectedApp.qualification)}
+  className="w-full py-4 bg-rose-500 text-white font-black rounded-2xl hover:bg-rose-600 transition-colors"
+  >
+  REMOVE TEACHER
+  </button>
+  <button
+  onClick={() => handleDeleteApplication(selectedApp.id, selectedApp.userName)}
+  className="w-full mt-3 py-3 bg-rose-50 text-rose-600 font-bold rounded-2xl hover:bg-rose-100 transition-colors text-xs flex items-center justify-center gap-2 border border-rose-200"
+  >
+  <Trash2 className="w-3.5 h-3.5" /> DELETE APPLICATION PERMANENTLY
+  </button>
+  </div>
+  </div>
+  )}
+  </div>
+  </div>
  </motion.div>
  </div>
  )}
