@@ -35,9 +35,11 @@ const AdminDashboard: React.FC = () => {
  const [scheduledClasses, setScheduledClasses] = useState<any[]>([]);
  const [loadingClasses, setLoadingClasses] = useState(false);
 
- const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
+  const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
+  const [enrollmentUserMap, setEnrollmentUserMap] = useState<Record<string, { name: string; email: string }>>({});
+  const [expandedPlan, setExpandedPlan] = useState<string | null>(null);
 
- // Course management states
+  // Course management states
  const [courseSearch, setCourseSearch] = useState('');
  const [coursePriceFilter, setCoursePriceFilter] = useState<'all' | 'free' | 'paid'>('all');
  const [editingCourse, setEditingCourse] = useState<any>(null);
@@ -195,10 +197,23 @@ const AdminDashboard: React.FC = () => {
   });
    setCoursesList([...dbCourses, ...platformCourses]);
 
- const enrollmentsData = eSnap.docs.map(d => ({ id: d.id, ...d.data() }));
- setEnrollments(enrollmentsData);
+  const enrollmentsData = eSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  setEnrollments(enrollmentsData);
 
- const rawApps = aSnap.docs.map((d) => {
+  // Resolve user names for enrolled students
+  const userIds = [...new Set(enrollmentsData.map((e: any) => e.userId || e.user_id).filter(Boolean))];
+  const userMap: Record<string, { name: string; email: string }> = {};
+  if (userIds.length > 0) {
+  try {
+  const { data: userRows } = await db.from('users').select('id, display_name, email').in('id', userIds);
+  if (userRows) {
+  userRows.forEach((u: any) => { userMap[u.id] = { name: u.display_name || u.email || 'Unknown', email: u.email || '' }; });
+  }
+  } catch (_) {}
+  }
+  setEnrollmentUserMap(userMap);
+
+  const rawApps = aSnap.docs.map((d) => {
  const data = d.data() as TeacherApplication;
  const courseIdVal = data.qualification || '';
  const cFind = [...dbCourses, ...platformCourses].find((c: any) => c.id === courseIdVal);
@@ -906,21 +921,50 @@ const AdminDashboard: React.FC = () => {
    </div>
    </div>
 
-  {/* Plan Breakdown */}
-  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <div className="bg-blue-50 p-6 rounded-2xl border border-blue-200">
-      <span className="text-[10px] font-black uppercase tracking-widest text-blue-600">Trial</span>
-      <p className="text-3xl sm:text-4xl font-black mt-2 text-blue-700">{planBreakdown.trial}</p>
-    </div>
-    <div className="bg-amber-50 p-6 rounded-2xl border border-amber-200">
-      <span className="text-[10px] font-black uppercase tracking-widest text-amber-600">First Class</span>
-      <p className="text-3xl sm:text-4xl font-black mt-2 text-amber-700">{planBreakdown.first_class}</p>
-    </div>
-    <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-200">
-      <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Full Access</span>
-      <p className="text-3xl sm:text-4xl font-black mt-2 text-emerald-700">{planBreakdown.full}</p>
-    </div>
-  </div>
+   {/* Plan Breakdown */}
+   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+     {(['trial', 'first_class', 'full'] as const).map(plan => {
+     const planColors: Record<string, { bg: string; border: string; text: string; text2: string; gradFrom: string; gradTo: string }> = {
+     trial: { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-600', text2: 'text-blue-700', gradFrom: 'from-blue-400', gradTo: 'to-blue-600' },
+     first_class: { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-600', text2: 'text-amber-700', gradFrom: 'from-amber-400', gradTo: 'to-amber-600' },
+     full: { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-600', text2: 'text-emerald-700', gradFrom: 'from-emerald-400', gradTo: 'to-emerald-600' },
+     };
+     const c = planColors[plan];
+     const enrolls = enrollments.filter((e: any) => (e.plan || 'trial') === plan);
+     const label = plan === 'first_class' ? 'First Class' : plan === 'full' ? 'Full Access' : 'Trial';
+     return (
+     <div key={plan} className={`${c.bg} p-6 rounded-2xl ${c.border} cursor-pointer transition-shadow hover:shadow-md`}
+      onClick={() => setExpandedPlan(expandedPlan === plan ? null : plan)}>
+       <span className={`text-[10px] font-black uppercase tracking-widest ${c.text}`}>{label}</span>
+       <p className={`text-3xl sm:text-4xl font-black mt-2 ${c.text2}`}>{enrolls.length}</p>
+       <p className="text-[9px] text-slate-400 font-medium mt-1">Click to {expandedPlan === plan ? 'hide' : 'view'} students</p>
+       {expandedPlan === plan && (
+       <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className={`mt-4 pt-4 border-t ${c.border} space-y-2 max-h-48 overflow-y-auto`}>
+       {enrolls.length === 0 ? (
+       <p className="text-xs text-slate-400 font-medium">No students</p>
+       ) : (
+       enrolls.map((e: any) => {
+       const uid = e.userId || e.user_id;
+       const user = enrollmentUserMap[uid];
+       return (
+       <div key={e.id || uid} className="flex items-center gap-2 p-2 bg-white rounded-xl border border-slate-100">
+       <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${c.gradFrom} ${c.gradTo} text-white flex items-center justify-center text-[10px] font-black shrink-0`}>
+       {(user?.name || '?').charAt(0).toUpperCase()}
+       </div>
+       <div className="min-w-0 flex-1">
+       <p className="text-xs font-bold text-slate-900 truncate">{user?.name || 'Unknown'}</p>
+       <p className="text-[9px] text-slate-400 truncate">{user?.email || ''}</p>
+       </div>
+       </div>
+       );
+       })
+       )}
+       </motion.div>
+       )}
+     </div>
+     );
+     })}
+   </div>
 
    {/* Course enrollment table */}
  <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden">

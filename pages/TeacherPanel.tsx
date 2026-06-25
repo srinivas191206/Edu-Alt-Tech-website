@@ -126,18 +126,70 @@ const TeacherPanel: React.FC = () => {
   if (eData.createdAt) enrolledAt = eData.createdAt?.toDate?.()?.toISOString() || eData.createdAt;
   }
   } catch (_) {}
-  return { ...s, name, email, payment_status: paymentStatus, plan, created_at: enrolledAt };
+   return { ...s, name, email, payment_status: paymentStatus, plan, created_at: enrolledAt, blocked: s.blocked || false, tags: s.tags || [] };
   }));
-  setStudents(studentList);
-  } catch (e) {
-  console.error("Failed to load students", e);
-  toast.error("Failed to load students");
-  } finally {
-  setLoadingStudents(false);
-  }
-  };
+   setStudents(studentList);
+   } catch (e) {
+   console.error("Failed to load students", e);
+   toast.error("Failed to load students");
+   } finally {
+   setLoadingStudents(false);
+   }
+   };
 
-  const chatUnsubRef = useRef<(() => void) | null>(null);
+   const handleBlockStudent = async (enrollmentId: string) => {
+   try {
+   await updateDoc(doc(db, 'enrollments', enrollmentId), { blocked: true });
+   setStudents(prev => prev.map(s => s.id === enrollmentId ? { ...s, blocked: true } : s));
+   toast.success("Student blocked");
+   } catch (e: any) {
+   toast.error(e?.message || "Failed to block student");
+   }
+   };
+
+   const handleUnblockStudent = async (enrollmentId: string) => {
+   try {
+   await updateDoc(doc(db, 'enrollments', enrollmentId), { blocked: false });
+   setStudents(prev => prev.map(s => s.id === enrollmentId ? { ...s, blocked: false } : s));
+   toast.success("Student unblocked");
+   } catch (e: any) {
+   toast.error(e?.message || "Failed to unblock student");
+   }
+   };
+
+   const [tagInputs, setTagInputs] = useState<Record<string, string>>({});
+
+   const handleAddTag = async (enrollmentId: string) => {
+   const tag = (tagInputs[enrollmentId] || '').trim();
+   if (!tag) return;
+   const student = students.find(s => s.id === enrollmentId);
+   if (!student) return;
+   const currentTags: string[] = student.tags || [];
+   if (currentTags.includes(tag)) { toast.error("Tag already exists"); return; }
+   const newTags = [...currentTags, tag];
+   try {
+   await updateDoc(doc(db, 'enrollments', enrollmentId), { tags: newTags });
+   setStudents(prev => prev.map(s => s.id === enrollmentId ? { ...s, tags: newTags } : s));
+   setTagInputs(prev => ({ ...prev, [enrollmentId]: '' }));
+   toast.success("Tag added");
+   } catch (e: any) {
+   toast.error(e?.message || "Failed to add tag");
+   }
+   };
+
+   const handleRemoveTag = async (enrollmentId: string, tagToRemove: string) => {
+   const student = students.find(s => s.id === enrollmentId);
+   if (!student) return;
+   const newTags = (student.tags || []).filter((t: string) => t !== tagToRemove);
+   try {
+   await updateDoc(doc(db, 'enrollments', enrollmentId), { tags: newTags });
+   setStudents(prev => prev.map(s => s.id === enrollmentId ? { ...s, tags: newTags } : s));
+   } catch (e: any) {
+   toast.error(e?.message || "Failed to remove tag");
+   }
+   };
+
+   const chatUnsubRef = useRef<(() => void) | null>(null);
   const chatPollRef = useRef<number | null>(null);
 
   const enrichMessages = async (raw: any[]) => {
@@ -845,46 +897,84 @@ const TeacherPanel: React.FC = () => {
  <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-purple-500" /></div>
  ) : students.length === 0 ? (
  <p className="text-slate-400 font-medium text-sm py-12 text-center bg-slate-50 /30 rounded-2xl">No students enrolled yet.</p>
- ) : (
- <div className="space-y-3">
-  {students.map((s) => (
-  <div key={s.id} className="flex items-center gap-4 p-4 sm:p-5 bg-slate-50 /30 rounded-2xl border border-slate-200 /50">
-  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center font-black text-white text-lg shrink-0">
-  {s.name.charAt(0).toUpperCase()}
-  </div>
-   <div className="flex-1 min-w-0">
-     <p className="font-bold text-slate-900 truncate">{s.name}</p>
-     <p className="text-xs text-slate-400 font-medium truncate">{s.email}</p>
-     <div className="flex items-center gap-2 mt-1 flex-wrap">
-       {s.plan === 'full' && (
-         <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[9px] font-bold uppercase tracking-wider">Full</span>
-       )}
-       {s.plan === 'first_class' && (
-         <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-[9px] font-bold uppercase tracking-wider">First Class</span>
-       )}
-       {s.created_at && (
-         <span className="text-[9px] text-slate-400 font-medium">Joined {new Date(s.created_at).toLocaleDateString()}</span>
-       )}
-     </div>
+  ) : (
+  <div className="space-y-8">
+   {(['first_class', 'full', 'trial'] as const).map(plan => {
+   const label = plan === 'first_class' ? 'First Class' : plan === 'full' ? 'Full Access' : 'Trial';
+   const planStudents = students.filter(s => (s.plan || 'trial') === plan);
+   if (planStudents.length === 0) return null;
+   const planColor = plan === 'full' ? 'text-emerald-600' : plan === 'first_class' ? 'text-amber-600' : 'text-blue-600';
+   return (
+   <div key={plan}>
+    <div className="flex items-center gap-2 mb-3">
+     <span className={`text-[10px] font-black uppercase tracking-widest ${planColor}`}>{label}</span>
+     <span className="text-[9px] text-slate-400 font-medium">({planStudents.length})</span>
+    </div>
+    <div className="space-y-3">
+   {planStudents.map((s) => {
+   const avatarGrad = s.blocked ? 'from-red-300 to-red-400' : plan === 'full' ? 'from-emerald-400 to-emerald-500' : plan === 'first_class' ? 'from-amber-400 to-amber-500' : 'from-blue-400 to-blue-500';
+   return (
+   <div key={s.id} className={`flex items-start gap-4 p-4 sm:p-5 rounded-2xl border border-slate-200/50 transition-colors ${s.blocked ? 'bg-red-50/40 opacity-60' : 'bg-slate-50/30'}`}>
+   <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${avatarGrad} flex items-center justify-center font-black text-white text-lg shrink-0`}>
+   {s.name.charAt(0).toUpperCase()}
    </div>
-   <div className="flex items-center gap-2 shrink-0">
-     {s.plan === 'first_class' ? (
-       <button className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-[10px] transition-colors whitespace-nowrap">
-         Upgrade
-       </button>
-     ) : null}
-     <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
-      s.student_status === 'active'
-      ? 'bg-emerald-100 /30 text-emerald-600 '
-      : 'bg-slate-100 text-slate-500'
-     }`}>
-      {s.student_status || 'active'}
-     </span>
+    <div className="flex-1 min-w-0">
+      <p className="font-bold text-slate-900 truncate">{s.name}</p>
+      <p className="text-xs text-slate-400 font-medium truncate">{s.email}</p>
+      <div className="flex items-center gap-2 mt-1 flex-wrap">
+        {s.created_at && (
+          <span className="text-[9px] text-slate-400 font-medium">Joined {new Date(s.created_at).toLocaleDateString()}</span>
+        )}
+        {s.blocked && (
+          <span className="px-2 py-0.5 bg-red-100 text-red-700 rounded text-[9px] font-bold uppercase tracking-wider">Blocked</span>
+        )}
+      </div>
+      {/* Tags */}
+      <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+        {(s.tags || []).map((tag: string) => (
+          <span key={tag} className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full text-[9px] font-semibold">
+            {tag}
+            <button onClick={() => handleRemoveTag(s.id, tag)} className="hover:text-red-600">&times;</button>
+          </span>
+        ))}
+        <span className="relative inline-flex">
+          <input
+            value={tagInputs[s.id] || ''}
+            onChange={e => setTagInputs(prev => ({ ...prev, [s.id]: e.target.value }))}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddTag(s.id); } }}
+            placeholder="+ tag"
+            className="w-16 text-[9px] px-1.5 py-0.5 bg-transparent border-b border-purple-300 outline-none text-purple-800 placeholder-purple-300"
+          />
+        </span>
+      </div>
+    </div>
+    <div className="flex flex-col items-end gap-1.5 shrink-0">
+      {s.plan === 'first_class' ? (
+        <button className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-[10px] transition-colors whitespace-nowrap">
+          Upgrade
+        </button>
+      ) : null}
+      <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${s.student_status === 'active' && !s.blocked ? 'bg-emerald-100/30 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
+       {s.blocked ? 'blocked' : s.student_status || 'active'}
+      </span>
+      {s.blocked ? (
+      <button onClick={() => handleUnblockStudent(s.id)} className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg text-[9px] transition-colors whitespace-nowrap">
+        Unblock
+      </button>
+      ) : (
+      <button onClick={() => handleBlockStudent(s.id)} className="px-3 py-1 bg-slate-300 hover:bg-slate-400 text-white font-bold rounded-lg text-[9px] transition-colors whitespace-nowrap">
+        Block
+      </button>
+      )}
+    </div>
    </div>
+   );})}
+    </div>
+   </div>
+   );
+   })}
   </div>
-  ))}
- </div>
- )}
+  )}
  </div>
  )}
 
