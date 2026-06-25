@@ -359,7 +359,6 @@ const Dashboard: React.FC = () => {
   </div>
   </motion.div>
   )}
-
   {/* ── Main 2‑col Layout ── */}
   <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
@@ -606,22 +605,22 @@ const Dashboard: React.FC = () => {
   >
  <h3 className="font-bold text-sm text-slate-900 mb-3">Quick Actions</h3>
  <div className="grid grid-cols-2 gap-2">
- <Link to="/practice" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 /10 /10 border border-blue-100 /30 hover:shadow-md transition-all group">
+ <Link to="/practice" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 border border-blue-100 dark:border-blue-900/30 hover:shadow-md transition-all group">
  <Code2 className="w-5 h-5 text-blue-500 group-hover:scale-110 transition-transform" />
  <span className="text-[11px] font-bold text-slate-700 ">Problems</span>
  {leetcodeCount > 0 && <span className="text-[10px] font-bold text-blue-500">{leetcodeCount}</span>}
  </Link>
- <Link to="/practice" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 /10 /10 border border-indigo-100 /30 hover:shadow-md transition-all group">
+ <Link to="/practice" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/40 dark:to-purple-950/40 border border-indigo-100 dark:border-indigo-900/30 hover:shadow-md transition-all group">
  <BookOpen className="w-5 h-5 text-indigo-500 group-hover:scale-110 transition-transform" />
  <span className="text-[11px] font-bold text-slate-700 ">English</span>
  {englishCount > 0 && <span className="text-[10px] font-bold text-indigo-500">{englishCount}</span>}
  </Link>
- <Link to="/resources" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 /10 /10 border border-amber-100 /30 hover:shadow-md transition-all group">
+ <Link to="/resources" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-100 dark:border-amber-900/30 hover:shadow-md transition-all group">
  <Download className="w-5 h-5 text-amber-500 group-hover:scale-110 transition-transform" />
  <span className="text-[11px] font-bold text-slate-700 ">Resources</span>
  {resourceCount > 0 && <span className="text-[10px] font-bold text-amber-500">{resourceCount}</span>}
  </Link>
-  <Link to="/courses" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 /10 /10 border border-emerald-100 /30 hover:shadow-md transition-all group">
+  <Link to="/courses" className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20 border border-emerald-100 dark:border-emerald-900/30 hover:shadow-md transition-all group">
   <GraduationCap className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
   <span className="text-[11px] font-bold text-slate-700 ">Courses</span>
   </Link>

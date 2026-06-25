@@ -234,7 +234,7 @@ export default function LoginModal({ isOpen, onClose, title = "Sign In Required"
  {mode === 'signup' && (
  <>
  <div>
- <label className="block text-xs font-black uppercase text-slate-400 tracking-wider mb-2">Full Name</label>
+ <label className="block text-xs font-black uppercase text-text-secondary tracking-wider mb-2">Full Name</label>
  <div className="relative">
  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
  <input
@@ -248,7 +248,7 @@ export default function LoginModal({ isOpen, onClose, title = "Sign In Required"
  </div>
  </div>
  <div>
- <label className="block text-xs font-black uppercase text-slate-400 tracking-wider mb-2">Phone</label>
+ <label className="block text-xs font-black uppercase text-text-secondary tracking-wider mb-2">Phone</label>
  <div className="relative">
  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
  <input
@@ -265,7 +265,7 @@ export default function LoginModal({ isOpen, onClose, title = "Sign In Required"
  )}
 
  <div>
- <label className="block text-xs font-black uppercase text-slate-400 tracking-wider mb-2">Email Address</label>
+ <label className="block text-xs font-black uppercase text-text-secondary tracking-wider mb-2">Email Address</label>
  <div className="relative">
  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
  <input
@@ -280,7 +280,7 @@ export default function LoginModal({ isOpen, onClose, title = "Sign In Required"
  </div>
 
  <div>
- <label className="block text-xs font-black uppercase text-slate-400 tracking-wider mb-2">Password</label>
+ <label className="block text-xs font-black uppercase text-text-secondary tracking-wider mb-2">Password</label>
  <div className="relative">
  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
  <input
@@ -303,7 +303,7 @@ export default function LoginModal({ isOpen, onClose, title = "Sign In Required"
 
  {mode === 'signup' && (
  <div>
- <label className="block text-xs font-black uppercase text-slate-400 tracking-wider mb-2">Confirm Password</label>
+ <label className="block text-xs font-black uppercase text-text-secondary tracking-wider mb-2">Confirm Password</label>
  <div className="relative">
  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
  <input

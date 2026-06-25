@@ -123,19 +123,47 @@ p, li, span:not([class*="crater"]):not([class*="star"]) {
 a { color: var(--primary); transition: color 0.2s; }
 a:hover { color: var(--primary-hover); }
 
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
 /* ── Theme-mapped common Tailwind classes ────────────────────────── */
 
-.dark .bg-white,
-.dark .bg-white\/80 { background: var(--surface) !important; }
+.dark .bg-white { background: rgb(var(--surface-rgb)) !important; }
+.dark .bg-white\/95 { background: rgba(var(--surface-rgb), 0.95) !important; }
+.dark .bg-white\/90 { background: rgba(var(--surface-rgb), 0.9) !important; }
+.dark .bg-white\/85 { background: rgba(var(--surface-rgb), 0.85) !important; }
+.dark .bg-white\/80 { background: rgba(var(--surface-rgb), 0.8) !important; }
+.dark .bg-white\/75 { background: rgba(var(--surface-rgb), 0.75) !important; }
+.dark .bg-white\/70 { background: rgba(var(--surface-rgb), 0.7) !important; }
+.dark .bg-white\/60 { background: rgba(var(--surface-rgb), 0.6) !important; }
+.dark .bg-white\/50 { background: rgba(var(--surface-rgb), 0.5) !important; }
+.dark .bg-white\/40 { background: rgba(var(--surface-rgb), 0.4) !important; }
+.dark .bg-white\/30 { background: rgba(var(--surface-rgb), 0.3) !important; }
+.dark .bg-white\/20 { background: rgba(var(--surface-rgb), 0.2) !important; }
+.dark .bg-white\/10 { background: rgba(var(--surface-rgb), 0.1) !important; }
 
-.dark .bg-slate-50,
-.dark .bg-slate-50\/30,
-.dark .bg-slate-50\/40,
-.dark .bg-slate-50\/10,
+.dark .bg-slate-50 { background: rgb(var(--bg-rgb)) !important; }
+.dark .bg-slate-50\/95 { background: rgba(var(--bg-rgb), 0.95) !important; }
+.dark .bg-slate-50\/90 { background: rgba(var(--bg-rgb), 0.9) !important; }
+.dark .bg-slate-50\/80 { background: rgba(var(--bg-rgb), 0.8) !important; }
+.dark .bg-slate-50\/70 { background: rgba(var(--bg-rgb), 0.7) !important; }
+.dark .bg-slate-50\/60 { background: rgba(var(--bg-rgb), 0.6) !important; }
+.dark .bg-slate-50\/50 { background: rgba(var(--bg-rgb), 0.5) !important; }
+.dark .bg-slate-50\/40 { background: rgba(var(--bg-rgb), 0.4) !important; }
+.dark .bg-slate-50\/30 { background: rgba(var(--bg-rgb), 0.3) !important; }
+.dark .bg-slate-50\/20 { background: rgba(var(--bg-rgb), 0.2) !important; }
+.dark .bg-slate-50\/10 { background: rgba(var(--bg-rgb), 0.1) !important; }
 .dark .bg-gray-50 { background: var(--bg) !important; }
 
-.dark .bg-slate-100,
-.dark .bg-slate-100\/30 { background: var(--surface-2) !important; }
+.dark .bg-slate-100 { background: rgb(var(--surface-2-rgb)) !important; }
+.dark .bg-slate-100\/90 { background: rgba(var(--surface-2-rgb), 0.9) !important; }
+.dark .bg-slate-100\/80 { background: rgba(var(--surface-2-rgb), 0.8) !important; }
+.dark .bg-slate-100\/50 { background: rgba(var(--surface-2-rgb), 0.5) !important; }
+.dark .bg-slate-100\/30 { background: rgba(var(--surface-2-rgb), 0.3) !important; }
+.dark .bg-slate-100\/20 { background: rgba(var(--surface-2-rgb), 0.2) !important; }
+.dark .bg-slate-100\/10 { background: rgba(var(--surface-2-rgb), 0.1) !important; }
 
 .dark .text-slate-900,
 .dark .text-slate-800,

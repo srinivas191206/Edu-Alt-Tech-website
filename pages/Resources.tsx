@@ -222,14 +222,14 @@ const Resources: React.FC = () => {
  }`}>{typeIcons[item.type]}</div>
  <div className="flex gap-2 flex-wrap justify-end">
  {item.classLevel && (
- <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-indigo-100 /30 text-indigo-700 ">
+ <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-indigo-100/30 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300">
  {item.classLevel}
  </span>
  )}
  <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
  item.premium
- ? 'bg-amber-100 /30 text-amber-700 '
- : 'bg-emerald-100 /30 text-emerald-700 '
+ ? 'bg-amber-100/30 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300'
+ : 'bg-emerald-100/30 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300'
  }`}>{typeLabels[item.type]}</span>
  {item.premium && (
  <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-amber-100 /30 text-amber-700 flex items-center gap-1">
@@ -329,13 +329,13 @@ const Resources: React.FC = () => {
  )}
 
  {/* CTA */}
- <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20 bg-gradient-to-br from-emerald-50 to-teal-50 /20 /10 rounded-[2rem] p-12 text-center border border-emerald-100 /30">
- <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">Want Access to Premium Resources?</h2>
- <p className="text-slate-500 mb-8 max-w-lg mx-auto">Enroll in our courses to unlock premium resources, question banks, and personalized study materials.</p>
- <Link to="/courses" className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold transition-all shadow-xl shadow-emerald-600/20 hover:-translate-y-1">
- Browse Courses <ArrowRight className="w-5 h-5" />
- </Link>
- </motion.div>
+  <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20 rounded-[2rem] p-12 text-center border border-emerald-100 dark:border-emerald-900/30">
+  <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">Want Access to Premium Resources?</h2>
+  <p className="text-slate-500 mb-8 max-w-lg mx-auto">Enroll in our courses to unlock premium resources, question banks, and personalized study materials.</p>
+  <Link to="/courses" className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold transition-all shadow-xl shadow-emerald-600/20 hover:-translate-y-1">
+  Browse Courses <ArrowRight className="w-5 h-5" />
+  </Link>
+  </motion.div>
  </div>
   <LoginModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
   </div>
