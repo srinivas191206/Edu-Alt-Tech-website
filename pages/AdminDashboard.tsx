@@ -15,8 +15,9 @@ const AdminDashboard: React.FC = () => {
  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
  const navigate = useNavigate();
 
- // Data states
- const [teacherApps, setTeacherApps] = useState<(TeacherApplication & { userName?: string, userEmail?: string, courseTitle?: string })[]>([]);
+  // Data states
+  const [teacherApps, setTeacherApps] = useState<(TeacherApplication & { userName?: string, userEmail?: string, courseTitle?: string })[]>([]);
+  const [selectedAppIds, setSelectedAppIds] = useState<Set<string>>(new Set());
  const [selectedApp, setSelectedApp] = useState<(TeacherApplication & { userName?: string, userEmail?: string, courseTitle?: string }) | null>(null);
 
  // Chat states
@@ -417,10 +418,42 @@ const AdminDashboard: React.FC = () => {
    try {
    await deleteDoc(doc(db, 'teacher_applications', appId));
    if (selectedApp?.id === appId) setSelectedApp(null);
+   selectedAppIds.delete(appId);
+   setSelectedAppIds(new Set(selectedAppIds));
    fetchData();
    toast.success("Application deleted");
    } catch (e: any) {
    toast.error(e?.message || "Failed to delete application");
+   }
+  };
+
+  const handleBulkDeleteApplications = async () => {
+   if (selectedAppIds.size === 0) return;
+   if (!confirm(`Permanently delete ${selectedAppIds.size} selected applications? This cannot be undone.`)) return;
+   try {
+   await Promise.all(Array.from(selectedAppIds).map(id => deleteDoc(doc(db, 'teacher_applications', id))));
+   setSelectedAppIds(new Set());
+   setSelectedApp(null);
+   fetchData();
+   toast.success(`${selectedAppIds.size} applications deleted`);
+   } catch (e: any) {
+   toast.error(e?.message || "Failed to delete applications");
+   }
+  };
+
+  const toggleSelectApp = (id: string) => {
+   setSelectedAppIds(prev => {
+   const next = new Set(prev);
+   if (next.has(id)) next.delete(id); else next.add(id);
+   return next;
+   });
+  };
+
+  const toggleSelectAllApps = () => {
+   if (selectedAppIds.size === teacherApps.length) {
+   setSelectedAppIds(new Set());
+   } else {
+   setSelectedAppIds(new Set(teacherApps.map(a => a.id)));
    }
   };
 
@@ -636,27 +669,55 @@ const AdminDashboard: React.FC = () => {
  exit={{ opacity: 0, y: -20 }}
  transition={{ duration: 0.3, ease: "circOut" }}
  >
- {activeTab === 'applications' && (
- <div className="space-y-8">
- <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
- {teacherApps.length === 0 ? (
- <div className="col-span-full py-32 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-200 ">
- <CalendarClock className="w-16 h-16 text-slate-200 mx-auto mb-6" />
- <h3 className="text-xl font-black text-slate-400">NO PENDING DOSSIERS</h3>
- <p className="text-slate-500 text-sm font-medium mt-2">The system is currently clear of applicants.</p>
- </div>
- ) : (
- teacherApps.map(app => (
- <motion.div 
- layout
- key={app.id} 
- className="group bg-white p-6 sm:p-8 rounded-[2.5rem] border border-slate-200/50 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] transition-shadow duration-500 relative"
- >
-  <div className="absolute top-0 right-0 p-6 flex items-center gap-2">
-  <button onClick={(e) => { e.stopPropagation(); handleDeleteApplication(app.id, app.userName); }}
-   className="p-1.5 hover:bg-rose-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100" title="Delete application">
-   <Trash2 className="w-4 h-4 text-rose-500" />
+  {activeTab === 'applications' && (
+  <div className="space-y-8">
+  {/* Selection toolbar */}
+  {teacherApps.length > 0 && (
+  <div className="flex items-center justify-between gap-4">
+  <label className="flex items-center gap-2 cursor-pointer select-none">
+  <input type="checkbox" checked={selectedAppIds.size === teacherApps.length && teacherApps.length > 0}
+   onChange={toggleSelectAllApps}
+   className="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500" />
+  <span className="text-xs font-bold text-slate-500">
+   {selectedAppIds.size === 0 ? 'Select All' : `${selectedAppIds.size} of ${teacherApps.length} selected`}
+  </span>
+  </label>
+  {selectedAppIds.size > 0 && (
+  <button onClick={handleBulkDeleteApplications}
+   className="flex items-center gap-2 px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl transition-colors text-xs">
+   <Trash2 className="w-3.5 h-3.5" /> Delete Selected ({selectedAppIds.size})
   </button>
+  )}
+  </div>
+  )}
+  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
+  {teacherApps.length === 0 ? (
+  <div className="col-span-full py-32 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-200 ">
+  <CalendarClock className="w-16 h-16 text-slate-200 mx-auto mb-6" />
+  <h3 className="text-xl font-black text-slate-400">NO PENDING DOSSIERS</h3>
+  <p className="text-slate-500 text-sm font-medium mt-2">The system is currently clear of applicants.</p>
+  </div>
+  ) : (
+  teacherApps.map(app => (
+  <motion.div 
+  layout
+  key={app.id} 
+  className={`group bg-white p-6 sm:p-8 rounded-[2.5rem] border transition-shadow duration-500 relative ${
+   selectedAppIds.has(app.id) ? 'border-emerald-500 shadow-[0_0_0_1px_#10b981,0_16px_32px_-12px_rgba(16,185,129,0.2)]' : 'border-slate-200/50 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)]'
+  }`}
+  >
+  {/* Selection checkbox */}
+  <div className="absolute top-0 left-0 p-6 z-10">
+  <input type="checkbox" checked={selectedAppIds.has(app.id)}
+   onChange={() => toggleSelectApp(app.id)}
+   onClick={(e) => e.stopPropagation()}
+   className="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 cursor-pointer" />
+  </div>
+   <div className="absolute top-0 right-0 p-6 flex items-center gap-2">
+   <button onClick={(e) => { e.stopPropagation(); handleDeleteApplication(app.id, app.userName); }}
+    className="p-1.5 hover:bg-rose-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100" title="Delete application">
+    <Trash2 className="w-4 h-4 text-rose-500" />
+   </button>
   <div className={`w-2 h-2 rounded-full animate-pulse ${
   app.status === 'pending' ? 'bg-amber-500' :
   app.status === 'approved' ? 'bg-emerald-500' : 'bg-blue-500'
