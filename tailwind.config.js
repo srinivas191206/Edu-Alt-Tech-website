@@ -16,6 +16,18 @@ export default {
         '8xl': ['5.25rem', { lineHeight: '1' }],
       },
       colors: {
+        bg: 'rgba(var(--bg-rgb), <alpha-value>)',
+        'bg-secondary': 'rgba(var(--bg-secondary-rgb), <alpha-value>)',
+        surface: 'rgba(var(--surface-rgb), <alpha-value>)',
+        'surface-2': 'rgba(var(--surface-2-rgb), <alpha-value>)',
+        text: 'rgba(var(--text-rgb), <alpha-value>)',
+        'text-secondary': 'rgba(var(--text-secondary-rgb), <alpha-value>)',
+        'text-muted': 'rgba(var(--text-muted-rgb), <alpha-value>)',
+        heading: 'rgba(var(--heading-rgb), <alpha-value>)',
+        border: 'rgba(var(--border-rgb), <alpha-value>)',
+        primary: 'rgba(var(--primary-rgb), <alpha-value>)',
+        'primary-hover': 'rgba(var(--primary-hover-rgb), <alpha-value>)',
+        accent: 'rgba(var(--accent-rgb), <alpha-value>)',
         brand: {
           50: '#f0fdf4',
           100: '#dcfce7',
