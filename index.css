@@ -198,6 +198,33 @@ code, pre, .font-mono {
   background: rgba(30, 41, 59, 0.7);
   border-color: rgba(51, 65, 85, 0.4);
 }
+
+/* ── Dark mode overrides for common Tailwind patterns ─────────────── */
+
+.dark,
+.dark body,
+.dark .bg-white,
+.dark .bg-slate-50,
+.dark .bg-slate-50\/30,
+.dark .bg-slate-50\/10,
+.dark .bg-gray-50,
+.dark .bg-gray-100 { background-color: #0f172a !important; }
+
+.dark .bg-white\/80 { background-color: rgba(15, 23, 42, 0.8) !important; }
+
+.dark .text-slate-900,
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-slate-800 { color: #f1f5f9 !important; }
+
+.dark .text-slate-600,
+.dark .text-slate-500,
+.dark .text-slate-400 { color: #94a3b8 !important; }
+
+.dark .border-slate-200,
+.dark .border-slate-200\/50,
+.dark .border-slate-200\/60,
+.dark .border-gray-200 { border-color: #334155 !important; }
 .text-glow-emerald {
   text-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
 }
