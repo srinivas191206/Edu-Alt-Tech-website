@@ -5,12 +5,31 @@ import { auth, db, onAuthStateChanged, signOut, doc, getDoc } from '../lib/fireb
 import type { User as FirebaseUser } from '../lib/firebase';
 import { UserObject } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
+import Toggle from './Toggle';
 
 export default function Navbar() {
- const [isOpen, setIsOpen] = useState(false);
- const [isScrolled, setIsScrolled] = useState(false);
- const [user, setUser] = useState<FirebaseUser | null>(null);
- const [userProfile, setUserProfile] = useState<UserObject | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [userProfile, setUserProfile] = useState<UserObject | null>(null);
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (dark) {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [dark]);
  const location = useLocation();
  const navigate = useNavigate();
 
@@ -125,9 +144,11 @@ export default function Navbar() {
  ))}
  </div>
 
- <div className="flex items-center gap-3 pl-6 border-l border-slate-200 ">
+  <div className="flex items-center gap-3 pl-6 border-l border-slate-200 ">
 
- {!user ? (
+  <Toggle checked={dark} onChange={setDark} />
+
+  {!user ? (
  <Link
  to="/login"
  className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold transition-colors shadow-lg hover:shadow-xl shadow-emerald-600/20"
@@ -204,6 +225,10 @@ export default function Navbar() {
   ))}
 
   <div className="h-px bg-slate-100 my-3" />
+
+  <div className="flex justify-center py-2">
+    <Toggle checked={dark} onChange={setDark} />
+  </div>
 
   <motion.div
   initial={{ opacity: 0, y: 20 }}
