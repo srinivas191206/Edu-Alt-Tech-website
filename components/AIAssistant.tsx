@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Bot, X, Send, Loader2, MessageCircle, BookOpen, Shield, ChevronDown, GraduationCap, History, Maximize2 } from 'lucide-react';
+import { Bot, X, Send, Loader2, MessageCircle, BookOpen, Shield, ChevronDown, GraduationCap, History, Maximize2, LogIn } from 'lucide-react';
 import { sendAIChat, AIMode } from '../lib/ai';
 import { auth, db, onAuthStateChanged, collection, query, where, getDocs, orderBy, limit, addDoc, serverTimestamp } from '../lib/firebase';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 type ModeOption = {
   id: AIMode;
@@ -24,6 +24,7 @@ interface Message {
 }
 
 const AIAssistant: React.FC = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState<AIMode>('chat');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -181,7 +182,28 @@ const AIAssistant: React.FC = () => {
 
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] bg-white rounded-3xl border border-slate-200 shadow-2xl flex flex-col overflow-hidden max-h-[600px]">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 ">
+          {!currentUser ? (
+            <div className="p-8 flex flex-col items-center justify-center text-center min-h-[300px]">
+              <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
+                <Bot className="w-7 h-7 text-slate-400" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">Sign in to use Kyo Ai</h3>
+              <p className="text-sm text-slate-500 mb-6 max-w-[240px]">Your AI learning assistant is just a login away</p>
+              <button
+                onClick={() => { setIsOpen(false); navigate('/login'); }}
+                className="flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-emerald-500/20"
+              >
+                <LogIn className="w-4 h-4" /> Sign In
+              </button>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="absolute top-4 right-4 p-2 hover:bg-slate-100 rounded-xl transition-colors"
+              >
+                <X className="w-4 h-4 text-slate-400" />
+              </button>
+            </div>
+          ) : (
+          <><div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50 ">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center">
                 <Bot className="w-5 h-5 text-white" />
@@ -306,9 +328,11 @@ const AIAssistant: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </>
       )}
-    </>
+    </div>
+  )}
+</>
   );
 };
 

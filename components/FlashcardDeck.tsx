@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, RotateCw, Sparkles, Loader2, Shuffle } from 'lucide-react';
 import { generateFlashcards } from '../lib/ai';
+import { auth, onAuthStateChanged } from '../lib/firebase';
+import { useNavigate } from 'react-router-dom';
 
 interface FlashCard {
  front: string;
@@ -8,7 +10,15 @@ interface FlashCard {
 }
 
 const FlashcardDeck: React.FC = () => {
- const [topic, setTopic] = useState('');
+  const navigate = useNavigate();
+  const [topic, setTopic] = useState('');
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      if (!u) navigate('/login');
+    });
+    return () => unsub();
+  }, [navigate]);
  const [cards, setCards] = useState<FlashCard[]>([]);
  const [deckTitle, setDeckTitle] = useState('');
  const [current, setCurrent] = useState(0);
