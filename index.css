@@ -9,7 +9,28 @@ html, body {
   position: relative;
 }
 
+:root {
+  --bg-body: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-muted: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+}
+
+.dark {
+  --bg-body: #0f172a;
+  --bg-surface: #1e293b;
+  --bg-muted: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: #334155;
+}
+
 body {
+  background-color: var(--bg-body);
+  color: var(--text-primary);
+  transition: background-color 0.3s, color 0.3s;
   font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
   font-size: clamp(15px, 0.8vw + 12px, 16.5px);
   line-height: 1.6;
@@ -45,6 +66,9 @@ code, pre, .font-mono {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+.dark .glass {
+  background: rgba(30, 41, 59, 0.7);
 }
 @keyframes float {
   0%, 100% { transform: translateY(0); }
@@ -169,6 +193,10 @@ code, pre, .font-mono {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+}
+.dark .glow-card {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(51, 65, 85, 0.4);
 }
 .text-glow-emerald {
   text-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
