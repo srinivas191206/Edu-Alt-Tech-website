@@ -664,8 +664,8 @@ const Dashboard: React.FC = () => {
  <span className="text-sm font-black text-emerald-600 ">{approvedApps}</span>
  </div>
  )}
- {approvedApps > 0 && (
- <Link to="/teacher-panel" className="flex items-center justify-center gap-1.5 w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-xs transition-colors shadow-md">
+   {(approvedApps > 0 || totalTeaching > 0) && (
+  <Link to="/teacher-panel" className="flex items-center justify-center gap-1.5 w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-xs transition-colors shadow-md">
  <Users className="w-3.5 h-3.5" /> Go to Teacher Panel
  </Link>
  )}
