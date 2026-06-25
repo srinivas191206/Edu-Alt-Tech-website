@@ -66,7 +66,6 @@ export default function Navbar() {
   { name: 'Practice', path: '/practice' },
   { name: 'Resources', path: '/resources' },
   { name: 'Dashboard', path: '/dashboard' },
-  { name: 'AI History', path: '/search-history' },
   ];
 
  const adminLinks = [{ name: 'Admin Portal', path: '/admin' }];
