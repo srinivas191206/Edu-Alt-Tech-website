@@ -30,7 +30,7 @@ export default function Navbar() {
       localStorage.setItem('theme', 'light');
     }
   }, [dark]);
- const location = useLocation();
+  const location = useLocation();
  const navigate = useNavigate();
 
  useEffect(() => {
