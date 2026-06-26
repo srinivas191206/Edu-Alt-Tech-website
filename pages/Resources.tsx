@@ -39,10 +39,7 @@ const typeLabels: Record<string, string> = {
 const categories = ["All", "Mathematics", "Science", "English", "Social Studies", "Computer Science", "Engineering", "Management"];
 
 const Resources: React.FC = () => {
- const [search, setSearch] = useState('');
- const [filter, setFilter] = useState('All');
- const [showPremium, setShowPremium] = useState<'all' | 'free' | 'premium'>('all');
- const [classFilter, setClassFilter] = useState('All');
+  const [search, setSearch] = useState('');
  const [firebaseResources, setFirebaseResources] = useState<ResourceItem[]>([]);
  const [driveResources, setDriveResources] = useState<ResourceItem[]>([]);
  const [loadingDrive, setLoadingDrive] = useState(true);
@@ -124,17 +121,13 @@ const Resources: React.FC = () => {
  } catch (e) { console.error("Download track failed", e); }
  };
 
-   const filtered = useMemo(() => {
-   const normalizedSearch = normalizeSearch(search);
-   return allResources.filter(r => {
-   const haystack = normalizeSearch(r.title + ' ' + r.description + ' ' + (r.category || '') + ' ' + (r.classLevel || ''));
-   const matchSearch = !normalizedSearch || haystack.includes(normalizedSearch);
-   const matchCat = filter === 'All' || r.category === filter;
-   const matchPremium = showPremium === 'all' || (showPremium === 'free' && !r.premium) || (showPremium === 'premium' && r.premium);
-   const matchClass = classFilter === 'All' || r.classLevel === classFilter;
-   return matchSearch && matchCat && matchPremium && matchClass;
-   });
-   }, [allResources, search, filter, showPremium, classFilter]);
+    const filtered = useMemo(() => {
+    const normalizedSearch = normalizeSearch(search);
+    return allResources.filter(r => {
+    const haystack = normalizeSearch(r.title + ' ' + r.description + ' ' + (r.category || '') + ' ' + (r.classLevel || '') + ' ' + r.type + ' ' + (r.premium ? 'premium' : 'free'));
+    return !normalizedSearch || haystack.includes(normalizedSearch);
+    });
+    }, [allResources, search]);
 
  const displayedResources = useMemo(() => {
  return !user ? filtered.slice(0, 3) : filtered;
@@ -162,48 +155,21 @@ const Resources: React.FC = () => {
  </p>
  </motion.div>
 
- {/* Filters */}
- <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-wrap gap-4 mb-12 items-center">
- <div className="relative flex-1 min-w-[250px] max-w-md">
- <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
- <input
- type="text" placeholder="Search resources..." value={search} onChange={e => setSearch(e.target.value)}
- className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder-slate-400"
- />
- </div>
- <div className="flex gap-2 flex-wrap">
- {categories.map(c => (
- <button key={c} onClick={() => setFilter(c)} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
- filter === c ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
- }`}>{c}</button>
- ))}
- </div>
-  <div className="flex gap-2">
-  {(['all', 'free', 'premium'] as const).map(s => (
-  <button key={s} onClick={() => setShowPremium(s)} className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-colors ${
-  showPremium === s ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
-  }`}>{s}</button>
-  ))}
-  </div>
-  {(search || filter !== 'All' || showPremium !== 'all' || classFilter !== 'All') && (
-    <button onClick={() => { setSearch(''); setFilter('All'); setShowPremium('all'); setClassFilter('All'); }}
-      className="flex items-center gap-1.5 px-4 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:text-red-500 hover:border-red-200 transition-colors">
-      <X className="w-3.5 h-3.5" /> Clear All
+ {/* Single Filter */}
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-12 pb-6 border-b border-slate-100">
+  <div className="relative max-w-xl">
+  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+  <input
+  type="text" placeholder="Search by title, category, class level, type, or premium..." value={search} onChange={e => setSearch(e.target.value)}
+  className="w-full pl-12 pr-10 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder-slate-400"
+  />
+  {search && (
+    <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+      <X className="w-4 h-4" />
     </button>
   )}
+  </div>
   </motion.div>
-
- {/* Class Level Filters */}
- <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
- className="flex flex-wrap gap-2 mb-12 pb-6 border-b border-slate-100 /60">
-  {['All', 'Class 6-8', 'Class 9-10', 'Class 11-12', 'College/Engineering', 'JEE Main'].map(lvl => (
- <button key={lvl} onClick={() => setClassFilter(lvl)} className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
- classFilter === lvl
- ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
- : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
- }`}>{lvl}</button>
- ))}
- </motion.div>
 
  {/* Grid */}
  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
