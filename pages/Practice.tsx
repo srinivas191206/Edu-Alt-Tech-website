@@ -106,59 +106,61 @@ function ProblemCard({ problem, user, onLockedClick }: { problem: LeetCodeProble
 }
 
 function CourseCard({ course, user, onLockedClick }: { course: CourseLink; user: any; onLockedClick: () => void }) {
- const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
- if (!user) {
- e.preventDefault();
- onLockedClick();
- }
- };
+  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (!user) {
+      e.preventDefault();
+      onLockedClick();
+    }
+  };
 
- return (
- <a href={course.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
- className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
- >
- <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-emerald-100 /20 text-emerald-500 flex items-center justify-center shrink-0">
- <Youtube className="w-5 h-5" />
- </div>
- <div className="flex-1 min-w-0">
- <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 :text-emerald-400 transition-colors truncate">{course.title}</h3>
- </div>
- <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
- </div>
- </a>
- );
+  return (
+    <a href={course.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+      className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
+    >
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-emerald-100/20 text-emerald-500 flex items-center justify-center shrink-0">
+          <Youtube className="w-5 h-5" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 transition-colors whitespace-normal break-words">{course.title}</h3>
+        </div>
+        <ExternalLink className="w-4 h-4 text-slate-400 shrink-0 group-hover:text-emerald-500 transition-colors" />
+      </div>
+    </a>
+  );
 }
 
 function InterviewCard({ interview, user, onLockedClick }: { interview: InterviewExperience; user: any; onLockedClick: () => void }) {
- const resultColors: Record<string, string> = {
- Hired: 'text-emerald-600 bg-emerald-100 /20',
- Selected: 'text-blue-600 bg-blue-100 /20',
- Rejected: 'text-red-600 bg-red-100 /20',
- };
- const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
- if (!user) {
- e.preventDefault();
- onLockedClick();
- }
- };
+  const resultColors: Record<string, string> = {
+    Hired: 'text-emerald-600 bg-emerald-100/20',
+    Selected: 'text-blue-600 bg-blue-100/20',
+    Rejected: 'text-red-600 bg-red-100/20',
+  };
+  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (!user) {
+      e.preventDefault();
+      onLockedClick();
+    }
+  };
 
- return (
- <a href={interview.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
- className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
- >
- <div className="flex items-center justify-between gap-3">
- <div className="flex-1 min-w-0">
- <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 :text-emerald-400 transition-colors truncate">{interview.company}</h3>
- <p className="text-xs text-slate-500 mt-0.5">{interview.interviewType}</p>
- </div>
- <span className={`shrink-0 text-[10px] font-bold px-2 py-1 rounded-md ${resultColors[interview.result] || ''}`}>
- {interview.result}
- </span>
- <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
- </div>
- </a>
- );
+  return (
+    <a href={interview.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+      className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 transition-colors whitespace-normal break-words">{interview.company}</h3>
+          <p className="text-xs text-slate-500 mt-0.5 whitespace-normal break-words">{interview.interviewType}</p>
+        </div>
+        <div className="flex items-center justify-between sm:justify-end gap-3 pt-2.5 sm:pt-0 border-t border-slate-100 sm:border-t-0 shrink-0">
+          <span className={`text-[10px] font-bold px-2 py-1 rounded-md ${resultColors[interview.result] || ''}`}>
+            {interview.result}
+          </span>
+          <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-emerald-500 transition-colors" />
+        </div>
+      </div>
+    </a>
+  );
 }
 
 function EnglishExerciseCard({ exercise, user, onLockedClick }: { exercise: EnglishExercise; user: any; onLockedClick: () => void }) {
@@ -213,27 +215,27 @@ function EnglishExerciseCard({ exercise, user, onLockedClick }: { exercise: Engl
 }
 
 function ChannelCard({ channel, user, onLockedClick }: { channel: YouTubeChannel; user: any; onLockedClick: () => void }) {
- const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
- if (!user) {
- e.preventDefault();
- onLockedClick();
- }
- };
+  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (!user) {
+      e.preventDefault();
+      onLockedClick();
+    }
+  };
 
- return (
- <a href={channel.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
- className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
- >
- <div className="w-10 h-10 rounded-xl bg-red-100 /20 text-red-500 flex items-center justify-center shrink-0">
- <Youtube className="w-5 h-5" />
- </div>
- <div className="flex-1 min-w-0">
- <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 :text-emerald-400 transition-colors truncate">{channel.name}</h3>
- <p className="text-xs text-slate-500 mt-0.5">{channel.category}</p>
- </div>
- <ExternalLink className="w-4 h-4 text-slate-400 shrink-0" />
- </a>
- );
+  return (
+    <a href={channel.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+      className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
+    >
+      <div className="w-10 h-10 rounded-xl bg-red-100/20 text-red-500 flex items-center justify-center shrink-0">
+        <Youtube className="w-5 h-5" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 transition-colors whitespace-normal break-words">{channel.name}</h3>
+        <p className="text-xs text-slate-500 mt-0.5 whitespace-normal break-words">{channel.category}</p>
+      </div>
+      <ExternalLink className="w-4 h-4 text-slate-400 shrink-0 group-hover:text-emerald-500 transition-colors" />
+    </a>
+  );
 }
 
 const Practice: React.FC = () => {
