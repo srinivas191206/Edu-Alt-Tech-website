@@ -2,11 +2,6 @@ import { extractJSON } from './jsonUtils';
 
 export type AIMode = 'chat' | 'course' | 'admin' | 'mentor';
 
-interface AIChatRequest {
- messages: { role: 'user' | 'assistant' | 'system'; content: string }[];
- mode?: AIMode;
-}
-
 interface AIChatResponse {
  content: string;
  usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number } | null;
@@ -69,47 +64,6 @@ TEACHING APPROACH: Use the Socratic method — ask guiding questions to help stu
 If the student's progress context is provided (completed modules, quiz scores, strengths, weaknesses), use it to give tailored advice. Be encouraging but honest. Focus on growth.`,
 };
 
-const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
-
-declare const __OPENROUTER_API_KEY__: string;
-declare const __OPENROUTER_MODEL__: string;
-
-async function callOpenRouterDirect(messages: { role: string; content: string }[]): Promise<AIChatResponse> {
- const apiKey = typeof __OPENROUTER_API_KEY__ !== 'undefined' ? __OPENROUTER_API_KEY__ : '';
-  const model = typeof __OPENROUTER_MODEL__ !== 'undefined' ? __OPENROUTER_MODEL__ : 'z-ai/glm-4.5-air:free';
-
- if (!apiKey) {
- throw new Error('VITE_OPENROUTER_API_KEY is not set in .env file');
- }
-
- const res = await fetch(OPENROUTER_URL, {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json',
- 'Authorization': `Bearer ${apiKey}`,
- 'HTTP-Referer': window.location.origin,
- 'X-Title': 'Edu-Alt-Tech',
- },
- body: JSON.stringify({
- model,
- messages,
- max_tokens: 1024,
- temperature: 0.7,
- }),
- });
-
- const data = await res.json();
-
- if (!res.ok) {
- throw new Error(data.error?.message || `OpenRouter API error (${res.status})`);
- }
-
- return {
- content: data.choices?.[0]?.message?.content || '',
- usage: data.usage || null,
- };
-}
-
 async function callServerProxy(messages: { role: string; content: string }[]): Promise<AIChatResponse> {
  const res = await fetch('/api/chat', {
  method: 'POST',
@@ -134,13 +88,8 @@ export async function sendAIChat(
  const userMsg = { role: 'user', content: userMessage };
  const messages = [systemMessage, ...history, userMsg];
 
-  try {
   const res = await callServerProxy(messages);
   return { ...res, content: res.content.replace(/\*+/g, '') };
-  } catch {
-  const res = await callOpenRouterDirect(messages);
-  return { ...res, content: res.content.replace(/\*+/g, '') };
-  }
 }
 
 export async function generateCourseDescription(title: string, category: string): Promise<string> {
@@ -183,12 +132,7 @@ Make each card concise and educational. Cover key concepts, definitions, and imp
 
  const messages = [systemMsg, { role: 'user', content: prompt }];
 
- let response: AIChatResponse;
- try {
- response = await callServerProxy(messages);
- } catch {
- response = await callOpenRouterDirect(messages);
- }
+  const response = await callServerProxy(messages);
 
  const parsed = extractJSON<FlashcardSet>(response.content);
 

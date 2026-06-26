@@ -1,40 +1,11 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import fs from 'fs';
-import path from 'path';
-
-function parseEnv(filePath: string): Record<string, string> {
- try {
- const content = fs.readFileSync(filePath, 'utf-8');
- const vars: Record<string, string> = {};
- for (const line of content.split('\n')) {
- const trimmed = line.trim();
- if (!trimmed || trimmed.startsWith('#')) continue;
- const eqIdx = trimmed.indexOf('=');
- if (eqIdx === -1) continue;
- const key = trimmed.slice(0, eqIdx).trim();
- let val = trimmed.slice(eqIdx + 1).trim();
- if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
- val = val.slice(1, -1);
- }
- vars[key] = val;
- }
- return vars;
- } catch {
- return {};
- }
-}
 
 export default defineConfig({
  plugins: [react()],
- define: (() => {
- const envPath = path.resolve(process.cwd(), '.env');
- const env = parseEnv(envPath);
- return {
- __OPENROUTER_API_KEY__: JSON.stringify(env.VITE_OPENROUTER_API_KEY || ''),
- __OPENROUTER_MODEL__: JSON.stringify(env.VITE_OPENROUTER_MODEL || 'z-ai/glm-4.5-air:free'),
- };
- })(),
+ define: {
+ __APP_ENV__: JSON.stringify(process.env.NODE_ENV || 'development'),
+ },
  build: {
  chunkSizeWarningLimit: 1000,
  rollupOptions: {
@@ -53,7 +24,7 @@ export default defineConfig({
  },
  },
  },
- server: {
- allowedHosts: true,
- },
+  server: {
+    allowedHosts: ['localhost', '.edualttech.com'],
+  },
 });
