@@ -112,7 +112,7 @@ export default function Navbar() {
   : 'bg-transparent py-5'
   }`}
   >
-  <div className="max-w-7xl mx-auto px-6">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6">
   <div className="flex items-center justify-between">
   <Link to="/" className="flex items-center gap-2 group">
   <div className="w-10 h-10 flex items-center justify-center transform group-hover:scale-105 transition-transform overflow-hidden rounded-xl">
@@ -124,7 +124,7 @@ export default function Navbar() {
   </div>
   <div>
   <span className="text-lg font-bold text-heading tracking-tight leading-tight block">EduAltTech</span>
-  <span className="text-[10px] font-semibold text-emerald-600 tracking-widest uppercase leading-tight block">Education Technology Partner</span>
+  <span className="text-[10px] font-semibold text-emerald-600 tracking-widest uppercase leading-tight hidden sm:block">Education Technology Partner</span>
   </div>
   </Link>
  

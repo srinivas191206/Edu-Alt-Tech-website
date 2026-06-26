@@ -595,3 +595,13 @@ textarea::placeholder {
   .card-lift:hover { transform: none; }
   .border-glow::after { display: none; }
 }
+
+/* ── Scrollbar utilities ─────────────────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

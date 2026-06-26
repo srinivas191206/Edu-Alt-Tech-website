@@ -51,7 +51,7 @@ function ProblemCard({ problem, user, onLockedClick }: { problem: LeetCodeProble
  animate={{ opacity: 1, y: 0 }}
  className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300"
  >
- <div className="flex items-start justify-between gap-3">
+ <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
  <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
                   <span className="text-[10px] sm:text-xs font-bold text-slate-400 shrink-0">#{problem.num}</span>
@@ -76,26 +76,28 @@ function ProblemCard({ problem, user, onLockedClick }: { problem: LeetCodeProble
  </div>
  )}
  </div>
- <div className="flex items-center gap-1 shrink-0">
+ <div className="flex items-center gap-2 sm:gap-1 w-full sm:w-auto shrink-0 justify-end mt-3 sm:mt-0 pt-3 sm:pt-0 border-t border-slate-100 sm:border-t-0">
  <a
  href={problem.leetcodeUrl}
  target="_blank"
  rel="noopener noreferrer"
  onClick={handleAction}
- className="p-2.5 bg-emerald-50 /20 text-emerald-500 hover:bg-emerald-100 :bg-emerald-900/30 rounded-xl transition-colors"
+ className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-1.5 px-3 py-2 sm:p-2.5 bg-emerald-50 text-emerald-500 hover:bg-emerald-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
  title="Solve on LeetCode"
  >
- <ExternalLink className="w-5 h-5" />
+ <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
+ <span className="sm:hidden">Solve</span>
  </a>
  <a
  href={problem.videoUrl}
  target="_blank"
  rel="noopener noreferrer"
  onClick={handleAction}
- className="p-2.5 bg-red-50 /20 text-red-500 hover:bg-red-100 :bg-red-900/30 rounded-xl transition-colors"
+ className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-1.5 px-3 py-2 sm:p-2.5 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
  title="Watch solution"
  >
- <Youtube className="w-5 h-5" />
+ <Youtube className="w-4 h-4 sm:w-5 sm:h-5" />
+ <span className="sm:hidden">Solution</span>
  </a>
  </div>
  </div>
@@ -177,7 +179,7 @@ function EnglishExerciseCard({ exercise, user, onLockedClick }: { exercise: Engl
  <motion.div layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
  className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300"
  >
- <div className="flex items-start justify-between gap-3">
+ <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
  <div className="flex-1 min-w-0">
  <div className="flex items-center gap-2 mb-1">
                   <span className="text-[10px] sm:text-xs font-bold text-slate-400 shrink-0">#{exercise.num}</span>
@@ -189,18 +191,20 @@ function EnglishExerciseCard({ exercise, user, onLockedClick }: { exercise: Engl
  </span>
  </div>
  </div>
- <div className="flex items-center gap-1 shrink-0">
+ <div className="flex items-center gap-2 sm:gap-1 w-full sm:w-auto shrink-0 justify-end mt-3 sm:mt-0 pt-3 sm:pt-0 border-t border-slate-100 sm:border-t-0">
  <a href={exercise.practiceUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
- className="p-2.5 bg-emerald-50 /20 text-emerald-500 hover:bg-emerald-100 :bg-emerald-900/30 rounded-xl transition-colors"
+ className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-1.5 px-3 py-2 sm:p-2.5 bg-emerald-50 text-emerald-500 hover:bg-emerald-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
  title="Practice on English-Exercises.org"
  >
- <ExternalLink className="w-5 h-5" />
+ <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
+ <span className="sm:hidden">Practice</span>
  </a>
  <a href={exercise.videoUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
- className="p-2.5 bg-red-50 /20 text-red-500 hover:bg-red-100 :bg-red-900/30 rounded-xl transition-colors"
+ className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-1.5 px-3 py-2 sm:p-2.5 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
  title="Watch video lesson"
  >
- <Youtube className="w-5 h-5" />
+ <Youtube className="w-4 h-4 sm:w-5 sm:h-5" />
+ <span className="sm:hidden">Video</span>
  </a>
  </div>
  </div>
@@ -328,8 +332,8 @@ const Practice: React.FC = () => {
  }, [filteredEnglish, user]);
 
  return (
-  <div className="practice-page-container min-h-screen pt-32 pb-32 px-4 md:px-6 bg-white relative overflow-hidden">
-  <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
+  <div className="practice-page-container min-h-screen pt-24 pb-20 sm:pt-32 sm:pb-32 px-4 md:px-6 bg-white relative overflow-hidden">
+  <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full max-w-full" />
   <div className="max-w-[1400px] mx-auto relative z-10">
   <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mb-12">
   <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 /30 border border-emerald-200 /50 text-emerald-700 font-bold uppercase tracking-widest text-[10px] mb-6">
@@ -345,7 +349,7 @@ const Practice: React.FC = () => {
   </motion.div>
 
  {/* Tabs */}
- <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex gap-2 mb-8 border-b border-slate-200 pb-4 overflow-x-auto">
+ <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex gap-2 mb-8 border-b border-slate-200 pb-4 overflow-x-auto no-scrollbar">
  {tabs.map(t => (
  <button key={t.key} onClick={() => setTab(t.key)}
  className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 rounded-xl text-[11px] sm:text-sm font-bold transition-colors whitespace-nowrap ${
@@ -390,13 +394,13 @@ const Practice: React.FC = () => {
    </div>
   <div className="flex flex-wrap gap-3">
    <select value={topicFilter} onChange={e => setTopicFilter(e.target.value)}
-   className="px-2.5 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-[100px] sm:min-w-[140px]"
+   className="px-2.5 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-[100px] max-w-[140px] sm:max-w-none sm:min-w-[140px] truncate"
    >
    <option value="">All Topics</option>
    {allTopics.map(t => <option key={t} value={t}>{t}</option>)}
    </select>
    <select value={diffFilter} onChange={e => setDiffFilter(e.target.value)}
-   className="px-2.5 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-[100px] sm:min-w-[140px]"
+   className="px-2.5 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-[100px] max-w-[140px] sm:max-w-none sm:min-w-[140px] truncate"
   >
   <option value="">All Difficulties</option>
   <option value="Easy">Easy</option>
@@ -463,7 +467,7 @@ const Practice: React.FC = () => {
   />
   </div>
    <select value={levelFilter} onChange={e => setLevelFilter(e.target.value)}
-   className="px-2.5 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none"
+   className="px-2.5 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-[100px] max-w-[140px] sm:max-w-none sm:min-w-[140px] truncate"
   >
   <option value="">All Levels</option>
   {allLevels.map(l => <option key={l} value={l}>{l}</option>)}
@@ -513,7 +517,7 @@ const Practice: React.FC = () => {
   {/* Guest Lock Overlay */}
   {!user && (
  <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
- className="relative mt-12 py-10 sm:py-16 px-8 rounded-3xl bg-white/20 /20 border border-slate-200/50 /50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
+ className="relative mt-12 py-8 sm:py-16 px-4 sm:px-8 rounded-3xl bg-white/20 border border-slate-200/50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
  <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[50px] rounded-full pointer-events-none" />
  <div className="relative z-10 max-w-md mx-auto">
