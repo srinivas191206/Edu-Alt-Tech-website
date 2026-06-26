@@ -1,4 +1,3 @@
-
 import React, { Suspense, lazy, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -49,8 +48,6 @@ const ScrollToTop = () => {
  return null;
 };
 
-
-
 const AppContent: React.FC = () => {
  const location = useLocation();
  const isAdminPath = location.pathname.startsWith('/admin');
@@ -63,7 +60,7 @@ const AppContent: React.FC = () => {
  <div className="flex flex-col min-h-screen">
  <Toaster position="top-right" toastOptions={{ className: ' ' }} />
  {!isHideLayout && <Navbar />}
-  <div className="flex-grow">
+  <div className="flex-grow w-full max-w-full overflow-hidden">
   <Suspense fallback={<div className="flex items-center justify-center min-h-[50vh]"><div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" /></div>}>
   <Routes>
   <Route path="/" element={<Home />} />
