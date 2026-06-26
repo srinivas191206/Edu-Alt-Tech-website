@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
 import { auth, db, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut, doc, setDoc, serverTimestamp, collection, query, where, getDocs } from '../lib/firebase';
 import { motion } from 'framer-motion';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 const Signup: React.FC = () => {
  const [name, setName] = useState('');
@@ -13,11 +14,13 @@ const Signup: React.FC = () => {
 
  const [showPassword, setShowPassword] = useState(false);
  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
- const [loading, setLoading] = useState(false);
- const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [captchaToken, setCaptchaToken] = useState('');
 
- const navigate = useNavigate();
- const formRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const formRef = useRef<HTMLDivElement>(null);
+  const captchaRef = useRef<any>(null);
 
  const handleSignup = async (e: React.FormEvent) => {
  e.preventDefault();
@@ -30,7 +33,7 @@ const Signup: React.FC = () => {
  return;
  }
  try {
- const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password, captchaToken || undefined);
 
  // Now that we are signed in, we can check for phone uniqueness
  const q = query(collection(db, 'users'), where('phone', '==', phone));
@@ -95,8 +98,10 @@ const Signup: React.FC = () => {
   setError(err.message || 'Failed to create account. Please try again.');
   }
   } finally {
- setLoading(false);
- }
+  setLoading(false);
+  captchaRef.current?.resetCaptcha();
+  setCaptchaToken('');
+  }
  };
 
  return (
@@ -175,8 +180,15 @@ const Signup: React.FC = () => {
  </div>
  </div>
 
- <div className="md:col-span-2 pt-4">
- <button type="submit" disabled={loading}
+  <div className="md:col-span-2 pt-4">
+  <div className="flex justify-center mb-4">
+    <HCaptcha
+      ref={captchaRef}
+      sitekey={import.meta.env.VITE_HCAPTCHA_SITEKEY || ''}
+      onVerify={(token: string) => setCaptchaToken(token)}
+    />
+  </div>
+  <button type="submit" disabled={loading}
  className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 :bg-emerald-500 transition-colors shadow-lg text-lg flex items-center justify-center gap-2"
  >
  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Create Account'}

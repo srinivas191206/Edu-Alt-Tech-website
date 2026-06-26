@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Lock, Mail, Loader2, Eye, EyeOff } from 'lucide-react';
 import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, doc, getDoc, setDoc, serverTimestamp } from '../lib/firebase';
 import { motion } from 'framer-motion';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -13,9 +14,11 @@ const Login: React.FC = () => {
   const [resetLoading, setResetLoading] = useState(false);
   const [resetMessage, setResetMessage] = useState('');
   const [error, setError] = useState('');
+  const [captchaToken, setCaptchaToken] = useState('');
 
   const navigate = useNavigate();
   const formRef = useRef<HTMLDivElement>(null);
+  const captchaRef = useRef<any>(null);
 
   // Detect existing session after OAuth redirect
   useEffect(() => {
@@ -48,7 +51,7 @@ const Login: React.FC = () => {
  setError('');
 
  try {
- const userCredential = await signInWithEmailAndPassword(auth, email, password);
+ const userCredential = await signInWithEmailAndPassword(auth, email, password, captchaToken || undefined);
  if (!userCredential.user) return;
  if (userCredential.user.email === 'ukkukk97@gmail.com' || userCredential.user.email === 'umakrishnakanthchokkapu15@gmail.com') {
  navigate('/admin');
@@ -63,6 +66,8 @@ const Login: React.FC = () => {
  }
  } finally {
  setLoading(false);
+ captchaRef.current?.resetCaptcha();
+ setCaptchaToken('');
  }
  };
 
@@ -180,19 +185,27 @@ const Login: React.FC = () => {
  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
  </button>
 
- </div>
- </div>
- </div>
+  </div>
+  </div>
+  </div>
 
- <button
- type="submit"
- disabled={loading || googleLoading}
- className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 :bg-emerald-500 transition-colors shadow-lg text-lg flex items-center justify-center gap-2"
- >
- {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Login'}
- </button>
+  <div className="flex justify-center my-4">
+    <HCaptcha
+      ref={captchaRef}
+      sitekey={import.meta.env.VITE_HCAPTCHA_SITEKEY || ''}
+      onVerify={(token: string) => setCaptchaToken(token)}
+    />
+  </div>
 
- <div className="relative my-8">
+  <button
+  type="submit"
+  disabled={loading || googleLoading}
+  className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 :bg-emerald-500 transition-colors shadow-lg text-lg flex items-center justify-center gap-2"
+  >
+  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Login'}
+  </button>
+
+  <div className="relative my-8">
  <div className="absolute inset-0 flex items-center">
  <div className="w-full border-t border-slate-200 "></div>
  </div>

@@ -308,16 +308,20 @@ export function onAuthStateChanged(authObj: any, cb: AuthCallback): () => void {
  return auth.onAuthStateChanged(cb);
 }
 
-export async function signInWithEmailAndPassword(authObj: any, email: string, password: string) {
- const { data, error } = await supabase.auth.signInWithPassword({ email, password });
- if (error) throw error;
- return { user: data.user ? new FirebaseUserClass(data.user) : null };
+export async function signInWithEmailAndPassword(authObj: any, email: string, password: string, captchaToken?: string) {
+  const options: any = {};
+  if (captchaToken) options.captchaToken = captchaToken;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password, options });
+  if (error) throw error;
+  return { user: data.user ? new FirebaseUserClass(data.user) : null };
 }
 
-export async function createUserWithEmailAndPassword(authObj: any, email: string, password: string) {
- const { data, error } = await supabase.auth.signUp({ email, password });
- if (error) throw error;
- return { user: data.user ? new FirebaseUserClass(data.user) : null };
+export async function createUserWithEmailAndPassword(authObj: any, email: string, password: string, captchaToken?: string) {
+  const options: any = {};
+  if (captchaToken) options.captchaToken = captchaToken;
+  const { data, error } = await supabase.auth.signUp({ email, password, options });
+  if (error) throw error;
+  return { user: data.user ? new FirebaseUserClass(data.user) : null };
 }
 
 export async function signOut(authObj: any): Promise<void> {
