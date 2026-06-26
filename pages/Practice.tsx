@@ -76,30 +76,30 @@ function ProblemCard({ problem, user, onLockedClick }: { problem: LeetCodeProble
  </div>
  )}
  </div>
- <div className="flex items-center gap-2 sm:gap-1 w-full sm:w-auto shrink-0 justify-end mt-3 sm:mt-0 pt-3 sm:pt-0 border-t border-slate-100 sm:border-t-0">
- <a
- href={problem.leetcodeUrl}
- target="_blank"
- rel="noopener noreferrer"
- onClick={handleAction}
- className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-1.5 px-3 py-2 sm:p-2.5 bg-emerald-50 text-emerald-500 hover:bg-emerald-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
- title="Solve on LeetCode"
- >
- <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
- <span className="sm:hidden">Solve</span>
- </a>
- <a
- href={problem.videoUrl}
- target="_blank"
- rel="noopener noreferrer"
- onClick={handleAction}
- className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-1.5 px-3 py-2 sm:p-2.5 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
- title="Watch solution"
- >
- <Youtube className="w-4 h-4 sm:w-5 sm:h-5" />
- <span className="sm:hidden">Solution</span>
- </a>
- </div>
+  <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end mt-3 sm:mt-0 pt-3 sm:pt-0 border-t border-slate-100 sm:border-t-0">
+  <a
+  href={problem.leetcodeUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  onClick={handleAction}
+  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 sm:p-2.5 bg-emerald-50 text-emerald-500 hover:bg-emerald-100 rounded-xl transition-colors text-xs sm:text-sm font-bold min-h-[38px]"
+  title="Solve on LeetCode"
+  >
+  <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+  <span className="sm:hidden">Solve</span>
+  </a>
+  <a
+  href={problem.videoUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  onClick={handleAction}
+  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 sm:p-2.5 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl transition-colors text-xs sm:text-sm font-bold min-h-[38px]"
+  title="Watch solution"
+  >
+  <Youtube className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+  <span className="sm:hidden">Solution</span>
+  </a>
+  </div>
  </div>
  </motion.div>
  );
@@ -370,39 +370,39 @@ const Practice: React.FC = () => {
   {/* Problems Tab */}
   {tab === 'problems' && (
   <>
-  {/* Problem Set Toggle */}
-  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-1.5 sm:gap-2 mb-6">
-  <button onClick={() => setProblemSet('popular')} className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold transition-colors ${
+   {/* Problem Set Toggle */}
+  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex gap-1.5 sm:gap-2 mb-6 overflow-x-auto no-scrollbar">
+  <button onClick={() => setProblemSet('popular')} className={`shrink-0 px-3 sm:px-4 py-2 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-colors ${
   problemSet === 'popular' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
   }`}>Most Popular ({POPULAR_PROBLEMS.length})</button>
-  <button onClick={() => setProblemSet('leetcode150')} className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold transition-colors ${
+  <button onClick={() => setProblemSet('leetcode150')} className={`shrink-0 px-3 sm:px-4 py-2 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-colors ${
   problemSet === 'leetcode150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
   }`}>LeetCode 150 ({LEETCODE_150_PROBLEMS.length})</button>
-  <button onClick={() => setProblemSet('top150')} className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold transition-colors ${
+  <button onClick={() => setProblemSet('top150')} className={`shrink-0 px-3 sm:px-4 py-2 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-colors ${
   problemSet === 'top150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
   }`}>Top Interview 150 ({TOP_INTERVIEW_150.length})</button>
-   {adminProblems.length > 0 && <button onClick={() => setProblemSet('admin')} className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold transition-colors ${
+   {adminProblems.length > 0 && <button onClick={() => setProblemSet('admin')} className={`shrink-0 px-3 sm:px-4 py-2 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-colors ${
    problemSet === 'admin' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
    }`}>Custom ({adminProblems.length})</button>}
   </motion.div>
 
-  {/* Filters */}
-  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-wrap gap-4 mb-8">
-   <div className="relative flex-1 min-w-[140px] sm:min-w-[200px] max-w-sm">
-   <Search className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-3.5 sm:w-4 h-3.5 sm:h-4 text-slate-400" />
-   <input type="text" placeholder="Search problems..." value={search} onChange={e => setSearch(e.target.value)}
-   className="w-full pl-8 sm:pl-10 pr-2.5 sm:pr-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder-slate-400"
-   />
-   </div>
-  <div className="flex flex-wrap gap-3">
-   <select value={topicFilter} onChange={e => setTopicFilter(e.target.value)}
-   className="px-2.5 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-[100px] max-w-[140px] sm:max-w-none sm:min-w-[140px] truncate"
-   >
-   <option value="">All Topics</option>
-   {allTopics.map(t => <option key={t} value={t}>{t}</option>)}
-   </select>
-   <select value={diffFilter} onChange={e => setDiffFilter(e.target.value)}
-   className="px-2.5 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-[100px] max-w-[140px] sm:max-w-none sm:min-w-[140px] truncate"
+   {/* Filters */}
+  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-col sm:flex-row gap-3 mb-8">
+    <div className="relative w-full sm:flex-1 sm:max-w-sm">
+    <Search className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-3.5 sm:w-4 h-3.5 sm:h-4 text-slate-400" />
+    <input type="text" placeholder="Search problems..." value={search} onChange={e => setSearch(e.target.value)}
+    className="w-full pl-8 sm:pl-10 pr-2.5 sm:pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder-slate-400"
+    />
+    </div>
+  <div className="flex gap-2 w-full sm:w-auto">
+    <select value={topicFilter} onChange={e => setTopicFilter(e.target.value)}
+    className="flex-1 sm:flex-none px-2.5 sm:px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-0 sm:min-w-[140px] truncate"
+    >
+    <option value="">All Topics</option>
+    {allTopics.map(t => <option key={t} value={t}>{t}</option>)}
+    </select>
+    <select value={diffFilter} onChange={e => setDiffFilter(e.target.value)}
+    className="flex-1 sm:flex-none px-2.5 sm:px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-0 sm:min-w-[140px] truncate"
   >
   <option value="">All Difficulties</option>
   <option value="Easy">Easy</option>
@@ -411,7 +411,7 @@ const Practice: React.FC = () => {
   </select>
   {(search || topicFilter || diffFilter) && (
     <button onClick={() => { setSearch(''); setTopicFilter(''); setDiffFilter(''); }}
-      className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-[10px] sm:text-xs font-bold text-slate-500 hover:text-red-500 hover:border-red-200 transition-colors">
+      className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-[10px] sm:text-xs font-bold text-slate-500 hover:text-red-500 hover:border-red-200 transition-colors shrink-0">
       <X className="w-3 sm:w-3.5 h-3 sm:h-3.5" /> Clear
     </button>
   )}
