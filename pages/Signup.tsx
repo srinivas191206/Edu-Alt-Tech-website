@@ -24,16 +24,22 @@ const Signup: React.FC = () => {
 
  const handleSignup = async (e: React.FormEvent) => {
  e.preventDefault();
- setLoading(true);
  setError('');
+
+ if (!captchaToken) {
+   setError('Please complete the captcha verification before signing up.');
+   return;
+ }
 
  if (password !== confirmPassword) {
  setError('Passwords do not match');
- setLoading(false);
  return;
  }
+
+ setLoading(true);
+
  try {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password, captchaToken || undefined);
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password, captchaToken);
 
  // Now that we are signed in, we can check for phone uniqueness
  const q = query(collection(db, 'users'), where('phone', '==', phone));

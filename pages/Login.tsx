@@ -47,11 +47,17 @@ const Login: React.FC = () => {
 
  const handleLogin = async (e: React.FormEvent) => {
  e.preventDefault();
- setLoading(true);
  setError('');
 
+ if (!captchaToken) {
+   setError('Please complete the captcha verification before signing in.');
+   return;
+ }
+
+ setLoading(true);
+
  try {
- const userCredential = await signInWithEmailAndPassword(auth, email, password, captchaToken || undefined);
+ const userCredential = await signInWithEmailAndPassword(auth, email, password, captchaToken);
  if (!userCredential.user) return;
  if (userCredential.user.email === 'ukkukk97@gmail.com' || userCredential.user.email === 'umakrishnakanthchokkapu15@gmail.com') {
  navigate('/admin');
