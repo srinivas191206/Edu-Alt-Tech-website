@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Lock, Mail, Loader2, Eye, EyeOff } from 'lucide-react';
 import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, doc, getDoc, setDoc, serverTimestamp } from '../lib/firebase';
 import { motion } from 'framer-motion';
-import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -14,11 +13,9 @@ const Login: React.FC = () => {
   const [resetLoading, setResetLoading] = useState(false);
   const [resetMessage, setResetMessage] = useState('');
   const [error, setError] = useState('');
-  const [captchaToken, setCaptchaToken] = useState('');
 
   const navigate = useNavigate();
   const formRef = useRef<HTMLDivElement>(null);
-  const captchaRef = useRef<any>(null);
 
   // Detect existing session after OAuth redirect
   useEffect(() => {
@@ -47,17 +44,11 @@ const Login: React.FC = () => {
 
  const handleLogin = async (e: React.FormEvent) => {
  e.preventDefault();
+ setLoading(true);
  setError('');
 
- if (!captchaToken) {
-   setError('Please complete the captcha verification before signing in.');
-   return;
- }
-
- setLoading(true);
-
  try {
- const userCredential = await signInWithEmailAndPassword(auth, email, password, captchaToken);
+ const userCredential = await signInWithEmailAndPassword(auth, email, password);
  if (!userCredential.user) return;
  if (userCredential.user.email === 'ukkukk97@gmail.com' || userCredential.user.email === 'umakrishnakanthchokkapu15@gmail.com') {
  navigate('/admin');
@@ -72,8 +63,6 @@ const Login: React.FC = () => {
  }
  } finally {
  setLoading(false);
- captchaRef.current?.resetCaptcha();
- setCaptchaToken('');
  }
  };
 
@@ -193,14 +182,6 @@ const Login: React.FC = () => {
 
   </div>
   </div>
-  </div>
-
-  <div className="flex justify-center my-4">
-    <HCaptcha
-      ref={captchaRef}
-      sitekey={import.meta.env.VITE_HCAPTCHA_SITEKEY || ''}
-      onVerify={(token: string) => setCaptchaToken(token)}
-    />
   </div>
 
   <button

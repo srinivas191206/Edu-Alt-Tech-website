@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
 import { auth, db, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut, doc, setDoc, serverTimestamp, collection, query, where, getDocs } from '../lib/firebase';
 import { motion } from 'framer-motion';
-import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 const Signup: React.FC = () => {
  const [name, setName] = useState('');
@@ -16,30 +15,22 @@ const Signup: React.FC = () => {
  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [captchaToken, setCaptchaToken] = useState('');
 
   const navigate = useNavigate();
   const formRef = useRef<HTMLDivElement>(null);
-  const captchaRef = useRef<any>(null);
 
  const handleSignup = async (e: React.FormEvent) => {
  e.preventDefault();
+ setLoading(true);
  setError('');
-
- if (!captchaToken) {
-   setError('Please complete the captcha verification before signing up.');
-   return;
- }
 
  if (password !== confirmPassword) {
  setError('Passwords do not match');
+ setLoading(false);
  return;
  }
-
- setLoading(true);
-
  try {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password, captchaToken);
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
  // Now that we are signed in, we can check for phone uniqueness
  const q = query(collection(db, 'users'), where('phone', '==', phone));
@@ -105,8 +96,6 @@ const Signup: React.FC = () => {
   }
   } finally {
   setLoading(false);
-  captchaRef.current?.resetCaptcha();
-  setCaptchaToken('');
   }
  };
 
@@ -187,13 +176,6 @@ const Signup: React.FC = () => {
  </div>
 
   <div className="md:col-span-2 pt-4">
-  <div className="flex justify-center mb-4">
-    <HCaptcha
-      ref={captchaRef}
-      sitekey={import.meta.env.VITE_HCAPTCHA_SITEKEY || ''}
-      onVerify={(token: string) => setCaptchaToken(token)}
-    />
-  </div>
   <button type="submit" disabled={loading}
  className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 :bg-emerald-500 transition-colors shadow-lg text-lg flex items-center justify-center gap-2"
  >
