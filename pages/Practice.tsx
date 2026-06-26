@@ -49,32 +49,32 @@ function ProblemCard({ problem, user, onLockedClick }: { problem: LeetCodeProble
  layout
  initial={{ opacity: 0, y: 10 }}
  animate={{ opacity: 1, y: 0 }}
- className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300"
- >
- <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
- <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] sm:text-xs font-bold text-slate-400 shrink-0">#{problem.num}</span>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 truncate">{problem.title}</h3>
+  className="bg-white border border-slate-200 rounded-xl p-3 sm:p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 min-w-0"
+  >
+  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-3">
+  <div className="flex-1 min-w-0">
+   <div className="flex items-center gap-2 mb-1">
+                   <span className="text-[10px] sm:text-xs font-bold text-slate-400 shrink-0">#{problem.num}</span>
+                   <h3 className="text-sm sm:text-base font-bold text-slate-900 truncate break-words">{problem.title}</h3>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[11px] sm:text-xs font-medium text-slate-500 ">{problem.topic}</span>
- <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${difficultyColors[problem.difficulty] || ''}`}>
- {problem.difficulty}
- </span>
- </div>
- {problem.companies && problem.companies.length > 0 && (
- <div className="flex items-center gap-1.5 mt-2 flex-wrap">
- {problem.companies.slice(0, 3).map((c, i) => (
- <span key={i} className="text-[10px] font-semibold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
- {c.name} {c.count > 0 && `(${c.count})`}
- </span>
- ))}
- {problem.companies.length > 3 && (
- <span className="text-[10px] text-slate-400">+{problem.companies.length - 3}</span>
- )}
- </div>
- )}
+                  <span className="text-[11px] sm:text-xs font-medium text-slate-500 break-words">{problem.topic}</span>
+  <span className={`shrink-0 px-2 py-0.5 rounded-md text-[10px] font-bold border ${difficultyColors[problem.difficulty] || ''}`}>
+  {problem.difficulty}
+  </span>
+  </div>
+  {problem.companies && problem.companies.length > 0 && (
+  <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+  {problem.companies.slice(0, 3).map((c, i) => (
+  <span key={i} className="text-[10px] font-semibold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded truncate max-w-[120px] sm:max-w-none">
+  {c.name} {c.count > 0 && `(${c.count})`}
+  </span>
+  ))}
+  {problem.companies.length > 3 && (
+  <span className="text-[10px] text-slate-400 shrink-0">+{problem.companies.length - 3}</span>
+  )}
+  </div>
+  )}
  </div>
   <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end mt-3 sm:mt-0 pt-3 sm:pt-0 border-t border-slate-100 sm:border-t-0">
   <a
@@ -115,7 +115,7 @@ function CourseCard({ course, user, onLockedClick }: { course: CourseLink; user:
 
   return (
     <a href={course.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
-      className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
+      className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group min-w-0"
     >
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl bg-emerald-100/20 text-emerald-500 flex items-center justify-center shrink-0">
@@ -145,7 +145,7 @@ function InterviewCard({ interview, user, onLockedClick }: { interview: Intervie
 
   return (
     <a href={interview.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
-      className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
+      className="block bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group min-w-0"
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
@@ -179,13 +179,13 @@ function EnglishExerciseCard({ exercise, user, onLockedClick }: { exercise: Engl
 
  return (
  <motion.div layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
- className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300"
- >
- <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
- <div className="flex-1 min-w-0">
- <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] sm:text-xs font-bold text-slate-400 shrink-0">#{exercise.num}</span>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 truncate">{exercise.title}</h3>
+  className="bg-white border border-slate-200 rounded-xl p-3 sm:p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 min-w-0"
+  >
+  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-3">
+  <div className="flex-1 min-w-0">
+  <div className="flex items-center gap-2 mb-1">
+                   <span className="text-[10px] sm:text-xs font-bold text-slate-400 shrink-0">#{exercise.num}</span>
+                   <h3 className="text-sm sm:text-base font-bold text-slate-900 truncate break-words">{exercise.title}</h3>
  </div>
  <div className="flex items-center gap-2 flex-wrap">
  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-indigo-100 /30 text-indigo-700 border-indigo-200 ">
@@ -194,20 +194,20 @@ function EnglishExerciseCard({ exercise, user, onLockedClick }: { exercise: Engl
  </div>
  </div>
  <div className="flex items-center gap-2 sm:gap-1 w-full sm:w-auto shrink-0 justify-end mt-3 sm:mt-0 pt-3 sm:pt-0 border-t border-slate-100 sm:border-t-0">
- <a href={exercise.practiceUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
- className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-1.5 px-3 py-2 sm:p-2.5 bg-emerald-50 text-emerald-500 hover:bg-emerald-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
- title="Practice on English-Exercises.org"
- >
- <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
- <span className="sm:hidden">Practice</span>
- </a>
- <a href={exercise.videoUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
- className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-1.5 px-3 py-2 sm:p-2.5 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
- title="Watch video lesson"
- >
- <Youtube className="w-4 h-4 sm:w-5 sm:h-5" />
- <span className="sm:hidden">Video</span>
- </a>
+  <a href={exercise.practiceUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 sm:p-2.5 bg-emerald-50 text-emerald-500 hover:bg-emerald-100 rounded-xl transition-colors text-xs sm:text-sm font-bold min-h-[38px]"
+  title="Practice on English-Exercises.org"
+  >
+  <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+  <span className="sm:hidden">Practice</span>
+  </a>
+  <a href={exercise.videoUrl} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 sm:p-2.5 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl transition-colors text-xs sm:text-sm font-bold min-h-[38px]"
+  title="Watch video lesson"
+  >
+  <Youtube className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+  <span className="sm:hidden">Video</span>
+  </a>
  </div>
  </div>
  </motion.div>
@@ -224,7 +224,7 @@ function ChannelCard({ channel, user, onLockedClick }: { channel: YouTubeChannel
 
   return (
     <a href={channel.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
-      className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group"
+      className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group min-w-0"
     >
       <div className="w-10 h-10 rounded-xl bg-red-100/20 text-red-500 flex items-center justify-center shrink-0">
         <Youtube className="w-5 h-5" />
