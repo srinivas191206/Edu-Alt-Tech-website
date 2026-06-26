@@ -388,10 +388,21 @@ export function ref(storageObj: any, path: string): { path: string; bucket: stri
  return { path, bucket: storageObj.bucket || 'public' };
 }
 
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf', 'text/plain', 'text/csv', 'application/json'];
+const MAX_UPLOAD_SIZE = 5 * 1024 * 1024; // 5 MB
+
 export async function uploadBytes(storageRef: { path: string; bucket: string }, file: File | Blob): Promise<{ ref: any }> {
+ if (file instanceof File) {
+   if (!ALLOWED_MIME_TYPES.includes(file.type) && !file.type.startsWith('image/')) {
+     throw new Error(`File type "${file.type}" is not allowed.`);
+   }
+   if (file.size > MAX_UPLOAD_SIZE) {
+     throw new Error(`File exceeds the maximum size of 5 MB.`);
+   }
+ }
  const path = storageRef.path.startsWith('/') ? storageRef.path.slice(1) : storageRef.path;
  const { error } = await supabase.storage.from(storageRef.bucket).upload(path, file, { upsert: true });
- if (error) throw error;
+ if (error) throw new Error(`Upload failed: ${error.message}`);
  return { ref: storageRef };
 }
 

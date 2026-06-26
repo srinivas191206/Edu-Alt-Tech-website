@@ -55,9 +55,8 @@ const Login: React.FC = () => {
  } else {
  navigate('/dashboard');
  }
- } catch (err: any) {
- console.error(err);
- if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+  } catch (err: any) {
+  if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
  setError('Email or password is incorrect');
  } else {
  setError('An unexpected error occurred. Please try again.');
@@ -77,8 +76,7 @@ const Login: React.FC = () => {
   // For Supabase OAuth, the browser redirects to Google.
   // The auth listener (useEffect above) will handle navigation when user returns.
   // If result.user is null, the redirect is in progress.
-  } catch (err: any) {
-  console.error(err);
+  } catch {
   setError('Failed to sign in with Google. Please try again.');
   } finally {
   setGoogleLoading(false);
@@ -96,10 +94,9 @@ const Login: React.FC = () => {
  try {
  await sendPasswordResetEmail(auth, email);
  setResetMessage('Reset link sent! Check your inbox.');
- } catch (err: any) {
- console.error(err);
- setError('Failed to send reset email. Verify your email address.');
- } finally {
+  } catch {
+  setError('Failed to send reset email. Verify your email address.');
+  } finally {
  setResetLoading(false);
  }
  };

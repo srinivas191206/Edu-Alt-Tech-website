@@ -15,9 +15,9 @@ export async function trackActivity(
  metadata: metadata || {},
  timestamp: serverTimestamp(),
  });
- } catch (e) {
- console.warn('Analytics track failed:', e);
- }
+  } catch {
+    // analytics failures are non-blocking
+  }
 }
 
 export async function getUserActivities(
