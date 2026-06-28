@@ -115,7 +115,7 @@ export default function Navbar() {
   <div className="max-w-7xl mx-auto px-4 sm:px-6">
   <div className="flex items-center justify-between">
   <Link to="/" className="flex items-center gap-2 group">
-  <div className="w-10 h-10 flex items-center justify-center transform group-hover:scale-105 transition-transform overflow-hidden rounded-xl">
+  <div className="w-12 h-12 flex items-center justify-center transform group-hover:scale-105 transition-transform overflow-hidden rounded-xl">
   <img src="/logo.png" loading="lazy" decoding="async" alt="EduAltTech Logo" className="w-full h-full object-cover"
   onError={(e) => {
   (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23ddd" width="100" height="100"/><text fill="%23999" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="14">LOGO</text></svg>';
@@ -193,7 +193,7 @@ export default function Navbar() {
   >
   <div className="flex items-center justify-between px-6 py-6 border-b border-border">
   <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
-  <div className="w-10 h-10 overflow-hidden rounded-xl">
+  <div className="w-12 h-12 overflow-hidden rounded-xl">
   <img src="/logo.png" loading="lazy" decoding="async" alt="EduAltTech Logo" className="w-full h-full object-cover" />
   </div>
    <span className="text-lg font-bold text-heading tracking-tight">EduAltTech</span>
