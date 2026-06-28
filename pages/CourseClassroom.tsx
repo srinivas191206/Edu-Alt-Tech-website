@@ -230,7 +230,7 @@ const CourseClassroom: React.FC = () => {
     currency: "INR",
     name: "Edu Alt Tech",
     description: `Upgrade subscription for ${course.title}`,
-    image: "/edulogo.png",
+    image: "/logo.png",
     order_id: orderData.id,
     handler: async function (response: any) {
      try {

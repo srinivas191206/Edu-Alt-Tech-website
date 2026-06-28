@@ -105,7 +105,7 @@ const PricingSection: React.FC = () => {
  currency: "INR",
  name: "Edu Alt Tech",
  description: `Subscription for ${plan.name}`,
- image: "/edulogo.png",
+ image: "/logo.png",
  order_id: orderData.id, // Pulled securely from Vercel backend
  handler: async function (response: any) {
  try {

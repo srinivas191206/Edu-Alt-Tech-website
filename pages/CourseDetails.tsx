@@ -280,7 +280,7 @@ const CourseDetails: React.FC = () => {
  currency: "INR",
  name: "Edu Alt Tech",
  description: `Enrollment for ${course.title}`,
- image: "/edulogo.png",
+ image: "/logo.png",
  order_id: orderData.id,
  handler: async function (response: any) {
  try {
@@ -369,7 +369,7 @@ await finalizeEnrollment('full');
   currency: "INR",
   name: "Edu Alt Tech",
   description: `First Class - ${course?.title || 'Course'}`,
-  image: "/edulogo.png",
+  image: "/logo.png",
   order_id: orderData.id,
   handler: async function (response: any) {
   try {

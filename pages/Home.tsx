@@ -86,7 +86,7 @@ const Home: React.FC = () => {
           "@type": "Organization",
           "name": "Edu Alt Tech",
           "url": "https://www.edualttech.com",
-          "logo": "https://www.edualttech.com/edulogo.png",
+          "logo": "https://www.edualttech.com/logo.png",
           "description": "Learning Resources, Courses, AI Tools and School Technology Solutions",
           "sameAs": [
             "https://in.linkedin.com/company/edu-alt-tech",
@@ -183,7 +183,7 @@ const Home: React.FC = () => {
               {/* Central Logo Orb */}
               <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full bg-white flex items-center justify-center shadow-2xl border border-slate-100 z-20 group relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-tr from-emerald-50 to-teal-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <img src="/edulogo.png" loading="lazy" decoding="async" alt="EduAltTech Logo" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain z-10 animate-float" />
+                <img src="/logo.png" loading="lazy" decoding="async" alt="EduAltTech Logo" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain z-10 animate-float" />
               </div>
 
               {/* Orbiting Language Characters representing barrier breaking */}

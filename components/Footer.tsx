@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
   <div className="lg:col-span-2">
   <Link to="/" className="flex items-center gap-2 group mb-6">
   <div className="w-10 h-10 overflow-hidden rounded-xl">
-  <img src="/edulogo.png" loading="lazy" decoding="async" alt="EduAltTech Logo" className="w-full h-full object-cover"
+  <img src="/logo.png" loading="lazy" decoding="async" alt="EduAltTech Logo" className="w-full h-full object-cover"
   onError={(e) => {
   (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23ddd" width="100" height="100"/><text fill="%23999" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="14">LOGO</text></svg>';
   }}
