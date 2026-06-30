@@ -403,18 +403,22 @@ const AdminDashboard: React.FC = () => {
  });
  }
 
- if (emailStr) {
- try {
- const { error: mailErr } = await db.from('mail').insert({
- to: emailStr,
- subject: 'Interview Scheduled: Teacher Application',
- text: `Your application has been reviewed. Join the interview here: ${meetLink}${meetDate ? ` on ${new Date(meetDate).toLocaleString()}` : ''}`
- });
- if (mailErr) console.warn("Mail insert warning:", mailErr);
- } catch(mailErr) {
- console.warn("Mail send failed (non-blocking)", mailErr);
- }
- }
+  if (emailStr) {
+  const emailText = `Your application has been reviewed. Join the interview here: ${meetLink}${meetDate ? ` on ${new Date(meetDate).toLocaleString()}` : ''}`;
+  try {
+  await fetch('/api/send-email', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+  to: emailStr,
+  subject: 'Interview Scheduled: Teacher Application',
+  text: emailText,
+  }),
+  });
+  } catch {
+  // non-blocking
+  }
+  }
 
  setSchedulingId(null);
  setMeetLink('');
