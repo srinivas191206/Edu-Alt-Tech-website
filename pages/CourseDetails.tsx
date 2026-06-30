@@ -140,18 +140,16 @@ const CourseDetails: React.FC = () => {
  };
 
  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+ if (!currentUser) {
+ navigate('/login');
+ return;
+ }
  setUser(currentUser);
  fetchCourseAndEnrollment(currentUser);
  });
 
  return () => unsubscribe();
- }, [courseId]);
-
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate('/login');
-    }
-  }, [loading, user, navigate]);
+ }, [courseId, navigate]);
 
   const loadRazorpayScript = () => {
  return new Promise((resolve) => {
