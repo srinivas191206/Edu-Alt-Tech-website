@@ -404,15 +404,43 @@ const AdminDashboard: React.FC = () => {
  }
 
   if (emailStr) {
-  const emailText = `Your application has been reviewed. Join the interview here: ${meetLink}${meetDate ? ` on ${new Date(meetDate).toLocaleString()}` : ''}`;
+  const dateStr = meetDate ? new Date(meetDate).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' }) : '';
+  const emailText = `Your application has been reviewed. Join the interview here: ${meetLink}${dateStr ? ` on ${dateStr}` : ''}`;
+  const emailHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0;padding:0;background:#f4f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">
+<table role="presentation" width="480" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)">
+<tr><td style="padding:40px 40px 24px;text-align:center;background:#0B1220">
+<img src="https://www.edualttech.com/logo.png" alt="EduAltTech" width="56" style="margin-bottom:12px"/>
+<h1 style="margin:0;font-size:22px;font-weight:800;color:#ffffff">Interview Scheduled</h1>
+</td></tr>
+<tr><td style="padding:32px 40px">
+<p style="margin:0 0 16px;font-size:15px;color:#334155;line-height:1.6">Dear Applicant,</p>
+<p style="margin:0 0 16px;font-size:15px;color:#334155;line-height:1.6">Your teacher application has been reviewed. We are pleased to invite you for an interview.</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border-radius:12px;margin-bottom:20px">
+<tr><td style="padding:20px 24px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+${meetLink ? `<tr><td style="padding-bottom:12px"><span style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px">Meeting Link</span><br/><a href="${meetLink}" style="font-size:15px;font-weight:600;color:#059669;text-decoration:none">${meetLink}</a></td></tr>` : ''}
+${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px">Date & Time</span><br/><span style="font-size:15px;font-weight:600;color:#0f172a">${dateStr}</span></td></tr>` : ''}
+</table>
+</td></tr>
+</table>
+<p style="margin:0 0 8px;font-size:15px;color:#334155;line-height:1.6">Please be prepared with your qualifications and experience details. Click the link above at the scheduled time to join the interview.</p>
+<p style="margin:24px 0 0;font-size:15px;color:#334155;line-height:1.6">Best regards,<br/><strong style="color:#0f172a">Edu-Alt-Tech Team</strong></p>
+</td></tr>
+<tr><td style="padding:20px 40px;text-align:center;border-top:1px solid #e2e8f0">
+<p style="margin:0;font-size:12px;color:#94a3b8">© ${new Date().getFullYear()} Edu-Alt-Tech. All rights reserved.</p>
+</td></tr>
+</table>
+</td></tr></table></body></html>`;
   try {
   await fetch('/api/send-email', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
   to: emailStr,
-  subject: 'Interview Scheduled: Teacher Application',
+  subject: 'Interview Scheduled - Edu-Alt-Tech',
   text: emailText,
+  html: emailHtml,
   }),
   });
   } catch {

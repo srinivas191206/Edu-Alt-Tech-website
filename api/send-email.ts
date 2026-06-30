@@ -3,10 +3,10 @@ export default async function handler(req: any, res: any) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { to, subject, text } = req.body;
+  const { to, subject, text, html } = req.body;
 
-  if (!to || !subject || !text) {
-    return res.status(400).json({ error: 'Missing required fields: to, subject, text' });
+  if (!to || !subject || (!text && !html)) {
+    return res.status(400).json({ error: 'Missing required fields: to, subject, and text or html' });
   }
 
   const apiKey = process.env.RESEND_API_KEY;
@@ -26,7 +26,8 @@ export default async function handler(req: any, res: any) {
         from: 'Edu-Alt-Tech <noreply@edualttech.com>',
         to: [to],
         subject,
-        text,
+        text: text || '',
+        html: html || undefined,
       }),
     });
 
