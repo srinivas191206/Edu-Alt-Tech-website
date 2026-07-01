@@ -37,7 +37,6 @@ const AdminDashboard: React.FC = () => {
 
   const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
   const [enrollmentUserMap, setEnrollmentUserMap] = useState<Record<string, { name: string; email: string }>>({});
-  const [expandedPlan, setExpandedPlan] = useState<string | null>(null);
 
   // Course management states
  const [courseSearch, setCourseSearch] = useState('');
@@ -536,6 +535,11 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
   });
   return counts;
   }, [enrollments]);
+  const courseMap = useMemo(() => {
+   const map: Record<string, string> = {};
+   coursesList.forEach((c: any) => { map[c.id] = c.title || 'Untitled'; });
+   return map;
+  }, [coursesList]);
   const planBreakdown = useMemo(() => {
     const counts = { first_class: 0, full: 0 };
     enrollments.forEach((e: any) => {
@@ -953,49 +957,72 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
    </div>
    </div>
 
-   {/* Plan Breakdown */}
-   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      {(['first_class', 'full'] as const).map(plan => {
-     const planColors: Record<string, { bg: string; border: string; text: string; text2: string; gradFrom: string; gradTo: string }> = {
-
-     first_class: { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-600', text2: 'text-amber-700', gradFrom: 'from-amber-400', gradTo: 'to-amber-600' },
-     full: { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-600', text2: 'text-emerald-700', gradFrom: 'from-emerald-400', gradTo: 'to-emerald-600' },
-     };
-     const c = planColors[plan];
-      const enrolls = enrollments.filter((e: any) => (e.plan || 'first_class') === plan);
-      const label = plan === 'first_class' ? 'First Class' : 'Full Access';
-     return (
-     <div key={plan} className={`${c.bg} p-6 rounded-2xl ${c.border} cursor-pointer transition-shadow hover:shadow-md`}
-      onClick={() => setExpandedPlan(expandedPlan === plan ? null : plan)}>
-       <span className={`text-[10px] font-black uppercase tracking-widest ${c.text}`}>{label}</span>
-       <p className={`text-3xl sm:text-4xl font-black mt-2 ${c.text2}`}>{enrolls.length}</p>
-       <p className="text-[9px] text-slate-400 font-medium mt-1">Click to {expandedPlan === plan ? 'hide' : 'view'} students</p>
-       {expandedPlan === plan && (
-       <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className={`mt-4 pt-4 border-t ${c.border} space-y-2 max-h-48 overflow-y-auto`}>
-       {enrolls.length === 0 ? (
-       <p className="text-xs text-slate-400 font-medium">No students</p>
-       ) : (
-       enrolls.map((e: any) => {
-       const uid = e.userId || e.user_id;
-       const user = enrollmentUserMap[uid];
-       return (
-       <div key={e.id || uid} className="flex items-center gap-2 p-2 bg-white rounded-xl border border-slate-100">
-       <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${c.gradFrom} ${c.gradTo} text-white flex items-center justify-center text-[10px] font-black shrink-0`}>
-       {(user?.name || '?').charAt(0).toUpperCase()}
-       </div>
-       <div className="min-w-0 flex-1">
-       <p className="text-xs font-bold text-slate-900 truncate">{user?.name || 'Unknown'}</p>
-       <p className="text-[9px] text-slate-400 truncate">{user?.email || ''}</p>
-       </div>
-       </div>
-       );
-       })
-       )}
-       </motion.div>
-       )}
-     </div>
-     );
-     })}
+   {/* All Enrollments */}
+   <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden">
+   <div className="p-4 sm:p-8 border-b border-slate-100">
+   <h3 className="text-xl font-black tracking-tight">All Enrollments</h3>
+   </div>
+   <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
+   <table className="w-full text-left border-collapse">
+   <thead>
+   <tr className="bg-slate-50/50 sticky top-0 backdrop-blur-md">
+   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Student</th>
+   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Course</th>
+   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Plan</th>
+   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Payment</th>
+   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden md:table-cell">Enrolled</th>
+   </tr>
+   </thead>
+   <tbody className="divide-y divide-slate-100">
+   {enrollments.length === 0 ? (
+   <tr>
+   <td colSpan={5} className="px-8 py-16 text-center">
+   <p className="text-slate-400 font-medium">No enrollments yet</p>
+   </td>
+   </tr>
+   ) : (
+   enrollments.map((e: any) => {
+   const uid = e.userId || e.user_id;
+   const user = enrollmentUserMap[uid];
+   const courseTitle = courseMap[e.course_id || e.courseId] || 'Unknown Course';
+   const planLabel = e.plan === 'full' ? 'Full Access' : 'First Class';
+   const ps = e.paymentStatus || e.payment_status || 'not-required';
+   const paymentLabel = ps === 'paid' ? 'Paid' : ps === 'pending' ? 'Pending' : 'N/A';
+   const paymentColor = ps === 'paid' ? 'text-emerald-600 bg-emerald-50' : ps === 'pending' ? 'text-amber-600 bg-amber-50' : 'text-slate-400 bg-slate-50';
+   const planColor = e.plan === 'full' ? 'text-emerald-600 bg-emerald-50' : 'text-amber-600 bg-amber-50';
+   const enrolledDate = e.createdAt?.toDate ? e.createdAt.toDate() : e.created_at ? new Date(e.created_at) : e.createdAt ? new Date(e.createdAt) : null;
+   return (
+   <tr key={e.id || uid} className="hover:bg-slate-50/80 transition-colors">
+   <td className="px-4 sm:px-6 py-4">
+   <div className="flex items-center gap-2">
+   <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-slate-400 to-slate-600 text-white flex items-center justify-center text-[10px] font-black shrink-0">
+   {(user?.name || '?').charAt(0).toUpperCase()}
+   </div>
+   <div className="min-w-0">
+   <p className="text-xs font-bold text-slate-900 truncate">{user?.name || 'Unknown'}</p>
+   <p className="text-[9px] text-slate-400 truncate sm:hidden">{courseTitle}</p>
+   </div>
+   </div>
+   </td>
+   <td className="px-4 sm:px-6 py-4 hidden sm:table-cell">
+   <p className="text-xs font-medium text-slate-700 truncate max-w-[200px]">{courseTitle}</p>
+   </td>
+   <td className="px-4 sm:px-6 py-4">
+   <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${planColor}`}>{planLabel}</span>
+   </td>
+   <td className="px-4 sm:px-6 py-4 hidden sm:table-cell">
+   <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${paymentColor}`}>{paymentLabel}</span>
+   </td>
+   <td className="px-4 sm:px-6 py-4 hidden md:table-cell">
+   <span className="text-[10px] text-slate-400 font-medium">{enrolledDate ? enrolledDate.toLocaleDateString() : '-'}</span>
+   </td>
+   </tr>
+   );
+   })
+   )}
+   </tbody>
+   </table>
+   </div>
    </div>
 
    {/* Course enrollment table */}
