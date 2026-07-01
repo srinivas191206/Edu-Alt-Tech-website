@@ -434,7 +434,7 @@ const CourseClassroom: React.FC = () => {
   const progressPercent = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
 
   const plan = enrollment?.plan || 'full';
-  const planLimits: Record<EnrollmentPlan, number> = { trial: 1, first_class: 1, full: Infinity };
+  const planLimits: Record<EnrollmentPlan, number> = { first_class: 1, full: Infinity };
   const maxModuleIndex = planLimits[plan] ?? Infinity;
   const isRestricted = plan !== 'full';
 

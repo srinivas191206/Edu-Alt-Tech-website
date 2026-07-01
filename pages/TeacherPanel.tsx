@@ -107,7 +107,7 @@ const TeacherPanel: React.FC = () => {
   let name = 'Unknown Student';
   let email = '';
   let paymentStatus = s.payment_status || 'not-required';
-  let plan: string = 'trial';
+  let plan: string = 'first_class';
   let enrolledAt = s.created_at || '';
   try {
   const uDoc = await getDoc(doc(db, 'users', s.user_id));
@@ -899,11 +899,11 @@ const TeacherPanel: React.FC = () => {
  <p className="text-slate-400 font-medium text-sm py-12 text-center bg-slate-50 /30 rounded-2xl">No students enrolled yet.</p>
   ) : (
   <div className="space-y-8">
-   {(['first_class', 'full', 'trial'] as const).map(plan => {
-   const label = plan === 'first_class' ? 'First Class' : plan === 'full' ? 'Full Access' : 'Trial';
-   const planStudents = students.filter(s => (s.plan || 'trial') === plan);
-   if (planStudents.length === 0) return null;
-   const planColor = plan === 'full' ? 'text-emerald-600' : plan === 'first_class' ? 'text-amber-600' : 'text-blue-600';
+    {(['first_class', 'full'] as const).map(plan => {
+    const label = plan === 'first_class' ? 'First Class' : 'Full Access';
+    const planStudents = students.filter(s => (s.plan || 'first_class') === plan);
+    if (planStudents.length === 0) return null;
+    const planColor = plan === 'full' ? 'text-emerald-600' : 'text-amber-600';
    return (
    <div key={plan}>
     <div className="flex items-center gap-2 mb-3">

@@ -59,7 +59,7 @@ export interface Course {
 // Enrollment / Application Types
 export type StudentStatus = 'waitlisted' | 'active' | 'completed';
 export type PaymentStatus = 'pending' | 'paid' | 'not-required' | 'trial';
-export type EnrollmentPlan = 'trial' | 'first_class' | 'full';
+export type EnrollmentPlan = 'first_class' | 'full';
 
 export interface CourseEnrollment {
  id: string;

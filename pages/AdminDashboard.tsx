@@ -537,10 +537,10 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
   return counts;
   }, [enrollments]);
   const planBreakdown = useMemo(() => {
-   const counts = { trial: 0, first_class: 0, full: 0 };
-   enrollments.forEach((e: any) => {
-    const p = e.plan || 'trial';
-    if (p in counts) counts[p as keyof typeof counts]++;
+    const counts = { first_class: 0, full: 0 };
+    enrollments.forEach((e: any) => {
+     const p = e.plan || 'first_class';
+     if (p in counts) counts[p as keyof typeof counts]++;
    });
    return counts;
   }, [enrollments]);
@@ -955,15 +955,15 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
 
    {/* Plan Breakdown */}
    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-     {(['trial', 'first_class', 'full'] as const).map(plan => {
+      {(['first_class', 'full'] as const).map(plan => {
      const planColors: Record<string, { bg: string; border: string; text: string; text2: string; gradFrom: string; gradTo: string }> = {
-     trial: { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-600', text2: 'text-blue-700', gradFrom: 'from-blue-400', gradTo: 'to-blue-600' },
+
      first_class: { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-600', text2: 'text-amber-700', gradFrom: 'from-amber-400', gradTo: 'to-amber-600' },
      full: { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-600', text2: 'text-emerald-700', gradFrom: 'from-emerald-400', gradTo: 'to-emerald-600' },
      };
      const c = planColors[plan];
-     const enrolls = enrollments.filter((e: any) => (e.plan || 'trial') === plan);
-     const label = plan === 'first_class' ? 'First Class' : plan === 'full' ? 'Full Access' : 'Trial';
+      const enrolls = enrollments.filter((e: any) => (e.plan || 'first_class') === plan);
+      const label = plan === 'first_class' ? 'First Class' : 'Full Access';
      return (
      <div key={plan} className={`${c.bg} p-6 rounded-2xl ${c.border} cursor-pointer transition-shadow hover:shadow-md`}
       onClick={() => setExpandedPlan(expandedPlan === plan ? null : plan)}>
