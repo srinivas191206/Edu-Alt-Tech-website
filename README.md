@@ -1,103 +1,222 @@
-🚀 Edu Alt Tech
+# Edu-Alt-Tech
 
-Redefining Education Through Innovation & Flexibility
+**Bridging the execution gap through peer-to-peer teaching, mentor-guided accountability, and assistive AI.**
 
-Edu Alt Tech is a next-generation alternative education platform designed to solve the limitations of traditional learning systems. We provide flexible, skill-focused, and mentorship-driven education powered by technology.
+Edu-Alt-Tech is a full-stack alternative education platform where students learn real-world skills with real mentors. It combines structured courses, AI-powered learning assistance, practice problems, teacher management, and payment processing — all in a modern, dark-mode-capable interface.
 
-🌍 Problem We Are Solving
+**[Visit Live Site](https://www.edualttech.com)** | **[Dashboard](https://www.edualttech.com/dashboard)**
 
-Traditional education struggles with:
+---
 
-⏳ Poor time management flexibility
+## Tech Stack
 
-📉 Decrease in critical thinking skills
+**Frontend** · React 19 · TypeScript · Vite 6 · Tailwind CSS 3 · Framer Motion · React Router 7
 
-🤝 Lack of personalized mentoring
+**Backend** · Vercel Serverless Functions (Node.js)
 
-🔄 Comparison-driven academic pressure
+**Database** · Supabase (PostgreSQL) with Row-Level Security
 
-🎯 Skill mismatch leading to unemployment
+**Auth** · Supabase Auth (email/password + Google OAuth)
 
-Students need adaptive learning, not rigid systems.
+**AI** · OpenRouter API (multi-model proxy)
 
-💡 Our Solution
+**Payments** · Razorpay
 
-Edu Alt Tech is a SaaS-based platform that provides:
+**Email** · Resend
 
-🕒 Flexible class scheduling
+---
 
-👨‍🏫 Live interactive sessions
+## Features
 
-🎓 Alternative learning paths
+### 🎓 Learning Platform
+- Course catalog with 16+ platform courses across Education and Alternative categories
+- Course details with syllabus, pricing (INR), levels, and demo classes
+- Virtual classroom for enrolled students
+- Certificates upon completion
 
-🧠 Skill-based curriculum
+### 🤖 AI Assistant (Kyo Ai)
+- Floating chat widget with 4 modes: General Chat, AI Mentor, Course Help, Admin Tool
+- Full-page AI interface at `/ai`
+- Personalized mentoring based on user progress metrics
+- Course catalog-aware recommendations
+- AI-generated flashcards and learning paths
+- Search history for past queries
 
-📊 Progress tracking & analytics
+### 👨‍🏫 Teacher & Mentor System
+- Teacher application and approval workflow
+- Teacher panel with class scheduling, student rosters, and earnings tracking
+- Recurring class scheduling with meeting links
+- Course-specific community and direct chat
+- Mentor-student communication
 
-🤖 AI-driven personalization (Upcoming)
+### 💰 Payments (Razorpay)
+- Payment order creation and signature verification
+- Trial, first-class, and full enrollment plans
+- All amounts in INR
 
-🛠 Tech Stack
+### 📝 Practice Problems
+- 130+ LeetCode-style problems with video solutions
+- Company tags (Amazon, Google, Microsoft, Meta, etc.)
+- Difficulty levels and topic categorization
+- LeetCode 150 curated set
+- English exercises
 
-Frontend:
+### 🔐 Security
+- Row-Level Security on all Supabase tables
+- Rate-limited AI API (20 req/min per IP)
+- Input sanitization and validation
+- Content-Security-Policy headers
+- HSTS, nosniff, X-Frame-Options, Permissions-Policy
+- Server-side API key management (OpenRouter, Razorpay secret, Resend)
 
-HTML / CSS / JavaScript / React (if used)
+### 🎨 UI/UX
+- Dark mode with persistent toggle
+- Smooth scroll (Lenis) and page transitions (Framer Motion)
+- Responsive design for mobile and desktop
+- Toast notifications
+- SEO with React Helmet and structured data
 
-Backend:
+---
 
-Node.js / Express (if used)
+## Getting Started
 
-Database:
+### Prerequisites
+- Node.js 18+
+- A Supabase project
+- OpenRouter API key
+- Razorpay account (optional for payments)
+- Resend API key (optional for email)
 
-MongoDB / Firebase (if used)
+### Environment Variables
 
-Deployment:
+Create a `.env` file in the project root:
 
-Vercel / Render / AWS (update based on your hosting)
+```env
+# Supabase (required)
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
 
-📌 Key Features
+# OpenRouter (required for AI features)
+OPENROUTER_API_KEY=sk-or-v1-...
+VITE_OPENROUTER_MODEL=z-ai/glm-4.5-air:free
 
-Student Dashboard
+# Razorpay (required for payments)
+RAZORPAY_KEY_SECRET=your-secret
+VITE_RAZORPAY_KEY_ID=rzp_live_...
 
-Mentor Dashboard
+# Resend (required for email)
+RESEND_API_KEY=re_...
+```
 
-Live Session Booking
+### Install & Run
 
-Skill-Based Learning Modules
+```bash
+npm install
+npm run dev        # Start dev server with HMR
+npm run build      # Type-check and build for production
+npm run preview    # Preview production build locally
+```
 
-Progress Analytics
+### Deploy to Vercel
 
-Certification System (Upcoming)
+```bash
+npx vercel --prod
+```
 
-🏗 Project Structure
-/public
-/src
-  /components
-  /pages
-  /utils
-README.md
-package.json
-🚀 Vision
+Set all environment variables in the Vercel dashboard under **Settings → Environment Variables**.
 
-To build an education ecosystem where students learn based on interest, skills, and future industry demand rather than outdated curriculum structures.
+---
 
-👥 Team
+## Architecture
 
-Founded by passionate innovators focused on transforming education for the next generation.
+### Frontend Routing (HashRouter)
 
-Founder: Uma Krishna Kanth Chokkapu
+| Route | Page | Description |
+|---|---|---|
+| `/` | Home | Landing page with hero, features, stats |
+| `/courses` | Courses | Course catalog |
+| `/courses/:id` | CourseDetails | Individual course (auth required) |
+| `/classroom/:id` | CourseClassroom | Virtual classroom |
+| `/dashboard` | Dashboard | User dashboard |
+| `/login` | Login | Sign-in |
+| `/signup` | Signup | Registration |
+| `/admin` | AdminDashboard | Admin panel |
+| `/teacher-panel` | TeacherPanel | Teacher dashboard |
+| `/practice` | Practice | Coding & English practice |
+| `/ai` | AI | Full-page AI assistant |
+| `/resources` | Resources | Learning resources |
+| `/profile` | Profile | User profile settings |
 
-📈 Future Roadmap
+### API Endpoints (Serverless)
 
-AI Mentor Assistant
+| Endpoint | Purpose |
+|---|---|
+| `POST /api/chat` | Proxy chat to OpenRouter AI |
+| `POST /api/createOrder` | Create Razorpay payment order |
+| `POST /api/verifyPayment` | Verify Razorpay payment signature |
+| `POST /api/send-email` | Send email via Resend |
 
-Peer Learning Network
+### Database (Supabase)
 
-Industry Internship Integration
+Key tables: `courses`, `enrollments`, `users`, `teacher_applications`, `chat_messages`, `user_progress`, `learning_paths`, `practice_problems`, `analytics`, `notifications`, `quiz_attempts`, `user_metrics`.
 
-Blockchain-Based Certificates
+All tables use Row-Level Security. A helper function `is_admin()` centralizes admin privilege checks.
 
-Skill-Matching Job Engine
+---
 
-🤝 Contributing
+## Project Structure
 
-We welcome developers, educators, and innovators to collaborate and improve the future of learning.
+```
+├── api/                  # Vercel Serverless Functions
+│   ├── chat.ts
+│   ├── createOrder.ts
+│   ├── verifyPayment.ts
+│   └── send-email.ts
+├── components/           # React components
+│   ├── sections/         # Home page sections
+│   ├── AIAssistant.tsx   # Floating AI chat widget
+│   ├── Navbar.tsx
+│   ├── Footer.tsx
+│   └── ...
+├── lib/                  # Utilities and wrappers
+│   ├── firebase.ts       # Supabase → Firebase-compatible API
+│   ├── ai.ts             # AI client helpers
+│   └── drive.ts          # Google Drive API
+├── pages/                # Route page components
+├── public/               # Static assets
+├── supabase/             # SQL migrations
+│   ├── init.sql
+│   └── migration_security_rls_fix.sql
+├── data/                 # Static data
+├── types.ts              # TypeScript interfaces
+├── vite.config.ts
+├── tailwind.config.js
+└── vercel.json
+```
+
+---
+
+## Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Type-check + build for production |
+| `npm run preview` | Preview production build |
+| `node scripts/seed-courses.mjs` | Seed courses into Supabase (requires `SUPABASE_SERVICE_KEY`) |
+
+---
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit changes (`git commit -am 'Add your feature'`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a pull request
+
+---
+
+## License
+
+Private · All rights reserved.
