@@ -177,7 +177,7 @@ const AIAssistant: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl shadow-2xl shadow-emerald-500/30 flex items-center justify-center transition-transform duration-300 hover:scale-110 active:scale-95"
       >
-        {isOpen ? <X className="w-6 h-6" /> : <img src="/logo.png" alt="AI" className="w-6 h-6 object-contain" />}
+        {isOpen ? <X className="w-6 h-6" /> : <img src="/logo.png" alt="AI" loading="lazy" className="w-6 h-6 object-contain" />}
       </button>
 
       {isOpen && (
@@ -185,7 +185,7 @@ const AIAssistant: React.FC = () => {
           {!currentUser ? (
             <div className="p-8 flex flex-col items-center justify-center text-center min-h-[300px]">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4">
-                <img src="/logo.png" alt="EduAltTech Logo" className="w-10 h-10 object-contain" />
+                <img src="/logo.png" alt="EduAltTech Logo" loading="lazy" className="w-10 h-10 object-contain" />
               </div>
               <h3 className="text-lg font-bold text-slate-800 :text-white mb-2">Sign in to use Kyo Ai</h3>
               <p className="text-sm text-slate-500 :text-slate-400 mb-6 max-w-[240px]">Your AI learning assistant is just a login away</p>
@@ -206,7 +206,7 @@ const AIAssistant: React.FC = () => {
           <><div className="p-4 border-b border-slate-100 :border-slate-700 flex items-center justify-between bg-slate-50 :bg-gray-800">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden">
-                <img src="/logo.png" alt="AI" className="w-full h-full object-cover" />
+                <img src="/logo.png" alt="AI" loading="lazy" className="w-full h-full object-cover" />
               </div>
               <div>
                 <div className="flex items-center gap-2">

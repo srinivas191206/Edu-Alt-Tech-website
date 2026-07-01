@@ -116,7 +116,7 @@ const Login: React.FC = () => {
  className="w-full max-w-md bg-white/90 /80 backdrop-blur-2xl p-10 md:p-12 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-200/50 /50 relative z-10"
  >
   <div className="text-center mb-10">
-  <img src="/logo.png" alt="EduAltTech Logo" className="w-14 h-14 mx-auto mb-4 object-contain" />
+  <img src="/logo.png" alt="EduAltTech Logo" loading="lazy" className="w-14 h-14 mx-auto mb-4 object-contain" />
   <h1 className="text-4xl font-black text-slate-900 mb-3 tracking-tight">Welcome Back</h1>
  <p className="text-slate-500 font-medium">Continue your execution journey.</p>
  </div>
