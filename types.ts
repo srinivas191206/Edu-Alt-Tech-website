@@ -62,21 +62,22 @@ export type PaymentStatus = 'pending' | 'paid' | 'not-required' | 'trial';
 export type EnrollmentPlan = 'first_class' | 'full';
 
 export interface CourseEnrollment {
- id: string;
- userId: string;
- courseId: string;
- role: 'student' | 'teacher';
- 
- // Student specific
- studentStatus?: StudentStatus;
- paymentStatus?: PaymentStatus;
- plan?: EnrollmentPlan;
- mentorId?: string; // Teacher's UID
- 
- // Timestamps
- createdAt: any;
- updatedAt?: any;
- completedModules?: string[]; // IDs of completed roadmap modules
+  id: string;
+  userId: string;
+  courseId: string;
+  role: 'student' | 'teacher';
+  
+  // Student specific
+  studentStatus?: StudentStatus;
+  paymentStatus?: PaymentStatus;
+  plan?: EnrollmentPlan;
+  amount?: number;
+  mentorId?: string; // Teacher's UID
+  
+  // Timestamps
+  createdAt: any;
+  updatedAt?: any;
+  completedModules?: string[]; // IDs of completed roadmap modules
 }
 
 export type TeacherAppStatus = 'pending' | 'approved_for_interview' | 'scheduled' | 'approved' | 'rejected';

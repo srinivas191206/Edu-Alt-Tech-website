@@ -254,14 +254,16 @@ const CourseClassroom: React.FC = () => {
        if (verifyData.success) {
         if (enrollment) {
          const enrRef = doc(db, 'enrollments', enrollment.id);
-         await updateDoc(enrRef, {
-          paymentStatus: 'paid',
-          plan: 'full'
-         });
-         setEnrollment({
-          ...enrollment,
-          paymentStatus: 'paid',
-          plan: 'full'
+          await updateDoc(enrRef, {
+           paymentStatus: 'paid',
+           plan: 'full',
+           amount: course.price || 0
+          });
+          setEnrollment({
+           ...enrollment,
+           paymentStatus: 'paid',
+           plan: 'full',
+           amount: course.price || 0
          });
         toast.success("Successfully upgraded to full access!");
         try {

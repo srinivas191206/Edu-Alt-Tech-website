@@ -970,13 +970,14 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
    <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Course</th>
    <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Plan</th>
    <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Payment</th>
+   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Amount</th>
    <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden md:table-cell">Enrolled</th>
    </tr>
    </thead>
    <tbody className="divide-y divide-slate-100">
    {enrollments.length === 0 ? (
    <tr>
-   <td colSpan={5} className="px-8 py-16 text-center">
+   <td colSpan={6} className="px-8 py-16 text-center">
    <p className="text-slate-400 font-medium">No enrollments yet</p>
    </td>
    </tr>
@@ -1012,6 +1013,9 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
    </td>
    <td className="px-4 sm:px-6 py-4 hidden sm:table-cell">
    <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${paymentColor}`}>{paymentLabel}</span>
+   </td>
+   <td className="px-4 sm:px-6 py-4 hidden sm:table-cell">
+   <span className="text-xs font-bold text-slate-800">{e.amount ? `₹${e.amount}` : '-'}</span>
    </td>
    <td className="px-4 sm:px-6 py-4 hidden md:table-cell">
    <span className="text-[10px] text-slate-400 font-medium">{enrolledDate ? enrolledDate.toLocaleDateString() : '-'}</span>

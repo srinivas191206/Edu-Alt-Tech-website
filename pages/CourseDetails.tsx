@@ -165,17 +165,18 @@ const CourseDetails: React.FC = () => {
    setEnrollLoading(true);
    try {
      const enrollmentRef = doc(collection(db, 'enrollments'));
-     const newEnrollment: CourseEnrollment = {
-       id: enrollmentRef.id,
-       userId: user!.uid,
-       courseId: courseId!,
-       role: 'student',
-       studentStatus: 'active',
-       paymentStatus: 'paid',
-       plan,
-       mentorId: selectedMentor || undefined,
-       createdAt: serverTimestamp()
-     };
+      const newEnrollment: CourseEnrollment = {
+        id: enrollmentRef.id,
+        userId: user!.uid,
+        courseId: courseId!,
+        role: 'student',
+        studentStatus: 'active',
+        paymentStatus: 'paid',
+        plan,
+        amount: course?.price || 0,
+        mentorId: selectedMentor || undefined,
+        createdAt: serverTimestamp()
+      };
   await setDoc(enrollmentRef, newEnrollment as any);
   setEnrollment(newEnrollment);
 

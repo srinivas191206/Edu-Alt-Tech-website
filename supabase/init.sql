@@ -311,6 +311,7 @@ CREATE TABLE IF NOT EXISTS enrollments (
   role TEXT DEFAULT 'student',
   student_status TEXT DEFAULT 'active',
   status TEXT DEFAULT 'active',
+  amount NUMERIC DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
