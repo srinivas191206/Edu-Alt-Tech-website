@@ -139,32 +139,32 @@ const Resources: React.FC = () => {
     <title>Learning Resources | Edu Alt Tech</title>
     <link rel="canonical" href="https://www.edualttech.com/#/resources" />
   </Helmet>
-  <div className="min-h-screen pt-32 pb-32 px-6 bg-surface relative overflow-hidden">
+  <div className="min-h-screen pt-32 pb-32 px-6 bg-white relative overflow-hidden">
  <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
  <div className="max-w-[1400px] mx-auto relative z-10">
  <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mb-16">
- <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold uppercase tracking-widest text-[10px] mb-6">
+ <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 /30 border border-emerald-200 /50 text-emerald-700 font-bold uppercase tracking-widest text-[10px] mb-6">
  <Sparkles className="w-4 h-4" />
  Learning Resources
  </div>
- <h1 className="text-5xl md:text-7xl font-black text-heading mb-6 tracking-tighter leading-[0.9]">
+ <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tighter leading-[0.9]">
  Free & Premium<br />Educational <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500">Resources</span>
  </h1>
- <p className="text-lg text-text-secondary max-w-xl font-medium">
+ <p className="text-lg text-slate-500 max-w-xl font-medium">
  Download free PDFs, notes, question banks, and worksheets. Premium resources available for enrolled students.
  </p>
  </motion.div>
 
  {/* Single Filter */}
-  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-12 pb-6 border-b border-border/50">
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-12 pb-6 border-b border-slate-100">
   <div className="relative max-w-xl">
-  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
   <input
   type="text" placeholder="Search by title, category, class level, type, or premium..." value={search} onChange={e => setSearch(e.target.value)}
-  className="w-full pl-12 pr-10 py-3 bg-surface border border-border rounded-2xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-heading placeholder-text-muted"
+  className="w-full pl-12 pr-10 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder-slate-400"
   />
   {search && (
-    <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition-colors">
+    <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
       <X className="w-4 h-4" />
     </button>
   )}
@@ -176,35 +176,35 @@ const Resources: React.FC = () => {
  {displayedResources.map((item, idx) => (
  <motion.div
  key={idx} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}
- className={`group bg-surface border rounded-2xl p-6 transition-transform duration-500 hover:-translate-y-2 ${
+ className={`group bg-white border rounded-2xl p-6 transition-transform duration-500 hover:-translate-y-2 ${
  item.premium
- ? 'border-amber-200 hover:shadow-xl hover:shadow-amber-500/10'
- : 'border-border hover:shadow-xl hover:border-emerald-500'
+ ? 'border-amber-200 /50 hover:shadow-xl hover:shadow-amber-500/10'
+ : 'border-slate-200 hover:shadow-xl hover:border-emerald-500'
  }`}
  >
  <div className="flex items-start justify-between mb-4">
  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
- item.premium ? 'bg-amber-50 text-amber-500' : 'bg-emerald-50 text-emerald-500'
+ item.premium ? 'bg-amber-50 /20 text-amber-500' : 'bg-emerald-50 /20 text-emerald-500'
  }`}>{typeIcons[item.type]}</div>
  <div className="flex gap-2 flex-wrap justify-end">
  {item.classLevel && (
- <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-indigo-100/30 text-indigo-700">
+ <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-indigo-100/30 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300">
  {item.classLevel}
  </span>
  )}
  <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
  item.premium
- ? 'bg-amber-100/30 text-amber-700'
- : 'bg-emerald-100/30 text-emerald-700'
+ ? 'bg-amber-100/30 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300'
+ : 'bg-emerald-100/30 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300'
  }`}>{typeLabels[item.type]}</span>
  {item.premium && (
- <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 flex items-center gap-1">
+ <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-amber-100 /30 text-amber-700 flex items-center gap-1">
  <Lock className="w-3 h-3" /> Premium
  </span>
  )}
  </div>
  </div>
-  <h3 className="text-lg font-bold text-heading mb-2 group-hover:text-indigo-600 transition-colors">
+  <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">
    {!user ? (
     <span onClick={() => setIsAuthModalOpen(true)} className="cursor-pointer">
      {item.title}
@@ -217,9 +217,9 @@ const Resources: React.FC = () => {
     item.title
    )}
   </h3>
-  <p className="text-sm text-text-secondary mb-4 leading-relaxed">{item.description}</p>
+  <p className="text-sm text-slate-500 mb-4 leading-relaxed">{item.description}</p>
   <div className="flex items-center justify-between flex-wrap gap-2">
-  <span className="text-xs text-text-muted">{item.downloads} downloads</span>
+  <span className="text-xs text-slate-400">{item.downloads} downloads</span>
   <div className="flex gap-2">
   {!user ? (
    <>
@@ -265,17 +265,17 @@ const Resources: React.FC = () => {
  {/* Guest Lock Overlay */}
  {!user && filtered.length > 3 && (
  <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
- className="relative mt-12 py-16 px-8 rounded-3xl bg-surface/20 border border-border/50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
+ className="relative mt-12 py-16 px-8 rounded-3xl bg-white/20 /20 border border-slate-200/50 /50 backdrop-blur-2xl text-center overflow-hidden shadow-2xl">
  <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-indigo-500/5 to-transparent pointer-events-none" />
  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[50px] rounded-full pointer-events-none" />
  <div className="relative z-10 max-w-md mx-auto">
  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-indigo-500 text-white mb-6 shadow-xl shadow-emerald-500/20">
  <FileText className="w-8 h-8" />
  </div>
- <h2 className="text-3xl font-black text-heading mb-4 tracking-tight">
+ <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">
  Unlock {filtered.length - 3} More Resources
  </h2>
- <p className="text-text-secondary mb-8 font-medium leading-relaxed">
+ <p className="text-slate-500 mb-8 font-medium leading-relaxed">
  Join our premium community to gain full access to all worksheets, revision notes, question banks, and learning materials.
  </p>
  <button
@@ -290,14 +290,14 @@ const Resources: React.FC = () => {
 
  {displayedResources.length === 0 && (
  <div className="text-center py-20">
- <p className="text-text-muted text-lg">No resources found matching your criteria.</p>
+ <p className="text-slate-400 text-lg">No resources found matching your criteria.</p>
  </div>
  )}
 
  {/* CTA */}
-  <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-12 text-center border border-emerald-100">
-  <h2 className="text-3xl md:text-4xl font-black text-heading mb-4 tracking-tight">Want Access to Premium Resources?</h2>
-  <p className="text-text-secondary mb-8 max-w-lg mx-auto">Enroll in our courses to unlock premium resources, question banks, and personalized study materials.</p>
+  <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20 rounded-[2rem] p-12 text-center border border-emerald-100 dark:border-emerald-900/30">
+  <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">Want Access to Premium Resources?</h2>
+  <p className="text-slate-500 mb-8 max-w-lg mx-auto">Enroll in our courses to unlock premium resources, question banks, and personalized study materials.</p>
   <Link to="/courses" className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold transition-all shadow-xl shadow-emerald-600/20 hover:-translate-y-1">
   Browse Courses <ArrowRight className="w-5 h-5" />
   </Link>

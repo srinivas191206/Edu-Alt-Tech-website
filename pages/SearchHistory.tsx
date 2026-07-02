@@ -72,7 +72,7 @@ const SearchHistory: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-bg via-surface to-emerald-50/30 pt-28 pb-16 px-4 sm:px-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 pt-28 pb-16 px-4 sm:px-6">
       <div className="max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -82,16 +82,16 @@ const SearchHistory: React.FC = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
-              className="p-2.5 bg-surface rounded-xl border border-border text-text-secondary hover:bg-bg transition-colors shadow-sm"
+              className="p-2.5 bg-white rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors shadow-sm"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-2xl font-black text-heading flex items-center gap-3">
+              <h1 className="text-2xl font-black text-slate-900 flex items-center gap-3">
                 <Search className="w-6 h-6 text-emerald-500" />
                 Search History
               </h1>
-              <p className="text-sm text-text-secondary font-medium mt-0.5">Your AI assistant conversations</p>
+              <p className="text-sm text-slate-500 font-medium mt-0.5">Your AI assistant conversations</p>
             </div>
           </div>
           {history.length > 0 && (
@@ -112,11 +112,11 @@ const SearchHistory: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }}
-            className="text-center py-20 bg-surface rounded-2xl border border-border shadow-sm"
+            className="text-center py-20 bg-white rounded-[1.5rem] border border-slate-200 shadow-sm"
           >
-            <Search className="w-12 h-12 text-text-muted mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-text mb-1">No history yet</h3>
-            <p className="text-sm text-text-muted font-medium">Your AI assistant conversations will appear here</p>
+            <Search className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-slate-700 mb-1">No history yet</h3>
+            <p className="text-sm text-slate-400 font-medium">Your AI assistant conversations will appear here</p>
           </motion.div>
         ) : (
           <div className="space-y-3">
@@ -125,31 +125,31 @@ const SearchHistory: React.FC = () => {
                 key={item.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0, transition: { delay: idx * 0.03 } }}
-                className="bg-surface rounded-2xl border border-border shadow-sm overflow-hidden"
+                className="bg-white rounded-[1.5rem] border border-slate-200 shadow-sm overflow-hidden"
               >
                 <button
                   onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
-                  className="w-full text-left p-4 hover:bg-bg/50 transition-colors"
+                  className="w-full text-left p-4 hover:bg-slate-50/50 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1.5">
-                        <span className="p-1 bg-surface-2 rounded-lg text-text-secondary">
+                        <span className="p-1 bg-slate-100 rounded-lg text-slate-500">
                           {MODE_ICONS[item.mode] || <MessageCircle className="w-3.5 h-3.5" />}
                         </span>
-                        <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">{item.mode}</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{item.mode}</span>
                         {item.createdAt && (
-                          <span className="text-[10px] text-text-muted flex items-center gap-1 ml-auto">
+                          <span className="text-[10px] text-slate-400 flex items-center gap-1 ml-auto">
                             <Clock className="w-3 h-3" />
                             {new Date(item.createdAt).toLocaleDateString()}
                           </span>
                         )}
                       </div>
-                      <p className="text-sm font-semibold text-heading line-clamp-2">{item.query}</p>
+                      <p className="text-sm font-semibold text-slate-800 line-clamp-2">{item.query}</p>
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
-                      className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0"
+                      className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -157,10 +157,10 @@ const SearchHistory: React.FC = () => {
                 </button>
                 {expandedId === item.id && (
                   <div className="px-4 pb-4 pt-0">
-                    <div className="h-px bg-surface-2 mb-3" />
-                    <div className="bg-bg rounded-xl p-3">
-                      <p className="text-xs font-semibold text-text-muted mb-1.5 uppercase tracking-wider">Response</p>
-                      <p className="text-sm text-text whitespace-pre-wrap leading-relaxed">{item.response}</p>
+                    <div className="h-px bg-slate-100 mb-3" />
+                    <div className="bg-slate-50 rounded-xl p-3">
+                      <p className="text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">Response</p>
+                      <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">{item.response}</p>
                     </div>
                   </div>
                 )}

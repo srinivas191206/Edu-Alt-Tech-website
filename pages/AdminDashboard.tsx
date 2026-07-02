@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import Button from '../components/Button';
 import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, updateDoc, deleteDoc, addDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL, createEnrollment } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical, Calendar, Video, Pencil, Trash2, Plus, Image, Save, Eye, EyeOff } from 'lucide-react';
@@ -552,7 +551,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
 
  if (loading) {
  return (
- <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-4">
+ <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4">
  <motion.div
  animate={{ rotate: 360 }}
  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -560,30 +559,30 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  >
  <Loader2 className="w-12 h-12 text-emerald-500" />
  </motion.div>
- <p className="text-text-secondary font-bold animate-pulse uppercase tracking-widest text-xs">Syncing Core Systems...</p>
+ <p className="text-slate-500 font-bold animate-pulse uppercase tracking-widest text-xs">Syncing Core Systems...</p>
  </div>
  );
  }
 
  return (
- <div className="min-h-screen bg-bg text-heading selection:bg-emerald-500/30">
+ <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-emerald-500/30">
  {/* Mobile Sidebar Toggle */}
  <button 
  onClick={() => setIsSidebarOpen(true)}
- className="md:hidden fixed top-4 left-4 z-[60] p-2.5 bg-surface border border-border rounded-xl shadow-lg hover:bg-bg transition-colors"
+ className="md:hidden fixed top-4 left-4 z-[60] p-2.5 bg-white border border-slate-200 rounded-xl shadow-lg hover:bg-slate-50 :bg-slate-800 transition-colors"
  >
  <MoreVertical className="w-5 h-5" />
  </button>
 
  {/* Desktop Sidebar (always visible on md+) */}
- <nav className="hidden md:flex fixed left-0 top-0 h-full w-72 bg-surface border-r border-border/50 z-40 flex-col p-8">
+ <nav className="hidden md:flex fixed left-0 top-0 h-full w-72 bg-white [#0f172a] border-r border-slate-200/50 /50 z-40 flex-col p-8">
  <div className="mb-12 flex items-center gap-3">
  <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-xl shadow-emerald-500/20">
  <LayoutDashboard className="w-7 h-7 text-white" />
  </div>
  <div className="flex flex-col">
  <span className="font-black text-xl tracking-tighter leading-none">CORE <span className="text-emerald-500">OPS</span></span>
- <span className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mt-1">Admin Terminal</span>
+ <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Admin Terminal</span>
  </div>
  </div>
 
@@ -600,8 +599,8 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  onClick={() => { setActiveTab(item.id as any); }}
  className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-colors relative group overflow-hidden ${
  activeTab === item.id 
- ? 'bg-primary text-white shadow-2xl shadow-emerald-500/20' 
- : 'text-text-secondary hover:bg-bg'
+ ? 'bg-slate-900 text-white shadow-2xl shadow-emerald-500/20' 
+ : 'text-slate-500 hover:bg-slate-50 :bg-slate-800/50'
  }`}
  >
  {activeTab === item.id && (
@@ -610,22 +609,22 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  <item.icon className={`w-6 h-6 ${activeTab === item.id ? 'text-white' : 'group-hover:scale-110 transition-transform'}`} />
  <div className="flex flex-col items-start">
  <span className="text-sm">{item.label}</span>
- <span className={`text-[9px] font-medium uppercase tracking-widest ${activeTab === item.id ? 'text-white/60' : 'text-text-muted'}`}>{item.desc}</span>
+ <span className={`text-[9px] font-medium uppercase tracking-widest ${activeTab === item.id ? 'text-white/60' : 'text-slate-400'}`}>{item.desc}</span>
  </div>
  </button>
  ))}
  </div>
 
- <div className="mt-auto pt-8 border-t border-border/50">
+ <div className="mt-auto pt-8 border-t border-slate-100 /50">
  <button 
  onClick={() => navigate('/')}
-className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-200"
-  >
-  <ArrowLeft className="w-5 h-5" />
-  <span>Exit Console</span>
-  </button>
-  </div>
-  </nav>
+ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 :bg-rose-500/10 transition-colors border border-transparent hover:border-rose-200 :border-rose-500/20"
+ >
+ <ArrowLeft className="w-5 h-5" />
+ <span>Exit Console</span>
+ </button>
+ </div>
+ </nav>
 
  {/* Mobile Sidebar (overlay, controlled by state) */}
  <AnimatePresence>
@@ -642,7 +641,7 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  initial={{ x: -100, opacity: 0 }}
  animate={{ x: 0, opacity: 1 }}
  exit={{ x: -100, opacity: 0 }}
- className="md:hidden fixed left-0 top-0 h-full w-72 max-w-[85vw] bg-surface border-r border-border/50 z-[60] flex flex-col p-6 shadow-2xl"
+ className="md:hidden fixed left-0 top-0 h-full w-72 max-w-[85vw] bg-white [#0f172a] border-r border-slate-200/50 /50 z-[60] flex flex-col p-6 shadow-2xl"
  >
  <div className="mb-12 flex items-center justify-between">
  <div className="flex items-center gap-3">
@@ -651,10 +650,10 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  </div>
  <div className="flex flex-col">
  <span className="font-black text-xl tracking-tighter leading-none">CORE <span className="text-emerald-500">OPS</span></span>
- <span className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mt-1">Admin Terminal</span>
+ <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Admin Terminal</span>
  </div>
  </div>
- <button onClick={() => setIsSidebarOpen(false)} className="p-3 hover:bg-surface-2 rounded-lg transition-colors">
+ <button onClick={() => setIsSidebarOpen(false)} className="p-3 hover:bg-slate-100 :bg-slate-800 rounded-lg transition-colors">
  <X className="w-5 h-5" />
  </button>
  </div>
@@ -672,29 +671,29 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
  className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-colors relative group overflow-hidden ${
  activeTab === item.id 
- ? 'bg-primary text-white shadow-2xl shadow-emerald-500/20' 
- : 'text-text-secondary hover:bg-bg'
+ ? 'bg-slate-900 text-white shadow-2xl shadow-emerald-500/20' 
+ : 'text-slate-500 hover:bg-slate-50 :bg-slate-800/50'
  }`}
  >
  <item.icon className={`w-6 h-6 ${activeTab === item.id ? 'text-white' : 'group-hover:scale-110 transition-transform'}`} />
  <div className="flex flex-col items-start">
  <span className="text-sm">{item.label}</span>
- <span className={`text-[9px] font-medium uppercase tracking-widest ${activeTab === item.id ? 'text-white/60' : 'text-text-muted'}`}>{item.desc}</span>
+ <span className={`text-[9px] font-medium uppercase tracking-widest ${activeTab === item.id ? 'text-white/60' : 'text-slate-400'}`}>{item.desc}</span>
  </div>
  </button>
  ))}
  </div>
 
- <div className="mt-auto pt-8 border-t border-border/50">
+ <div className="mt-auto pt-8 border-t border-slate-100 /50">
  <button 
  onClick={() => navigate('/')}
-className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-200"
-  >
-  <ArrowLeft className="w-5 h-5" />
-  <span>Exit Console</span>
-  </button>
-  </div>
-  </motion.nav>
+ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 :bg-rose-500/10 transition-colors border border-transparent hover:border-rose-200 :border-rose-500/20"
+ >
+ <ArrowLeft className="w-5 h-5" />
+ <span>Exit Console</span>
+ </button>
+ </div>
+ </motion.nav>
  </>
  )}
  </AnimatePresence>
@@ -705,10 +704,10 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  {/* Header */}
  <header className="mb-16">
  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Admin Console</span>
- <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-heading ">
+ <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 ">
  {activeTab === 'applications' ? 'Provider Applications' : activeTab === 'chat' ? 'Messages' : activeTab === 'stats' ? 'Course Statistics' : activeTab === 'courses' ? 'Course Management' : 'Scheduled Classes'}
  </h1>
- <p className="text-text-secondary font-medium mt-2">
+ <p className="text-slate-500 font-medium mt-2">
  {activeTab === 'applications' ? 'Review and manage teacher/provider applications' : activeTab === 'chat' ? 'Direct messaging with providers' : activeTab === 'stats' ? 'Enrollment analytics per course' : activeTab === 'courses' ? 'Create, edit, and delete courses' : 'Live classes scheduled by teachers'}
  </p>
  </header>
@@ -729,8 +728,8 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
   <label className="flex items-center gap-2 cursor-pointer select-none">
   <input type="checkbox" checked={selectedAppIds.size === teacherApps.length && teacherApps.length > 0}
    onChange={toggleSelectAllApps}
-   className="w-4 h-4 rounded border-border text-emerald-500 focus:ring-emerald-500" />
-  <span className="text-xs font-bold text-text-secondary">
+   className="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500" />
+  <span className="text-xs font-bold text-slate-500">
    {selectedAppIds.size === 0 ? 'Select All' : `${selectedAppIds.size} of ${teacherApps.length} selected`}
   </span>
   </label>
@@ -744,18 +743,18 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
   )}
   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
   {teacherApps.length === 0 ? (
-  <div className="col-span-full py-32 text-center bg-surface rounded-2xl border-2 border-dashed border-border ">
-  <CalendarClock className="w-16 h-16 text-text-muted mx-auto mb-6" />
-  <h3 className="text-xl font-black text-text-muted">NO PENDING DOSSIERS</h3>
-  <p className="text-text-secondary text-sm font-medium mt-2">The system is currently clear of applicants.</p>
+  <div className="col-span-full py-32 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-200 ">
+  <CalendarClock className="w-16 h-16 text-slate-200 mx-auto mb-6" />
+  <h3 className="text-xl font-black text-slate-400">NO PENDING DOSSIERS</h3>
+  <p className="text-slate-500 text-sm font-medium mt-2">The system is currently clear of applicants.</p>
   </div>
   ) : (
   teacherApps.map(app => (
   <motion.div 
   layout
   key={app.id} 
-  className={`group bg-surface p-6 sm:p-8 rounded-2xl border transition-shadow duration-500 relative ${
-   selectedAppIds.has(app.id) ? 'border-emerald-500 shadow-[0_0_0_1px_#10b981,0_16px_32px_-12px_rgba(16,185,129,0.2)]' : 'border-border/50 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)]'
+  className={`group bg-white p-6 sm:p-8 rounded-[2.5rem] border transition-shadow duration-500 relative ${
+   selectedAppIds.has(app.id) ? 'border-emerald-500 shadow-[0_0_0_1px_#10b981,0_16px_32px_-12px_rgba(16,185,129,0.2)]' : 'border-slate-200/50 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)]'
   }`}
   >
   {/* Selection checkbox */}
@@ -763,7 +762,7 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
   <input type="checkbox" checked={selectedAppIds.has(app.id)}
    onChange={() => toggleSelectApp(app.id)}
    onClick={(e) => e.stopPropagation()}
-   className="w-4 h-4 rounded border-border text-emerald-500 focus:ring-emerald-500 cursor-pointer" />
+   className="w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 cursor-pointer" />
   </div>
    <div className="absolute top-0 right-0 p-6 flex items-center gap-2">
    <button onClick={(e) => { e.stopPropagation(); handleDeleteApplication(app.id, app.userName); }}
@@ -783,25 +782,25 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
   </div>
 
  <div className="mb-8">
- <span className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-2 block">Applicant</span>
- <h4 className="font-black text-2xl text-heading mb-1 line-clamp-1">{app.userName}</h4>
+ <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 block">Applicant</span>
+ <h4 className="font-black text-2xl text-slate-900 mb-1 line-clamp-1">{app.userName}</h4>
  <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-wider">{app.userEmail}</p>
  </div>
 
- <div className="p-5 bg-bg/50 rounded-2xl border border-border/50 mb-8">
- <span className="text-[9px] font-black text-text-muted uppercase tracking-widest block mb-2">Target Curriculum</span>
- <p className="font-bold text-text flex items-center gap-2">
+ <div className="p-5 bg-slate-50 /50 rounded-2xl border border-slate-100 mb-8">
+ <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-2">Target Curriculum</span>
+ <p className="font-bold text-slate-700 flex items-center gap-2">
  <ClipboardList className="w-4 h-4 text-emerald-500" /> {app.courseTitle}
  </p>
  </div>
 
  <div className="flex items-center gap-4 mb-8">
- <div className="flex-1 p-3 bg-surface rounded-xl border border-border/50 text-center">
- <span className="block text-[9px] font-black text-text-muted uppercase mb-1">Experience</span>
- <span className="text-xl font-black text-heading ">{app.experience}y</span>
+ <div className="flex-1 p-3 bg-white rounded-xl border border-slate-100 text-center">
+ <span className="block text-[9px] font-black text-slate-400 uppercase mb-1">Experience</span>
+ <span className="text-xl font-black text-slate-900 ">{app.experience}y</span>
  </div>
- <div className="flex-1 p-3 bg-surface rounded-xl border border-border/50 text-center">
- <span className="block text-[9px] font-black text-text-muted uppercase mb-1">Skills</span>
+ <div className="flex-1 p-3 bg-white rounded-xl border border-slate-100 text-center">
+ <span className="block text-[9px] font-black text-slate-400 uppercase mb-1">Skills</span>
  <span className="text-xl font-black text-emerald-500">{app.skills?.split(',').length || 0}</span>
  </div>
  </div>
@@ -811,7 +810,7 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  const meetingUrl = linkMatch ? linkMatch[1] : app.meetingLink;
  const formattedUrl = meetingUrl ? (meetingUrl.startsWith('http') ? meetingUrl : `https://${meetingUrl}`) : null;
  return formattedUrl ? (
- <a href={formattedUrl} target="_blank" rel="noreferrer" className="block mb-4 p-3 bg-blue-50 rounded-xl border border-blue-200 text-blue-600 font-bold text-sm truncate hover:underline">
+ <a href={formattedUrl} target="_blank" rel="noreferrer" className="block mb-4 p-3 bg-blue-50 /20 rounded-xl border border-blue-200 text-blue-600 font-bold text-sm truncate hover:underline">
  <Video className="w-3.5 h-3.5 inline mr-2" />{meetingUrl}
  </a>
  ) : null;
@@ -819,7 +818,7 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
 
  <button 
  onClick={() => setSelectedApp(app)}
- className="w-full py-4 bg-primary text-white font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl group-hover:bg-emerald-500 group-hover:text-white"
+ className="w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl group-hover:bg-emerald-500 group-hover:text-white"
  >
  REVIEW DOSSIER
  </button>
@@ -833,25 +832,25 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  {activeTab === 'chat' && (
  <div className="flex flex-col lg:flex-row gap-8 min-h-[60vh] lg:h-[calc(100vh-320px)] sm:min-h-[500px]">
  {/* Contacts sidebar */}
- <div className="lg:w-80 bg-surface rounded-2xl border border-border overflow-hidden flex flex-col shrink-0">
- <div className="p-6 border-b border-border/50 ">
+ <div className="lg:w-80 bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden flex flex-col shrink-0">
+ <div className="p-6 border-b border-slate-100 ">
  <h3 className="font-black text-lg">Contacts</h3>
- <p className="text-xs text-text-muted font-medium mt-1">{chatContacts.length} contacts</p>
+ <p className="text-xs text-slate-400 font-medium mt-1">{chatContacts.length} contacts</p>
  </div>
  <div className="flex-1 overflow-y-auto custom-scrollbar">
  {chatContacts.length === 0 ? (
  <div className="p-8 text-center">
- <MessageSquare className="w-10 h-10 text-text-muted mx-auto mb-3" />
- <p className="text-sm font-medium text-text-muted">No contacts yet</p>
- <p className="text-xs text-text-secondary mt-1">Messages from users will appear here</p>
+ <MessageSquare className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+ <p className="text-sm font-medium text-slate-400">No contacts yet</p>
+ <p className="text-xs text-slate-500 mt-1">Messages from users will appear here</p>
  </div>
  ) : (
  chatContacts.map(contact => (
  <button
  key={contact.id}
  onClick={() => selectChatContact(contact)}
- className={`w-full p-5 flex items-center gap-4 hover:bg-bg transition-colors border-b border-border/50 text-left ${
- selectedContact?.id === contact.id ? 'bg-emerald-500/5' : ''
+ className={`w-full p-5 flex items-center gap-4 hover:bg-slate-50 :bg-slate-800/50 transition-colors border-b border-slate-100 /50 text-left ${
+ selectedContact?.id === contact.id ? 'bg-emerald-500/5 /10' : ''
  }`}
  >
  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center font-black text-white text-lg shrink-0">
@@ -859,7 +858,7 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  </div>
  <div className="min-w-0">
  <p className="font-bold text-sm truncate">{contact.name}</p>
- <p className="text-[10px] text-text-muted font-medium truncate">{contact.email}</p>
+ <p className="text-[10px] text-slate-400 font-medium truncate">{contact.email}</p>
  </div>
  </button>
  ))
@@ -868,25 +867,25 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  </div>
 
  {/* Chat area */}
- <div className="flex-1 bg-surface rounded-2xl border border-border flex flex-col overflow-hidden">
+ <div className="flex-1 bg-white rounded-[2.5rem] border border-slate-200 flex flex-col overflow-hidden">
  {!selectedContact ? (
  <div className="flex-1 flex items-center justify-center">
  <div className="text-center">
- <MessageSquare className="w-16 h-16 text-text-muted mx-auto mb-4" />
- <h3 className="text-xl font-black text-text-muted">Select a Contact</h3>
- <p className="text-sm text-text-secondary mt-1">Choose a provider from the sidebar to start chatting</p>
+ <MessageSquare className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+ <h3 className="text-xl font-black text-slate-400">Select a Contact</h3>
+ <p className="text-sm text-slate-500 mt-1">Choose a provider from the sidebar to start chatting</p>
  </div>
  </div>
  ) : (
  <>
  {/* Chat header */}
- <div className="p-6 border-b border-border/50 flex items-center gap-4">
+ <div className="p-6 border-b border-slate-100 flex items-center gap-4">
  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center font-black text-white">
  {selectedContact.name.charAt(0).toUpperCase()}
  </div>
  <div>
  <p className="font-bold">{selectedContact.name}</p>
- <p className="text-[10px] text-text-muted font-medium">{selectedContact.email}</p>
+ <p className="text-[10px] text-slate-400 font-medium">{selectedContact.email}</p>
  </div>
  </div>
 
@@ -894,8 +893,8 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-4">
  {chatMessages.length === 0 ? (
  <div className="text-center py-12">
- <p className="text-text-muted font-medium">No messages yet</p>
- <p className="text-xs text-text-secondary mt-1">Send a message to start the conversation</p>
+ <p className="text-slate-400 font-medium">No messages yet</p>
+ <p className="text-xs text-slate-500 mt-1">Send a message to start the conversation</p>
  </div>
  ) : (
  chatMessages.map((msg) => (
@@ -903,10 +902,10 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  <div className={`max-w-[80%] p-4 rounded-2xl ${
  msg.role === 'admin' 
  ? 'bg-emerald-500 text-white rounded-br-md' 
- : 'bg-surface-2 text-heading rounded-bl-md'
+ : 'bg-slate-100 text-slate-900 rounded-bl-md'
  }`}>
  <p className="text-sm font-medium leading-relaxed">{msg.content}</p>
- <p className={`text-[10px] mt-1 ${msg.role === 'admin' ? 'text-emerald-200' : 'text-text-muted'}`}>
+ <p className={`text-[10px] mt-1 ${msg.role === 'admin' ? 'text-emerald-200' : 'text-slate-400'}`}>
  {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
  </p>
  </div>
@@ -916,14 +915,14 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  </div>
 
  {/* Input */}
- <div className="p-6 border-t border-border/50 ">
+ <div className="p-6 border-t border-slate-100 ">
  <div className="flex gap-4">
  <input
  value={chatInput}
  onChange={(e) => setChatInput(e.target.value)}
  onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
  placeholder="Type a message..."
- className="flex-1 p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors"
+ className="flex-1 p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors"
  />
  <button
  onClick={handleSendMessage}
@@ -944,42 +943,42 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  <div className="space-y-8">
  {/* Summary cards */}
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <div className="bg-surface p-6 rounded-2xl border border-border ">
- <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Total Courses</span>
- <p className="text-3xl sm:text-4xl font-black mt-2 text-heading ">{coursesList.length}</p>
+ <div className="bg-white p-6 rounded-2xl border border-slate-200 ">
+ <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Courses</span>
+ <p className="text-3xl sm:text-4xl font-black mt-2 text-slate-900 ">{coursesList.length}</p>
  </div>
- <div className="bg-surface p-6 rounded-2xl border border-border ">
- <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Total Enrollments</span>
+ <div className="bg-white p-6 rounded-2xl border border-slate-200 ">
+ <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Enrollments</span>
  <p className="text-3xl sm:text-4xl font-black mt-2 text-emerald-500">{enrollments.length}</p>
  </div>
-   <div className="bg-surface p-6 rounded-2xl border border-border ">
-   <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Active Enrollments</span>
+   <div className="bg-white p-6 rounded-2xl border border-slate-200 ">
+   <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Active Enrollments</span>
    <p className="text-3xl sm:text-4xl font-black mt-2 text-blue-500">{activeCount}</p>
    </div>
    </div>
 
    {/* All Enrollments */}
-   <div className="bg-surface rounded-2xl border border-border overflow-hidden">
-   <div className="p-4 sm:p-8 border-b border-border/50">
+   <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden">
+   <div className="p-4 sm:p-8 border-b border-slate-100">
    <h3 className="text-xl font-black tracking-tight">All Enrollments</h3>
    </div>
    <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
    <table className="w-full text-left border-collapse">
    <thead>
-   <tr className="bg-bg/50 sticky top-0 backdrop-blur-md">
-   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted">Student</th>
-   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted hidden sm:table-cell">Course</th>
-   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted">Plan</th>
-   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted hidden sm:table-cell">Payment</th>
-   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted hidden sm:table-cell">Amount</th>
-   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted hidden md:table-cell">Enrolled</th>
+   <tr className="bg-slate-50/50 sticky top-0 backdrop-blur-md">
+   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Student</th>
+   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Course</th>
+   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Plan</th>
+   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Payment</th>
+   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Amount</th>
+   <th className="px-4 sm:px-6 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden md:table-cell">Enrolled</th>
    </tr>
    </thead>
    <tbody className="divide-y divide-slate-100">
    {enrollments.length === 0 ? (
    <tr>
    <td colSpan={6} className="px-8 py-16 text-center">
-   <p className="text-text-muted font-medium">No enrollments yet</p>
+   <p className="text-slate-400 font-medium">No enrollments yet</p>
    </td>
    </tr>
    ) : (
@@ -990,24 +989,24 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
    const planLabel = e.plan === 'full' ? 'Full Access' : 'First Class';
    const ps = e.paymentStatus || e.payment_status || 'not-required';
    const paymentLabel = ps === 'paid' ? 'Paid' : ps === 'pending' ? 'Pending' : 'N/A';
-   const paymentColor = ps === 'paid' ? 'text-emerald-600 bg-emerald-50' : ps === 'pending' ? 'text-amber-600 bg-amber-50' : 'text-text-muted bg-bg';
+   const paymentColor = ps === 'paid' ? 'text-emerald-600 bg-emerald-50' : ps === 'pending' ? 'text-amber-600 bg-amber-50' : 'text-slate-400 bg-slate-50';
    const planColor = e.plan === 'full' ? 'text-emerald-600 bg-emerald-50' : 'text-amber-600 bg-amber-50';
    const enrolledDate = e.createdAt?.toDate ? e.createdAt.toDate() : e.created_at ? new Date(e.created_at) : e.createdAt ? new Date(e.createdAt) : null;
    return (
-   <tr key={e.id || uid} className="hover:bg-bg/80 transition-colors">
+   <tr key={e.id || uid} className="hover:bg-slate-50/80 transition-colors">
    <td className="px-4 sm:px-6 py-4">
    <div className="flex items-center gap-2">
    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-slate-400 to-slate-600 text-white flex items-center justify-center text-[10px] font-black shrink-0">
    {(user?.name || '?').charAt(0).toUpperCase()}
    </div>
    <div className="min-w-0">
-   <p className="text-xs font-bold text-heading truncate">{user?.name || 'Unknown'}</p>
-   <p className="text-[9px] text-text-muted truncate sm:hidden">{courseTitle}</p>
+   <p className="text-xs font-bold text-slate-900 truncate">{user?.name || 'Unknown'}</p>
+   <p className="text-[9px] text-slate-400 truncate sm:hidden">{courseTitle}</p>
    </div>
    </div>
    </td>
    <td className="px-4 sm:px-6 py-4 hidden sm:table-cell">
-   <p className="text-xs font-medium text-text truncate max-w-[200px]">{courseTitle}</p>
+   <p className="text-xs font-medium text-slate-700 truncate max-w-[200px]">{courseTitle}</p>
    </td>
    <td className="px-4 sm:px-6 py-4">
    <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${planColor}`}>{planLabel}</span>
@@ -1016,10 +1015,10 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
    <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${paymentColor}`}>{paymentLabel}</span>
    </td>
    <td className="px-4 sm:px-6 py-4 hidden sm:table-cell">
-   <span className="text-xs font-bold text-heading">{e.amount ? `₹${e.amount}` : '-'}</span>
+   <span className="text-xs font-bold text-slate-800">{e.amount ? `₹${e.amount}` : '-'}</span>
    </td>
    <td className="px-4 sm:px-6 py-4 hidden md:table-cell">
-   <span className="text-[10px] text-text-muted font-medium">{enrolledDate ? enrolledDate.toLocaleDateString() : '-'}</span>
+   <span className="text-[10px] text-slate-400 font-medium">{enrolledDate ? enrolledDate.toLocaleDateString() : '-'}</span>
    </td>
    </tr>
    );
@@ -1031,14 +1030,14 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
    </div>
 
    {/* Course enrollment table */}
- <div className="bg-surface rounded-2xl border border-border overflow-hidden">
- <div className="p-4 sm:p-8 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+ <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden">
+ <div className="p-4 sm:p-8 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <h3 className="text-xl font-black tracking-tight">Enrollments by Course</h3>
  <div className="flex gap-2">
  {(['all', 'free', 'paid'] as const).map(f => (
  <button key={f} onClick={() => setPriceFilter(f)}
  className={`px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors ${
- priceFilter === f ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-surface-2 text-text-secondary hover:bg-border'
+ priceFilter === f ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 :bg-slate-700'
  }`}
  >
  {f === 'free' ? '₹0 (Free)' : f === 'paid' ? 'Paid' : 'All'}
@@ -1049,20 +1048,20 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-bg/50 sticky top-0 backdrop-blur-md">
- <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted">Course</th>
- <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted hidden sm:table-cell">Price</th>
- <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted hidden sm:table-cell">Category</th>
- <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted text-right">Enrollments</th>
+ <tr className="bg-slate-50/50 /30 sticky top-0 backdrop-blur-md">
+ <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Course</th>
+ <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Price</th>
+ <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden sm:table-cell">Category</th>
+ <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Enrollments</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-slate-100">
+ <tbody className="divide-y divide-slate-100 /50">
  {coursesList
  .filter(c => priceFilter === 'all' || (priceFilter === 'free' ? (!c.price || c.price === 0) : (c.price && c.price > 0)))
  .map((course: any) => {
  const count = enrollmentCounts[course.id] || 0;
  return (
- <tr key={course.id} className="hover:bg-bg/80 transition-colors">
+ <tr key={course.id} className="hover:bg-slate-50/80 :bg-slate-800/40 transition-colors">
  <td className="px-4 sm:px-8 py-4 sm:py-5">
  <div className="flex items-center gap-3 sm:gap-4">
  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
@@ -1070,24 +1069,24 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  </div>
  <div className="min-w-0">
  <div className="flex items-center gap-2">
- <p className="font-bold text-sm sm:text-base text-heading truncate">{course.title || 'Untitled'}</p>
+ <p className="font-bold text-sm sm:text-base text-slate-900 truncate">{course.title || 'Untitled'}</p>
  {course.comingSoon && <span className="text-[9px] px-2 py-0.5 bg-amber-500/20 text-amber-600 font-black uppercase tracking-wider rounded-full">Soon</span>}
  </div>
- <p className="text-[10px] text-text-muted font-medium hidden sm:block">{course.id?.slice(0, 8)}...</p>
+ <p className="text-[10px] text-slate-400 font-medium hidden sm:block">{course.id?.slice(0, 8)}...</p>
  </div>
  </div>
  </td>
  <td className="px-4 sm:px-8 py-4 sm:py-5 hidden sm:table-cell">
- <span className={`text-xs font-bold ${!course.price || course.price === 0 ? 'text-emerald-500' : 'text-text '}`}>
+ <span className={`text-xs font-bold ${!course.price || course.price === 0 ? 'text-emerald-500' : 'text-slate-700 '}`}>
   {!course.price || course.price === 0 ? 'Free' : `₹${course.price}/month`}
  </span>
  </td>
  <td className="px-4 sm:px-8 py-4 sm:py-5 hidden sm:table-cell">
- <span className="text-xs font-medium text-text-secondary">{course.category || 'Uncategorized'}</span>
+ <span className="text-xs font-medium text-slate-500">{course.category || 'Uncategorized'}</span>
  </td>
  <td className="px-4 sm:px-8 py-4 sm:py-5 text-right">
  <span className={`inline-flex items-center justify-center w-12 h-12 rounded-xl font-black text-lg ${
- count > 0 ? 'bg-emerald-500/10 text-emerald-600' : 'bg-surface-2 text-text-muted'
+ count > 0 ? 'bg-emerald-500/10 text-emerald-600' : 'bg-slate-100 text-slate-400'
  }`}>
  {count}
  </span>
@@ -1098,7 +1097,7 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  {coursesList.filter(c => priceFilter === 'all' || (priceFilter === 'free' ? (!c.price || c.price === 0) : (c.price && c.price > 0))).length === 0 && (
  <tr>
  <td colSpan={4} className="px-8 py-16 text-center">
- <p className="text-text-muted font-medium">No {priceFilter === 'free' ? 'free' : priceFilter === 'paid' ? 'paid' : ''} courses found</p>
+ <p className="text-slate-400 font-medium">No {priceFilter === 'free' ? 'free' : priceFilter === 'paid' ? 'paid' : ''} courses found</p>
  </td>
  </tr>
  )}
@@ -1113,30 +1112,30 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  {loadingClasses ? (
  <div className="flex justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>
  ) : scheduledClasses.length === 0 ? (
- <div className="text-center py-24 bg-surface rounded-2xl border-2 border-dashed border-border ">
- <Calendar className="w-16 h-16 text-text-muted mx-auto mb-6" />
- <h3 className="text-xl font-black text-text-muted">No Scheduled Classes</h3>
- <p className="text-text-secondary text-sm font-medium mt-2">Teachers have not scheduled any live classes yet.</p>
+ <div className="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-slate-200 ">
+ <Calendar className="w-16 h-16 text-slate-300 mx-auto mb-6" />
+ <h3 className="text-xl font-black text-slate-400">No Scheduled Classes</h3>
+ <p className="text-slate-500 text-sm font-medium mt-2">Teachers have not scheduled any live classes yet.</p>
  </div>
  ) : (
  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
  {scheduledClasses.map((sc) => (
- <div key={sc.id} className="bg-surface p-5 sm:p-6 rounded-2xl sm:rounded-2xl border border-border shadow-sm">
+ <div key={sc.id} className="bg-white p-5 sm:p-6 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-200 shadow-sm">
  <div className="flex items-center gap-3 mb-4">
  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center font-black text-white shrink-0">
  <Calendar className="w-5 h-5" />
  </div>
  <div className="flex-1 min-w-0">
- <p className="font-black text-heading truncate">{sc.title}</p>
- <p className="text-[10px] text-text-muted font-medium mt-0.5">
+ <p className="font-black text-slate-900 truncate">{sc.title}</p>
+ <p className="text-[10px] text-slate-400 font-medium mt-0.5">
  {sc.scheduled_at ? new Date(sc.scheduled_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'No date'}
  </p>
  </div>
  </div>
- <p className="text-xs font-medium text-text-secondary mb-4 line-clamp-2">{sc.description || 'No description'}</p>
+ <p className="text-xs font-medium text-slate-500 mb-4 line-clamp-2">{sc.description || 'No description'}</p>
  <div className="flex items-center gap-3 mb-4">
- <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Teacher:</span>
- <span className="text-xs font-bold text-text ">{sc.users?.display_name || sc.teacher_id?.slice(0, 8) || 'Unknown'}</span>
+ <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Teacher:</span>
+ <span className="text-xs font-bold text-slate-700 ">{sc.users?.display_name || sc.teacher_id?.slice(0, 8) || 'Unknown'}</span>
  </div>
  <a href={sc.meeting_link} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl transition-colors text-sm">
  <Video className="w-4 h-4" /> Join Class
@@ -1152,16 +1151,16 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  <div className="space-y-8">
  {/* Summary cards */}
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
- <div className="bg-surface p-6 rounded-2xl border border-border ">
- <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Total Courses</span>
- <p className="text-3xl sm:text-4xl font-black mt-2 text-heading ">{coursesList.length}</p>
+ <div className="bg-white p-6 rounded-2xl border border-slate-200 ">
+ <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Courses</span>
+ <p className="text-3xl sm:text-4xl font-black mt-2 text-slate-900 ">{coursesList.length}</p>
  </div>
- <div className="bg-surface p-6 rounded-2xl border border-border ">
- <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Total Enrollments</span>
+ <div className="bg-white p-6 rounded-2xl border border-slate-200 ">
+ <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Enrollments</span>
  <p className="text-3xl sm:text-4xl font-black mt-2 text-emerald-500">{enrollments.length}</p>
  </div>
- <div className="bg-surface p-6 rounded-2xl border border-border ">
- <span className="text-[10px] font-black uppercase tracking-widest text-text-muted">Active Enrollments</span>
+ <div className="bg-white p-6 rounded-2xl border border-slate-200 ">
+ <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Active Enrollments</span>
  <p className="text-3xl sm:text-4xl font-black mt-2 text-blue-500">{activeCount}</p>
  </div>
  </div>
@@ -1170,12 +1169,12 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
  <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
  <input type="text" placeholder="Search courses..." value={courseSearch} onChange={e => setCourseSearch(e.target.value)}
- className="w-full sm:w-64 p-4 bg-surface rounded-2xl border border-border outline-none focus:border-emerald-500 transition-colors font-bold text-sm" />
+ className="w-full sm:w-64 p-4 bg-white rounded-2xl border border-slate-200 outline-none focus:border-emerald-500 transition-colors font-bold text-sm" />
  <div className="flex gap-2">
  {(['all', 'free', 'paid'] as const).map(f => (
  <button key={f} onClick={() => setCoursePriceFilter(f)}
  className={`px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors ${
- coursePriceFilter === f ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-surface-2 text-text-secondary hover:bg-border'
+ coursePriceFilter === f ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 :bg-slate-700'
  }`}>
  {f === 'free' ? 'Free' : f === 'paid' ? 'Paid' : 'All'}
  </button>
@@ -1188,20 +1187,20 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  </div>
 
  {/* Course table */}
- <div className="bg-surface rounded-2xl border border-border overflow-hidden">
+ <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden">
  <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
  <table className="w-full text-left border-collapse">
  <thead>
- <tr className="bg-bg/50 sticky top-0 backdrop-blur-md">
- <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted">Course</th>
- <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted hidden md:table-cell">Folder</th>
- <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted">Price</th>
- <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-muted text-right">Actions</th>
+ <tr className="bg-slate-50/50 /30 sticky top-0 backdrop-blur-md">
+ <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Course</th>
+ <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hidden md:table-cell">Folder</th>
+ <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Price</th>
+ <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Actions</th>
  </tr>
  </thead>
- <tbody className="divide-y divide-slate-100">
+ <tbody className="divide-y divide-slate-100 /50">
  {filteredCoursesList.map((course: any) => (
- <tr key={course.id} className="hover:bg-bg/80 transition-colors">
+ <tr key={course.id} className="hover:bg-slate-50/80 :bg-slate-800/40 transition-colors">
  <td className="px-4 sm:px-8 py-4 sm:py-5">
  <div className="flex items-center gap-3 sm:gap-4">
   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
@@ -1209,18 +1208,18 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
   </div>
  <div className="min-w-0">
  <div className="flex items-center gap-2">
- <p className="font-bold text-sm sm:text-base text-heading truncate">{course.title || 'Untitled'}</p>
+ <p className="font-bold text-sm sm:text-base text-slate-900 truncate">{course.title || 'Untitled'}</p>
  {course.comingSoon && <span className="text-[9px] px-2 py-0.5 bg-amber-500/20 text-amber-600 font-black uppercase tracking-wider rounded-full">Soon</span>}
  </div>
- <p className="text-[10px] text-text-muted font-medium">{course.id?.slice(0, 8)}...</p>
+ <p className="text-[10px] text-slate-400 font-medium">{course.id?.slice(0, 8)}...</p>
  </div>
  </div>
  </td>
  <td className="px-4 sm:px-8 py-4 sm:py-5 hidden md:table-cell">
- <span className="text-xs font-medium text-text-secondary">{course.folder || '—'}</span>
+ <span className="text-xs font-medium text-slate-500">{course.folder || '—'}</span>
  </td>
  <td className="px-4 sm:px-8 py-4 sm:py-5">
- <span className={`text-xs font-bold ${!course.price || course.price === 0 ? 'text-emerald-500' : 'text-text '}`}>
+ <span className={`text-xs font-bold ${!course.price || course.price === 0 ? 'text-emerald-500' : 'text-slate-700 '}`}>
   {!course.price || course.price === 0 ? 'Free' : `₹${course.price}/month`}
  </span>
  </td>
@@ -1228,15 +1227,15 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  <div className="flex items-center justify-end gap-2">
  <button onClick={() => handleToggleComingSoon(course)} className={`p-2.5 rounded-xl transition-colors ${
  course.comingSoon
- ? 'bg-amber-100 text-amber-600 hover:bg-amber-200'
- : 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200'
+ ? 'bg-amber-100 /30 text-amber-600 hover:bg-amber-200 :bg-amber-900/50'
+ : 'bg-emerald-100 /30 text-emerald-600 hover:bg-emerald-200 :bg-emerald-900/50'
  }`} title={course.comingSoon ? 'Release course' : 'Mark as Coming Soon'}>
  {course.comingSoon ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
  </button>
- <button onClick={() => openEditCourse(course)} className="p-2.5 bg-surface-2 hover:bg-emerald-100 rounded-xl transition-colors" title="Edit">
- <Pencil className="w-4 h-4 text-text-secondary " />
+ <button onClick={() => openEditCourse(course)} className="p-2.5 bg-slate-100 hover:bg-emerald-100 :bg-emerald-900/30 rounded-xl transition-colors" title="Edit">
+ <Pencil className="w-4 h-4 text-slate-600 " />
  </button>
- <button onClick={() => handleDeleteCourse(course.id, course.title)} className="p-2.5 bg-surface-2 hover:bg-rose-100 rounded-xl transition-colors" title="Delete">
+ <button onClick={() => handleDeleteCourse(course.id, course.title)} className="p-2.5 bg-slate-100 hover:bg-rose-100 :bg-rose-900/30 rounded-xl transition-colors" title="Delete">
  <Trash2 className="w-4 h-4 text-rose-500" />
  </button>
  </div>
@@ -1246,8 +1245,8 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  {filteredCoursesList.length === 0 && (
  <tr>
  <td colSpan={4} className="px-8 py-16 text-center">
- <Database className="w-12 h-12 text-text-muted mx-auto mb-4" />
- <p className="text-text-muted font-medium">{courseSearch ? 'No courses match your search' : 'No courses yet. Add your first course.'}</p>
+ <Database className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+ <p className="text-slate-400 font-medium">{courseSearch ? 'No courses match your search' : 'No courses yet. Add your first course.'}</p>
  </td>
  </tr>
  )}
@@ -1277,15 +1276,15 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  initial={{ opacity: 0, scale: 0.9, y: 20 }}
  animate={{ opacity: 1, scale: 1, y: 0 }}
  exit={{ opacity: 0, scale: 0.9, y: 20 }}
- className="relative w-full max-w-2xl mx-2 sm:mx-0 bg-surface rounded-2xl sm:rounded-2xl border border-border shadow-2xl overflow-hidden"
+ className="relative w-full max-w-2xl mx-2 sm:mx-0 bg-white rounded-[2rem] sm:rounded-[3rem] border border-slate-200 shadow-2xl overflow-hidden"
  >
  <div className="p-4 sm:p-10">
  <div className="flex items-center justify-between">
  <div>
  <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-2">Mentor Review</h2>
- <p className="text-text-secondary font-bold uppercase tracking-widest text-xs">Application Dossier #{selectedApp.id.slice(0, 8)}</p>
+ <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Application Dossier #{selectedApp.id.slice(0, 8)}</p>
  </div>
- <button onClick={() => setSelectedApp(null)} className="p-3 bg-surface-2 rounded-2xl hover:bg-border transition-colors">
+ <button onClick={() => setSelectedApp(null)} className="p-3 bg-slate-100 rounded-2xl hover:bg-slate-200 :bg-slate-700 transition-colors">
  <X className="w-6 h-6" />
  </button>
  </div>
@@ -1295,19 +1294,19 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  <label className="block text-xs font-black text-emerald-500 uppercase tracking-widest mb-4">Applicant Profile</label>
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
  <div>
- <p className="text-sm font-black text-text-muted uppercase mb-1">Name</p>
+ <p className="text-sm font-black text-slate-400 uppercase mb-1">Name</p>
  <p className="font-bold text-base sm:text-lg">{selectedApp.userName}</p>
  </div>
  <div>
- <p className="text-sm font-black text-text-muted uppercase mb-1">Target Curriculum</p>
+ <p className="text-sm font-black text-slate-400 uppercase mb-1">Target Curriculum</p>
  <p className="font-bold text-base sm:text-lg">{selectedApp.courseTitle}</p>
  </div>
  <div>
- <p className="text-sm font-black text-text-muted uppercase mb-1">Highest Qualification</p>
+ <p className="text-sm font-black text-slate-400 uppercase mb-1">Highest Qualification</p>
  <p className="font-bold text-base sm:text-lg">{selectedApp.highestQualification || (selectedApp as any).highest_qualification || 'Not specified'}</p>
  </div>
  <div className="sm:col-span-2">
- <p className="text-sm font-black text-text-muted uppercase mb-1">Languages to Teach (Total: {selectedApp.languagesCount || 0})</p>
+ <p className="text-sm font-black text-slate-400 uppercase mb-1">Languages to Teach (Total: {selectedApp.languagesCount || 0})</p>
  <p className="font-bold text-base text-emerald-600">{selectedApp.languages || 'Not specified'}</p>
  </div>
  </div>
@@ -1315,33 +1314,33 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
 
  <section>
  <label className="block text-xs font-black text-emerald-500 uppercase tracking-widest mb-4">Professional Experience</label>
- <p className="text-text-secondary font-medium leading-relaxed bg-bg/50 p-6 rounded-2xl">
+ <p className="text-slate-600 font-medium leading-relaxed bg-slate-50 /50 p-6 rounded-[2rem]">
  {selectedApp.experience || 'No experience provided.'}
  </p>
  </section>
 
  {selectedApp.status === 'pending' && (
- <div className="pt-8 border-t border-border/50 ">
- <div className="bg-bg/50 p-4 sm:p-6 rounded-2xl mb-6">
- <label className="block text-xs font-black text-text-muted uppercase tracking-widest mb-4">Schedule Interview</label>
+ <div className="pt-8 border-t border-slate-100 ">
+ <div className="bg-slate-50 /50 p-4 sm:p-6 rounded-[2rem] mb-6">
+ <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Schedule Interview</label>
  <div className="flex flex-col gap-4">
  <div className="flex flex-col sm:flex-row gap-4">
  <div className="flex-1">
- <label className="block text-[10px] font-bold text-text-muted uppercase mb-2">Interview Date & Time</label>
+ <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2">Interview Date & Time</label>
  <input
  type="datetime-local"
  value={meetDate}
  onChange={e => setMeetDate(e.target.value)}
- className="w-full p-4 bg-surface rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors"
+ className="w-full p-4 bg-white rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors"
  />
  </div>
  <div className="flex-1">
- <label className="block text-[10px] font-bold text-text-muted uppercase mb-2">Google Meet / Zoom Link</label>
+ <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2">Google Meet / Zoom Link</label>
  <input
  value={meetLink}
  onChange={e => setMeetLink(e.target.value)}
  placeholder="Paste Link..."
- className="w-full p-4 bg-surface rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors"
+ className="w-full p-4 bg-white rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors"
  />
  </div>
  </div>
@@ -1357,13 +1356,13 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
  <button
  onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'approved')}
- className="flex-1 py-4 sm:py-5 bg-emerald-500 text-white font-black rounded-2xl shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
+ className="flex-1 py-4 sm:py-5 bg-emerald-500 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
  >
  APPROVE MENTOR NOW
  </button>
   <button
   onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
-  className="flex-1 py-4 sm:py-5 bg-red-500 text-white font-black rounded-2xl shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
+  className="flex-1 py-4 sm:py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
   >
   REJECT APPLICATION
   </button>
@@ -1378,18 +1377,18 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
   )}
 
   {selectedApp.status === 'scheduled' && (
- <div className="pt-8 border-t border-border/50 ">
- <div className="bg-blue-50 p-4 sm:p-6 rounded-2xl mb-6 border border-blue-200">
+ <div className="pt-8 border-t border-slate-100 ">
+ <div className="bg-blue-50 /20 p-4 sm:p-6 rounded-[2rem] mb-6 border border-blue-200 ">
  <label className="block text-xs font-black text-blue-600 uppercase tracking-widest mb-2">Scheduled Interview Link</label>
  {(() => {
  const linkMatch = selectedApp.message?.match(/\[Interview Link:\s*([^\]\n]+)\]/);
  const meetingUrl = linkMatch ? linkMatch[1] : selectedApp.meetingLink;
  const formattedUrl = meetingUrl ? (meetingUrl.startsWith('http') ? meetingUrl : `https://${meetingUrl}`) : null;
  return formattedUrl ? (
- <a href={formattedUrl} target="_blank" rel="noreferrer" className="block w-full p-4 bg-surface rounded-2xl font-bold text-blue-600 hover:underline truncate">
+ <a href={formattedUrl} target="_blank" rel="noreferrer" className="block w-full p-4 bg-white rounded-2xl font-bold text-blue-600 hover:underline truncate">
  {meetingUrl}
  </a>
- ) : <p className="text-sm text-text-secondary">No meeting link found.</p>;
+ ) : <p className="text-sm text-slate-500">No meeting link found.</p>;
  })()}
 
  {(() => {
@@ -1397,8 +1396,8 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  const meetingDateVal = dateMatch ? dateMatch[1] : selectedApp.meetingDate;
  return meetingDateVal ? (
  <div className="mt-4">
- <label className="block text-xs font-black text-text-muted uppercase tracking-widest mb-1">Interview Date & Time</label>
- <p className="text-sm font-bold text-text ">
+ <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Interview Date & Time</label>
+ <p className="text-sm font-bold text-slate-700 ">
  {new Date(meetingDateVal).toLocaleString()}
  </p>
  </div>
@@ -1409,13 +1408,13 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
  <button
  onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'approved')}
- className="flex-1 py-4 sm:py-5 bg-emerald-500 text-white font-black rounded-2xl shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
+ className="flex-1 py-4 sm:py-5 bg-emerald-500 text-white font-black rounded-[2rem] shadow-xl shadow-emerald-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
  >
  APPROVE MENTOR NOW
  </button>
   <button
   onClick={() => handleFinalVerdictTeacher(selectedApp.id, selectedApp.userEmail, 'rejected')}
-  className="flex-1 py-4 sm:py-5 bg-red-500 text-white font-black rounded-2xl shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
+  className="flex-1 py-4 sm:py-5 bg-red-500 text-white font-black rounded-[2rem] shadow-xl shadow-red-500/20 hover:scale-[1.01] transition-transform text-sm sm:text-base"
   >
   REJECT APPLICATION
   </button>
@@ -1430,10 +1429,10 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
   )}
 
   {selectedApp.status === 'approved' && (
- <div className="pt-8 border-t border-border/50 ">
- <div className="bg-rose-50 p-6 rounded-2xl border border-rose-200">
+ <div className="pt-8 border-t border-slate-100 ">
+ <div className="bg-rose-50 /20 p-6 rounded-[2rem] border border-rose-200 ">
  <label className="block text-xs font-black text-rose-600 uppercase tracking-widest mb-2">Active Mentor</label>
- <p className="text-sm text-text-secondary mb-6 font-medium">This mentor is currently assigned to teach this course.</p>
+ <p className="text-sm text-slate-600 mb-6 font-medium">This mentor is currently assigned to teach this course.</p>
   <button
   onClick={() => handleRemoveTeacher(selectedApp.id, selectedApp.userId || (selectedApp as any).user_id, selectedApp.courseId || selectedApp.qualification)}
   className="w-full py-4 bg-rose-500 text-white font-black rounded-2xl hover:bg-rose-600 transition-colors"
@@ -1462,13 +1461,13 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCourseModalOpen(false)} className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
  <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }}
- className="relative w-full max-w-2xl bg-surface rounded-2xl border border-border shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
- <div className="p-6 sm:p-8 border-b border-border/50 flex items-center justify-between shrink-0">
+ className="relative w-full max-w-2xl bg-white rounded-[2rem] border border-slate-200 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+ <div className="p-6 sm:p-8 border-b border-slate-100 flex items-center justify-between shrink-0">
  <div>
  <h2 className="text-2xl font-black tracking-tight">{editingCourse ? 'Edit Course' : 'Add Course'}</h2>
- <p className="text-xs text-text-muted font-medium mt-1">{editingCourse ? `Editing: ${editingCourse.title}` : 'Create a new course'}</p>
+ <p className="text-xs text-slate-400 font-medium mt-1">{editingCourse ? `Editing: ${editingCourse.title}` : 'Create a new course'}</p>
  </div>
- <button onClick={() => setIsCourseModalOpen(false)} className="p-3 bg-surface-2 rounded-2xl hover:bg-border transition-colors">
+ <button onClick={() => setIsCourseModalOpen(false)} className="p-3 bg-slate-100 rounded-2xl hover:bg-slate-200 :bg-slate-700 transition-colors">
  <X className="w-5 h-5" />
  </button>
  </div>
@@ -1476,31 +1475,31 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6 custom-scrollbar">
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
  <div className="sm:col-span-2">
- <label className="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Course Title *</label>
- <input value={courseForm.title} onChange={e => setCourseForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Introduction to AI" className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+ <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Course Title *</label>
+ <input value={courseForm.title} onChange={e => setCourseForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. Introduction to AI" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
  </div>
  <div className="sm:col-span-2">
- <label className="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Description</label>
- <textarea value={courseForm.description} onChange={e => setCourseForm(f => ({ ...f, description: e.target.value }))} rows={3} placeholder="Course description..." className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors resize-none" />
+ <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Description</label>
+ <textarea value={courseForm.description} onChange={e => setCourseForm(f => ({ ...f, description: e.target.value }))} rows={3} placeholder="Course description..." className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors resize-none" />
  </div>
  <div>
-  <label className="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Price (₹/month)</label>
- <input type="number" value={courseForm.price} onChange={e => setCourseForm(f => ({ ...f, price: Number(e.target.value) }))} placeholder="0 = Free" className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Price (₹/month)</label>
+ <input type="number" value={courseForm.price} onChange={e => setCourseForm(f => ({ ...f, price: Number(e.target.value) }))} placeholder="0 = Free" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
  </div>
  <div>
- <label className="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Category</label>
- <select value={courseForm.category} onChange={e => setCourseForm(f => ({ ...f, category: e.target.value }))} className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors">
+ <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Category</label>
+ <select value={courseForm.category} onChange={e => setCourseForm(f => ({ ...f, category: e.target.value }))} className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors">
  <option value="alternative">Alternative</option>
  <option value="education">Education</option>
  </select>
  </div>
  <div>
- <label className="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Folder</label>
- <input value={courseForm.folder} onChange={e => setCourseForm(f => ({ ...f, folder: e.target.value }))} placeholder="e.g. Artificial Intelligence" className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+ <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Folder</label>
+ <input value={courseForm.folder} onChange={e => setCourseForm(f => ({ ...f, folder: e.target.value }))} placeholder="e.g. Artificial Intelligence" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
  </div>
  <div>
- <label className="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Level</label>
- <select value={courseForm.level} onChange={e => setCourseForm(f => ({ ...f, level: e.target.value }))} className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors">
+ <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Level</label>
+ <select value={courseForm.level} onChange={e => setCourseForm(f => ({ ...f, level: e.target.value }))} className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors">
  <option value="">Any Level</option>
  <option value="beginner">Beginner</option>
  <option value="intermediate">Intermediate</option>
@@ -1508,35 +1507,35 @@ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-r
  </select>
  </div>
  <div>
- <label className="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Duration</label>
- <input value={courseForm.duration} onChange={e => setCourseForm(f => ({ ...f, duration: e.target.value }))} placeholder="e.g. 8 weeks" className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+ <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Duration</label>
+ <input value={courseForm.duration} onChange={e => setCourseForm(f => ({ ...f, duration: e.target.value }))} placeholder="e.g. 8 weeks" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
  </div>
  <div>
- <label className="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Class Level</label>
- <input value={courseForm.classLevel} onChange={e => setCourseForm(f => ({ ...f, classLevel: e.target.value }))} placeholder="e.g. 6-8" className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+ <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Class Level</label>
+ <input value={courseForm.classLevel} onChange={e => setCourseForm(f => ({ ...f, classLevel: e.target.value }))} placeholder="e.g. 6-8" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
   </div>
  <div className="sm:col-span-2">
- <label className="block text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">External URL (for provider courses)</label>
- <input value={courseForm.externalUrl} onChange={e => setCourseForm(f => ({ ...f, externalUrl: e.target.value }))} placeholder="https://..." className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+ <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">External URL (for provider courses)</label>
+ <input value={courseForm.externalUrl} onChange={e => setCourseForm(f => ({ ...f, externalUrl: e.target.value }))} placeholder="https://..." className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
  </div>
  <div className="sm:col-span-2">
  <label className="flex items-center gap-3 cursor-pointer">
  <div className="relative">
  <input type="checkbox" checked={courseForm.comingSoon} onChange={e => setCourseForm(f => ({ ...f, comingSoon: e.target.checked }))} className="sr-only peer" />
- <div className="w-11 h-6 bg-border rounded-full peer-checked:bg-amber-500 transition-colors" />
- <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-surface rounded-full shadow peer-checked:translate-x-5 transition-transform" />
+ <div className="w-11 h-6 bg-slate-200 rounded-full peer-checked:bg-amber-500 transition-colors" />
+ <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-5 transition-transform" />
  </div>
  <div>
- <span className="block text-sm font-bold text-heading ">Coming Soon</span>
- <span className="block text-[10px] text-text-muted font-medium">Hide course from students until ready</span>
+ <span className="block text-sm font-bold text-slate-900 ">Coming Soon</span>
+ <span className="block text-[10px] text-slate-400 font-medium">Hide course from students until ready</span>
  </div>
  </label>
  </div>
  </div>
  </div>
 
- <div className="p-6 sm:p-8 border-t border-border/50 flex items-center justify-end gap-4 shrink-0">
- <button onClick={() => setIsCourseModalOpen(false)} className="px-6 py-4 bg-surface-2 text-text-secondary font-bold rounded-2xl hover:bg-border transition-colors">
+ <div className="p-6 sm:p-8 border-t border-slate-100 flex items-center justify-end gap-4 shrink-0">
+ <button onClick={() => setIsCourseModalOpen(false)} className="px-6 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 :bg-slate-700 transition-colors">
  Cancel
  </button>
  <button onClick={handleSaveCourse} disabled={savingCourse} className="flex items-center gap-2 px-6 py-4 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white font-black rounded-2xl transition-colors shadow-lg shadow-emerald-500/20">

@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet-async';
 import { auth, onAuthStateChanged, db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
 import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Code, Clock, CircleDollarSign, X } from 'lucide-react';
-import Button from '../components/Button';
 import { normalizeSearch } from '../lib/search';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -207,7 +206,7 @@ const Courses: React.FC = () => {
     <title>Courses | Edu Alt Tech</title>
     <link rel="canonical" href="https://www.edualttech.com/#/courses" />
   </Helmet>
-  <div className="min-h-screen bg-bg selection:bg-emerald-500/30">
+  <div className="min-h-screen bg-slate-50 selection:bg-emerald-500/30">
   <div className="fixed inset-0 overflow-hidden pointer-events-none">
   <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full" />
   <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-500/5 blur-[60px] rounded-full" />
@@ -215,27 +214,27 @@ const Courses: React.FC = () => {
 
   <div className="max-w-[1400px] mx-auto relative z-10 px-4 sm:px-6 py-16 md:py-24">
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 md:mb-12">
-  <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-surface border border-border text-heading text-[9px] md:text-[10px] font-black tracking-[0.2em] uppercase mb-4 md:mb-6 shadow-sm">
+  <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-white border border-slate-200 text-slate-800 text-[9px] md:text-[10px] font-black tracking-[0.2em] uppercase mb-4 md:mb-6 shadow-sm">
   <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-500" /> Course Catalog
   </div>
-  <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-heading mb-4 md:mb-6 tracking-tighter leading-[1] md:leading-[0.85]">
+  <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 mb-4 md:mb-6 tracking-tighter leading-[1] md:leading-[0.85]">
   Explore Our{' '}
   <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500">Learning</span> Pathways.
   </h1>
-  <p className="text-sm sm:text-base md:text-lg text-text-secondary leading-relaxed font-medium max-w-xl">
+  <p className="text-sm sm:text-base md:text-lg text-slate-500 leading-relaxed font-medium max-w-xl">
   Curated courses from top providers and our own curriculum. Master in-demand skills with structured learning paths.
   </p>
   </motion.div>
 
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-6 flex flex-wrap items-center gap-2 sm:gap-3">
   <div className="relative w-full sm:max-w-md sm:flex-1">
-  <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-text-muted" />
+  <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
   <input type="text" placeholder="Search courses..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-  className="w-full pl-11 sm:pl-14 pr-4 sm:pr-6 py-3 sm:py-4 bg-surface backdrop-blur-xl rounded-xl sm:rounded-2xl border border-border focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-shadow font-medium placeholder:text-text-muted text-sm" />
+  className="w-full pl-11 sm:pl-14 pr-4 sm:pr-6 py-3 sm:py-4 bg-white backdrop-blur-xl rounded-xl sm:rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-shadow font-medium placeholder:text-slate-400 text-sm" />
   </div>
   {(searchTerm || activeFilter !== 'all' || priceFilter !== 'all') && (
     <button onClick={() => { setSearchTerm(''); setActiveFilter('all'); setPriceFilter('all'); }}
-      className="flex items-center gap-1.5 px-3 py-2.5 sm:px-4 sm:py-3 bg-surface border border-border rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold text-text-secondary hover:text-red-500 hover:border-red-200 transition-colors">
+      className="flex items-center gap-1.5 px-3 py-2.5 sm:px-4 sm:py-3 bg-white border border-slate-200 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold text-slate-500 hover:text-red-500 hover:border-red-200 transition-colors">
       <X className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Clear
     </button>
   )}
@@ -252,13 +251,13 @@ const Courses: React.FC = () => {
  className={`flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-bold transition-colors ${
  activeFilter === f.id
  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25'
- : 'bg-surface text-text-secondary border border-border hover:border-emerald-500/50'
+ : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-500/50'
  }`}>
  <f.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> {f.label}
  </button>
  ))}
 
-    <div className="w-px h-7 sm:h-8 bg-border self-center" />
+    <div className="w-px h-7 sm:h-8 bg-slate-200 self-center" />
     {[
       { id: 'all', label: 'All Prices', icon: CircleDollarSign },
       { id: 'free', label: 'Free', icon: CircleDollarSign },
@@ -268,7 +267,7 @@ const Courses: React.FC = () => {
         className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-bold transition-colors ${
           priceFilter === f.id
             ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25'
-            : 'bg-surface text-text-secondary border border-border hover:border-emerald-500/50'
+            : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-500/50'
         }`}>
         <f.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> {f.label}
       </button>
@@ -280,7 +279,7 @@ const Courses: React.FC = () => {
   <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} style={{ willChange: 'transform' }}>
   <Sparkles className="w-8 h-8 sm:w-12 sm:h-12 text-emerald-500" />
   </motion.div>
-  <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-text-muted animate-pulse">Loading courses...</p>
+  <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Loading courses...</p>
   </div>
  ) : filteredCourses.length > 0 ? (
  <>
@@ -292,21 +291,21 @@ const Courses: React.FC = () => {
   <Book className="w-5 h-5" />
   </div>
   <div>
-  <h2 className="text-xl font-black text-heading">Available Now</h2>
-  <p className="text-xs text-text-secondary font-medium">Enroll and start learning today</p>
+  <h2 className="text-xl font-black text-slate-900">Available Now</h2>
+  <p className="text-xs text-slate-500 font-medium">Enroll and start learning today</p>
   </div>
   </div>
   <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
   <AnimatePresence mode="popLayout">
   {displayedCourses.filter(c => !c.id.startsWith('ai-')).map((course) => (
   <motion.div layout key={course.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
-  className="group bg-surface backdrop-blur-xl rounded-2xl sm:rounded-3xl overflow-hidden border border-border hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-all duration-500 flex flex-col">
+  className="group bg-white backdrop-blur-xl rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200 hover:border-emerald-500/30 hover:shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] transition-all duration-500 flex flex-col">
    <div className="relative h-32 sm:h-40 md:h-48 overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-surface/20 flex items-center justify-center">
+   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/20 flex items-center justify-center">
    <Book className="w-5 h-5 sm:w-6 sm:h-6 text-white/80" />
   </div>
   <div className="absolute top-2 sm:top-4 left-2 sm:left-4 flex gap-1.5 sm:gap-2 flex-wrap">
-  <div className="px-2 sm:px-3 py-1 sm:py-1.5 bg-surface/90 backdrop-blur-md rounded-full text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-heading border border-border/50">
+  <div className="px-2 sm:px-3 py-1 sm:py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-slate-900 border border-slate-200/50">
   {course.folder || course.category}
   </div>
   {course.classLevel && (
@@ -320,10 +319,10 @@ const Courses: React.FC = () => {
   </div>
   </div>
   <div className="p-4 sm:p-5 md:p-6 flex flex-col flex-1">
-  <h3 className="text-base sm:text-lg md:text-xl font-black text-heading mb-2 sm:mb-3 tracking-tight leading-tight group-hover:text-emerald-500 transition-colors line-clamp-2">
+  <h3 className="text-base sm:text-lg md:text-xl font-black text-slate-900 mb-2 sm:mb-3 tracking-tight leading-tight group-hover:text-emerald-500 transition-colors line-clamp-2">
  {course.title}
  </h3>
-  <p className="text-xs sm:text-sm text-text-secondary mb-3 sm:mb-4 font-medium leading-relaxed line-clamp-2 flex-1">
+  <p className="text-xs sm:text-sm text-slate-500 mb-3 sm:mb-4 font-medium leading-relaxed line-clamp-2 flex-1">
   {course.description}
   </p>
    {course.comingSoon ? (
@@ -331,18 +330,20 @@ const Courses: React.FC = () => {
        <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Coming Soon
      </span>
    ) : !user ? (
-      <Button variant="primary" onClick={() => setIsAuthModalOpen(true)} className="w-full">
-        Explore Course →
-      </Button>
+     <button onClick={() => setIsAuthModalOpen(true)}
+       className="inline-flex items-center justify-center gap-2 w-full py-3 sm:py-3.5 bg-slate-900 text-white rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-all active:scale-[0.98]">
+       Explore Course →
+     </button>
    ) : course.externalUrl ? (
   <a href={course.externalUrl} target="_blank" rel="noopener noreferrer"
   className="inline-flex items-center justify-center gap-2 w-full py-3 sm:py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm tracking-wide hover:from-emerald-600 hover:to-teal-600 transition-all active:scale-[0.98]">
   Start Free <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
   </a>
   ) : (
-  <Button variant="primary" to={`/courses/${course.id}`} className="w-full">
+  <Link to={`/courses/${course.id}`}
+  className="inline-flex items-center justify-center gap-2 w-full py-3 sm:py-3.5 bg-slate-900 text-white rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm tracking-wide hover:bg-emerald-500 hover:text-white transition-all active:scale-[0.98]">
   Explore Course →
-  </Button>
+  </Link>
   )}
  </div>
  </motion.div>
@@ -361,15 +362,15 @@ const Courses: React.FC = () => {
   <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
   </div>
   <div>
-  <h2 className="text-base sm:text-xl font-black text-heading">Free Courses</h2>
-  <p className="text-[10px] sm:text-xs text-text-secondary font-medium">From industry leaders</p>
+  <h2 className="text-base sm:text-xl font-black text-slate-900">Free Courses</h2>
+  <p className="text-[10px] sm:text-xs text-slate-500 font-medium">From industry leaders</p>
   </div>
   </div>
   <div className="hidden sm:flex ml-auto items-center gap-2">
-  <span className="text-xs text-text-muted font-bold">{providerCourses.length} courses</span>
+  <span className="text-xs text-slate-400 font-bold">{providerCourses.length} courses</span>
   <div className="flex -space-x-2">
   {AI_COURSES.slice(0, 5).map((p, i) => (
-  <img key={i} src={p.logo} loading="lazy" decoding="async" alt={p.name} className="w-6 h-6 rounded-full border-2 border-white bg-surface"
+  <img key={i} src={p.logo} loading="lazy" decoding="async" alt={p.name} className="w-6 h-6 rounded-full border-2 border-white bg-white"
   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
   ))}
   </div>
@@ -380,7 +381,7 @@ const Courses: React.FC = () => {
   const provider = course.provider || '';
   return (
   <motion.div key={course.id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-  className="group relative bg-surface rounded-2xl border border-border hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-500/5 transition-all duration-300 overflow-hidden">
+  className="group relative bg-white rounded-2xl border border-slate-200 hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-500/5 transition-all duration-300 overflow-hidden">
   <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
   <div className="p-5 relative">
   <div className="flex items-center gap-3 mb-3">
@@ -394,13 +395,13 @@ const Courses: React.FC = () => {
   </div>
   <div className="min-w-0">
   <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">{provider}</p>
-  <p className="text-xs text-text-muted font-medium truncate">{course.duration}</p>
+  <p className="text-xs text-slate-400 font-medium truncate">{course.duration}</p>
   </div>
   </div>
-  <h3 className="font-bold text-heading mb-2 leading-snug text-sm line-clamp-2 group-hover:text-emerald-600 transition-colors">
+  <h3 className="font-bold text-slate-900 mb-2 leading-snug text-sm line-clamp-2 group-hover:text-emerald-600 transition-colors">
   {course.title}
   </h3>
-  <p className="text-xs text-text-secondary leading-relaxed line-clamp-2 mb-4">
+  <p className="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-4">
   {course.description}
   </p>
   <div className="flex items-center justify-between">
@@ -430,10 +431,10 @@ const Courses: React.FC = () => {
 
  </>
  ) : (
-  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16 sm:py-24 px-4 bg-surface backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-border">
-  <Search className="w-8 h-8 sm:w-12 sm:h-12 text-text-muted mx-auto mb-4 sm:mb-6" />
-  <h3 className="text-lg sm:text-2xl font-black text-heading mb-2">No courses found</h3>
-  <p className="text-sm sm:text-base text-text-secondary mb-4 sm:mb-6">Try a different search or filter.</p>
+  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16 sm:py-24 px-4 bg-white backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-slate-200">
+  <Search className="w-8 h-8 sm:w-12 sm:h-12 text-slate-300 mx-auto mb-4 sm:mb-6" />
+  <h3 className="text-lg sm:text-2xl font-black text-slate-900 mb-2">No courses found</h3>
+  <p className="text-sm sm:text-base text-slate-500 mb-4 sm:mb-6">Try a different search or filter.</p>
   <button onClick={() => { setSearchTerm(''); setActiveFilter('all'); setPriceFilter('all'); }}
   className="px-6 sm:px-8 py-3 sm:py-3.5 bg-emerald-500 text-white rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm hover:-translate-y-0.5 transition-transform">Reset Filters</button>
   </motion.div>

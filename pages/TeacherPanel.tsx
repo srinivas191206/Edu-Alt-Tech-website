@@ -589,20 +589,20 @@ const TeacherPanel: React.FC = () => {
 
  if (loading) {
  return (
- <div className="min-h-screen bg-bg flex items-center justify-center">
+ <div className="min-h-screen bg-slate-50 [#020617] flex items-center justify-center">
  <Loader2 className="w-10 h-10 animate-spin text-purple-500" />
  </div>
  );
  }
 
  return (
- <div className="min-h-screen pt-24 sm:pt-28 pb-24 sm:pb-32 px-4 sm:px-6 bg-bg selection:bg-purple-500/30">
+ <div className="min-h-screen pt-24 sm:pt-28 pb-24 sm:pb-32 px-4 sm:px-6 bg-slate-50 [#020617] selection:bg-purple-500/30">
  <div className="fixed inset-0 overflow-hidden pointer-events-none">
  <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-500/10 blur-[60px] rounded-full" />
  <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/10 blur-[60px] rounded-full" />
  </div>
  <div className="max-w-[1400px] mx-auto relative z-10">
- <Link to="/dashboard" className="inline-flex items-center gap-2 text-text-secondary hover:text-heading transition-colors text-sm font-bold mb-8 group">
+ <Link to="/dashboard" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 :text-white transition-colors text-sm font-bold mb-8 group">
  <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
  Back to Dashboard
  </Link>
@@ -615,18 +615,18 @@ const TeacherPanel: React.FC = () => {
  </div>
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
  <div>
- <h1 className="text-[2rem] sm:text-4xl md:text-6xl font-black text-heading tracking-tighter leading-none mb-2">
+ <h1 className="text-[2rem] sm:text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none mb-2">
   {viewMode === 'overview' ? 'Dashboard' : <>My <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-indigo-500">Courses</span></>}
  </h1>
- <p className="text-sm sm:text-lg text-text-secondary font-medium max-w-xl">
+ <p className="text-sm sm:text-lg text-slate-500 font-medium max-w-xl">
  {viewMode === 'overview' ? 'Your teaching at a glance.' : 'Manage your courses, students, chat, and schedule live classes.'}
  </p>
  </div>
  <div className="flex gap-2 w-full sm:w-auto">
- <button onClick={() => setViewMode('overview')} className={`flex-1 sm:flex-initial px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${viewMode === 'overview' ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' : 'bg-surface-2 text-text-secondary hover:bg-surface-2'}`}>
+ <button onClick={() => setViewMode('overview')} className={`flex-1 sm:flex-initial px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${viewMode === 'overview' ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 :bg-slate-700'}`}>
  <BarChart3 className="w-4 h-4 inline mr-2" />Overview
  </button>
- <button onClick={() => setViewMode('courses')} className={`flex-1 sm:flex-initial px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${viewMode === 'courses' ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' : 'bg-surface-2 text-text-secondary hover:bg-surface-2'}`}>
+ <button onClick={() => setViewMode('courses')} className={`flex-1 sm:flex-initial px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${viewMode === 'courses' ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 :bg-slate-700'}`}>
  <BookOpen className="w-4 h-4 inline mr-2" />Courses
  </button>
  </div>
@@ -637,60 +637,60 @@ const TeacherPanel: React.FC = () => {
  <div className="space-y-8">
  {/* Stats cards */}
   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-   <div className="bg-surface p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-border shadow-sm">
+   <div className="bg-white p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-slate-200 shadow-sm">
    <Users className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500 mb-2" />
-   <p className="text-xl sm:text-2xl font-black text-heading ">{totalStudents}</p>
-  <p className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">Total Students</p>
+   <p className="text-xl sm:text-2xl font-black text-slate-900 ">{totalStudents}</p>
+  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Total Students</p>
   </div>
-   <div className="bg-surface p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-border shadow-sm">
+   <div className="bg-white p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-slate-200 shadow-sm">
    <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500 mb-2" />
-   <p className="text-xl sm:text-2xl font-black text-heading ">{courses.length}</p>
-  <p className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">Courses</p>
+   <p className="text-xl sm:text-2xl font-black text-slate-900 ">{courses.length}</p>
+  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Courses</p>
   </div>
-   <div className="bg-surface p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-border shadow-sm">
+   <div className="bg-white p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-slate-200 shadow-sm">
    <Users className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 mb-2" />
-   <p className="text-xl sm:text-2xl font-black text-heading ">{firstClassStudents}</p>
-  <p className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">First Class</p>
+   <p className="text-xl sm:text-2xl font-black text-slate-900 ">{firstClassStudents}</p>
+  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">First Class</p>
   </div>
-   <div className="bg-surface p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-border shadow-sm">
+   <div className="bg-white p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-slate-200 shadow-sm">
    <Users className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 mb-2" />
-   <p className="text-xl sm:text-2xl font-black text-heading ">{fullAccessStudents}</p>
-  <p className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">Full Access</p>
+   <p className="text-xl sm:text-2xl font-black text-slate-900 ">{fullAccessStudents}</p>
+  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Full Access</p>
   </div>
-   <div className="bg-surface p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-border shadow-sm">
+   <div className="bg-white p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-slate-200 shadow-sm">
    <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 mb-2" />
-   <p className="text-xl sm:text-2xl font-black text-heading ">₹{earnings.monthly.toLocaleString()}</p>
-  <p className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">Monthly Earnings</p>
+   <p className="text-xl sm:text-2xl font-black text-slate-900 ">₹{earnings.monthly.toLocaleString()}</p>
+  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Monthly Earnings</p>
   </div>
-   <div className="bg-surface p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-border shadow-sm">
+   <div className="bg-white p-4 sm:p-5 rounded-[1.25rem] sm:rounded-[1.5rem] border border-slate-200 shadow-sm">
    <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 mb-2" />
-   <p className="text-xl sm:text-2xl font-black text-heading ">{upcomingClasses.length}</p>
-  <p className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">Upcoming Classes</p>
+   <p className="text-xl sm:text-2xl font-black text-slate-900 ">{upcomingClasses.length}</p>
+  <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Upcoming Classes</p>
   </div>
   </div>
 
  {/* Total earnings & Upcoming classes */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-  <div className="bg-surface p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-border shadow-sm">
+  <div className="bg-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200 shadow-sm">
   <h3 className="font-black text-lg mb-4 flex items-center gap-2"><DollarSign className="w-5 h-5 text-amber-500" /> Total Earnings</h3>
-  <p className="text-3xl sm:text-4xl font-black text-heading ">₹{earnings.total.toLocaleString()}</p>
- <p className="text-xs text-text-muted font-medium mt-1">Lifetime earnings from all courses</p>
+  <p className="text-3xl sm:text-4xl font-black text-slate-900 ">₹{earnings.total.toLocaleString()}</p>
+ <p className="text-xs text-slate-400 font-medium mt-1">Lifetime earnings from all courses</p>
  </div>
-  <div className="bg-surface p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-border shadow-sm">
+  <div className="bg-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200 shadow-sm">
   <h3 className="font-black text-lg mb-4 flex items-center gap-2"><Calendar className="w-5 h-5 text-blue-500" /> Upcoming Classes</h3>
  {upcomingClasses.length === 0 ? (
- <p className="text-text-muted font-medium text-sm py-6">No upcoming classes scheduled.</p>
+ <p className="text-slate-400 font-medium text-sm py-6">No upcoming classes scheduled.</p>
  ) : (
  <div className="space-y-3">
  {upcomingClasses.map((c) => (
- <div key={c.id} className="flex items-center justify-between p-3 bg-bg/50 rounded-xl">
+ <div key={c.id} className="flex items-center justify-between p-3 bg-slate-50 /50 rounded-xl">
  <div>
- <p className="font-bold text-sm text-heading ">{c.title}</p>
- <p className="text-xs text-text-muted">{c.scheduled_at ? new Date(c.scheduled_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'No date'}</p>
+ <p className="font-bold text-sm text-slate-900 ">{c.title}</p>
+ <p className="text-xs text-slate-400">{c.scheduled_at ? new Date(c.scheduled_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'No date'}</p>
  </div>
  <div className="flex gap-2">
  <a href={c.meeting_link} target="_blank" rel="noreferrer" className="px-4 py-2 bg-emerald-500 text-white font-bold rounded-xl text-xs hover:bg-emerald-600 transition-colors">Join</a>
- <button onClick={() => copyToClipboard(c.meeting_link)} className="p-2 bg-border rounded-xl transition-colors"><Copy className="w-4 h-4" /></button>
+ <button onClick={() => copyToClipboard(c.meeting_link)} className="p-2 bg-slate-200 rounded-xl hover:bg-slate-300 :bg-slate-600 transition-colors"><Copy className="w-4 h-4" /></button>
  </div>
  </div>
  ))}
@@ -700,25 +700,25 @@ const TeacherPanel: React.FC = () => {
  </div>
 
  {/* Recurring classes */}
- <div className="bg-surface p-6 rounded-[2rem] border border-border shadow-sm">
+ <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
  <h3 className="font-black text-lg mb-4 flex items-center gap-2"><Repeat className="w-5 h-5 text-purple-500" /> Recurring / Daily Classes</h3>
  {recurringClasses.length === 0 ? (
- <p className="text-text-muted font-medium text-sm py-6">No recurring classes. Switch to Courses tab to create one.</p>
+ <p className="text-slate-400 font-medium text-sm py-6">No recurring classes. Switch to Courses tab to create one.</p>
  ) : (
  <div className="space-y-3">
  {recurringClasses.map((rc) => (
- <div key={rc.id} className="flex items-center justify-between p-3 sm:p-4 bg-bg/50 rounded-2xl border border-border/50">
+ <div key={rc.id} className="flex items-center justify-between p-3 sm:p-4 bg-slate-50 /50 rounded-2xl border border-slate-200 /50">
  <div className="flex-1">
  <div className="flex items-center gap-2 mb-1">
- <span className="px-2 py-0.5 bg-purple-100/30 text-purple-600 rounded-lg text-[10px] font-bold uppercase">{rc.repeat_type}</span>
- <p className="font-bold text-heading ">{rc.title}</p>
+ <span className="px-2 py-0.5 bg-purple-100 /30 text-purple-600 rounded-lg text-[10px] font-bold uppercase">{rc.repeat_type}</span>
+ <p className="font-bold text-slate-900 ">{rc.title}</p>
  </div>
- {rc.description && <p className="text-xs text-text-secondary">{rc.description}</p>}
- <p className="text-xs text-text-muted font-medium mt-1">{rc.start_time ? new Date(rc.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Anytime'} {rc.end_time ? `- ${new Date(rc.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}</p>
+ {rc.description && <p className="text-xs text-slate-500">{rc.description}</p>}
+ <p className="text-xs text-slate-400 font-medium mt-1">{rc.start_time ? new Date(rc.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Anytime'} {rc.end_time ? `- ${new Date(rc.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}</p>
  </div>
  <div className="flex gap-2 shrink-0 ml-4">
  <a href={rc.meeting_link} target="_blank" rel="noreferrer" className="px-4 py-2.5 bg-emerald-500 text-white font-bold rounded-xl text-xs hover:bg-emerald-600 transition-colors">Join</a>
- <button onClick={() => copyToClipboard(rc.meeting_link)} className="p-2.5 bg-border rounded-xl transition-colors"><Copy className="w-4 h-4" /></button>
+ <button onClick={() => copyToClipboard(rc.meeting_link)} className="p-2.5 bg-slate-200 rounded-xl hover:bg-slate-300 :bg-slate-600 transition-colors"><Copy className="w-4 h-4" /></button>
  </div>
  </div>
  ))}
@@ -729,10 +729,10 @@ const TeacherPanel: React.FC = () => {
  )}
 
  {viewMode === 'courses' && (courses.length === 0 ? (
- <div className="text-center py-24 bg-surface/50 rounded-2xl border-2 border-dashed border-border ">
- <GraduationCap className="w-16 h-16 text-text-muted mx-auto mb-6" />
- <h3 className="text-2xl font-black text-text-muted">No Teaching Courses Yet</h3>
- <p className="text-text-secondary font-medium mt-2">Once an admin approves your mentor application, your courses will appear here.</p>
+ <div className="text-center py-24 bg-white /50 rounded-[3rem] border-2 border-dashed border-slate-200 ">
+ <GraduationCap className="w-16 h-16 text-slate-300 mx-auto mb-6" />
+ <h3 className="text-2xl font-black text-slate-400">No Teaching Courses Yet</h3>
+ <p className="text-slate-500 font-medium mt-2">Once an admin approves your mentor application, your courses will appear here.</p>
  </div>
  ) : (
  <div className="space-y-6">
@@ -742,13 +742,13 @@ const TeacherPanel: React.FC = () => {
  initial={{ opacity: 0, y: 20 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ delay: idx * 0.05 }}
- className="bg-surface rounded-2xl border border-border overflow-hidden shadow-sm"
+ className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm"
  >
- <button onClick={() => toggleCourse(course.courseId!)} className="w-full p-5 sm:p-8 flex items-center justify-between hover:bg-surface transition-colors text-left">
+ <button onClick={() => toggleCourse(course.courseId!)} className="w-full p-5 sm:p-8 flex items-center justify-between hover:bg-slate-50 :bg-slate-800/30 transition-colors text-left">
  <div className="flex-1">
  <div className="flex items-center gap-3 mb-2">
- <span className="px-3 py-1 bg-purple-100/30 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider">Teacher</span>
-  <span className="flex items-center gap-1.5 text-sm font-bold text-text-secondary">
+ <span className="px-3 py-1 bg-purple-100 /30 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider">Teacher</span>
+  <span className="flex items-center gap-1.5 text-sm font-bold text-slate-500">
   <Users className="w-4 h-4" /> {course.studentCount} enrolled
   </span>
   {unreadCounts[course.courseId!] > 0 && (
@@ -757,8 +757,8 @@ const TeacherPanel: React.FC = () => {
   </span>
   )}
   </div>
-  <h3 className="text-xl sm:text-2xl font-black text-heading ">{course.courseData?.title || 'Unknown Course'}</h3>
-  <p className="text-text-secondary font-medium mt-1 line-clamp-1">{course.courseData?.description}</p>
+  <h3 className="text-xl sm:text-2xl font-black text-slate-900 ">{course.courseData?.title || 'Unknown Course'}</h3>
+  <p className="text-slate-500 font-medium mt-1 line-clamp-1">{course.courseData?.description}</p>
   </div>
   <div className="flex items-center gap-3 shrink-0 ml-6">
   <Link to={`/classroom/${course.courseId}`} onClick={(e) => e.stopPropagation()} className="px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-2xl transition-colors text-sm">
@@ -773,9 +773,9 @@ const TeacherPanel: React.FC = () => {
  <AnimatePresence mode="wait">
   {expandedCourse === course.courseId && (
   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden will-change-transform">
- <div className="px-5 sm:px-8 pb-5 sm:pb-8 border-t border-border/50 ">
+ <div className="px-5 sm:px-8 pb-5 sm:pb-8 border-t border-slate-100 ">
  {/* Course Tabs */}
- <div className="flex gap-1 -mx-5 sm:-mx-8 px-5 sm:px-8 pt-4 pb-2 border-b border-border/50 mb-6 overflow-x-auto">
+ <div className="flex gap-1 -mx-5 sm:-mx-8 px-5 sm:px-8 pt-4 pb-2 border-b border-slate-100 mb-6 overflow-x-auto">
   {courseTabs.map(tab => (
   <button
   key={tab.id}
@@ -783,7 +783,7 @@ const TeacherPanel: React.FC = () => {
   className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold transition-colors whitespace-nowrap ${
   activeCourseTab === tab.id
   ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20'
-  : 'text-text-secondary hover:bg-surface-2'
+  : 'text-slate-500 hover:bg-slate-100 :bg-slate-800'
   }`}
   >
   <tab.icon className="w-4 h-4" />
@@ -815,20 +815,20 @@ const TeacherPanel: React.FC = () => {
  ) : (
  <>
  <div>
- <h4 className="text-lg font-black text-heading mb-4 flex items-center gap-2">
+ <h4 className="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
  <BookOpen className="w-5 h-5 text-purple-500" /> Modules ({modules.length})
  </h4>
  {modules.length === 0 ? (
- <p className="text-text-muted font-medium text-sm py-6 text-center bg-bg/30 rounded-2xl">No modules yet. Create your first module to start building the curriculum.</p>
+ <p className="text-slate-400 font-medium text-sm py-6 text-center bg-slate-50 /30 rounded-2xl">No modules yet. Create your first module to start building the curriculum.</p>
  ) : (
  <div className="space-y-3">
  {modules.map((mod) => (
- <div key={mod.id} className="bg-bg/30 rounded-2xl p-4 sm:p-5 border border-border/50">
+ <div key={mod.id} className="bg-slate-50 /30 rounded-2xl p-4 sm:p-5 border border-slate-200 /50">
  <div className="flex items-start justify-between gap-4">
  <div className="flex-1">
- <h5 className="font-bold text-heading ">{mod.title}</h5>
- {mod.description && <p className="text-sm text-text-secondary mt-1">{mod.description}</p>}
- <p className="text-xs text-text-muted font-medium mt-2">{mod.lectures?.length || 0} lectures</p>
+ <h5 className="font-bold text-slate-900 ">{mod.title}</h5>
+ {mod.description && <p className="text-sm text-slate-500 mt-1">{mod.description}</p>}
+ <p className="text-xs text-slate-400 font-medium mt-2">{mod.lectures?.length || 0} lectures</p>
  </div>
  <button onClick={() => setShowLectureModal({ courseId: course.courseId!, moduleId: mod.id })} className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 text-purple-600 hover:bg-purple-500 hover:text-white font-bold rounded-xl transition-colors text-xs">
  <Video className="w-3.5 h-3.5" /> Add Lecture
@@ -839,7 +839,7 @@ const TeacherPanel: React.FC = () => {
  {mod.lectures.map((lec) => (
  <div key={lec.id} className="flex items-center gap-3 text-sm">
  <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0" />
- <span className="font-medium text-text flex-1">{lec.title}</span>
+ <span className="font-medium text-slate-700 flex-1">{lec.title}</span>
  {lec.meetingLink && (
  <a href={lec.meetingLink} target="_blank" rel="noreferrer" className="text-blue-500 hover:text-blue-600">
  <Video className="w-4 h-4" />
@@ -861,18 +861,18 @@ const TeacherPanel: React.FC = () => {
  </div>
 
  <div>
- <h4 className="text-lg font-black text-heading mb-4 flex items-center gap-2">
+ <h4 className="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
  <FileText className="w-5 h-5 text-blue-500" /> Resources ({resources.length})
  </h4>
  {resources.length === 0 ? (
- <p className="text-text-muted font-medium text-sm py-6 text-center bg-bg/30 rounded-2xl">No resources yet.</p>
+ <p className="text-slate-400 font-medium text-sm py-6 text-center bg-slate-50 /30 rounded-2xl">No resources yet.</p>
  ) : (
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
  {resources.map((r) => (
- <div key={r.id} className="flex items-center gap-3 p-3 sm:p-4 bg-bg/30 rounded-2xl border border-border/50">
+ <div key={r.id} className="flex items-center gap-3 p-3 sm:p-4 bg-slate-50 /30 rounded-2xl border border-slate-200 /50">
  <FileText className="w-5 h-5 text-blue-500 shrink-0" />
  <div className="flex-1 min-w-0">
- <p className="font-bold text-sm text-heading truncate">{r.title}</p>
+ <p className="font-bold text-sm text-slate-900 truncate">{r.title}</p>
  </div>
  <a href={r.url} target="_blank" rel="noreferrer" className="p-2 bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white rounded-xl transition-colors">
  <ExternalLink className="w-4 h-4" />
@@ -890,13 +890,13 @@ const TeacherPanel: React.FC = () => {
  {/* Students Tab */}
  {activeCourseTab === 'students' && (
  <div>
- <h4 className="text-lg font-black text-heading mb-4 flex items-center gap-2">
+ <h4 className="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
  <Users className="w-5 h-5 text-purple-500" /> Enrolled Students ({students.length})
  </h4>
  {loadingStudents ? (
  <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-purple-500" /></div>
  ) : students.length === 0 ? (
- <p className="text-text-muted font-medium text-sm py-12 text-center bg-bg/30 rounded-2xl">No students enrolled yet.</p>
+ <p className="text-slate-400 font-medium text-sm py-12 text-center bg-slate-50 /30 rounded-2xl">No students enrolled yet.</p>
   ) : (
   <div className="space-y-8">
     {(['first_class', 'full'] as const).map(plan => {
@@ -908,22 +908,22 @@ const TeacherPanel: React.FC = () => {
    <div key={plan}>
     <div className="flex items-center gap-2 mb-3">
      <span className={`text-[10px] font-black uppercase tracking-widest ${planColor}`}>{label}</span>
-     <span className="text-[9px] text-text-muted font-medium">({planStudents.length})</span>
+     <span className="text-[9px] text-slate-400 font-medium">({planStudents.length})</span>
     </div>
     <div className="space-y-3">
    {planStudents.map((s) => {
    const avatarGrad = s.blocked ? 'from-red-300 to-red-400' : plan === 'full' ? 'from-emerald-400 to-emerald-500' : plan === 'first_class' ? 'from-amber-400 to-amber-500' : 'from-blue-400 to-blue-500';
    return (
-   <div key={s.id} className={`flex items-start gap-4 p-4 sm:p-5 rounded-2xl border border-border/50 transition-colors ${s.blocked ? 'bg-red-50/40 opacity-60' : 'bg-bg/30'}`}>
+   <div key={s.id} className={`flex items-start gap-4 p-4 sm:p-5 rounded-2xl border border-slate-200/50 transition-colors ${s.blocked ? 'bg-red-50/40 opacity-60' : 'bg-slate-50/30'}`}>
    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${avatarGrad} flex items-center justify-center font-black text-white text-lg shrink-0`}>
    {s.name.charAt(0).toUpperCase()}
    </div>
     <div className="flex-1 min-w-0">
-      <p className="font-bold text-heading truncate">{s.name}</p>
-      <p className="text-xs text-text-muted font-medium truncate">{s.email}</p>
+      <p className="font-bold text-slate-900 truncate">{s.name}</p>
+      <p className="text-xs text-slate-400 font-medium truncate">{s.email}</p>
       <div className="flex items-center gap-2 mt-1 flex-wrap">
         {s.created_at && (
-          <span className="text-[9px] text-text-muted font-medium">Joined {new Date(s.created_at).toLocaleDateString()}</span>
+          <span className="text-[9px] text-slate-400 font-medium">Joined {new Date(s.created_at).toLocaleDateString()}</span>
         )}
         {s.blocked && (
           <span className="px-2 py-0.5 bg-red-100 text-red-700 rounded text-[9px] font-bold uppercase tracking-wider">Blocked</span>
@@ -954,7 +954,7 @@ const TeacherPanel: React.FC = () => {
           Upgrade
         </button>
       ) : null}
-      <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${s.student_status === 'active' && !s.blocked ? 'bg-emerald-100/30 text-emerald-600' : 'bg-surface-2 text-text-secondary'}`}>
+      <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${s.student_status === 'active' && !s.blocked ? 'bg-emerald-100/30 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
        {s.blocked ? 'blocked' : s.student_status || 'active'}
       </span>
       {s.blocked ? (
@@ -962,7 +962,7 @@ const TeacherPanel: React.FC = () => {
         Unblock
       </button>
       ) : (
-      <button onClick={() => handleBlockStudent(s.id)} className="px-3 py-1 bg-border text-white font-bold rounded-lg text-[9px] transition-colors whitespace-nowrap">
+      <button onClick={() => handleBlockStudent(s.id)} className="px-3 py-1 bg-slate-300 hover:bg-slate-400 text-white font-bold rounded-lg text-[9px] transition-colors whitespace-nowrap">
         Block
       </button>
       )}
@@ -980,8 +980,8 @@ const TeacherPanel: React.FC = () => {
 
  {/* Chat Tab */}
  {activeCourseTab === 'chat' && (
- <div className="flex flex-col h-[500px] bg-bg/30 rounded-2xl border border-border/50 overflow-hidden">
- <div className="p-4 border-b border-border/50">
+ <div className="flex flex-col h-[500px] bg-slate-50 /30 rounded-2xl border border-slate-200 /50 overflow-hidden">
+ <div className="p-4 border-b border-slate-200 /50">
  <h4 className="font-black text-sm flex items-center gap-2">
  <MessageSquare className="w-4 h-4 text-purple-500" />
  Course Chat — Students & Teacher
@@ -990,9 +990,9 @@ const TeacherPanel: React.FC = () => {
  <div className="flex-1 overflow-y-auto p-4 space-y-3">
  {courseChatMessages.length === 0 ? (
  <div className="text-center py-16">
- <MessageSquare className="w-12 h-12 text-text-muted mx-auto mb-3" />
- <p className="text-sm font-medium text-text-muted">No messages yet</p>
- <p className="text-xs text-text-secondary mt-1">Start the conversation with your students</p>
+ <MessageSquare className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+ <p className="text-sm font-medium text-slate-400">No messages yet</p>
+ <p className="text-xs text-slate-500 mt-1">Start the conversation with your students</p>
  </div>
  ) : (
  courseChatMessages.map((msg) => (
@@ -1000,11 +1000,11 @@ const TeacherPanel: React.FC = () => {
  <div className={`max-w-[75%] p-4 rounded-2xl ${
  msg.role === 'teacher' && msg.user_id === user?.uid
  ? 'bg-purple-500 text-white rounded-br-md'
- : 'bg-surface text-heading rounded-bl-md border border-border/50'
+ : 'bg-white text-slate-900 rounded-bl-md border border-slate-200 /50'
  }`}>
  <p className="text-xs font-bold opacity-70 mb-1">{msg.senderName}</p>
  <p className="text-sm font-medium leading-relaxed">{msg.content}</p>
- <p className={`text-[10px] mt-1 ${msg.role === 'teacher' && msg.user_id === user?.uid ? 'text-purple-200' : 'text-text-muted'}`}>
+ <p className={`text-[10px] mt-1 ${msg.role === 'teacher' && msg.user_id === user?.uid ? 'text-purple-200' : 'text-slate-400'}`}>
  {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
  </p>
  </div>
@@ -1012,14 +1012,14 @@ const TeacherPanel: React.FC = () => {
  ))
  )}
  </div>
- <div className="p-4 border-t border-border/50">
+ <div className="p-4 border-t border-slate-200 /50">
  <div className="flex gap-3">
  <input
  value={chatInput}
  onChange={(e) => setChatInput(e.target.value)}
  onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendChat(course.courseId!); } }}
  placeholder="Type a message to students..."
- className="flex-1 p-4 bg-surface rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-colors text-sm"
+ className="flex-1 p-4 bg-white rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-colors text-sm"
  />
  <button
  onClick={() => handleSendChat(course.courseId!)}
@@ -1037,7 +1037,7 @@ const TeacherPanel: React.FC = () => {
  {activeCourseTab === 'schedule' && (
  <div>
  <div className="flex items-center justify-between mb-6">
- <h4 className="text-lg font-black text-heading flex items-center gap-2">
+ <h4 className="text-lg font-black text-slate-900 flex items-center gap-2">
  <Calendar className="w-5 h-5 text-purple-500" /> Scheduled Classes
  </h4>
  <button onClick={() => setShowScheduleModal(true)} className="flex items-center gap-2 px-5 py-3 bg-purple-500 hover:bg-purple-600 text-white font-bold rounded-2xl transition-colors text-sm">
@@ -1046,18 +1046,18 @@ const TeacherPanel: React.FC = () => {
  </div>
 
  {scheduledClasses.length === 0 ? (
- <p className="text-text-muted font-medium text-sm py-12 text-center bg-bg/30 rounded-2xl">No classes scheduled yet.</p>
+ <p className="text-slate-400 font-medium text-sm py-12 text-center bg-slate-50 /30 rounded-2xl">No classes scheduled yet.</p>
  ) : (
  <div className="space-y-3">
  {scheduledClasses.map((sc) => (
- <div key={sc.id} className="flex items-center gap-4 p-5 bg-bg/30 rounded-2xl border border-border/50">
+ <div key={sc.id} className="flex items-center gap-4 p-5 bg-slate-50 /30 rounded-2xl border border-slate-200 /50">
  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center font-black text-white shrink-0">
  <Calendar className="w-5 h-5" />
  </div>
  <div className="flex-1 min-w-0">
- <p className="font-bold text-heading ">{sc.title}</p>
- {sc.description && <p className="text-xs text-text-secondary mt-0.5">{sc.description}</p>}
- <p className="text-xs text-text-muted font-medium mt-1">
+ <p className="font-bold text-slate-900 ">{sc.title}</p>
+ {sc.description && <p className="text-xs text-slate-500 mt-0.5">{sc.description}</p>}
+ <p className="text-xs text-slate-400 font-medium mt-1">
  {sc.scheduled_at ? new Date(sc.scheduled_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'No date set'}
  </p>
  </div>
@@ -1085,23 +1085,23 @@ const TeacherPanel: React.FC = () => {
  {showModuleModal && (
  <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModuleModal(null)} className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
-  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-surface rounded-2xl border border-border shadow-2xl p-6 sm:p-8">
+  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl p-6 sm:p-8">
   <div className="flex justify-between items-center mb-6">
   <h3 className="text-2xl font-black">New Module</h3>
- <button onClick={() => setShowModuleModal(null)} className="p-2 bg-surface-2 rounded-xl hover:bg-surface-2 transition-colors"><X className="w-5 h-5" /></button>
+ <button onClick={() => setShowModuleModal(null)} className="p-2 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"><X className="w-5 h-5" /></button>
  </div>
  <form onSubmit={handleCreateModule} className="space-y-5">
  <div>
- <label className="text-xs font-black text-text-muted uppercase tracking-widest mb-2 block">Title</label>
- <input value={mTitle} onChange={e => setMTitle(e.target.value)} required placeholder="e.g. Introduction to the Course" className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+ <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">Title</label>
+ <input value={mTitle} onChange={e => setMTitle(e.target.value)} required placeholder="e.g. Introduction to the Course" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
  </div>
  <div>
- <label className="text-xs font-black text-text-muted uppercase tracking-widest mb-2 block">Description</label>
- <textarea value={mDesc} onChange={e => setMDesc(e.target.value)} rows={3} placeholder="Brief overview of this module" className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors resize-none" />
+ <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">Description</label>
+ <textarea value={mDesc} onChange={e => setMDesc(e.target.value)} rows={3} placeholder="Brief overview of this module" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors resize-none" />
  </div>
  <div>
- <label className="text-xs font-black text-text-muted uppercase tracking-widest mb-2 block">Thumbnail (optional)</label>
- <input type="file" accept="image/*" onChange={e => setMThumbFile(e.target.files?.[0] || null)} className="w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-600 hover:file:bg-emerald-100" />
+ <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">Thumbnail (optional)</label>
+ <input type="file" accept="image/*" onChange={e => setMThumbFile(e.target.files?.[0] || null)} className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-600 hover:file:bg-emerald-100" />
  </div>
  <button type="submit" className="w-full py-4 bg-emerald-500 text-white font-black rounded-2xl hover:bg-emerald-600 transition-colors">Create Module</button>
  </form>
@@ -1115,23 +1115,23 @@ const TeacherPanel: React.FC = () => {
  {showLectureModal && (
  <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowLectureModal(null)} className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
-  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-surface rounded-2xl border border-border shadow-2xl p-6 sm:p-8">
+  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl p-6 sm:p-8">
   <div className="flex justify-between items-center mb-6">
   <h3 className="text-2xl font-black">New Lecture</h3>
- <button onClick={() => setShowLectureModal(null)} className="p-2 bg-surface-2 rounded-xl hover:bg-surface-2 transition-colors"><X className="w-5 h-5" /></button>
+ <button onClick={() => setShowLectureModal(null)} className="p-2 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"><X className="w-5 h-5" /></button>
  </div>
  <form onSubmit={handleAddLecture} className="space-y-5">
  <div>
- <label className="text-xs font-black text-text-muted uppercase tracking-widest mb-2 block">Title</label>
- <input value={lTitle} onChange={e => setLTitle(e.target.value)} required placeholder="e.g. Live Session 1" className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+ <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">Title</label>
+ <input value={lTitle} onChange={e => setLTitle(e.target.value)} required placeholder="e.g. Live Session 1" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
  </div>
  <div>
- <label className="text-xs font-black text-text-muted uppercase tracking-widest mb-2 block">Meeting Link (for live classes)</label>
- <input value={lMeet} onChange={e => setLMeet(e.target.value)} placeholder="https://meet.google.com/..." className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+ <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">Meeting Link (for live classes)</label>
+ <input value={lMeet} onChange={e => setLMeet(e.target.value)} placeholder="https://meet.google.com/..." className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
  </div>
  <div>
- <label className="text-xs font-black text-text-muted uppercase tracking-widest mb-2 block">Recorded Link (optional)</label>
- <input value={lRec} onChange={e => setLRec(e.target.value)} placeholder="https://youtube.com/..." className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+ <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">Recorded Link (optional)</label>
+ <input value={lRec} onChange={e => setLRec(e.target.value)} placeholder="https://youtube.com/..." className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
  </div>
  <button type="submit" className="w-full py-4 bg-purple-500 text-white font-black rounded-2xl hover:bg-purple-600 transition-colors">Add Lecture</button>
  </form>
@@ -1145,19 +1145,19 @@ const TeacherPanel: React.FC = () => {
  {showResourceModal && (
  <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowResourceModal(null)} className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
-  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-surface rounded-2xl border border-border shadow-2xl p-6 sm:p-8">
+  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl p-6 sm:p-8">
   <div className="flex justify-between items-center mb-6">
   <h3 className="text-2xl font-black">Add Resource</h3>
- <button onClick={() => setShowResourceModal(null)} className="p-2 bg-surface-2 rounded-xl hover:bg-surface-2 transition-colors"><X className="w-5 h-5" /></button>
+ <button onClick={() => setShowResourceModal(null)} className="p-2 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"><X className="w-5 h-5" /></button>
  </div>
  <form onSubmit={handleCreateResource} className="space-y-5">
  <div>
- <label className="text-xs font-black text-text-muted uppercase tracking-widest mb-2 block">Title</label>
- <input value={rTitle} onChange={e => setRTitle(e.target.value)} required placeholder="e.g. Course Notes PDF" className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+ <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">Title</label>
+ <input value={rTitle} onChange={e => setRTitle(e.target.value)} required placeholder="e.g. Course Notes PDF" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
  </div>
  <div>
- <label className="text-xs font-black text-text-muted uppercase tracking-widest mb-2 block">URL</label>
- <input value={rUrl} onChange={e => setRUrl(e.target.value)} required placeholder="https://..." className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
+ <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">URL</label>
+ <input value={rUrl} onChange={e => setRUrl(e.target.value)} required placeholder="https://..." className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-emerald-500 transition-colors" />
  </div>
  <button type="submit" className="w-full py-4 bg-blue-500 text-white font-black rounded-2xl hover:bg-blue-600 transition-colors">Add Resource</button>
  </form>
@@ -1171,27 +1171,27 @@ const TeacherPanel: React.FC = () => {
  {showScheduleModal && (
  <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowScheduleModal(false)} className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
- <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-surface rounded-2xl border border-border shadow-2xl p-8">
+ <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-lg bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl p-8">
  <div className="flex justify-between items-center mb-6">
  <h3 className="text-2xl font-black">Schedule a Class</h3>
- <button onClick={() => setShowScheduleModal(false)} className="p-2 bg-surface-2 rounded-xl hover:bg-surface-2 transition-colors"><X className="w-5 h-5" /></button>
+ <button onClick={() => setShowScheduleModal(false)} className="p-2 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"><X className="w-5 h-5" /></button>
  </div>
  <div className="space-y-5">
  <div>
- <label className="text-xs font-black text-text-muted uppercase tracking-widest mb-2 block">Class Title</label>
- <input value={sTitle} onChange={e => setSTitle(e.target.value)} required placeholder="e.g. Live Q&A Session" className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-colors" />
+ <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">Class Title</label>
+ <input value={sTitle} onChange={e => setSTitle(e.target.value)} required placeholder="e.g. Live Q&A Session" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-colors" />
  </div>
  <div>
- <label className="text-xs font-black text-text-muted uppercase tracking-widest mb-2 block">Description (optional)</label>
- <textarea value={sDesc} onChange={e => setSDesc(e.target.value)} rows={2} placeholder="What is this class about?" className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-colors resize-none" />
+ <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">Description (optional)</label>
+ <textarea value={sDesc} onChange={e => setSDesc(e.target.value)} rows={2} placeholder="What is this class about?" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-colors resize-none" />
  </div>
  <div>
- <label className="text-xs font-black text-text-muted uppercase tracking-widest mb-2 block">Meeting Link</label>
- <input value={sMeetLink} onChange={e => setSMeetLink(e.target.value)} required placeholder="https://meet.google.com/..." className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-colors" />
+ <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">Meeting Link</label>
+ <input value={sMeetLink} onChange={e => setSMeetLink(e.target.value)} required placeholder="https://meet.google.com/..." className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-colors" />
  </div>
  <div>
- <label className="text-xs font-black text-text-muted uppercase tracking-widest mb-2 block">Scheduled Date & Time</label>
- <input value={sDate} onChange={e => setSDate(e.target.value)} type="datetime-local" className="w-full p-4 bg-bg rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-colors" />
+ <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 block">Scheduled Date & Time</label>
+ <input value={sDate} onChange={e => setSDate(e.target.value)} type="datetime-local" className="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border border-transparent focus:border-purple-500 transition-colors" />
  </div>
  <button onClick={() => handleScheduleClass(expandedCourse!, getCourseTitle())} className="w-full py-4 bg-purple-500 text-white font-black rounded-2xl hover:bg-purple-600 transition-colors">
  Schedule Class & Notify Admin

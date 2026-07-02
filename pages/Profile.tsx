@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { auth, db, onAuthStateChanged, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword, doc, onSnapshot, setDoc } from '../lib/firebase';
-import Button from '../components/Button';
 import { Loader2, Camera, X, Check, LogOut, ArrowLeft, Building2, MapPin, Tag, Edit3, Save } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserObject } from '../types';
@@ -155,7 +154,7 @@ const Profile: React.FC = () => {
 
  if (loading) {
  return (
- <div className="min-h-screen pt-32 flex items-center justify-center bg-bg ">
+ <div className="min-h-screen pt-32 flex items-center justify-center bg-slate-50 ">
  <Loader2 className="w-10 h-10 animate-spin text-emerald-500" />
  </div>
  );
@@ -164,8 +163,8 @@ const Profile: React.FC = () => {
  if (!userProfile) return null;
 
  return (
- <div className="min-h-screen pt-32 pb-32 px-6 bg-bg relative overflow-hidden">
- <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 rounded-full blur-[60px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
+ <div className="min-h-screen pt-32 pb-32 px-6 bg-slate-50 [#020617] relative overflow-hidden">
+ <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 /10 /10 rounded-full blur-[60px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
  <motion.div
  initial={{ opacity: 0, y: 30 }}
  animate={{ opacity: 1, y: 0 }}
@@ -175,24 +174,24 @@ const Profile: React.FC = () => {
  >
  <div className="flex items-center justify-between mb-10">
  <div className="flex items-center gap-4">
- <Link to="/dashboard" className="p-2.5 text-text-secondary hover:text-emerald-600 bg-surface/80 backdrop-blur border border-border/50 rounded-2xl transition-colors shadow-sm">
+ <Link to="/dashboard" className="p-2.5 text-slate-500 hover:text-emerald-600 bg-white/80 /80 backdrop-blur border border-slate-200/50 /50 rounded-2xl transition-colors shadow-sm">
  <ArrowLeft className="w-5 h-5" />
  </Link>
- <h1 className="text-3xl sm:text-4xl font-black text-heading tracking-tight">Your Profile</h1>
+ <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Your Profile</h1>
  </div>
  
  {!isEditing && (
- <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 bg-surface-2 hover:bg-surface-2  text-heading font-semibold py-2 px-4 rounded-xl transition-colors">
+ <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 :bg-slate-700 text-slate-800 font-semibold py-2 px-4 rounded-xl transition-colors">
  <Edit3 className="w-4 h-4" /> Edit Profile
  </button>
  )}
  </div>
 
- <div className="bg-surface/90 backdrop-blur-2xl rounded-2xl p-6 sm:p-10 border border-border/50 shadow-2xl">
+ <div className="bg-white/90 /80 backdrop-blur-2xl rounded-[2.5rem] p-6 sm:p-10 border border-slate-200/50 /50 shadow-2xl">
  
- <div className="flex flex-col md:flex-row items-center gap-8 mb-10 pb-10 border-b border-border/50 ">
+ <div className="flex flex-col md:flex-row items-center gap-8 mb-10 pb-10 border-b border-slate-100 ">
  <div className="relative group">
- <div className="w-24 md:w-32 h-24 md:h-32 rounded-full border-4 border-border/50 flex items-center justify-center overflow-hidden bg-emerald-50">
+ <div className="w-24 md:w-32 h-24 md:h-32 rounded-full border-4 border-slate-100 flex items-center justify-center overflow-hidden bg-emerald-50 /10">
  {selectedFile ? (
  <img src={URL.createObjectURL(selectedFile)} loading="lazy" decoding="async" alt="preview" className="w-full h-full object-cover" />
  ) : userProfile.profilePic ? (
@@ -218,74 +217,74 @@ const Profile: React.FC = () => {
  )}
  </div>
  <div className="text-center md:text-left flex-1">
- <h2 className="text-2xl md:text-3xl font-black text-heading capitalize mb-1 tracking-tight">{userProfile.name}</h2>
- <p className="text-text-secondary text-lg font-medium">{userProfile.email || user?.email}</p>
+ <h2 className="text-2xl md:text-3xl font-black text-slate-900 capitalize mb-1 tracking-tight">{userProfile.name}</h2>
+ <p className="text-slate-500 text-lg font-medium">{userProfile.email || user?.email}</p>
  </div>
  </div>
 
  <div className="space-y-6">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
  <div>
- <label className="block text-sm font-bold text-text mb-2 flex items-center gap-2">
+ <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
  <Building2 className="w-4 h-4 text-emerald-500"/> Education
  </label>
  {isEditing ? (
- <input type="text" value={editClass} onChange={(e) => {setEditClass(e.target.value); setSuccessMsg('');}} placeholder="e.g. B.Tech / High School" className="w-full px-5 py-4 bg-bg border border-border rounded-2xl focus:ring-4 focus:ring-emerald-100  outline-none text-heading transition-all" />
+ <input type="text" value={editClass} onChange={(e) => {setEditClass(e.target.value); setSuccessMsg('');}} placeholder="e.g. B.Tech / High School" className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none text-slate-900 transition-all" />
  ) : (
- <p className="w-full px-5 py-4 bg-bg border border-border/50 rounded-2xl text-heading font-medium">
- {userProfile.classLevel || <span className="text-text-muted italic">Not specified</span>}
+ <p className="w-full px-5 py-4 bg-slate-50 /50 border border-slate-100 /80 rounded-2xl text-slate-800 font-medium">
+ {userProfile.classLevel || <span className="text-slate-400 italic">Not specified</span>}
  </p>
  )}
  </div>
 
  <div>
- <label className="block text-sm font-bold text-text mb-2 flex items-center gap-2">
+ <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
  <MapPin className="w-4 h-4 text-blue-500"/> Location
  </label>
  {isEditing ? (
- <input type="text" value={editLocation} onChange={(e) => {setEditLocation(e.target.value); setSuccessMsg('');}} placeholder="e.g. Bangalore" className="w-full px-5 py-4 bg-bg border border-border rounded-2xl focus:ring-4 focus:ring-emerald-100  outline-none text-heading transition-all" />
+ <input type="text" value={editLocation} onChange={(e) => {setEditLocation(e.target.value); setSuccessMsg('');}} placeholder="e.g. Bangalore" className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none text-slate-900 transition-all" />
  ) : (
- <p className="w-full px-5 py-4 bg-bg border border-border/50 rounded-2xl text-heading font-medium">
- {userProfile.location || <span className="text-text-muted italic">Not specified</span>}
+ <p className="w-full px-5 py-4 bg-slate-50 /50 border border-slate-100 /80 rounded-2xl text-slate-800 font-medium">
+ {userProfile.location || <span className="text-slate-400 italic">Not specified</span>}
  </p>
  )}
  </div>
  </div>
 
  <div>
- <label className="block text-sm font-bold text-text mb-2 flex items-center gap-2">
+ <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
  <Tag className="w-4 h-4 text-purple-500"/> Interests & Preferences
  </label>
  {isEditing ? (
- <input type="text" value={editInterests} onChange={(e) => {setEditInterests(e.target.value); setSuccessMsg('');}} placeholder="e.g. Math, Coding, Art (comma-separated)" className="w-full px-5 py-4 bg-bg border border-border rounded-2xl focus:ring-4 focus:ring-emerald-100  outline-none text-heading transition-all" />
+ <input type="text" value={editInterests} onChange={(e) => {setEditInterests(e.target.value); setSuccessMsg('');}} placeholder="e.g. Math, Coding, Art (comma-separated)" className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 outline-none text-slate-900 transition-all" />
  ) : (
- <div className="w-full px-5 py-4 bg-bg border border-border/50 rounded-2xl min-h-[56px] flex flex-wrap gap-2">
+ <div className="w-full px-5 py-4 bg-slate-50 /50 border border-slate-100 /80 rounded-2xl min-h-[56px] flex flex-wrap gap-2">
  {userProfile.preferences && userProfile.preferences.length > 0 ? (
  userProfile.preferences.map((pref, i) => (
- <span key={i} className="px-3 py-1 bg-surface border border-border rounded-lg text-sm font-semibold text-emerald-600 ">
+ <span key={i} className="px-3 py-1 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-emerald-600 ">
  {pref}
  </span>
  ))
  ) : (
- <span className="text-text-muted italic">No interests specified</span>
+ <span className="text-slate-400 italic">No interests specified</span>
  )}
  </div>
  )}
  </div>
 
  {successMsg && !isEditing && (
- <div className="p-4 bg-emerald-50 text-emerald-600 font-medium rounded-xl border border-emerald-100 flex items-center gap-2">
+ <div className="p-4 bg-emerald-50 /30 text-emerald-600 font-medium rounded-xl border border-emerald-100 flex items-center gap-2">
  <Check className="w-5 h-5"/> {successMsg}
  </div>
  )}
  </div>
 
   {/* Password Management Section */}
-  <div className="pt-10 mt-10 border-t border-border/50 ">
+  <div className="pt-10 mt-10 border-t border-slate-100 ">
   <div className="flex items-center justify-between mb-6">
   <div>
-       <h3 className="text-xl font-bold text-heading ">Security</h3>
-  <p className="text-sm text-text-secondary">{isGoogleUser ? 'Signed in with Google — password not applicable.' : 'Manage your account credentials.'}</p>
+       <h3 className="text-xl font-bold text-slate-900 ">Security</h3>
+  <p className="text-sm text-slate-500">{isGoogleUser ? 'Signed in with Google — password not applicable.' : 'Manage your account credentials.'}</p>
   </div>
   {!isGoogleUser && (
   <button 
@@ -300,44 +299,42 @@ const Profile: React.FC = () => {
  {showPasswordSection && (
  <form onSubmit={handleChangePassword} className="space-y-4 animate-in slide-in-from-top-2 duration-300">
  <div>
- <label className="block text-xs font-black uppercase tracking-widest text-text-muted mb-2">Old Password</label>
+ <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Old Password</label>
  <input 
  type="password" required value={oldPassword} onChange={e => setOldPassword(e.target.value)}
- className="w-full px-5 py-4 bg-bg border border-border rounded-2xl outline-none focus:ring-4 focus:ring-emerald-100  transition-shadow font-medium "
+ className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 transition-shadow font-medium "
  />
  </div>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  <div>
- <label className="block text-xs font-black uppercase tracking-widest text-text-muted mb-2">New Password</label>
+ <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">New Password</label>
  <input 
  type="password" required value={newPassword} onChange={e => setNewPassword(e.target.value)}
- className="w-full px-5 py-4 bg-bg border border-border rounded-2xl outline-none focus:ring-4 focus:ring-emerald-100  transition-shadow font-medium "
+ className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 transition-shadow font-medium "
  />
  </div>
  <div>
- <label className="block text-xs font-black uppercase tracking-widest text-text-muted mb-2">Confirm New Password</label>
+ <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Confirm New Password</label>
  <input 
  type="password" required value={confirmNewPassword} onChange={e => setConfirmNewPassword(e.target.value)}
- className="w-full px-5 py-4 bg-bg border border-border rounded-2xl outline-none focus:ring-4 focus:ring-emerald-100  transition-shadow font-medium "
+ className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-100 :ring-emerald-900/40 transition-shadow font-medium "
  />
  </div>
  </div>
-              <Button 
-                  type="submit" disabled={passwordLoading}
-                  variant="primary" size="lg"
-                  className="w-full shadow-lg hover:scale-[1.01] transition-transform"
-                  loading={passwordLoading}
-                  >
-                  Update Password
-                  </Button>
+ <button 
+ type="submit" disabled={passwordLoading}
+ className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl shadow-lg hover:scale-[1.01] transition-transform disabled:opacity-50 flex items-center justify-center gap-2"
+ >
+ {passwordLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Update Password'}
+ </button>
  </form>
  )}
  </div>
 
- <div className="pt-6 flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-border/50 ">
+ <div className="pt-6 flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-100 ">
  {isEditing ? (
  <>
- <button onClick={() => { setIsEditing(false); setSuccessMsg(''); }} disabled={saving} className="w-full sm:w-auto hover:bg-surface-2  text-text font-bold py-4 px-8 rounded-2xl transition-colors">
+ <button onClick={() => { setIsEditing(false); setSuccessMsg(''); }} disabled={saving} className="w-full sm:w-auto hover:bg-slate-100 :bg-slate-800 text-slate-700 font-bold py-4 px-8 rounded-2xl transition-colors">
  Cancel
  </button>
  <button onClick={handleSaveProfile} disabled={saving} className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50">
@@ -346,7 +343,7 @@ const Profile: React.FC = () => {
  </button>
  </>
  ) : (
- <button onClick={handleLogout} className="w-full sm:w-auto bg-red-50 hover:bg-red-100 text-red-600 font-bold py-4 px-8 rounded-2xl transition-all flex items-center justify-center gap-2 active:scale-95">
+ <button onClick={handleLogout} className="w-full sm:w-auto bg-red-50 hover:bg-red-100 /20 :bg-red-900/40 text-red-600 font-bold py-4 px-8 rounded-2xl transition-all flex items-center justify-center gap-2 active:scale-95">
  <LogOut className="w-5 h-5" />
  Logout Account
  </button>
