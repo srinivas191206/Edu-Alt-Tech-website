@@ -184,18 +184,18 @@ const AI: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-emerald-50/30">
-      <header className="bg-white/80 backdrop-blur-2xl border-b border-slate-200/60 px-4 sm:px-6 py-3 flex items-center justify-between shrink-0">
+    <div className="h-screen flex flex-col bg-gradient-to-br from-bg via-surface to-emerald-50/30">
+      <header className="bg-surface/80 backdrop-blur-2xl border-b border-border/60 px-4 sm:px-6 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors">
-            <ArrowLeft className="w-5 h-5 text-slate-600" />
+          <button onClick={() => navigate(-1)} className="p-2 hover:bg-surface-2 rounded-xl transition-colors">
+            <ArrowLeft className="w-5 h-5 text-text-secondary" />
           </button>
           <div className="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center">
             <Bot className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-slate-900">Kyo Ai</h1>
-            <p className="text-[10px] font-semibold text-slate-400">AI Assistant</p>
+            <h1 className="font-bold text-heading">Kyo Ai</h1>
+            <p className="text-[10px] font-semibold text-text-muted">AI Assistant</p>
           </div>
         </div>
 
@@ -203,24 +203,24 @@ const AI: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setShowModePicker(!showModePicker)}
-              className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-600 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 bg-surface-2 hover:bg-surface-2 rounded-xl text-xs font-bold text-text-secondary transition-colors"
             >
               {currentMode?.icon}
               {currentMode?.label}
               <ChevronDown className="w-3.5 h-3.5" />
             </button>
             {showModePicker && (
-              <div className="absolute top-full right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl p-1 z-10 min-w-[200px]">
+              <div className="absolute top-full right-0 mt-1 bg-surface rounded-xl border border-border shadow-xl p-1 z-10 min-w-[200px]">
                 {MODES.map(m => (
                   <button
                     key={m.id}
                     onClick={() => switchMode(m.id)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${mode === m.id ? `bg-${m.color}-50 text-${m.color}-600` : 'text-slate-600 hover:bg-slate-50'}`}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${mode === m.id ? `bg-${m.color}-50 text-${m.color}-600` : 'text-text-secondary hover:bg-bg'}`}
                   >
                     {m.icon}
                     <div className="text-left">
                       <span className="block">{m.label}</span>
-                      <span className="block text-[9px] font-medium text-slate-400">{m.description}</span>
+                      <span className="block text-[9px] font-medium text-text-muted">{m.description}</span>
                     </div>
                   </button>
                 ))}
@@ -228,8 +228,8 @@ const AI: React.FC = () => {
             )}
           </div>
 
-          <button onClick={() => { setShowSidebar(!showSidebar); if (!showSidebar) loadHistory(); }} className="p-2 hover:bg-slate-100 rounded-xl transition-colors" title="History">
-            <History className="w-5 h-5 text-slate-500" />
+          <button onClick={() => { setShowSidebar(!showSidebar); if (!showSidebar) loadHistory(); }} className="p-2 hover:bg-surface-2 rounded-xl transition-colors" title="History">
+            <History className="w-5 h-5 text-text-secondary" />
           </button>
         </div>
       </header>
@@ -240,11 +240,11 @@ const AI: React.FC = () => {
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: 320, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
-            className="border-r border-slate-200 bg-white/50 overflow-y-auto shrink-0"
+            className="border-r border-border bg-surface/50 overflow-y-auto shrink-0"
           >
             <div className="p-4">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <h2 className="text-sm font-bold text-heading flex items-center gap-2">
                   <History className="w-4 h-4" /> History
                 </h2>
                 <button onClick={startNewChat} className="text-xs font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors">
@@ -252,27 +252,27 @@ const AI: React.FC = () => {
                 </button>
               </div>
               {historyLoading ? (
-                <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-slate-400" /></div>
+                <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-text-muted" /></div>
               ) : historyItems.length === 0 ? (
-                <p className="text-xs text-slate-400 text-center py-8 font-medium">No history yet</p>
+                <p className="text-xs text-text-muted text-center py-8 font-medium">No history yet</p>
               ) : (
                 <div className="space-y-2">
                   {historyItems.map((item) => (
                     <div key={item.id} className="group">
                       <button
                         onClick={() => loadConversation(item)}
-                        className="w-full text-left p-3 rounded-xl hover:bg-slate-100 transition-colors"
+                        className="w-full text-left p-3 rounded-xl hover:bg-surface-2 transition-colors"
                       >
                         <div className="flex items-center gap-1.5 mb-1">
                           {MODES.find(m => m.id === item.mode)?.icon || <MessageCircle className="w-3 h-3" />}
-                          <span className="text-[9px] font-bold text-slate-400 uppercase">{item.mode || 'chat'}</span>
+                          <span className="text-[9px] font-bold text-text-muted uppercase">{item.mode || 'chat'}</span>
                         </div>
-                        <p className="text-xs font-semibold text-slate-700 line-clamp-2">{item.query}</p>
-                        <p className="text-[10px] text-slate-400 mt-1">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ''}</p>
+                        <p className="text-xs font-semibold text-text line-clamp-2">{item.query}</p>
+                        <p className="text-[10px] text-text-muted mt-1">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ''}</p>
                       </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); deleteHistoryItem(item.id); }}
-                        className="opacity-0 group-hover:opacity-100 absolute top-2 right-2 p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                        className="opacity-0 group-hover:opacity-100 absolute top-2 right-2 p-1 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -289,8 +289,8 @@ const AI: React.FC = () => {
             {messages.length === 1 && messages[0].role === 'assistant' && (
               <div className="text-center py-8">
                 <Sparkles className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
-                <h2 className="text-xl font-black text-slate-800 mb-2">How can I help you today?</h2>
-                <p className="text-sm text-slate-400 font-medium max-w-md mx-auto">
+                <h2 className="text-xl font-black text-heading mb-2">How can I help you today?</h2>
+                <p className="text-sm text-text-muted font-medium max-w-md mx-auto">
                   Ask me about courses, learning topics, study strategies, or platform features.
                 </p>
                 <div className="flex flex-wrap justify-center gap-2 mt-6">
@@ -298,7 +298,7 @@ const AI: React.FC = () => {
                     <button
                       key={suggestion}
                       onClick={() => { setInput(suggestion); inputRef.current?.focus(); }}
-                      className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:border-emerald-300 hover:text-emerald-600 hover:bg-emerald-50/50 transition-all shadow-sm"
+                      className="px-4 py-2 bg-surface border border-border rounded-xl text-xs font-semibold text-text-secondary hover:border-emerald-300 hover:text-emerald-600 hover:bg-emerald-50/50 transition-all shadow-sm"
                     >
                       {suggestion}
                     </button>
@@ -317,7 +317,7 @@ const AI: React.FC = () => {
                   <div className={`max-w-[80%] sm:max-w-[70%] p-4 rounded-2xl text-sm leading-relaxed ${
                     msg.role === 'user'
                     ? 'bg-emerald-500 text-white rounded-br-md'
-                    : 'bg-white text-slate-700 rounded-bl-md border border-slate-200 shadow-sm'
+                    : 'bg-surface text-text rounded-bl-md border border-border shadow-sm'
                   }`}>
                     <p className="whitespace-pre-wrap">{msg.content}</p>
                   </div>
@@ -336,7 +336,7 @@ const AI: React.FC = () => {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-white rounded-2xl rounded-bl-md p-4 border border-slate-200 shadow-sm">
+                <div className="bg-surface rounded-2xl rounded-bl-md p-4 border border-border shadow-sm">
                   <div className="flex gap-1.5">
                     <span className="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                     <span className="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -348,7 +348,7 @@ const AI: React.FC = () => {
             <div ref={bottomRef} />
           </div>
 
-          <div className="px-4 sm:px-6 py-4 border-t border-slate-200 bg-white/50">
+          <div className="px-4 sm:px-6 py-4 border-t border-border bg-surface/50">
             <div className="flex gap-3 items-end">
               <textarea
                 ref={inputRef as any}
@@ -358,7 +358,7 @@ const AI: React.FC = () => {
                 placeholder="Ask Kyo Ai anything..."
                 disabled={loading}
                 rows={1}
-                className="flex-1 p-3.5 bg-slate-50 rounded-2xl outline-none font-medium text-sm border border-transparent focus:border-emerald-500 transition-colors disabled:opacity-50 resize-none min-h-[48px] max-h-[120px]"
+                className="flex-1 p-3.5 bg-bg rounded-xl outline-none font-medium text-sm border border-border focus:border-emerald-500 transition-colors disabled:opacity-50 resize-none min-h-[48px] max-h-[120px]"
                 style={{ height: 'auto', overflow: 'hidden' }}
                 onInput={(e) => {
                   const el = e.currentTarget;
@@ -374,7 +374,7 @@ const AI: React.FC = () => {
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
               </button>
             </div>
-            <p className="text-[9px] text-slate-400 text-center mt-2 font-medium">
+            <p className="text-[9px] text-text-muted text-center mt-2 font-medium">
               Kyo Ai can make mistakes. Verify important information.
             </p>
           </div>

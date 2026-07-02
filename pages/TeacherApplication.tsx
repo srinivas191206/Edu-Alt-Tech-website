@@ -475,33 +475,33 @@ const TeacherApplication: React.FC = () => {
     }
   };
 
-  const inputCls = "w-full p-4 bg-white rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium text-slate-800";
-  const labelCls = "block text-xs font-black text-slate-400 uppercase tracking-widest mb-2";
+  const inputCls = "w-full p-4 bg-surface rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium text-heading";
+  const labelCls = "block text-xs font-black text-text-muted uppercase tracking-widest mb-2";
 
   if (loading) {
     return <div className="min-h-screen pt-32 flex justify-center"><Loader2 className="w-10 h-10 animate-spin text-emerald-600" /></div>;
   }
 
   return (
-    <div className="min-h-screen pt-28 pb-32 px-6 bg-slate-50 relative overflow-hidden">
+    <div className="min-h-screen pt-28 pb-32 px-6 bg-bg relative overflow-hidden">
       <div className="absolute top-0 left-1/2 w-[700px] h-[700px] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 rounded-full blur-[60px] pointer-events-none" />
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-2xl mx-auto relative z-10">
         
         {/* Back navigation button */}
-        <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors mb-6 font-medium">
+        <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-text-secondary hover:text-heading transition-colors mb-6 font-medium">
           <ArrowLeft className="w-4 h-4" /> Back
         </button>
 
-        <div className="bg-white/90 backdrop-blur-2xl p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-slate-200/50">
+        <div className="bg-surface/90 backdrop-blur-2xl p-8 md:p-12 rounded-2xl shadow-2xl border border-border/50">
           
           {/* Main Title Block */}
-          <div className="flex items-center gap-4 mb-6 pb-6 border-b border-slate-100">
+          <div className="flex items-center gap-4 mb-6 pb-6 border-b border-border/50">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
               <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
             </div>
             <div>
-              <h1 className="text-2xl font-black text-slate-900 tracking-tight">{t.title}</h1>
-              <p className="text-sm text-slate-500 font-medium">{t.subtitle}</p>
+              <h1 className="text-2xl font-black text-heading tracking-tight">{t.title}</h1>
+              <p className="text-sm text-text-secondary font-medium">{t.subtitle}</p>
             </div>
           </div>
 
@@ -517,13 +517,13 @@ const TeacherApplication: React.FC = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest block mb-1">Applying for Course</span>
-                <h3 className="font-black text-lg text-slate-900 truncate leading-tight mb-1 group-hover:text-emerald-700 transition-colors">{targetCourse.title}</h3>
+                <h3 className="font-black text-lg text-heading truncate leading-tight mb-1 group-hover:text-emerald-700 transition-colors">{targetCourse.title}</h3>
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="inline-block px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[9px] font-extrabold uppercase tracking-wider rounded-md">
                     {targetCourse.category}
                   </span>
                   {targetCourse.duration && (
-                    <span className="text-[10px] text-slate-400 font-bold">
+                    <span className="text-[10px] text-text-muted font-bold">
                       · {targetCourse.duration}
                     </span>
                   )}
@@ -533,7 +533,7 @@ const TeacherApplication: React.FC = () => {
           )}
 
           {/* Form manual language switcher */}
-          <div className="flex flex-wrap gap-2 mb-8 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/60 justify-center">
+          <div className="flex flex-wrap gap-2 mb-8 p-3.5 bg-bg rounded-2xl border border-border/60 justify-center">
             {LANGUAGES_CONFIG.map((lang) => (
               <button
                 type="button"
@@ -542,7 +542,7 @@ const TeacherApplication: React.FC = () => {
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   formLang === lang.code
                     ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                    : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200/60'
+                    : 'bg-surface hover:bg-surface-2 text-text-secondary border border-border/60'
                 }`}
               >
                 {lang.name}
@@ -587,7 +587,7 @@ const TeacherApplication: React.FC = () => {
               </div>
 
               {/* Language Selection Grid */}
-              <div className="md:col-span-2 border-t border-slate-100 pt-6">
+              <div className="md:col-span-2 border-t border-border/50 pt-6">
                 <label className={labelCls}>{t.languages}</label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
                   {['English', 'Hindi', 'Telugu', 'Spanish', 'Bengali', 'Tamil', 'Kannada', 'Marathi'].map((lang) => {
@@ -606,7 +606,7 @@ const TeacherApplication: React.FC = () => {
                         className={`p-3 rounded-xl border font-bold text-xs transition-all flex items-center justify-between ${
                           isSelected 
                             ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm' 
-                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                            : 'bg-surface border-border text-text-secondary hover:bg-surface'
                         }`}
                       >
                         <span>{lang}</span>
@@ -621,7 +621,7 @@ const TeacherApplication: React.FC = () => {
                   className={inputCls} 
                   placeholder={t.otherLanguagesPlh} 
                 />
-                <div className="mt-2.5 text-xs text-slate-500 font-bold">
+                <div className="mt-2.5 text-xs text-text-secondary font-bold">
                   {t.selectedCount}: <span className="text-emerald-600 font-black">{
                     (() => {
                       const listCount = selectedLanguages.length;
@@ -633,9 +633,9 @@ const TeacherApplication: React.FC = () => {
               </div>
             </div>
 
-            <label className="flex items-start gap-3 cursor-pointer p-4 bg-slate-50/50 rounded-2xl border border-slate-200">
-              <input type="checkbox" checked={agreeTerms} onChange={e => setAgreeTerms(e.target.checked)} className="mt-1 w-5 h-5 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500" />
-              <span className="text-sm font-medium text-slate-700">{t.terms}</span>
+            <label className="flex items-start gap-3 cursor-pointer p-4 bg-bg/50 rounded-2xl border border-border">
+              <input type="checkbox" checked={agreeTerms} onChange={e => setAgreeTerms(e.target.checked)} className="mt-1 w-5 h-5 rounded border-border text-emerald-500 focus:ring-emerald-500" />
+              <span className="text-sm font-medium text-text">{t.terms}</span>
             </label>
 
             <button type="submit" disabled={submitLoading}

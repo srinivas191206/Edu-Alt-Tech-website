@@ -420,12 +420,12 @@ await finalizeEnrollment('full');
  }
 
  if (!course) {
- return <div className="min-h-screen pt-32 pb-24 text-center text-slate-500">Course not found.</div>;
+ return <div className="min-h-screen pt-32 pb-24 text-center text-text-secondary">Course not found.</div>;
  }
 
  return (
- <div className="min-h-screen pt-24 sm:pt-32 pb-24 sm:pb-32 px-4 sm:px-6 bg-slate-50 [#020617] relative overflow-hidden">
-  <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 /10 /10 rounded-full blur-[60px] pointer-events-none -translate-y-1/2 translate-x-1/3 hidden sm:block" />
+ <div className="min-h-screen pt-24 sm:pt-32 pb-24 sm:pb-32 px-4 sm:px-6 bg-bg relative overflow-hidden">
+  <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 rounded-full blur-[60px] pointer-events-none -translate-y-1/2 translate-x-1/3 hidden sm:block" />
  <motion.div
  initial={{ opacity: 0, y: 30 }}
  animate={{ opacity: 1, y: 0 }}
@@ -433,57 +433,57 @@ await finalizeEnrollment('full');
  className="max-w-4xl mx-auto relative z-10"
  ref={contentRef}
  >
-  <Link to="/courses" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 :text-white transition-colors mb-6 sm:mb-10 font-medium text-sm sm:text-base">
+  <Link to="/courses" className="inline-flex items-center gap-2 text-text-secondary hover:text-heading  transition-colors mb-6 sm:mb-10 font-medium text-sm sm:text-base">
   <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Back to Courses
   </Link>
 
  {/* Hero Card */}
-  <div className="bg-white/90 /80 backdrop-blur-2xl rounded-[1.75rem] sm:rounded-[2.5rem] p-5 sm:p-10 md:p-14 border border-slate-200/50 /50 shadow-2xl mb-6 sm:mb-8">
+  <div className="bg-surface/90 backdrop-blur-2xl rounded-2xl p-5 sm:p-10 md:p-14 border border-border/50 shadow-2xl mb-6 sm:mb-8">
   <div className="flex flex-col md:flex-row justify-between gap-4 sm:gap-6 mb-6 sm:mb-8">
   <div>
-  <div className={`mb-3 sm:mb-4 w-fit px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider ${course.category === 'education' ? 'bg-blue-100 text-blue-700 /30 ' : 'bg-purple-100 text-purple-700 /30 '}`}>
+  <div className={`mb-3 sm:mb-4 w-fit px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider ${course.category === 'education' ? 'bg-blue-100 text-blue-700 ' : 'bg-purple-100 text-purple-700 '}`}>
   {course.category}
   </div>
-  <h1 className="text-[1.6rem] leading-[1.1] sm:text-4xl md:text-5xl font-black text-slate-900 mb-3 sm:mb-4 tracking-tight">{course.title}</h1>
-  <p className="text-sm sm:text-base md:text-xl text-slate-600 font-medium leading-relaxed sm:leading-normal">{course.description}</p>
+  <h1 className="text-[1.6rem] leading-[1.1] sm:text-4xl md:text-5xl font-black text-heading mb-3 sm:mb-4 tracking-tight">{course.title}</h1>
+  <p className="text-sm sm:text-base md:text-xl text-text-secondary font-medium leading-relaxed sm:leading-normal">{course.description}</p>
   </div>
   <div className="flex flex-row md:flex-col items-center md:items-end gap-3 md:gap-0 flex-shrink-0">
   <span className="text-xl sm:text-2xl md:text-3xl font-bold text-emerald-600 md:mb-2">
    {course.price === 0 || !course.price ? 'Free' : `₹${course.price}/month`}
   </span>
-  <span className="text-xs sm:text-sm font-medium text-slate-500 flex items-center gap-1"><Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Open for enrollment</span>
+  <span className="text-xs sm:text-sm font-medium text-text-secondary flex items-center gap-1"><Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Open for enrollment</span>
   </div>
   </div>
 
- <hr className="border-slate-100 my-5 sm:my-8" />
+ <hr className="border-border/50 my-5 sm:my-8" />
 
  {/* AI Course Assistant Button */}
  <button
  onClick={() => window.dispatchEvent(new CustomEvent('openaichat', { detail: { mode: 'course' } }))}
- className="w-full mb-6 p-5 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 /5 /5 border border-emerald-200/50 /30 rounded-2xl flex items-center justify-between group hover:from-emerald-500/20 hover:to-teal-500/20 transition-colors"
+ className="w-full mb-6 p-5 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-200/50 rounded-2xl flex items-center justify-between group hover:from-emerald-500/20 hover:to-teal-500/20 transition-colors"
  >
  <div className="flex items-center gap-4">
  <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
  <Sparkles className="w-5 h-5 text-emerald-500" />
  </div>
  <div className="text-left">
- <span className="block font-bold text-slate-900 text-sm">Ask AI about this course</span>
- <span className="block text-xs text-slate-500 font-medium">Get instant answers, summaries, and learning tips</span>
+ <span className="block font-bold text-heading text-sm">Ask AI about this course</span>
+ <span className="block text-xs text-text-secondary font-medium">Get instant answers, summaries, and learning tips</span>
  </div>
  </div>
  <Sparkles className="w-5 h-5 text-emerald-400 group-hover:rotate-12 transition-transform" />
  </button>
 
   {/* Action Area depending on Enrollment */}
-  <div className="bg-slate-50 p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-slate-100 ">
+  <div className="bg-bg p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-border/50 ">
  {enrollment ? (
  <div className="flex flex-col items-center text-center">
   {enrollment.role === 'student' ? (
   enrollment.paymentStatus === 'pending' ? (
   <>
   <AlertCircle className="w-12 h-12 sm:w-16 sm:h-16 text-blue-500 mb-3 sm:mb-4" />
-  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">Mentor Assigned!</h2>
-  <p className="text-sm sm:text-base text-slate-600 max-w-md mx-auto mb-5 sm:mb-6">
+  <h2 className="text-xl sm:text-2xl font-bold text-heading mb-2">Mentor Assigned!</h2>
+  <p className="text-sm sm:text-base text-text-secondary max-w-md mx-auto mb-5 sm:mb-6">
   A mentor is ready to teach you. Please complete the payment to start learning.
   </p>
    <button onClick={handleJoinAsStudent} className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 sm:py-4 px-6 sm:px-8 rounded-xl shadow-lg transition-colors w-full sm:w-auto text-sm sm:text-base">
@@ -493,25 +493,25 @@ await finalizeEnrollment('full');
    ) : (
    <>
    <CheckCircle2 className="w-12 h-12 sm:w-16 sm:h-16 text-emerald-500 mb-3 sm:mb-4" />
-   <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">You are enrolled!</h2>
+   <h2 className="text-xl sm:text-2xl font-bold text-heading mb-2">You are enrolled!</h2>
    <Link to="/dashboard" className="text-emerald-600 hover:underline mt-2 font-medium flex items-center gap-1 text-sm sm:text-base">
    Go to Dashboard <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
    </Link>
-   <p className="text-xs text-slate-400 mt-4">Want to learn from a different mentor? Select one below and enroll again.</p>
+   <p className="text-xs text-text-muted mt-4">Want to learn from a different mentor? Select one below and enroll again.</p>
   <div className="w-full mt-4 space-y-4">
     {mentors.map(m => (
       <div
       key={m.userId}
       onClick={() => setSelectedMentor(m.userId)}
-      className={`p-4 border-2 rounded-xl cursor-pointer transition-colors ${selectedMentor === m.userId ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 hover:border-slate-300'}`}
+      className={`p-4 border-2 rounded-xl cursor-pointer transition-colors ${selectedMentor === m.userId ? 'border-emerald-500 bg-emerald-50' : 'border-border hover'}`}
       >
       <div className="flex justify-between items-start mb-2 gap-2">
-        <p className="font-bold text-slate-900 text-base sm:text-lg">{m.name}</p>
+        <p className="font-bold text-heading text-base sm:text-lg">{m.name}</p>
         {selectedMentor === m.userId && <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500 shrink-0" />}
       </div>
-      <p className="text-xs sm:text-sm text-slate-500 mb-1 leading-snug"><strong>Experience:</strong> {m.experience}</p>
-      {m.highestQualification && <p className="text-xs sm:text-sm text-slate-500 mb-1 leading-snug"><strong>Qualification:</strong> {m.highestQualification}</p>}
-      <p className="text-xs sm:text-sm text-slate-500 leading-snug"><strong>Skills:</strong> {m.skills}</p>
+      <p className="text-xs sm:text-sm text-text-secondary mb-1 leading-snug"><strong>Experience:</strong> {m.experience}</p>
+      {m.highestQualification && <p className="text-xs sm:text-sm text-text-secondary mb-1 leading-snug"><strong>Qualification:</strong> {m.highestQualification}</p>}
+      <p className="text-xs sm:text-sm text-text-secondary leading-snug"><strong>Skills:</strong> {m.skills}</p>
     </div>
     ))}
     <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
@@ -526,7 +526,7 @@ await finalizeEnrollment('full');
       <button
       onClick={handleJoinAsStudent}
       disabled={enrollLoading || !selectedMentor}
-      className="flex-1 bg-slate-900 text-white font-bold py-3.5 sm:py-4 px-5 sm:px-8 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-xs sm:text-sm"
+      className="flex-1 bg-primary text-white font-bold py-3.5 sm:py-4 px-5 sm:px-8 rounded-xl hover:bg-surface-2 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-xs sm:text-sm"
       >
       {enrollLoading ? <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" /> : (selectedMentor ? `Pay ₹${course.price}/mo — Full` : 'Select Mentor')}
       </button>
@@ -538,8 +538,8 @@ await finalizeEnrollment('full');
  ) : (
   <>
   <CheckCircle2 className="w-12 h-12 sm:w-16 sm:h-16 text-purple-500 mb-3 sm:mb-4" />
-  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">Teacher Application Submitted</h2>
-  <p className="text-sm sm:text-base text-slate-600 max-w-md mx-auto mb-5 sm:mb-6">
+  <h2 className="text-xl sm:text-2xl font-bold text-heading mb-2">Teacher Application Submitted</h2>
+  <p className="text-sm sm:text-base text-text-secondary max-w-md mx-auto mb-5 sm:mb-6">
   You have applied to teach this course. Check your dashboard for appointment updates.
   </p>
   <Link to="/dashboard" className="text-purple-600 hover:underline mt-2 font-medium flex items-center gap-1 text-sm sm:text-base">
@@ -550,12 +550,12 @@ await finalizeEnrollment('full');
  </div>
  ) : (
  <div className="flex flex-col gap-6">
-  <div className="flex-1 bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl shadow-sm">
+  <div className="flex-1 bg-surface border border-border p-5 sm:p-6 rounded-2xl shadow-sm">
   <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2"><BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500"/> Join as a Student</h3>
  {mentors.length === 0 ? (
- <div className="p-4 bg-slate-50 rounded-xl text-center">
- <p className="text-slate-500 font-medium">No active mentors available right now.</p>
- <p className="text-sm mt-1 text-slate-400">Please wait for a mentor to be approved to teach.</p>
+ <div className="p-4 bg-bg rounded-xl text-center">
+ <p className="text-text-secondary font-medium">No active mentors available right now.</p>
+ <p className="text-sm mt-1 text-text-muted">Please wait for a mentor to be approved to teach.</p>
  </div>
  ) : (
  <div className="space-y-4">
@@ -563,21 +563,21 @@ await finalizeEnrollment('full');
  <div 
  key={m.userId}
  onClick={() => setSelectedMentor(m.userId)}
- className={`p-4 border-2 rounded-xl cursor-pointer transition-colors ${selectedMentor === m.userId ? 'border-emerald-500 bg-emerald-50 /20' : 'border-slate-200 hover:border-slate-300 :border-slate-700'}`}
+ className={`p-4 border-2 rounded-xl cursor-pointer transition-colors ${selectedMentor === m.userId ? 'border-emerald-500 bg-emerald-50 /20' : 'border-border hover '}`}
  >
       <div className="flex justify-between items-start mb-2 gap-2">
-  <p className="font-bold text-slate-900 text-base sm:text-lg">{m.name}</p>
+  <p className="font-bold text-heading text-base sm:text-lg">{m.name}</p>
   {selectedMentor === m.userId && <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500 shrink-0" />}
   </div>
-  <p className="text-xs sm:text-sm text-slate-500 mb-1 leading-snug"><strong>Experience:</strong> {m.experience}</p>
-  {m.highestQualification && <p className="text-xs sm:text-sm text-slate-500 mb-1 leading-snug"><strong>Qualification:</strong> {m.highestQualification}</p>}
-  <p className="text-xs sm:text-sm text-slate-500 leading-snug"><strong>Skills:</strong> {m.skills}</p>
- {m.message && <p className="text-xs text-slate-400 mt-2 italic">"{m.message}"</p>}
+  <p className="text-xs sm:text-sm text-text-secondary mb-1 leading-snug"><strong>Experience:</strong> {m.experience}</p>
+  {m.highestQualification && <p className="text-xs sm:text-sm text-text-secondary mb-1 leading-snug"><strong>Qualification:</strong> {m.highestQualification}</p>}
+  <p className="text-xs sm:text-sm text-text-secondary leading-snug"><strong>Skills:</strong> {m.skills}</p>
+ {m.message && <p className="text-xs text-text-muted mt-2 italic">"{m.message}"</p>}
  
  {m.proposedPath && m.proposedPath.length > 0 && (
- <div className="mt-3 pt-3 border-t border-slate-100 ">
- <p className="text-xs font-bold text-slate-700 mb-1">Proposed Curriculum:</p>
- <ul className="list-disc list-inside text-xs text-slate-500 space-y-1">
+ <div className="mt-3 pt-3 border-t border-border/50 ">
+ <p className="text-xs font-bold text-text mb-1">Proposed Curriculum:</p>
+ <ul className="list-disc list-inside text-xs text-text-secondary space-y-1">
  {m.proposedPath.map((pathItem: string, idx: number) => (
  <li key={idx} className="truncate">{pathItem}</li>
  ))}
@@ -598,7 +598,7 @@ await finalizeEnrollment('full');
     <button
     onClick={handleJoinAsStudent}
     disabled={enrollLoading || !selectedMentor}
-    className="flex-1 bg-slate-900 text-white font-bold py-3.5 sm:py-4 px-5 sm:px-8 rounded-xl hover:bg-slate-800 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-xs sm:text-sm"
+    className="flex-1 bg-primary text-white font-bold py-3.5 sm:py-4 px-5 sm:px-8 rounded-xl hover:bg-surface-2 transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2 text-xs sm:text-sm"
     >
     {enrollLoading ? <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" /> : (selectedMentor ? `Pay ₹${course.price}/mo — Full` : 'Select Mentor')}
     </button>
@@ -609,30 +609,30 @@ await finalizeEnrollment('full');
  )}
  </div>
 
-  <div className="flex-1 bg-slate-50/80 /40 backdrop-blur border border-purple-200/50 /30 p-5 sm:p-6 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
+  <div className="flex-1 bg-bg/80 backdrop-blur border border-purple-200/50 p-5 sm:p-6 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
   <h3 className="text-base sm:text-lg font-bold mb-2 flex items-center justify-center gap-2"><Users className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500"/> Teach this Course</h3>
- <p className="text-slate-500 text-sm mb-4 max-w-sm">
+ <p className="text-text-secondary text-sm mb-4 max-w-sm">
  Are you qualified to teach this subject? Apply to become a mentor and start teaching students securely.
  </p>
  {myAppStatus === 'pending' || myAppStatus === 'scheduled' ? (
- <button disabled className="w-full max-w-xs bg-slate-200 text-slate-500 font-bold py-3 px-8 rounded-xl cursor-not-allowed">
+ <button disabled className="w-full max-w-xs bg-border text-text-secondary font-bold py-3 px-8 rounded-xl cursor-not-allowed">
  Application Under Review
  </button>
  ) : myAppStatus === 'rejected' ? (
  <button 
  onClick={handleApplyToTeach}
- className="w-full max-w-xs bg-white text-purple-600 border-2 border-purple-200 hover:border-purple-500 :border-purple-500 font-bold py-3 px-8 rounded-xl transition-colors shadow-sm"
+ className="w-full max-w-xs bg-surface text-purple-600 border-2 border-purple-200 hover:border-purple-500 font-bold py-3 px-8 rounded-xl transition-colors shadow-sm"
  >
  Re-apply to Teach
  </button>
  ) : myAppStatus === 'approved' ? (
- <button disabled className="w-full max-w-xs bg-emerald-50 /20 text-emerald-600 font-bold py-3 px-8 rounded-xl cursor-not-allowed border border-emerald-200 ">
+ <button disabled className="w-full max-w-xs bg-emerald-50 text-emerald-600 font-bold py-3 px-8 rounded-xl cursor-not-allowed border border-emerald-200 ">
  You are a Mentor
  </button>
  ) : (
  <button 
  onClick={handleApplyToTeach}
- className="w-full max-w-xs bg-white text-purple-600 border-2 border-purple-200 hover:border-purple-500 :border-purple-500 font-bold py-3 px-8 rounded-xl transition-colors shadow-sm"
+ className="w-full max-w-xs bg-surface text-purple-600 border-2 border-purple-200 hover:border-purple-500 font-bold py-3 px-8 rounded-xl transition-colors shadow-sm"
  >
  Apply to Teach
  </button>
