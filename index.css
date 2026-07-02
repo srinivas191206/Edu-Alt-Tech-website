@@ -10,15 +10,15 @@
   --surface-rgb: 255, 255, 255;
   --surface-2-rgb: 241, 245, 249;
 
-  --text-rgb: 51, 65, 85;
-  --text-secondary-rgb: 100, 116, 139;
-  --text-muted-rgb: 148, 163, 184;
+  --text-rgb: 15, 23, 42;
+  --text-secondary-rgb: 71, 85, 105;
+  --text-muted-rgb: 100, 116, 139;
 
   --heading-rgb: 2, 6, 23;
   --border-rgb: 226, 232, 240;
 
-  --primary-rgb: 16, 185, 129;
-  --primary-hover-rgb: 5, 150, 105;
+  --primary-rgb: 4, 120, 87;
+  --primary-hover-rgb: 6, 95, 70;
   --accent-rgb: 13, 148, 136;
 
   --bg: rgb(var(--bg-rgb));
