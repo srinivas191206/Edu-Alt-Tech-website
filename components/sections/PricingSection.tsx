@@ -158,7 +158,7 @@ const PricingSection: React.FC = () => {
  };
 
  return (
- <section className="py-24 md:py-40 bg-slate-50 [#020617] transition-colors duration-300 relative overflow-hidden">
+ <section className="py-24 md:py-40 bg-slate-50 transition-colors duration-300 relative overflow-hidden">
  <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMTQ4LCAxNjMsIDE4NCwgMC4xKSIvPjwvc3ZnPg==')] opacity-50 pointer-events-none" />
  <div className="max-w-[1400px] mx-auto px-6 relative z-10">
  <motion.div
@@ -230,7 +230,7 @@ const PricingSection: React.FC = () => {
  className={`w-full py-5 rounded-2xl font-black text-center transition-all hover:-translate-y-1 ${
  plan.popular
  ? 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-lg shadow-emerald-500/30'
- : 'bg-slate-100 hover:bg-slate-200 :bg-slate-700 text-slate-900 '
+ : 'bg-slate-100 hover:bg-slate-200 text-slate-900 '
  } ${processingPlan === plan.name ? 'opacity-70 cursor-not-allowed translate-y-0' : ''}`}
  >
  {processingPlan === plan.name ? 'Connecting...' : (plan.price === 'Free' || plan.price === 'Custom' ? 'Contact Us' : plan.button)}

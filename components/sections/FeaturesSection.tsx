@@ -44,7 +44,7 @@ const FeaturesSection: React.FC = () => {
  const [activeTab, setActiveTab] = useState<typeof tabs[number]>('Students');
 
  return (
- <section className="py-24 md:py-40 bg-white [#020617] transition-colors duration-300 relative overflow-hidden">
+ <section className="py-24 md:py-40 bg-white transition-colors duration-300 relative overflow-hidden">
  <div className="absolute top-1/2 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 /10 /10 rounded-full blur-[50px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
 
  <div className="max-w-[1400px] mx-auto px-6 relative z-10">
@@ -78,7 +78,7 @@ const FeaturesSection: React.FC = () => {
  key={tab}
  onClick={() => setActiveTab(tab)}
  className={`relative px-6 md:px-8 py-4 rounded-[1.5rem] text-sm font-bold transition-colors duration-300 z-10 ${
- activeTab === tab ? 'text-white shadow-lg' : 'text-slate-500 hover:text-slate-800 :text-white'
+ activeTab === tab ? 'text-white shadow-lg' : 'text-slate-500 hover:text-slate-800'
  }`}
  >
  {activeTab === tab && (

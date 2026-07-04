@@ -181,14 +181,14 @@ const AIAssistant: React.FC = () => {
       </button>
 
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] bg-white :bg-gray-900 rounded-3xl border border-slate-200 :border-slate-700 shadow-2xl flex flex-col overflow-hidden max-h-[600px]">
+        <div className="fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] bg-white rounded-3xl border border-slate-200 shadow-2xl flex flex-col overflow-hidden max-h-[600px]">
           {!currentUser ? (
             <div className="p-8 flex flex-col items-center justify-center text-center min-h-[300px]">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4">
                 <img src="/logo.png" alt="EduAltTech Logo" loading="lazy" className="w-10 h-10 object-contain" />
               </div>
-              <h3 className="text-lg font-bold text-slate-800 :text-white mb-2">Sign in to use Kyo Ai</h3>
-              <p className="text-sm text-slate-500 :text-slate-400 mb-6 max-w-[240px]">Your AI learning assistant is just a login away</p>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">Sign in to use Kyo Ai</h3>
+              <p className="text-sm text-slate-500 mb-6 max-w-[240px]">Your AI learning assistant is just a login away</p>
               <button
                 onClick={() => { setIsOpen(false); navigate('/login'); }}
                 className="flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-emerald-500/20"
@@ -197,20 +197,20 @@ const AIAssistant: React.FC = () => {
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="absolute top-4 right-4 p-2 hover:bg-slate-100 :hover:bg-slate-800 rounded-xl transition-colors"
+                className="absolute top-4 right-4 p-2 hover:bg-slate-100 rounded-xl transition-colors"
               >
-                <X className="w-4 h-4 text-slate-400 :text-slate-500" />
+                <X className="w-4 h-4 text-slate-400" />
               </button>
             </div>
           ) : (
-          <><div className="p-4 border-b border-slate-100 :border-slate-700 flex items-center justify-between bg-slate-50 :bg-gray-800">
+          <><div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden">
                 <img src="/logo.png" alt="AI" loading="lazy" className="w-full h-full object-cover" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm text-slate-900 :text-white">Kyo Ai</span>
+                  <span className="font-bold text-sm text-slate-900">Kyo Ai</span>
                   <span className="flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -219,23 +219,23 @@ const AIAssistant: React.FC = () => {
                 <div className="relative">
                   <button
                     onClick={() => setShowModePicker(!showModePicker)}
-                    className="flex items-center gap-1 text-[10px] font-bold text-slate-400 :text-slate-400 hover:text-emerald-500 transition-colors"
+                    className="flex items-center gap-1 text-[10px] font-bold text-slate-400 hover:text-emerald-500 transition-colors"
                   >
                     {currentMode?.label}
                     <ChevronDown className="w-3 h-3" />
                   </button>
                   {showModePicker && (
-                    <div className="absolute top-full left-0 mt-1 bg-white :bg-gray-800 rounded-xl border border-slate-200 :border-slate-700 shadow-xl p-1 z-10 min-w-[200px]">
+                    <div className="absolute top-full left-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl p-1 z-10 min-w-[200px]">
                       {MODES.map(m => (
                         <button
                           key={m.id}
                           onClick={() => switchMode(m.id)}
-                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${mode === m.id ? 'bg-emerald-50 :bg-emerald-900/20 text-emerald-600 ' : 'text-slate-600 :text-slate-300 hover:bg-slate-50 :hover:bg-slate-700'}`}
+                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${mode === m.id ? 'bg-emerald-50 text-emerald-600 ' : 'text-slate-600 hover:bg-slate-50
                         >
                           {m.icon}
                           <div className="text-left">
                             <span className="block">{m.label}</span>
-                            <span className="block text-[9px] font-medium text-slate-400 :text-slate-400">{m.description}</span>
+                            <span className="block text-[9px] font-medium text-slate-400">{m.description}</span>
                           </div>
                         </button>
                       ))}
@@ -248,24 +248,24 @@ const AIAssistant: React.FC = () => {
               <Link
                 to="/search-history"
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-slate-100 :bg-slate-800 rounded-xl transition-colors"
+                className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
                 title="Search History"
               >
-                <History className="w-4 h-4 text-slate-400 :text-slate-400" />
+                <History className="w-4 h-4 text-slate-400" />
               </Link>
               <Link
                 to="/ai"
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-slate-100 :bg-slate-800 rounded-xl transition-colors"
+                className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
                 title="Open Full Page"
               >
-                <Maximize2 className="w-4 h-4 text-slate-400 :text-slate-400" />
+                <Maximize2 className="w-4 h-4 text-slate-400" />
               </Link>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-slate-100 :bg-slate-800 rounded-xl transition-colors"
+                className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
               >
-                <X className="w-4 h-4 text-slate-400 :text-slate-400" />
+                <X className="w-4 h-4 text-slate-400" />
               </button>
             </div>
           </div>
@@ -277,7 +277,7 @@ const AIAssistant: React.FC = () => {
                   <div className={`max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed ${
                     msg.role === 'user'
                     ? 'bg-emerald-500 text-white rounded-br-md'
-                    : 'bg-slate-100 :bg-gray-700 text-slate-700 :text-slate-200 rounded-bl-md'
+                    : 'bg-slate-100 text-slate-700 rounded-bl-md'
                   }`}>
                     <p className="whitespace-pre-wrap">{msg.content}</p>
                   </div>
@@ -286,7 +286,7 @@ const AIAssistant: React.FC = () => {
                   <div className="flex justify-start ml-2 mt-1">
                     <button
                       onClick={() => handleSend("Please elaborate more on your previous response and provide more details.")}
-                      className="text-[10px] font-semibold text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 :hover:bg-emerald-900/20 px-2 py-1 rounded-lg transition-colors"
+                      className="text-[10px] font-semibold text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 px-2 py-1 rounded-lg transition-colors"
                     >
                       + Extend
                     </button>
@@ -296,7 +296,7 @@ const AIAssistant: React.FC = () => {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-slate-100 :bg-gray-700 rounded-2xl rounded-bl-md p-4">
+                <div className="bg-slate-100 rounded-2xl rounded-bl-md p-4">
                   <div className="flex gap-1.5">
                     <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                     <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -308,7 +308,7 @@ const AIAssistant: React.FC = () => {
             <div ref={bottomRef} />
           </div>
 
-          <div className="p-4 border-t border-slate-100 :border-slate-700">
+          <div className="p-4 border-t border-slate-100
             <div className="flex gap-2">
               <input
                 ref={inputRef}
@@ -317,7 +317,7 @@ const AIAssistant: React.FC = () => {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask Kyo Ai anything..."
                 disabled={loading}
-                className="flex-1 p-3 bg-slate-50 :bg-gray-800 rounded-2xl outline-none font-medium text-sm border border-transparent focus:border-emerald-500 transition-colors disabled:opacity-50 :text-white"
+                className="flex-1 p-3 bg-slate-50 rounded-2xl outline-none font-medium text-sm border border-transparent focus:border-emerald-500 transition-colors disabled:opacity-50"
               />
               <button
                 onClick={() => handleSend()}

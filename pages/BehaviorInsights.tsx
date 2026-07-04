@@ -103,14 +103,14 @@ const BehaviorInsights: React.FC = () => {
  }
 
  return (
- <div className="min-h-screen pt-28 pb-32 px-6 bg-slate-50 [#020617] selection:bg-emerald-500/30">
+ <div className="min-h-screen pt-28 pb-32 px-6 bg-slate-50 selection:bg-emerald-500/30">
  <div className="fixed inset-0 overflow-hidden pointer-events-none">
  <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-amber-500/10 blur-[60px] rounded-full" />
  <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-rose-500/10 blur-[60px] rounded-full" />
  </div>
 
  <div className="max-w-6xl mx-auto relative z-10">
- <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 :text-white transition-colors text-sm font-bold mb-8 group">
+ <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors text-sm font-bold mb-8 group">
  <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
  Back
  </button>
@@ -180,7 +180,7 @@ const BehaviorInsights: React.FC = () => {
  const avgScore = s.metrics.length ? Math.round(s.metrics.reduce((sum, m) => sum + (m.avgScore || 0), 0) / s.metrics.length) : 0;
  const avgEngagement = s.metrics.length ? Math.round(s.metrics.reduce((sum, m) => sum + (m.engagementScore || 0), 0) / s.metrics.length) : 0;
  return (
- <tr key={s.uid} className="hover:bg-slate-50 :bg-slate-800/30 transition-colors">
+ <tr key={s.uid} className="hover:bg-slate-50 transition-colors">
  <td className="px-8 py-5">
  <div className="flex items-center gap-3">
  <span className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-xs font-black">{i + 1}</span>

@@ -425,7 +425,7 @@ await finalizeEnrollment('full');
  }
 
  return (
- <div className="min-h-screen pt-24 sm:pt-32 pb-24 sm:pb-32 px-4 sm:px-6 bg-slate-50 [#020617] relative overflow-hidden">
+ <div className="min-h-screen pt-24 sm:pt-32 pb-24 sm:pb-32 px-4 sm:px-6 bg-slate-50 relative overflow-hidden">
   <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 /10 /10 rounded-full blur-[60px] pointer-events-none -translate-y-1/2 translate-x-1/3 hidden sm:block" />
  <motion.div
  initial={{ opacity: 0, y: 30 }}
@@ -434,7 +434,7 @@ await finalizeEnrollment('full');
  className="max-w-4xl mx-auto relative z-10"
  ref={contentRef}
  >
-  <Link to="/courses" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 :text-white transition-colors mb-6 sm:mb-10 font-medium text-sm sm:text-base">
+  <Link to="/courses" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors mb-6 sm:mb-10 font-medium text-sm sm:text-base">
   <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Back to Courses
   </Link>
 
@@ -564,7 +564,7 @@ await finalizeEnrollment('full');
  <div 
  key={m.userId}
  onClick={() => setSelectedMentor(m.userId)}
- className={`p-4 border-2 rounded-xl cursor-pointer transition-colors ${selectedMentor === m.userId ? 'border-emerald-500 bg-emerald-50 /20' : 'border-slate-200 hover:border-slate-300 :border-slate-700'}`}
+ className={`p-4 border-2 rounded-xl cursor-pointer transition-colors ${selectedMentor === m.userId ? 'border-emerald-500 bg-emerald-50 /20' : 'border-slate-200 hover:border-slate-300
  >
       <div className="flex justify-between items-start mb-2 gap-2">
   <p className="font-bold text-slate-900 text-base sm:text-lg">{m.name}</p>
@@ -622,7 +622,7 @@ await finalizeEnrollment('full');
  ) : myAppStatus === 'rejected' ? (
  <button 
  onClick={handleApplyToTeach}
- className="w-full max-w-xs bg-white text-purple-600 border-2 border-purple-200 hover:border-purple-500 :border-purple-500 font-bold py-3 px-8 rounded-xl transition-colors shadow-sm"
+ className="w-full max-w-xs bg-white text-purple-600 border-2 border-purple-200 hover:border-purple-500 font-bold py-3 px-8 rounded-xl transition-colors shadow-sm"
  >
  Re-apply to Teach
  </button>
@@ -633,7 +633,7 @@ await finalizeEnrollment('full');
  ) : (
  <button 
  onClick={handleApplyToTeach}
- className="w-full max-w-xs bg-white text-purple-600 border-2 border-purple-200 hover:border-purple-500 :border-purple-500 font-bold py-3 px-8 rounded-xl transition-colors shadow-sm"
+ className="w-full max-w-xs bg-white text-purple-600 border-2 border-purple-200 hover:border-purple-500 font-bold py-3 px-8 rounded-xl transition-colors shadow-sm"
  >
  Apply to Teach
  </button>

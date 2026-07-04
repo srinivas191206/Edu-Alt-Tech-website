@@ -5,6 +5,7 @@ import { Loader2, FileText, ArrowLeft, Terminal, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import HamsterLoader from '../components/HamsterLoader';
 
 const PatchNotes: React.FC = () => {
  const [notes, setNotes] = useState<PatchNote[]>([]);
@@ -49,11 +50,11 @@ const PatchNotes: React.FC = () => {
  };
 
  if (loading) {
- return <div className="min-h-screen pt-32 flex justify-center"><Loader2 className="w-10 h-10 animate-spin text-emerald-600" /></div>;
+ return <HamsterLoader />;
  }
 
  return (
- <div className="min-h-screen pt-32 pb-32 px-6 bg-slate-50 [#020617] text-slate-900 relative overflow-hidden">
+ <div className="min-h-screen pt-32 pb-32 px-6 bg-slate-50 text-slate-900 relative overflow-hidden">
  <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 /10 /10 rounded-full blur-[60px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
  <div className="max-w-4xl mx-auto relative z-10" ref={containerRef}>
  <motion.div
@@ -62,7 +63,7 @@ const PatchNotes: React.FC = () => {
  className="flex items-center justify-between mb-16"
  >
  <div>
- <Link to="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 :text-white transition-colors mb-6 font-medium">
+ <Link to="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors mb-6 font-medium">
  <ArrowLeft className="w-4 h-4" /> Back to Home
  </Link>
  <h1 className="text-5xl md:text-6xl font-black flex items-center gap-4 tracking-tighter">
@@ -104,7 +105,7 @@ const PatchNotes: React.FC = () => {
  {isAdmin && (
  <button 
  onClick={() => handleDeleteNote(note.id)}
- className="absolute top-12 right-6 p-2 bg-rose-100 text-rose-600 /30 rounded-xl hover:bg-rose-200 :bg-rose-800 transition"
+ className="absolute top-12 right-6 p-2 bg-rose-100 text-rose-600 /30 rounded-xl hover:bg-rose-200 transition"
  title="Delete Patch Note"
  >
  <Trash2 className="w-5 h-5" />

@@ -14,6 +14,7 @@ import type { EnrollmentPlan } from '../types';
 import { getLastReadTimestamps, markCourseRead, computeUnreadCount } from '../lib/chatNotifications';
 import DoubtSolver from '../components/DoubtSolver';
 import LearningPathView from '../components/LearningPathView';
+import HamsterLoader from '../components/HamsterLoader';
 
 const CourseClassroom: React.FC = () => {
  const { courseId } = useParams<{ courseId: string }>();
@@ -420,14 +421,7 @@ const CourseClassroom: React.FC = () => {
  }
  };
 
- if (loading) return (
- <div className="min-h-screen bg-slate-50 [#020617] flex flex-col items-center justify-center gap-4">
- <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} style={{ willChange: 'transform' }}>
- <Loader2 className="w-12 h-12 text-purple-500" />
- </motion.div>
- <p className="text-slate-500 font-black uppercase tracking-widest text-xs animate-pulse">Entering Virtual Environment...</p>
- </div>
- );
+ if (loading) return <HamsterLoader />;
  
  if (!course) return null;
 
@@ -441,7 +435,7 @@ const CourseClassroom: React.FC = () => {
   const isRestricted = plan !== 'full';
 
   return (
- <div className="min-h-screen pt-28 pb-32 px-6 bg-slate-50 [#020617] selection:bg-purple-500/30">
+ <div className="min-h-screen pt-28 pb-32 px-6 bg-slate-50 selection:bg-purple-500/30">
  {/* Background Ambience */}
  <div className="fixed inset-0 overflow-hidden pointer-events-none">
  <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-500/10 blur-[60px] rounded-full" />
@@ -452,7 +446,7 @@ const CourseClassroom: React.FC = () => {
 
  {/* Navigation & Title */}
  <header className="mb-12">
- <Link to="/dashboard" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 :text-white transition-colors text-sm font-bold mb-6 group">
+ <Link to="/dashboard" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors text-sm font-bold mb-6 group">
  <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
  Back to Command Center
  </Link>
@@ -507,13 +501,13 @@ const CourseClassroom: React.FC = () => {
  <div className="flex items-center gap-4 p-2 bg-white rounded-3xl border border-slate-200 w-fit">
  <button 
  onClick={() => handleTabClick('roadmap')}
- className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'roadmap' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' : 'text-slate-500 hover:bg-slate-50 :bg-slate-800'}`}
+ className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'roadmap' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' : 'text-slate-500 hover:bg-slate-50'}`}
  >
  <Layout className="w-4 h-4" /> Curriculum Roadmap
  </button>
   <button 
   onClick={() => handleTabClick('chat')}
-  className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'chat' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'text-slate-500 hover:bg-slate-50 :bg-slate-800'}`}
+  className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'chat' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'text-slate-500 hover:bg-slate-50'}`}
   >
   <MessageCircle className="w-4 h-4" /> Intelligence Exchange
   {chatUnreadCount > 0 && activeTab !== 'chat' && (
@@ -525,14 +519,14 @@ const CourseClassroom: React.FC = () => {
  {role === 'student' && (
  <button 
  onClick={() => handleTabClick('path')}
- className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'path' ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20' : 'text-slate-500 hover:bg-slate-50 :bg-slate-800'}`}
+ className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'path' ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20' : 'text-slate-500 hover:bg-slate-50'}`}
  >
  <Target className="w-4 h-4" /> AI Roadmap
  </button>
  )}
  <button 
  onClick={() => handleTabClick('live')}
- className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'live' ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' : 'text-slate-500 hover:bg-slate-50 :bg-slate-800'}`}
+ className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'live' ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' : 'text-slate-500 hover:bg-slate-50'}`}
  >
  <Calendar className="w-4 h-4" /> Live Classes
  </button>
@@ -572,7 +566,7 @@ const CourseClassroom: React.FC = () => {
  className="relative md:pl-20"
  >
  {/* Milestone Marker */}
- <div className={`absolute left-[30px] top-10 w-5 h-5 rounded-full border-4 border-slate-50 [#020617] z-20 transition-all duration-500 hidden md:flex items-center justify-center ${
+ <div className={`absolute left-[30px] top-10 w-5 h-5 rounded-full border-4 border-slate-50 z-20 transition-all duration-500 hidden md:flex items-center justify-center ${
  isCompleted ? 'bg-emerald-500 scale-125 shadow-[0_0_20px_rgba(16,185,129,0.5)]' : 'bg-slate-300 '
  }`} />
 
@@ -652,7 +646,7 @@ const CourseClassroom: React.FC = () => {
      className={`p-5 rounded-3xl border border-transparent transition-colors group/lec relative ${
       isLocked 
        ? 'opacity-65 cursor-pointer bg-slate-50/50 hover:border-amber-500/30 hover:bg-amber-500/5' 
-       : 'bg-slate-50/50 hover:border-purple-500/20 hover:bg-white :bg-slate-800 transition-colors'
+       : 'bg-slate-50/50 hover:border-purple-500/20 hover:bg-white transition-colors'
      }`}
     >
      <div className="flex justify-between items-start mb-4">
@@ -890,7 +884,7 @@ const CourseClassroom: React.FC = () => {
      className={`flex items-center gap-4 p-4 rounded-2xl border border-transparent transition-colors group ${
       isResourceLocked 
        ? 'opacity-65 cursor-pointer bg-slate-50/50 hover:border-amber-500/30 hover:bg-amber-500/5' 
-       : 'bg-slate-50/50 hover:border-purple-500/30 hover:bg-white :bg-slate-800'
+       : 'bg-slate-50/50 hover:border-purple-500/30 hover:bg-white'
      }`}
     >
      <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform">

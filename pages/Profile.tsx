@@ -160,7 +160,7 @@ const Profile: React.FC = () => {
  if (!userProfile) return null;
 
  return (
- <div className="min-h-screen pt-32 pb-32 px-6 bg-slate-50 [#020617] relative overflow-hidden">
+ <div className="min-h-screen pt-32 pb-32 px-6 bg-slate-50 relative overflow-hidden">
  <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 /10 /10 rounded-full blur-[60px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
  <motion.div
  initial={{ opacity: 0, y: 30 }}
@@ -178,7 +178,7 @@ const Profile: React.FC = () => {
  </div>
  
  {!isEditing && (
- <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 :bg-slate-700 text-slate-800 font-semibold py-2 px-4 rounded-xl transition-colors">
+ <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2 px-4 rounded-xl transition-colors">
  <Edit3 className="w-4 h-4" /> Edit Profile
  </button>
  )}
@@ -331,7 +331,7 @@ const Profile: React.FC = () => {
  <div className="pt-6 flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-100 ">
  {isEditing ? (
  <>
- <button onClick={() => { setIsEditing(false); setSuccessMsg(''); }} disabled={saving} className="w-full sm:w-auto hover:bg-slate-100 :bg-slate-800 text-slate-700 font-bold py-4 px-8 rounded-2xl transition-colors">
+ <button onClick={() => { setIsEditing(false); setSuccessMsg(''); }} disabled={saving} className="w-full sm:w-auto hover:bg-slate-100 text-slate-700 font-bold py-4 px-8 rounded-2xl transition-colors">
  Cancel
  </button>
  <button onClick={handleSaveProfile} disabled={saving} className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50">
@@ -340,7 +340,7 @@ const Profile: React.FC = () => {
  </button>
  </>
  ) : (
- <button onClick={handleLogout} className="w-full sm:w-auto bg-red-50 hover:bg-red-100 /20 :bg-red-900/40 text-red-600 font-bold py-4 px-8 rounded-2xl transition-all flex items-center justify-center gap-2 active:scale-95">
+ <button onClick={handleLogout} className="w-full sm:w-auto bg-red-50 hover:bg-red-100 /20 text-red-600 font-bold py-4 px-8 rounded-2xl transition-all flex items-center justify-center gap-2 active:scale-95">
  <LogOut className="w-5 h-5" />
  Logout Account
  </button>

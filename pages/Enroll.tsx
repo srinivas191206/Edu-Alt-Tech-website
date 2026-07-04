@@ -50,7 +50,7 @@ const Enroll: React.FC = () => {
 
  if (isDone) {
  return (
- <div className="pt-32 pb-24 px-6 flex items-center justify-center min-h-screen bg-slate-50 [#020617] relative overflow-hidden">
+ <div className="pt-32 pb-24 px-6 flex items-center justify-center min-h-screen bg-slate-50 relative overflow-hidden">
  <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-emerald-500/10 to-indigo-500/10 rounded-full blur-[60px] pointer-events-none" />
  <motion.div
  initial={{ opacity: 0, scale: 0.9 }}
@@ -74,11 +74,11 @@ const Enroll: React.FC = () => {
  </div>
  <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
  <a href={LINKS.enroll} target="_blank" rel="noopener noreferrer"
- className="w-full sm:w-auto px-8 py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 :bg-emerald-500 transition-colors shadow-xl flex items-center justify-center gap-2"
+ className="w-full sm:w-auto px-8 py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition-colors shadow-xl flex items-center justify-center gap-2"
  >
  Didn't open? Click here <ExternalLink className="w-4 h-4" />
  </a>
- <Link to="/" className="w-full sm:w-auto px-8 py-5 bg-white text-slate-900 font-bold rounded-2xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 :bg-emerald-900/20 transition-colors flex items-center justify-center gap-2">
+ <Link to="/" className="w-full sm:w-auto px-8 py-5 bg-white text-slate-900 font-bold rounded-2xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition-colors flex items-center justify-center gap-2">
  <Home className="w-4 h-4" /> Back to Home
  </Link>
  </div>
@@ -88,7 +88,7 @@ const Enroll: React.FC = () => {
  }
 
  return (
- <div className="pt-32 pb-32 px-6 bg-slate-50 [#020617] min-h-screen relative overflow-hidden">
+ <div className="pt-32 pb-32 px-6 bg-slate-50 min-h-screen relative overflow-hidden">
  <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 /10 /10 rounded-full blur-[60px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
  <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
  <motion.div
@@ -152,7 +152,7 @@ const Enroll: React.FC = () => {
  </div>
  </div>
  <button type="submit" disabled={isSubmitting}
- className="w-full py-5 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 :bg-emerald-500 transition-colors shadow-xl disabled:opacity-50 flex items-center justify-center gap-2 group text-lg"
+ className="w-full py-5 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-colors shadow-xl disabled:opacity-50 flex items-center justify-center gap-2 group text-lg"
  >
  {isSubmitting ? (<><Loader2 className="w-6 h-6 animate-spin" />Processing...</>) : (<>Proceed to Enrollment <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></>)}
  </button>
