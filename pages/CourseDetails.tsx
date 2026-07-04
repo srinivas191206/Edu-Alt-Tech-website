@@ -7,6 +7,7 @@ import { ArrowLeft, CheckCircle2, Clock, Users, BookOpen, AlertCircle, Loader2, 
 import type { User } from '../lib/firebase';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import HamsterLoader from '../components/HamsterLoader';
 
 const CourseDetails: React.FC = () => {
  const { courseId } = useParams<{ courseId: string }>();
@@ -416,7 +417,7 @@ await finalizeEnrollment('full');
  };
 
  if (loading) {
- return <div className="min-h-screen pt-32 pb-24 flex justify-center items-center"><Loader2 className="w-10 h-10 animate-spin text-emerald-600" /></div>;
+ return <HamsterLoader />;
  }
 
  if (!course) {

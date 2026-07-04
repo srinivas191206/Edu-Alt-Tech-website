@@ -5,6 +5,7 @@ import { auth, db, onAuthStateChanged, collection, getDocs, query, orderBy, limi
 import type { User } from '../lib/firebase';
 import type { UserMetrics, UserActivity } from '../types';
 import { useNavigate } from 'react-router-dom';
+import HamsterLoader from '../components/HamsterLoader';
 
 interface StudentInsight {
  uid: string;
@@ -98,13 +99,7 @@ const BehaviorInsights: React.FC = () => {
  }, [students, sortBy]);
 
  if (loading) {
- return (
- <div className="min-h-screen bg-slate-50 [#020617] flex items-center justify-center">
- <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} style={{ willChange: 'transform' }}>
- <Brain className="w-12 h-12 text-emerald-500" />
- </motion.div>
- </div>
- );
+ return <HamsterLoader />;
  }
 
  return (

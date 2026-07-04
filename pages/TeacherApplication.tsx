@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import type { Course } from '../types';
 import { PLATFORM_COURSES } from '../data/platformCourses';
+import HamsterLoader from '../components/HamsterLoader';
 
 // ════════════════════════════════════════════════════════════ Languages Config
 const LANGUAGES_CONFIG = [
@@ -479,7 +480,7 @@ const TeacherApplication: React.FC = () => {
   const labelCls = "block text-xs font-black text-slate-400 uppercase tracking-widest mb-2";
 
   if (loading) {
-    return <div className="min-h-screen pt-32 flex justify-center"><Loader2 className="w-10 h-10 animate-spin text-emerald-600" /></div>;
+    return <HamsterLoader />;
   }
 
   return (

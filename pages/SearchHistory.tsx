@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { auth, db, onAuthStateChanged, collection, query, where, getDocs, orderBy, limit, deleteDoc, doc } from '../lib/firebase';
 import { Search, Trash2, MessageCircle, BookOpen, Shield, GraduationCap, ArrowLeft, Clock } from 'lucide-react';
+import HamsterLoader from '../components/HamsterLoader';
 
 interface HistoryItem {
   id: string;
@@ -105,9 +106,7 @@ const SearchHistory: React.FC = () => {
         </motion.div>
 
         {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-          </div>
+          <HamsterLoader />
         ) : history.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}

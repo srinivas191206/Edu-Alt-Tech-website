@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { PLATFORM_COURSES } from '../data/platformCourses';
 import { getLastReadTimestamps, markCourseRead, computeUnreadCount } from '../lib/chatNotifications';
 import AnimatedList from '../components/AnimatedList';
+import HamsterLoader from '../components/HamsterLoader';
 
 const getGreeting = () => {
  const h = new Date().getHours();
@@ -236,7 +237,7 @@ const Dashboard: React.FC = () => {
   }, [user, enrollments]);
 
   if (loading) {
-  return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>;
+  return <HamsterLoader />;
   }
 
  const totalTeaching = teachingEnrollments.length;

@@ -8,6 +8,7 @@ import type { User } from '../lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import { getLastReadTimestamps, markCourseRead, computeUnreadCount } from '../lib/chatNotifications';
+import HamsterLoader from '../components/HamsterLoader';
 
 const ADMIN_EMAILS = ['ukkukk97@gmail.com', 'umakrishnakanthchokkapu15@gmail.com'];
 
@@ -588,11 +589,7 @@ const TeacherPanel: React.FC = () => {
  };
 
  if (loading) {
- return (
- <div className="min-h-screen bg-slate-50 [#020617] flex items-center justify-center">
- <Loader2 className="w-10 h-10 animate-spin text-purple-500" />
- </div>
- );
+ return <HamsterLoader />;
  }
 
  return (

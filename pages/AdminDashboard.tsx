@@ -6,6 +6,7 @@ import { TeacherApplication } from '../types';
 import { PLATFORM_COURSES } from '../data/platformCourses';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import HamsterLoader from '../components/HamsterLoader';
 
 const ADMIN_EMAILS = ['ukkukk97@gmail.com', 'umakrishnakanthchokkapu15@gmail.com', 'akulasatyanarayana2006@gmail.com'];
 
@@ -550,18 +551,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
   }, [enrollments]);
 
  if (loading) {
- return (
- <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4">
- <motion.div
- animate={{ rotate: 360 }}
- transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
- style={{ willChange: 'transform' }}
- >
- <Loader2 className="w-12 h-12 text-emerald-500" />
- </motion.div>
- <p className="text-slate-500 font-bold animate-pulse uppercase tracking-widest text-xs">Syncing Core Systems...</p>
- </div>
- );
+ return <HamsterLoader />;
  }
 
  return (

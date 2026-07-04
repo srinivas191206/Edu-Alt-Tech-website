@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { UserObject } from '../types';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import HamsterLoader from '../components/HamsterLoader';
 
 const Profile: React.FC = () => {
  const [user, setUser] = useState(auth.currentUser);
@@ -153,11 +154,7 @@ const Profile: React.FC = () => {
  };
 
  if (loading) {
- return (
- <div className="min-h-screen pt-32 flex items-center justify-center bg-slate-50 ">
- <Loader2 className="w-10 h-10 animate-spin text-emerald-500" />
- </div>
- );
+ return <HamsterLoader />;
  }
 
  if (!userProfile) return null;
