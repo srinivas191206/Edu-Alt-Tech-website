@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="/logo.png">
     <link rel="apple-touch-icon" href="/logo.png">
 
-    <!-- Open Graph / Social -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.edualttech.com/">
     <meta property="og:title" content="EduAltTech | Alternative Education & Mentor-Guided Learning Platform">
@@ -32,280 +32,114 @@
     <meta name="twitter:description" content="Edu-Alt-Tech bridges the execution gap through peer-to-peer teaching, mentor-guided accountability, and assistive AI.">
     <meta name="twitter:image" content="https://www.edualttech.com/logo.png">
 
-    <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Edu-Alt-Tech",
-      "url": "https://www.edualttech.com",
-      "logo": "https://www.edualttech.com/logo.png",
-      "description": "Bridging the execution gap through peer-to-peer teaching, mentor-guided accountability, and assistive AI.",
-      "foundingDate": "2025",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "email": "info@edualttech.com",
-        "contactType": "customer support"
-      },
-      "sameAs": []
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Edu-Alt-Tech",
-      "url": "https://www.edualttech.com",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://www.edualttech.com/?search={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
+    <!-- JSON-LD -->
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Edu-Alt-Tech","url":"https://www.edualttech.com","logo":"https://www.edualttech.com/logo.png","description":"Bridging the execution gap through peer-to-peer teaching, mentor-guided accountability, and assistive AI.","foundingDate":"2025","contactPoint":{"@type":"ContactPoint","email":"info@edualttech.com","contactType":"customer support"},"sameAs":[]}</script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
 
-    <!--
-      CRITICAL: Hamster loader styles are fully inlined here so they render
-      BEFORE Tailwind's preflight CSS loads (which would reset position/background).
-      All selectors are scoped to #page-loader to prevent any conflicts.
-      Keyframe names are prefixed with "pg" to avoid collisions with index.css.
-    -->
+    <!-- Hamster loader — all CSS scoped by unique IDs, zero class-name conflicts with Tailwind -->
     <style>
-      #page-loader {
-        position: fixed !important;
-        inset: 0;
-        z-index: 9999;
-        display: flex !important;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: #f8fafc;
-        gap: 1.5rem;
-      }
-      #page-loader * { box-sizing: border-box; }
-      #page-loader .wah {
-        --dur: 1s;
-        position: relative !important;
-        width: 12em;
-        height: 12em;
-        font-size: 14px;
-        display: block;
-      }
-      #page-loader .wah-wheel,
-      #page-loader .wah-hamster,
-      #page-loader .wah-hamster div,
-      #page-loader .wah-spoke {
-        position: absolute !important;
-        margin: 0;
-        padding: 0;
-      }
-      #page-loader .wah-wheel,
-      #page-loader .wah-spoke {
-        border-radius: 50%;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-      }
-      #page-loader .wah-wheel {
-        background: radial-gradient(100% 100% at center, hsla(0,0%,60%,0) 47.8%, hsl(0,0%,60%) 48%);
-        z-index: 2;
-      }
-      #page-loader .wah-hamster {
-        animation: pgHamster var(--dur) ease-in-out infinite;
-        top: 50%;
-        left: calc(50% - 3.5em);
-        width: 7em; height: 3.75em;
-        transform: rotate(4deg) translate(-0.8em, 1.85em);
-        transform-origin: 50% 0;
-        z-index: 1;
-      }
-      #page-loader .wah-head {
-        animation: pgHamsterHead var(--dur) ease-in-out infinite;
-        background: hsl(30,90%,55%) !important;
-        border-radius: 70% 30% 0 100% / 40% 25% 25% 60%;
-        box-shadow: 0 -0.25em 0 hsl(30,90%,80%) inset, 0.75em -1.55em 0 hsl(30,90%,90%) inset;
-        top: 0; left: -2em;
-        width: 2.75em; height: 2.5em;
-        transform-origin: 100% 50%;
-      }
-      #page-loader .wah-ear {
-        animation: pgHamsterEar var(--dur) ease-in-out infinite;
-        background: hsl(0,90%,85%) !important;
-        border-radius: 50%;
-        box-shadow: -0.25em 0 hsl(30,90%,55%) inset;
-        top: -0.25em; right: -0.25em;
-        width: 0.75em; height: 0.75em;
-        transform-origin: 50% 75%;
-      }
-      #page-loader .wah-eye {
-        animation: pgHamsterEye var(--dur) linear infinite;
-        background: hsl(0,0%,0%) !important;
-        border-radius: 50%;
-        top: 0.375em; left: 1.25em;
-        width: 0.5em; height: 0.5em;
-      }
-      #page-loader .wah-nose {
-        background: hsl(0,90%,75%) !important;
-        border-radius: 35% 65% 85% 15% / 70% 50% 50% 30%;
-        top: 0.75em; left: 0;
-        width: 0.2em; height: 0.25em;
-      }
-      #page-loader .wah-body {
-        animation: pgHamsterBody var(--dur) ease-in-out infinite;
-        background: hsl(30,90%,90%) !important;
-        border-radius: 50% 30% 50% 30% / 15% 60% 40% 40%;
-        box-shadow: 0.1em 0.75em 0 hsl(30,90%,55%) inset, 0.15em -0.5em 0 hsl(30,90%,80%) inset;
-        top: 0.25em; left: 2em;
-        width: 4.5em; height: 3em;
-        transform-origin: 17% 50%;
-        transform-style: preserve-3d;
-      }
-      #page-loader .wah-limb-fr,
-      #page-loader .wah-limb-fl {
-        clip-path: polygon(0 0,100% 0,70% 80%,60% 100%,0% 100%,40% 80%);
-        top: 2em; left: 0.5em;
-        width: 1em; height: 1.5em;
-        transform-origin: 50% 0;
-      }
-      #page-loader .wah-limb-fr {
-        animation: pgHamsterFRLimb var(--dur) linear infinite;
-        background: linear-gradient(hsl(30,90%,80%) 80%, hsl(0,90%,75%) 80%) !important;
-        transform: rotate(15deg) translateZ(-1px);
-      }
-      #page-loader .wah-limb-fl {
-        animation: pgHamsterFLLimb var(--dur) linear infinite;
-        background: linear-gradient(hsl(30,90%,90%) 80%, hsl(0,90%,85%) 80%) !important;
-        transform: rotate(15deg);
-      }
-      #page-loader .wah-limb-br,
-      #page-loader .wah-limb-bl {
-        border-radius: 0.75em 0.75em 0 0;
-        clip-path: polygon(0 0,100% 0,100% 30%,70% 90%,70% 100%,30% 100%,40% 90%,0% 30%);
-        top: 1em; left: 2.8em;
-        width: 1.5em; height: 2.5em;
-        transform-origin: 50% 30%;
-      }
-      #page-loader .wah-limb-br {
-        animation: pgHamsterBRLimb var(--dur) linear infinite;
-        background: linear-gradient(hsl(30,90%,80%) 90%, hsl(0,90%,75%) 90%) !important;
-        transform: rotate(-25deg) translateZ(-1px);
-      }
-      #page-loader .wah-limb-bl {
-        animation: pgHamsterBLLimb var(--dur) linear infinite;
-        background: linear-gradient(hsl(30,90%,90%) 90%, hsl(0,90%,85%) 90%) !important;
-        transform: rotate(-25deg);
-      }
-      #page-loader .wah-tail {
-        animation: pgHamsterTail var(--dur) linear infinite;
-        background: hsl(0,90%,85%) !important;
-        border-radius: 0.25em 50% 50% 0.25em;
-        box-shadow: 0 -0.2em 0 hsl(0,90%,75%) inset;
-        top: 1.5em; right: -0.5em;
-        width: 1em; height: 0.5em;
-        transform: rotate(30deg) translateZ(-1px);
-        transform-origin: 0.25em 0.25em;
-      }
-      #page-loader .wah-spoke {
-        animation: pgSpoke var(--dur) linear infinite;
-        background:
-          radial-gradient(100% 100% at center, hsl(0,0%,60%) 4.8%, hsla(0,0%,60%,0) 5%),
-          linear-gradient(hsla(0,0%,55%,0) 46.9%, hsl(0,0%,65%) 47% 52.9%, hsla(0,0%,65%,0) 53%)
-            50% 50% / 99% 99% no-repeat;
-      }
-      @keyframes pgHamster {
-        from, to { transform: rotate(4deg) translate(-0.8em, 1.85em); }
-        50%       { transform: rotate(0) translate(-0.8em, 1.85em); }
-      }
-      @keyframes pgHamsterHead {
-        from, 25%, 50%, 75%, to   { transform: rotate(0); }
-        12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(8deg); }
-      }
-      @keyframes pgHamsterEye {
-        from, 90%, to { transform: scaleY(1); }
-        95%           { transform: scaleY(0); }
-      }
-      @keyframes pgHamsterEar {
-        from, 25%, 50%, 75%, to   { transform: rotate(0); }
-        12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(12deg); }
-      }
-      @keyframes pgHamsterBody {
-        from, 25%, 50%, 75%, to   { transform: rotate(0); }
-        12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(-2deg); }
-      }
-      @keyframes pgHamsterFRLimb {
-        from, 25%, 50%, 75%, to   { transform: rotate(50deg) translateZ(-1px); }
-        12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(-30deg) translateZ(-1px); }
-      }
-      @keyframes pgHamsterFLLimb {
-        from, 25%, 50%, 75%, to   { transform: rotate(-30deg); }
-        12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(50deg); }
-      }
-      @keyframes pgHamsterBRLimb {
-        from, 25%, 50%, 75%, to   { transform: rotate(-60deg) translateZ(-1px); }
-        12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(20deg) translateZ(-1px); }
-      }
-      @keyframes pgHamsterBLLimb {
-        from, 25%, 50%, 75%, to   { transform: rotate(20deg); }
-        12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(-60deg); }
-      }
-      @keyframes pgHamsterTail {
-        from, 25%, 50%, 75%, to   { transform: rotate(30deg) translateZ(-1px); }
-        12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(10deg) translateZ(-1px); }
-      }
-      @keyframes pgSpoke {
-        from { transform: rotate(0); }
-        to   { transform: rotate(-1turn); }
-      }
+      #edu-loader{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f8fafc;gap:1.5rem}
+      #edu-loader-label{font-family:Inter,sans-serif;font-size:.95rem;color:#64748b;letter-spacing:.05em;margin:0}
+
+      /* The wheel container */
+      #edu-wah{position:relative;width:168px;height:168px;font-size:14px}
+
+      /* Every child needs absolute positioning — target by ID children only */
+      #edu-wah>#edu-wheel,
+      #edu-wah>#edu-spoke,
+      #edu-wah>#edu-hamster{position:absolute}
+
+      #edu-wheel,#edu-spoke{border-radius:50%;top:0;left:0;width:100%;height:100%}
+      #edu-wheel{background:radial-gradient(100% 100% at center,hsla(0,0%,60%,0) 47.8%,hsl(0,0%,60%) 48%);z-index:2}
+      #edu-spoke{animation:eduspoke 1s linear infinite;background:radial-gradient(100% 100% at center,hsl(0,0%,60%) 4.8%,hsla(0,0%,60%,0) 5%),linear-gradient(hsla(0,0%,55%,0) 46.9%,hsl(0,0%,65%) 47% 52.9%,hsla(0,0%,65%,0) 53%) 50% 50%/99% 99% no-repeat;z-index:0}
+
+      /* Hamster group */
+      #edu-hamster{animation:eduham 1s ease-in-out infinite;top:50%;left:calc(50% - 49px);width:98px;height:52.5px;transform:rotate(4deg) translate(-11.2px,25.9px);transform-origin:50% 0;z-index:1}
+      #edu-hamster *{position:absolute}
+
+      /* Head */
+      #edu-hhead{animation:eduhamhead 1s ease-in-out infinite;background:hsl(30,90%,55%);border-radius:70% 30% 0 100%/40% 25% 25% 60%;box-shadow:0 -3.5px 0 hsl(30,90%,80%) inset,10.5px -21.7px 0 hsl(30,90%,90%) inset;top:0;left:-28px;width:38.5px;height:35px;transform-origin:100% 50%}
+      #edu-hear{animation:eduhamear 1s ease-in-out infinite;background:hsl(0,90%,85%);border-radius:50%;box-shadow:-3.5px 0 hsl(30,90%,55%) inset;top:-3.5px;right:-3.5px;width:10.5px;height:10.5px;transform-origin:50% 75%}
+      #edu-heye{animation:eduhameye 1s linear infinite;background:hsl(0,0%,0%);border-radius:50%;top:5.25px;left:17.5px;width:7px;height:7px}
+      #edu-hnose{background:hsl(0,90%,75%);border-radius:35% 65% 85% 15%/70% 50% 50% 30%;top:10.5px;left:0;width:2.8px;height:3.5px}
+
+      /* Body */
+      #edu-hbody{animation:eduhambody 1s ease-in-out infinite;background:hsl(30,90%,90%);border-radius:50% 30% 50% 30%/15% 60% 40% 40%;box-shadow:1.4px 10.5px 0 hsl(30,90%,55%) inset,2.1px -7px 0 hsl(30,90%,80%) inset;top:3.5px;left:28px;width:63px;height:42px;transform-origin:17% 50%;transform-style:preserve-3d}
+
+      /* Front limbs */
+      #edu-hlfr,#edu-hlfl{clip-path:polygon(0 0,100% 0,70% 80%,60% 100%,0% 100%,40% 80%);top:28px;left:7px;width:14px;height:21px;transform-origin:50% 0}
+      #edu-hlfr{animation:eduhamfrlimb 1s linear infinite;background:linear-gradient(hsl(30,90%,80%) 80%,hsl(0,90%,75%) 80%);transform:rotate(15deg) translateZ(-1px)}
+      #edu-hlfl{animation:eduhamfllimb 1s linear infinite;background:linear-gradient(hsl(30,90%,90%) 80%,hsl(0,90%,85%) 80%);transform:rotate(15deg)}
+
+      /* Back limbs */
+      #edu-hlbr,#edu-hlbl{border-radius:10.5px 10.5px 0 0;clip-path:polygon(0 0,100% 0,100% 30%,70% 90%,70% 100%,30% 100%,40% 90%,0% 30%);top:14px;left:39.2px;width:21px;height:35px;transform-origin:50% 30%}
+      #edu-hlbr{animation:eduhambrlimb 1s linear infinite;background:linear-gradient(hsl(30,90%,80%) 90%,hsl(0,90%,75%) 90%);transform:rotate(-25deg) translateZ(-1px)}
+      #edu-hlbl{animation:eduhamBllimb 1s linear infinite;background:linear-gradient(hsl(30,90%,90%) 90%,hsl(0,90%,85%) 90%);transform:rotate(-25deg)}
+
+      /* Tail */
+      #edu-htail{animation:eduhamtail 1s linear infinite;background:hsl(0,90%,85%);border-radius:3.5px 50% 50% 3.5px;box-shadow:0 -2.8px 0 hsl(0,90%,75%) inset;top:21px;right:-7px;width:14px;height:7px;transform:rotate(30deg) translateZ(-1px);transform-origin:3.5px 3.5px}
+
+      @keyframes eduham{from,to{transform:rotate(4deg) translate(-11.2px,25.9px)}50%{transform:rotate(0) translate(-11.2px,25.9px)}}
+      @keyframes eduhamhead{from,25%,50%,75%,to{transform:rotate(0)}12.5%,37.5%,62.5%,87.5%{transform:rotate(8deg)}}
+      @keyframes eduhameye{from,90%,to{transform:scaleY(1)}95%{transform:scaleY(0)}}
+      @keyframes eduhamear{from,25%,50%,75%,to{transform:rotate(0)}12.5%,37.5%,62.5%,87.5%{transform:rotate(12deg)}}
+      @keyframes eduhambody{from,25%,50%,75%,to{transform:rotate(0)}12.5%,37.5%,62.5%,87.5%{transform:rotate(-2deg)}}
+      @keyframes eduhamfrlimb{from,25%,50%,75%,to{transform:rotate(50deg) translateZ(-1px)}12.5%,37.5%,62.5%,87.5%{transform:rotate(-30deg) translateZ(-1px)}}
+      @keyframes eduhamfllimb{from,25%,50%,75%,to{transform:rotate(-30deg)}12.5%,37.5%,62.5%,87.5%{transform:rotate(50deg)}}
+      @keyframes eduhambrlimb{from,25%,50%,75%,to{transform:rotate(-60deg) translateZ(-1px)}12.5%,37.5%,62.5%,87.5%{transform:rotate(20deg) translateZ(-1px)}}
+      @keyframes eduhamBllimb{from,25%,50%,75%,to{transform:rotate(20deg)}12.5%,37.5%,62.5%,87.5%{transform:rotate(-60deg)}}
+      @keyframes eduhamtail{from,25%,50%,75%,to{transform:rotate(30deg) translateZ(-1px)}12.5%,37.5%,62.5%,87.5%{transform:rotate(10deg) translateZ(-1px)}}
+      @keyframes eduspoke{from{transform:rotate(0)}to{transform:rotate(-1turn)}}
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 transition-colors duration-300">
 
-    <!-- Page Loader — removed once React mounts -->
-    <div id="page-loader">
-      <div class="wah" role="img" aria-label="Loading EduAltTech…">
-        <div class="wah-wheel"></div>
-        <div class="wah-hamster">
-          <div class="wah-body">
-            <div class="wah-head">
-              <div class="wah-ear"></div>
-              <div class="wah-eye"></div>
-              <div class="wah-nose"></div>
-            </div>
-            <div class="wah-limb-fr"></div>
-            <div class="wah-limb-fl"></div>
-            <div class="wah-limb-br"></div>
-            <div class="wah-limb-bl"></div>
-            <div class="wah-tail"></div>
+    <!-- Page loader — uses only IDs, no class names, immune to Tailwind preflight -->
+    <div id="edu-loader">
+      <div id="edu-wah" role="img" aria-label="Loading EduAltTech">
+        <div id="edu-wheel"></div>
+        <div id="edu-hamster">
+          <div id="edu-hhead">
+            <div id="edu-hear"></div>
+            <div id="edu-heye"></div>
+            <div id="edu-hnose"></div>
+          </div>
+          <div id="edu-hbody">
+            <div id="edu-hlfr"></div>
+            <div id="edu-hlfl"></div>
+            <div id="edu-hlbr"></div>
+            <div id="edu-hlbl"></div>
+            <div id="edu-htail"></div>
           </div>
         </div>
-        <div class="wah-spoke"></div>
+        <div id="edu-spoke"></div>
       </div>
-      <p style="font-family:'Inter',sans-serif;font-size:0.95rem;color:#64748b;letter-spacing:0.05em;margin:0;">Loading EduAltTech…</p>
+      <p id="edu-loader-label">Loading EduAltTech…</p>
     </div>
 
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
     <script defer src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    <!-- Hide loader once React has mounted -->
+    <!-- Remove loader once React mounts -->
     <script>
-      (function() {
-        var root = document.getElementById('root');
-        var loader = document.getElementById('page-loader');
-        if (!root || !loader) return;
-        var observer = new MutationObserver(function() {
-          if (root.children.length > 0) {
-            loader.style.opacity = '0';
-            loader.style.transition = 'opacity 0.4s ease';
-            setTimeout(function() { loader.remove(); }, 400);
-            observer.disconnect();
+      (function(){
+        var root=document.getElementById('root');
+        var loader=document.getElementById('edu-loader');
+        if(!root||!loader)return;
+        var ob=new MutationObserver(function(){
+          if(root.children.length>0){
+            loader.style.opacity='0';
+            loader.style.transition='opacity 0.4s ease';
+            setTimeout(function(){loader.remove();},400);
+            ob.disconnect();
           }
         });
-        observer.observe(root, { childList: true });
+        ob.observe(root,{childList:true});
       })();
     </script>
 </body>
