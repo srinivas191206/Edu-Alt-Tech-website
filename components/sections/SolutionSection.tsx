@@ -12,7 +12,7 @@ const solutions = [
 
 const SolutionSection: React.FC = () => {
  return (
- <section id="solutions" className="py-24 md:py-40 bg-white transition-colors duration-300 relative overflow-hidden">
+ <section id="solutions" className="py-24 md:py-40 bg-white [#020617] transition-colors duration-300 relative overflow-hidden">
  {/* Premium Deep Ambient Blur */}
  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-full blur-[60px] pointer-events-none" />
  
@@ -47,7 +47,7 @@ const SolutionSection: React.FC = () => {
  whileInView={{ opacity: 1, y: 0 }}
  viewport={{ once: true }}
  transition={{ delay: 0.1 * idx, duration: 0.5 }}
- className="flex items-center gap-6 bg-slate-50/50 /50 p-5 rounded-2xl border border-slate-200/50 /50 hover:bg-slate-100 transition-colors group"
+ className="flex items-center gap-6 bg-slate-50/50 /50 p-5 rounded-2xl border border-slate-200/50 /50 hover:bg-slate-100 :bg-slate-800 transition-colors group"
  >
  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/5 ring-1 ring-slate-100 group-hover:scale-110 transition-transform">
  {item.icon}

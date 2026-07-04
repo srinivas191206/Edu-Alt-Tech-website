@@ -7,8 +7,8 @@ type Size = 'sm' | 'md' | 'lg';
 const variants: Record<Variant, string> = {
   primary: 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-xl shadow-emerald-500/20',
   secondary: 'bg-white/5 hover:bg-white/10 text-white border border-white/10 backdrop-blur-sm',
-  ghost: 'bg-white/80 backdrop-blur-md text-slate-900 hover:bg-slate-100 border border-slate-200/80
-  dark: 'bg-slate-950 hover:bg-emerald-600 text-white shadow-xl shadow-slate-950/10',
+  ghost: 'bg-white/80 backdrop-blur-md text-slate-900 :text-white hover:bg-slate-100 :hover:bg-slate-800 border border-slate-200/80 :border-slate-700',
+  dark: 'bg-slate-950 :bg-slate-800 hover:bg-emerald-600 :hover:bg-emerald-600 text-white shadow-xl shadow-slate-950/10',
 };
 
 const sizes: Record<Size, string> = {

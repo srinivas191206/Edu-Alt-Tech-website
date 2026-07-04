@@ -54,7 +54,7 @@ const Contact: React.FC = () => {
   };
 
  return (
- <div className="pt-32 pb-32 px-6 bg-slate-50 min-h-screen relative overflow-hidden">
+ <div className="pt-32 pb-32 px-6 bg-slate-50 [#020617] min-h-screen relative overflow-hidden">
  <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 /10 /10 rounded-full blur-[60px] pointer-events-none -translate-y-1/3 translate-x-1/3" />
  <div className="max-w-[1400px] mx-auto relative z-10">
  <motion.div
@@ -152,7 +152,7 @@ const Contact: React.FC = () => {
  <button
  type="submit"
  disabled={sending || !message.trim()}
- className="w-full py-5 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-colors shadow-xl flex items-center justify-center gap-2 text-lg disabled:opacity-50"
+ className="w-full py-5 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 :bg-emerald-500 transition-colors shadow-xl flex items-center justify-center gap-2 text-lg disabled:opacity-50"
  >
  {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
  {sending ? 'Sending...' : 'Send Message'}

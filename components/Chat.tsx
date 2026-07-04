@@ -149,7 +149,7 @@ const Chat: React.FC<Props> = ({ user, role }) => {
  <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
  {conversations.map((convo, i) => (
  <button key={convo.id} onClick={() => setActiveThread(convo)}
- className={`w-full flex items-center gap-4 px-6 py-5 hover:bg-slate-50 transition-colors text-left ${i > 0 ? 'border-t border-slate-100 ' : ''}`}
+ className={`w-full flex items-center gap-4 px-6 py-5 hover:bg-slate-50 :bg-slate-800 transition-colors text-left ${i > 0 ? 'border-t border-slate-100 ' : ''}`}
  >
  <div className="w-12 h-12 bg-emerald-100 /30 rounded-2xl flex items-center justify-center text-emerald-700 font-bold text-lg flex-shrink-0">
  {convo.otherName.charAt(0).toUpperCase()}
@@ -173,7 +173,7 @@ const Chat: React.FC<Props> = ({ user, role }) => {
  {/* Header */}
  <div className="flex items-center gap-4 mb-4">
  <button onClick={() => { setActiveThread(null); setMessages([]); }}
- className="flex items-center gap-2 text-slate-500 hover:text-slate-900 font-bold transition-colors"
+ className="flex items-center gap-2 text-slate-500 hover:text-slate-900 :text-white font-bold transition-colors"
  >
  <ArrowLeft className="w-4 h-4" /> Back
  </button>

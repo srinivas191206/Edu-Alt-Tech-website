@@ -209,7 +209,7 @@ export default function LoginModal({ isOpen, onClose, title = "Sign In Required"
  {/* Close Button */}
  <button
  onClick={() => { onClose(); resetState(); }}
- className="absolute top-6 right-6 p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-xl transition-colors"
+ className="absolute top-6 right-6 p-2 bg-slate-100 hover:bg-slate-200 :bg-slate-700 text-slate-500 rounded-xl transition-colors"
  >
  <X className="w-5 h-5" />
  </button>
@@ -328,7 +328,7 @@ export default function LoginModal({ isOpen, onClose, title = "Sign In Required"
  <button
  type="submit"
  disabled={loading || googleLoading}
- className="w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors shadow-lg flex items-center justify-center gap-2"
+ className="w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 :bg-emerald-500 transition-colors shadow-lg flex items-center justify-center gap-2"
  >
  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (mode === 'login' ? 'Login' : 'Create Account')}
  </button>
@@ -348,7 +348,7 @@ export default function LoginModal({ isOpen, onClose, title = "Sign In Required"
  type="button"
  onClick={handleGoogleLogin}
  disabled={loading || googleLoading}
- className="w-full py-3.5 bg-white text-slate-700 font-bold rounded-xl border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-colors shadow-sm flex items-center justify-center gap-3"
+ className="w-full py-3.5 bg-white text-slate-700 font-bold rounded-xl border border-slate-200 hover:bg-slate-50 :bg-slate-700 hover:border-slate-300 transition-colors shadow-sm flex items-center justify-center gap-3"
  >
  {googleLoading ? (
  <Loader2 className="w-5 h-5 animate-spin" />

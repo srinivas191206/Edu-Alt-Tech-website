@@ -559,7 +559,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  {/* Mobile Sidebar Toggle */}
  <button 
  onClick={() => setIsSidebarOpen(true)}
- className="md:hidden fixed top-4 left-4 z-[60] p-2.5 bg-white border border-slate-200 rounded-xl shadow-lg hover:bg-slate-50 transition-colors"
+ className="md:hidden fixed top-4 left-4 z-[60] p-2.5 bg-white border border-slate-200 rounded-xl shadow-lg hover:bg-slate-50 :bg-slate-800 transition-colors"
  >
  <MoreVertical className="w-5 h-5" />
  </button>
@@ -590,7 +590,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-colors relative group overflow-hidden ${
  activeTab === item.id 
  ? 'bg-slate-900 text-white shadow-2xl shadow-emerald-500/20' 
- : 'text-slate-500 hover:bg-slate-50'
+ : 'text-slate-500 hover:bg-slate-50 :bg-slate-800/50'
  }`}
  >
  {activeTab === item.id && (
@@ -608,7 +608,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  <div className="mt-auto pt-8 border-t border-slate-100 /50">
  <button 
  onClick={() => navigate('/')}
- className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-200
+ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 :bg-rose-500/10 transition-colors border border-transparent hover:border-rose-200 :border-rose-500/20"
  >
  <ArrowLeft className="w-5 h-5" />
  <span>Exit Console</span>
@@ -643,7 +643,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Admin Terminal</span>
  </div>
  </div>
- <button onClick={() => setIsSidebarOpen(false)} className="p-3 hover:bg-slate-100 rounded-lg transition-colors">
+ <button onClick={() => setIsSidebarOpen(false)} className="p-3 hover:bg-slate-100 :bg-slate-800 rounded-lg transition-colors">
  <X className="w-5 h-5" />
  </button>
  </div>
@@ -662,7 +662,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-colors relative group overflow-hidden ${
  activeTab === item.id 
  ? 'bg-slate-900 text-white shadow-2xl shadow-emerald-500/20' 
- : 'text-slate-500 hover:bg-slate-50'
+ : 'text-slate-500 hover:bg-slate-50 :bg-slate-800/50'
  }`}
  >
  <item.icon className={`w-6 h-6 ${activeTab === item.id ? 'text-white' : 'group-hover:scale-110 transition-transform'}`} />
@@ -677,7 +677,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  <div className="mt-auto pt-8 border-t border-slate-100 /50">
  <button 
  onClick={() => navigate('/')}
- className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-200
+ className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-rose-500 hover:bg-rose-50 :bg-rose-500/10 transition-colors border border-transparent hover:border-rose-200 :border-rose-500/20"
  >
  <ArrowLeft className="w-5 h-5" />
  <span>Exit Console</span>
@@ -839,7 +839,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  <button
  key={contact.id}
  onClick={() => selectChatContact(contact)}
- className={`w-full p-5 flex items-center gap-4 hover:bg-slate-50 transition-colors border-b border-slate-100 /50 text-left ${
+ className={`w-full p-5 flex items-center gap-4 hover:bg-slate-50 :bg-slate-800/50 transition-colors border-b border-slate-100 /50 text-left ${
  selectedContact?.id === contact.id ? 'bg-emerald-500/5 /10' : ''
  }`}
  >
@@ -1027,7 +1027,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  {(['all', 'free', 'paid'] as const).map(f => (
  <button key={f} onClick={() => setPriceFilter(f)}
  className={`px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors ${
- priceFilter === f ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+ priceFilter === f ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 :bg-slate-700'
  }`}
  >
  {f === 'free' ? '₹0 (Free)' : f === 'paid' ? 'Paid' : 'All'}
@@ -1051,7 +1051,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  .map((course: any) => {
  const count = enrollmentCounts[course.id] || 0;
  return (
- <tr key={course.id} className="hover:bg-slate-50/80 transition-colors">
+ <tr key={course.id} className="hover:bg-slate-50/80 :bg-slate-800/40 transition-colors">
  <td className="px-4 sm:px-8 py-4 sm:py-5">
  <div className="flex items-center gap-3 sm:gap-4">
  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
@@ -1164,7 +1164,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  {(['all', 'free', 'paid'] as const).map(f => (
  <button key={f} onClick={() => setCoursePriceFilter(f)}
  className={`px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors ${
- coursePriceFilter === f ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+ coursePriceFilter === f ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 :bg-slate-700'
  }`}>
  {f === 'free' ? 'Free' : f === 'paid' ? 'Paid' : 'All'}
  </button>
@@ -1190,7 +1190,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  </thead>
  <tbody className="divide-y divide-slate-100 /50">
  {filteredCoursesList.map((course: any) => (
- <tr key={course.id} className="hover:bg-slate-50/80 transition-colors">
+ <tr key={course.id} className="hover:bg-slate-50/80 :bg-slate-800/40 transition-colors">
  <td className="px-4 sm:px-8 py-4 sm:py-5">
  <div className="flex items-center gap-3 sm:gap-4">
   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
@@ -1217,15 +1217,15 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  <div className="flex items-center justify-end gap-2">
  <button onClick={() => handleToggleComingSoon(course)} className={`p-2.5 rounded-xl transition-colors ${
  course.comingSoon
- ? 'bg-amber-100 /30 text-amber-600 hover:bg-amber-200'
- : 'bg-emerald-100 /30 text-emerald-600 hover:bg-emerald-200'
+ ? 'bg-amber-100 /30 text-amber-600 hover:bg-amber-200 :bg-amber-900/50'
+ : 'bg-emerald-100 /30 text-emerald-600 hover:bg-emerald-200 :bg-emerald-900/50'
  }`} title={course.comingSoon ? 'Release course' : 'Mark as Coming Soon'}>
  {course.comingSoon ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
  </button>
- <button onClick={() => openEditCourse(course)} className="p-2.5 bg-slate-100 hover:bg-emerald-100 rounded-xl transition-colors" title="Edit">
+ <button onClick={() => openEditCourse(course)} className="p-2.5 bg-slate-100 hover:bg-emerald-100 :bg-emerald-900/30 rounded-xl transition-colors" title="Edit">
  <Pencil className="w-4 h-4 text-slate-600 " />
  </button>
- <button onClick={() => handleDeleteCourse(course.id, course.title)} className="p-2.5 bg-slate-100 hover:bg-rose-100 rounded-xl transition-colors" title="Delete">
+ <button onClick={() => handleDeleteCourse(course.id, course.title)} className="p-2.5 bg-slate-100 hover:bg-rose-100 :bg-rose-900/30 rounded-xl transition-colors" title="Delete">
  <Trash2 className="w-4 h-4 text-rose-500" />
  </button>
  </div>
@@ -1274,7 +1274,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-2">Mentor Review</h2>
  <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Application Dossier #{selectedApp.id.slice(0, 8)}</p>
  </div>
- <button onClick={() => setSelectedApp(null)} className="p-3 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-colors">
+ <button onClick={() => setSelectedApp(null)} className="p-3 bg-slate-100 rounded-2xl hover:bg-slate-200 :bg-slate-700 transition-colors">
  <X className="w-6 h-6" />
  </button>
  </div>
@@ -1457,7 +1457,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  <h2 className="text-2xl font-black tracking-tight">{editingCourse ? 'Edit Course' : 'Add Course'}</h2>
  <p className="text-xs text-slate-400 font-medium mt-1">{editingCourse ? `Editing: ${editingCourse.title}` : 'Create a new course'}</p>
  </div>
- <button onClick={() => setIsCourseModalOpen(false)} className="p-3 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-colors">
+ <button onClick={() => setIsCourseModalOpen(false)} className="p-3 bg-slate-100 rounded-2xl hover:bg-slate-200 :bg-slate-700 transition-colors">
  <X className="w-5 h-5" />
  </button>
  </div>
@@ -1525,7 +1525,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
  </div>
 
  <div className="p-6 sm:p-8 border-t border-slate-100 flex items-center justify-end gap-4 shrink-0">
- <button onClick={() => setIsCourseModalOpen(false)} className="px-6 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-colors">
+ <button onClick={() => setIsCourseModalOpen(false)} className="px-6 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 :bg-slate-700 transition-colors">
  Cancel
  </button>
  <button onClick={handleSaveCourse} disabled={savingCourse} className="flex items-center gap-2 px-6 py-4 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white font-black rounded-2xl transition-colors shadow-lg shadow-emerald-500/20">

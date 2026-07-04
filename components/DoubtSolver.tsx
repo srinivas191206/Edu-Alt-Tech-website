@@ -96,7 +96,7 @@ const DoubtSolver: React.FC<DoubtSolverProps> = ({ courseId, courseTitle, module
                       <span className="block text-[10px] font-bold text-slate-400">{courseTitle || 'AI Tutor'}</span>
                     </div>
                   </div>
-                  <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors">
+                  <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-slate-100 :bg-slate-800 rounded-xl transition-colors">
                     <X className="w-4 h-4 text-slate-400" />
                   </button>
                 </div>

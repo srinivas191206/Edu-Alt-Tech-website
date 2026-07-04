@@ -71,7 +71,7 @@ const FlashcardDeck: React.FC = () => {
 
  if (cards.length === 0) {
  return (
- <div className="min-h-screen pt-32 pb-24 px-6 bg-slate-50">
+ <div className="min-h-screen pt-32 pb-24 px-6 bg-slate-50 [#020617]">
  <div className="max-w-2xl mx-auto">
  <div className="text-center mb-12">
  <div className="w-16 h-16 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
@@ -108,7 +108,7 @@ const FlashcardDeck: React.FC = () => {
  }
 
  return (
- <div className="min-h-screen pt-32 pb-24 px-6 bg-slate-50">
+ <div className="min-h-screen pt-32 pb-24 px-6 bg-slate-50 [#020617]">
  <div className="max-w-2xl mx-auto">
  {/* Header */}
  <div className="flex items-center justify-between mb-8">
@@ -119,7 +119,7 @@ const FlashcardDeck: React.FC = () => {
  &larr; New Topic
  </button>
  <div className="flex items-center gap-3">
- <button onClick={shuffleCards} className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-slate-100 rounded-xl transition-colors">
+ <button onClick={shuffleCards} className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-slate-100 :bg-slate-800 rounded-xl transition-colors">
  <Shuffle className="w-5 h-5" />
  </button>
  <span className="text-sm font-bold text-slate-500">{current + 1} / {cards.length}</span>

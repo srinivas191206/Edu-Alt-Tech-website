@@ -180,13 +180,13 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  <div className="flex bg-slate-50 border-b border-slate-200 p-3">
  <button 
  onClick={() => setActiveTab('community')}
- className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'community' ? 'bg-white text-emerald-600 shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
+ className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'community' ? 'bg-white text-emerald-600 shadow-md' : 'text-slate-500 hover:bg-slate-100 :bg-slate-900'}`}
  >
  <Hash className="w-4 h-4" /> Course Channel
  </button>
  <button 
  onClick={() => setActiveTab('direct')}
- className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'direct' ? 'bg-white text-purple-600 shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
+ className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-colors ${activeTab === 'direct' ? 'bg-white text-purple-600 shadow-md' : 'text-slate-500 hover:bg-slate-100 :bg-slate-900'}`}
  >
  <MessageCircle className="w-4 h-4" /> {role === 'teacher' ? 'Private DMs' : 'DM Mentor'}
  </button>
@@ -203,7 +203,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  <button 
  key={s.uid}
  onClick={() => setSelectedStudentId(s.uid)}
- className={`w-full text-left p-3 rounded-xl transition-colors flex items-center gap-2 ${selectedStudentId === s.uid ? 'bg-white text-purple-600 shadow-sm' : 'text-slate-500 hover:bg-white'}`}
+ className={`w-full text-left p-3 rounded-xl transition-colors flex items-center gap-2 ${selectedStudentId === s.uid ? 'bg-white text-purple-600 shadow-sm' : 'text-slate-500 hover:bg-white :bg-slate-800'}`}
  >
  <div className="w-2 h-2 rounded-full bg-emerald-500" />
  <span className="text-xs font-bold truncate">{s.name}</span>
@@ -284,7 +284,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  <button 
  type="submit"
  disabled={!newMessage.trim()}
- className="bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all active:scale-95"
+ className="bg-slate-900 hover:bg-slate-800 :bg-emerald-500 disabled:opacity-50 text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all active:scale-95"
  >
  <Send className="w-5 h-5" />
  </button>

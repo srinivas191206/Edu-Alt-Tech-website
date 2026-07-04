@@ -593,13 +593,13 @@ const TeacherPanel: React.FC = () => {
  }
 
  return (
- <div className="min-h-screen pt-24 sm:pt-28 pb-24 sm:pb-32 px-4 sm:px-6 bg-slate-50 selection:bg-purple-500/30">
+ <div className="min-h-screen pt-24 sm:pt-28 pb-24 sm:pb-32 px-4 sm:px-6 bg-slate-50 [#020617] selection:bg-purple-500/30">
  <div className="fixed inset-0 overflow-hidden pointer-events-none">
  <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-500/10 blur-[60px] rounded-full" />
  <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/10 blur-[60px] rounded-full" />
  </div>
  <div className="max-w-[1400px] mx-auto relative z-10">
- <Link to="/dashboard" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors text-sm font-bold mb-8 group">
+ <Link to="/dashboard" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 :text-white transition-colors text-sm font-bold mb-8 group">
  <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
  Back to Dashboard
  </Link>
@@ -620,10 +620,10 @@ const TeacherPanel: React.FC = () => {
  </p>
  </div>
  <div className="flex gap-2 w-full sm:w-auto">
- <button onClick={() => setViewMode('overview')} className={`flex-1 sm:flex-initial px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${viewMode === 'overview' ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+ <button onClick={() => setViewMode('overview')} className={`flex-1 sm:flex-initial px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${viewMode === 'overview' ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 :bg-slate-700'}`}>
  <BarChart3 className="w-4 h-4 inline mr-2" />Overview
  </button>
- <button onClick={() => setViewMode('courses')} className={`flex-1 sm:flex-initial px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${viewMode === 'courses' ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+ <button onClick={() => setViewMode('courses')} className={`flex-1 sm:flex-initial px-5 py-3 rounded-2xl font-bold text-sm transition-colors ${viewMode === 'courses' ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 :bg-slate-700'}`}>
  <BookOpen className="w-4 h-4 inline mr-2" />Courses
  </button>
  </div>
@@ -687,7 +687,7 @@ const TeacherPanel: React.FC = () => {
  </div>
  <div className="flex gap-2">
  <a href={c.meeting_link} target="_blank" rel="noreferrer" className="px-4 py-2 bg-emerald-500 text-white font-bold rounded-xl text-xs hover:bg-emerald-600 transition-colors">Join</a>
- <button onClick={() => copyToClipboard(c.meeting_link)} className="p-2 bg-slate-200 rounded-xl hover:bg-slate-300 transition-colors"><Copy className="w-4 h-4" /></button>
+ <button onClick={() => copyToClipboard(c.meeting_link)} className="p-2 bg-slate-200 rounded-xl hover:bg-slate-300 :bg-slate-600 transition-colors"><Copy className="w-4 h-4" /></button>
  </div>
  </div>
  ))}
@@ -715,7 +715,7 @@ const TeacherPanel: React.FC = () => {
  </div>
  <div className="flex gap-2 shrink-0 ml-4">
  <a href={rc.meeting_link} target="_blank" rel="noreferrer" className="px-4 py-2.5 bg-emerald-500 text-white font-bold rounded-xl text-xs hover:bg-emerald-600 transition-colors">Join</a>
- <button onClick={() => copyToClipboard(rc.meeting_link)} className="p-2.5 bg-slate-200 rounded-xl hover:bg-slate-300 transition-colors"><Copy className="w-4 h-4" /></button>
+ <button onClick={() => copyToClipboard(rc.meeting_link)} className="p-2.5 bg-slate-200 rounded-xl hover:bg-slate-300 :bg-slate-600 transition-colors"><Copy className="w-4 h-4" /></button>
  </div>
  </div>
  ))}
@@ -741,7 +741,7 @@ const TeacherPanel: React.FC = () => {
  transition={{ delay: idx * 0.05 }}
  className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm"
  >
- <button onClick={() => toggleCourse(course.courseId!)} className="w-full p-5 sm:p-8 flex items-center justify-between hover:bg-slate-50 transition-colors text-left">
+ <button onClick={() => toggleCourse(course.courseId!)} className="w-full p-5 sm:p-8 flex items-center justify-between hover:bg-slate-50 :bg-slate-800/30 transition-colors text-left">
  <div className="flex-1">
  <div className="flex items-center gap-3 mb-2">
  <span className="px-3 py-1 bg-purple-100 /30 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider">Teacher</span>
@@ -780,7 +780,7 @@ const TeacherPanel: React.FC = () => {
   className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold transition-colors whitespace-nowrap ${
   activeCourseTab === tab.id
   ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20'
-  : 'text-slate-500 hover:bg-slate-100'
+  : 'text-slate-500 hover:bg-slate-100 :bg-slate-800'
   }`}
   >
   <tab.icon className="w-4 h-4" />

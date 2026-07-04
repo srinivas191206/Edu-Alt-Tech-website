@@ -50,11 +50,11 @@ const HeroSection: React.FC = () => {
  </p>
  
  <div className="flex flex-col sm:flex-row gap-4 relative z-10">
- <Link to="/courses" className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl hover:shadow-indigo-500/20 group">
+ <Link to="/courses" className="px-8 py-4 bg-slate-900 hover:bg-slate-800 :bg-slate-200 text-white rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl hover:shadow-indigo-500/20 group">
  Explore Courses
  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
  </Link>
- <Link to="/contact" className="px-8 py-4 bg-white/50 /50 text-slate-900 border border-slate-200 hover:border-slate-400 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md backdrop-blur-lg">
+ <Link to="/contact" className="px-8 py-4 bg-white/50 /50 text-slate-900 border border-slate-200 hover:border-slate-400 :border-slate-600 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md backdrop-blur-lg">
  Partner with us
  </Link>
  </div>

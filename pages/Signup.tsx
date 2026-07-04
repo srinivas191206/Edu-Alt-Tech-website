@@ -100,9 +100,9 @@ const Signup: React.FC = () => {
  };
 
  return (
- <div className="min-h-screen pt-32 pb-24 px-6 bg-slate-50 flex flex-col items-center relative overflow-hidden">
+ <div className="min-h-screen pt-32 pb-24 px-6 bg-slate-50 [#020617] flex flex-col items-center relative overflow-hidden">
  <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-emerald-500/5 to-indigo-500/5 /10 /10 rounded-full blur-[60px] pointer-events-none" />
- <Link to="/" className="mb-12 inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors font-medium relative z-10">
+ <Link to="/" className="mb-12 inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 :text-white transition-colors font-medium relative z-10">
  <ArrowLeft className="w-4 h-4" /> Back to Home
  </Link>
 
@@ -154,7 +154,7 @@ const Signup: React.FC = () => {
  <button
  type="button"
  onClick={() => setShowPassword(!showPassword)}
- className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+ className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 :text-slate-200 transition-colors"
  >
  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
  </button>
@@ -169,7 +169,7 @@ const Signup: React.FC = () => {
  <button
  type="button"
  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
- className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+ className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 :text-slate-200 transition-colors"
  >
  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
  </button>
@@ -178,7 +178,7 @@ const Signup: React.FC = () => {
 
   <div className="md:col-span-2 pt-4">
   <button type="submit" disabled={loading}
- className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-colors shadow-lg text-lg flex items-center justify-center gap-2"
+ className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 :bg-emerald-500 transition-colors shadow-lg text-lg flex items-center justify-center gap-2"
  >
  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Create Account'}
  </button>

@@ -357,7 +357,7 @@ const Practice: React.FC = () => {
  className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 rounded-xl text-[11px] sm:text-sm font-bold transition-colors whitespace-nowrap ${
  tab === t.key
  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
- : 'text-slate-600 hover:bg-slate-100'
+ : 'text-slate-600 hover:bg-slate-100 :bg-slate-900'
  }`}
  >
  {t.icon} {t.label}
@@ -373,16 +373,16 @@ const Practice: React.FC = () => {
    {/* Problem Set Toggle */}
   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex gap-1.5 sm:gap-2 mb-6 overflow-x-auto no-scrollbar">
   <button onClick={() => setProblemSet('popular')} className={`shrink-0 px-3 sm:px-4 py-2 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-colors ${
-  problemSet === 'popular' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200 '
+  problemSet === 'popular' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
   }`}>Most Popular ({POPULAR_PROBLEMS.length})</button>
   <button onClick={() => setProblemSet('leetcode150')} className={`shrink-0 px-3 sm:px-4 py-2 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-colors ${
-  problemSet === 'leetcode150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200 '
+  problemSet === 'leetcode150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
   }`}>LeetCode 150 ({LEETCODE_150_PROBLEMS.length})</button>
   <button onClick={() => setProblemSet('top150')} className={`shrink-0 px-3 sm:px-4 py-2 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-colors ${
-  problemSet === 'top150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200 '
+  problemSet === 'top150' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
   }`}>Top Interview 150 ({TOP_INTERVIEW_150.length})</button>
    {adminProblems.length > 0 && <button onClick={() => setProblemSet('admin')} className={`shrink-0 px-3 sm:px-4 py-2 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-colors ${
-   problemSet === 'admin' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200 '
+   problemSet === 'admin' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 :bg-slate-800 border border-slate-200 '
    }`}>Custom ({adminProblems.length})</button>}
   </motion.div>
 
