@@ -61,7 +61,28 @@ const AppContent: React.FC = () => {
  <Toaster position="top-right" toastOptions={{ className: ' ' }} />
  {!isHideLayout && <Navbar />}
   <div className="flex-grow w-full max-w-full overflow-hidden">
-  <Suspense fallback={<div className="flex items-center justify-center min-h-[50vh]"><div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" /></div>}>
+  <Suspense fallback={
+    <div className="flex items-center justify-center min-h-[50vh]">
+      <div className="wheel-and-hamster" role="img" aria-label="Loading...">
+        <div className="wheel"></div>
+        <div className="hamster">
+          <div className="hamster__body">
+            <div className="hamster__head">
+              <div className="hamster__ear"></div>
+              <div className="hamster__eye"></div>
+              <div className="hamster__nose"></div>
+            </div>
+            <div className="hamster__limb hamster__limb--fr"></div>
+            <div className="hamster__limb hamster__limb--fl"></div>
+            <div className="hamster__limb hamster__limb--br"></div>
+            <div className="hamster__limb hamster__limb--bl"></div>
+            <div className="hamster__tail"></div>
+          </div>
+        </div>
+        <div className="spoke"></div>
+      </div>
+    </div>
+  }>
   <Routes>
   <Route path="/" element={<Home />} />
   <Route path="/about" element={<About />} />
