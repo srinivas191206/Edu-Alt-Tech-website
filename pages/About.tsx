@@ -219,11 +219,11 @@ const About: React.FC = () => {
             <p className="text-sm sm:text-lg text-slate-500">The innovators shaping the future of Edu Alt Tech</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
-              {TEAM.map((member, idx) => (
-                <TeamCard key={idx} idx={idx} member={member} />
-              ))}
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 relative z-10 max-w-6xl mx-auto">
+            {TEAM.map((member, idx) => (
+              <TeamCard key={idx} idx={idx} member={member} />
+            ))}
+          </div>
         </MotionDiv>
 
         {/* Supporting Team */}
@@ -240,11 +240,13 @@ const About: React.FC = () => {
             <p className="text-sm sm:text-lg text-slate-500">The dedicated folks who keep things running smoothly</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
-              {SUPPORTING_TEAM.map((member, idx) => (
-                <TeamCard key={idx} idx={idx} member={member} />
-              ))}
-            </div>
+          <div className="flex flex-wrap justify-center gap-8 relative z-10">
+            {SUPPORTING_TEAM.map((member, idx) => (
+              <div key={idx} className="w-full sm:w-[calc(50%-16px)] lg:w-[calc(33.333%-22px)] xl:w-72">
+                <TeamCard idx={idx} member={member} />
+              </div>
+            ))}
+          </div>
         </MotionDiv>
 
         {/* CTA */}
@@ -287,19 +289,19 @@ function TeamCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ delay: idx * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative bg-white border border-slate-200 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-500 w-full sm:w-[320px] lg:w-[360px] flex flex-col"
+      className="group relative bg-white border border-slate-200 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-500 w-full flex flex-col"
     >
       {/* Gradient top bar */}
       <div className={`h-1.5 w-full bg-gradient-to-r ${gradients[idx % gradients.length]}`} />
 
       <div className="p-6 sm:p-8 flex flex-col items-center text-center flex-1">
         {/* Avatar */}
-        <div className={`w-24 h-24 sm:w-32 sm:h-32 mb-5 rounded-2xl overflow-hidden bg-gradient-to-br ${gradients[idx % gradients.length]} p-[3px] shadow-lg flex-shrink-0`}>
+        <div className={`w-28 h-28 sm:w-36 sm:h-36 mb-5 rounded-2xl overflow-hidden bg-gradient-to-br ${gradients[idx % gradients.length]} p-[3px] shadow-lg flex-shrink-0`}>
           <div className="w-full h-full rounded-[calc(1rem-3px)] overflow-hidden bg-white">
             {member.image && !imgError ? (
               <img src={member.image} loading="lazy" decoding="async" alt={member.name} className="w-full h-full object-cover" onError={() => setImgError(true)} />
             ) : (
-              <div className="w-full h-full flex items-center justify-center font-black text-2xl sm:text-3xl text-slate-300 bg-slate-50">
+              <div className="w-full h-full flex items-center justify-center font-black text-3xl text-slate-300 bg-slate-50">
                 {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
               </div>
             )}
@@ -307,29 +309,26 @@ function TeamCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
         </div>
 
         {/* Name */}
-        <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1.5 tracking-tight leading-tight">{member.name}</h3>
+        <h3 className="text-base sm:text-lg font-black text-slate-900 mb-2 tracking-tight leading-snug">{member.name}</h3>
 
-        {/* Role badge */}
+        {/* Role badge — solid color, never white-on-gradient */}
         <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${gradientBgs[idx % gradientBgs.length]} mb-3`}>
           {member.role}
         </span>
 
-        {/* Specialization */}
-        <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">{member.specialization}</p>
-
         {/* Bio */}
-        <p className="text-sm text-slate-600 leading-relaxed flex-1">{member.bio}</p>
+        <p className="text-sm text-slate-500 leading-relaxed flex-1 mb-5">{member.bio}</p>
 
         {/* Social links — always visible */}
         {(member.email || member.linkedin) && (
-          <div className="flex items-center justify-center gap-2 mt-5 pt-5 border-t border-slate-100 w-full">
+          <div className="flex items-center justify-center gap-2 pt-4 border-t border-slate-100 w-full">
             {member.email && (
-              <a href={`mailto:${member.email}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors text-xs font-semibold">
+              <a href={`mailto:${member.email}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:!text-emerald-600 transition-colors text-xs font-semibold">
                 <Mail className="w-3.5 h-3.5" /> Email
               </a>
             )}
             {member.linkedin && (
-              <a href={member.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors text-xs font-semibold">
+              <a href={member.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-blue-50 hover:!text-blue-600 transition-colors text-xs font-semibold">
                 <Linkedin className="w-3.5 h-3.5" /> LinkedIn
               </a>
             )}
