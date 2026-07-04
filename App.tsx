@@ -7,10 +7,8 @@ import { Toaster } from 'react-hot-toast';
 import AIAssistant from './components/AIAssistant';
 
 const Home = lazy(() => import('./pages/Home'));
-const PeerEducation = lazy(() => import('./pages/PeerEducation'));
 const Courses = lazy(() => import('./pages/Courses'));
 const CourseDetails = lazy(() => import('./pages/CourseDetails'));
-const TeacherApplication = lazy(() => import('./pages/TeacherApplication'));
 const CourseClassroom = lazy(() => import('./pages/CourseClassroom'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
@@ -19,16 +17,10 @@ const About = lazy(() => import('./pages/About'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Profile = lazy(() => import('./pages/Profile'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
-const PatchNotes = lazy(() => import('./pages/PatchNotes'));
 const Verification = lazy(() => import('./pages/Verification'));
-const FlashcardDeck = lazy(() => import('./components/FlashcardDeck'));
-const BehaviorInsights = lazy(() => import('./pages/BehaviorInsights'));
 const Services = lazy(() => import('./pages/Services'));
 const Resources = lazy(() => import('./pages/Resources'));
 const Practice = lazy(() => import('./pages/Practice'));
-const TeacherPanel = lazy(() => import('./pages/TeacherPanel'));
-const SearchHistory = lazy(() => import('./pages/SearchHistory'));
-const AI = lazy(() => import('./pages/AI'));
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -52,9 +44,7 @@ const AppContent: React.FC = () => {
  const location = useLocation();
  const isAdminPath = location.pathname.startsWith('/admin');
   const isClassroomPath = location.pathname.startsWith('/classroom');
-  const isTeacherPath = location.pathname.startsWith('/teacher-panel');
-  const isAIPath = location.pathname.startsWith('/ai');
-  const isHideLayout = isAdminPath || isClassroomPath || isTeacherPath || isAIPath;
+  const isHideLayout = isAdminPath || isClassroomPath;
 
  return (
  <div className="flex flex-col min-h-screen">
@@ -88,30 +78,22 @@ const AppContent: React.FC = () => {
   <Route path="/about" element={<About />} />
   <Route path="/services" element={<Services />} />
   <Route path="/resources" element={<Resources />} />
-  <Route path="/peer-education" element={<PeerEducation />} />
   <Route path="/courses" element={<Courses />} />
   <Route path="/courses/:courseId" element={<CourseDetails />} />
   <Route path="/classroom/:courseId" element={<CourseClassroom />} />
-  <Route path="/teacher-application" element={<TeacherApplication />} />
   <Route path="/login" element={<Login />} />
   <Route path="/signup" element={<Signup />} />
   <Route path="/contact" element={<Contact />} />
   <Route path="/dashboard" element={<Dashboard />} />
   <Route path="/profile" element={<Profile />} />
   <Route path="/admin" element={<AdminDashboard />} />
-  <Route path="/patch-notes" element={<PatchNotes />} />
   <Route path="/verify" element={<Verification />} />
-  <Route path="/flashcards" element={<FlashcardDeck />} />
-  <Route path="/admin/behavior" element={<BehaviorInsights />} />
   <Route path="/practice" element={<Practice />} />
-   <Route path="/teacher-panel" element={<TeacherPanel />} />
-   <Route path="/search-history" element={<SearchHistory />} />
-   <Route path="/ai" element={<AI />} />
-   </Routes>
+  </Routes>
   </Suspense>
   </div>
   {!isHideLayout && <Footer />}
-  {!isHideLayout && !isAIPath && <AIAssistant />}
+  {!isHideLayout && <AIAssistant />}
  </div>
  );
 };
