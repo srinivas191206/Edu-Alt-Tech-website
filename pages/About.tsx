@@ -219,28 +219,11 @@ const About: React.FC = () => {
             <p className="text-sm sm:text-lg text-slate-500">The innovators shaping the future of Edu Alt Tech</p>
           </div>
 
-          <div className="relative">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-6 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
               {TEAM.map((member, idx) => (
                 <TeamCard key={idx} idx={idx} member={member} />
               ))}
             </div>
-            <motion.div
-              className="hidden lg:flex gap-6 lg:gap-8 overflow-x-auto pb-6 snap-x snap-mandatory scroll-smooth no-scrollbar relative z-10"
-              drag="x"
-              dragConstraints={{ right: 0, left: -(TEAM.length * 400) }}
-              dragElastic={0.1}
-              whileTap={{ cursor: 'grabbing' }}
-            >
-              {TEAM.map((member, idx) => (
-                <motion.div key={idx} className="snap-center shrink-0 first:pl-0 last:pr-0">
-                  <TeamCard idx={idx} member={member} />
-                </motion.div>
-              ))}
-            </motion.div>
-            <div className="absolute -left-4 top-0 bottom-6 w-16 bg-gradient-to-r from-slate-50 to-transparent pointer-events-none z-20 hidden lg:block" />
-            <div className="absolute -right-4 top-0 bottom-6 w-16 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none z-20 hidden lg:block" />
-          </div>
         </MotionDiv>
 
         {/* Supporting Team */}
@@ -257,28 +240,11 @@ const About: React.FC = () => {
             <p className="text-sm sm:text-lg text-slate-500">The dedicated folks who keep things running smoothly</p>
           </div>
 
-          <div className="relative">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-6 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
               {SUPPORTING_TEAM.map((member, idx) => (
                 <TeamCard key={idx} idx={idx} member={member} />
               ))}
             </div>
-            <motion.div
-              className="hidden lg:flex gap-6 lg:gap-8 overflow-x-auto pb-6 snap-x snap-mandatory scroll-smooth no-scrollbar relative z-10"
-              drag="x"
-              dragConstraints={{ right: 0, left: -(SUPPORTING_TEAM.length * 400) }}
-              dragElastic={0.1}
-              whileTap={{ cursor: 'grabbing' }}
-            >
-              {SUPPORTING_TEAM.map((member, idx) => (
-                <motion.div key={idx} className="snap-center shrink-0 first:pl-0 last:pr-0">
-                  <TeamCard idx={idx} member={member} />
-                </motion.div>
-              ))}
-            </motion.div>
-            <div className="absolute -left-4 top-0 bottom-6 w-16 bg-gradient-to-r from-slate-50 to-transparent pointer-events-none z-20 hidden lg:block" />
-            <div className="absolute -right-4 top-0 bottom-6 w-16 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none z-20 hidden lg:block" />
-          </div>
         </MotionDiv>
 
         {/* CTA */}
@@ -310,6 +276,7 @@ const About: React.FC = () => {
 
 /* ── Team Card ─────────────────────────────────────────────── */
 const gradients = ['from-emerald-500 to-teal-500', 'from-blue-500 to-indigo-500', 'from-purple-500 to-pink-500', 'from-amber-500 to-orange-500', 'from-rose-500 to-red-500', 'from-cyan-500 to-blue-500', 'from-violet-500 to-purple-500', 'from-lime-500 to-emerald-500'];
+const gradientBgs = ['bg-emerald-50 text-emerald-700', 'bg-blue-50 text-blue-700', 'bg-purple-50 text-purple-700', 'bg-amber-50 text-amber-700', 'bg-rose-50 text-rose-700', 'bg-cyan-50 text-cyan-700', 'bg-violet-50 text-violet-700', 'bg-lime-50 text-lime-700'];
 
 function TeamCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
   const [imgError, setImgError] = React.useState(false);
@@ -320,46 +287,55 @@ function TeamCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ delay: idx * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative bg-white border border-slate-200 rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 transition-colors duration-500 text-center overflow-hidden w-full sm:w-[340px] lg:w-[380px]"
+      className="group relative bg-white border border-slate-200 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:border-slate-300 hover:-translate-y-1 transition-all duration-500 w-full sm:w-[320px] lg:w-[360px] flex flex-col"
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="relative z-10">
-        <div className={`w-36 h-36 sm:w-48 sm:h-48 lg:w-56 lg:h-56 mx-auto mb-6 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden bg-gradient-to-br ${gradients[idx % gradients.length]} p-[5px] shadow-xl`}>
-          <div className="w-full h-full rounded-[1.3rem] sm:rounded-[1.6rem] overflow-hidden bg-white relative">
+      {/* Gradient top bar */}
+      <div className={`h-1.5 w-full bg-gradient-to-r ${gradients[idx % gradients.length]}`} />
+
+      <div className="p-6 sm:p-8 flex flex-col items-center text-center flex-1">
+        {/* Avatar */}
+        <div className={`w-24 h-24 sm:w-32 sm:h-32 mb-5 rounded-2xl overflow-hidden bg-gradient-to-br ${gradients[idx % gradients.length]} p-[3px] shadow-lg flex-shrink-0`}>
+          <div className="w-full h-full rounded-[calc(1rem-3px)] overflow-hidden bg-white">
             {member.image && !imgError ? (
               <img src={member.image} loading="lazy" decoding="async" alt={member.name} className="w-full h-full object-cover" onError={() => setImgError(true)} />
             ) : (
-              <div className="w-full h-full flex items-center justify-center font-black text-2xl sm:text-4xl lg:text-5xl text-slate-300 bg-slate-50">
+              <div className="w-full h-full flex items-center justify-center font-black text-2xl sm:text-3xl text-slate-300 bg-slate-50">
                 {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
               </div>
             )}
           </div>
         </div>
 
-        <div className="h-0.5 w-[40%] mx-auto mb-4 rounded-full bg-gradient-to-r from-transparent via-emerald-400 to-transparent" />
+        {/* Name */}
+        <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1.5 tracking-tight leading-tight">{member.name}</h3>
 
-        <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1 tracking-tight leading-tight">{member.name}</h3>
-
-        <div className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r ${gradients[idx % gradients.length]} text-white mb-3 shadow-sm`}>
+        {/* Role badge */}
+        <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${gradientBgs[idx % gradientBgs.length]} mb-3`}>
           {member.role}
-        </div>
+        </span>
 
-        <p className="text-xs text-slate-500 leading-relaxed mb-4 line-clamp-3">{member.bio}</p>
+        {/* Specialization */}
+        <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">{member.specialization}</p>
 
-        <div className="flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-          {member.email && (
-            <a href={`mailto:${member.email}`} className="p-2 rounded-xl bg-slate-100 text-slate-500 hover:text-emerald-500 hover:bg-emerald-50 transition-colors">
-              <Mail className="w-4 h-4" />
-            </a>
-          )}
-          {member.linkedin && (
-            <a href={member.linkedin} target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-slate-100 text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors">
-              <Linkedin className="w-4 h-4" />
-            </a>
-          )}
-        </div>
+        {/* Bio */}
+        <p className="text-sm text-slate-600 leading-relaxed flex-1">{member.bio}</p>
+
+        {/* Social links — always visible */}
+        {(member.email || member.linkedin) && (
+          <div className="flex items-center justify-center gap-2 mt-5 pt-5 border-t border-slate-100 w-full">
+            {member.email && (
+              <a href={`mailto:${member.email}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors text-xs font-semibold">
+                <Mail className="w-3.5 h-3.5" /> Email
+              </a>
+            )}
+            {member.linkedin && (
+              <a href={member.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors text-xs font-semibold">
+                <Linkedin className="w-3.5 h-3.5" /> LinkedIn
+              </a>
+            )}
+          </div>
+        )}
       </div>
-      <div className="absolute -bottom-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-emerald-500/5 to-teal-500/5 blur-2xl group-hover:from-emerald-500/20 group-hover:to-teal-500/20 transition-all duration-700 pointer-events-none" />
     </motion.div>
   );
 }
