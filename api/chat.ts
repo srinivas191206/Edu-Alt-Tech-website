@@ -1,5 +1,7 @@
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
+export const config = { runtime: 'nodejs' };
+
 // ── Rate Limiting (in-memory; resets per cold start) ──────────────
 const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
 const RATE_LIMIT_MAX = 20;           // max requests per window per IP
