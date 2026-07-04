@@ -76,7 +76,12 @@ code, pre, .font-mono {
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-p, li, span {
+p, li {
+  color: var(--text-secondary);
+}
+
+/* Only color spans that don't have an explicit Tailwind text color */
+span:not([class*="text-"]) {
   color: var(--text-secondary);
 }
 

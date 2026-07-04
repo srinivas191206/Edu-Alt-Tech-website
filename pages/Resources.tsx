@@ -188,17 +188,17 @@ const Resources: React.FC = () => {
  }`}>{typeIcons[item.type]}</div>
  <div className="flex gap-2 flex-wrap justify-end">
  {item.classLevel && (
- <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-indigo-100 text-indigo-700">
+ <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-indigo-100 !text-indigo-700">
  {item.classLevel}
  </span>
  )}
  <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
  item.premium
- ? 'bg-amber-100 text-amber-700'
- : 'bg-emerald-100 text-emerald-700'
+ ? 'bg-amber-100 !text-amber-700'
+ : 'bg-emerald-100 !text-emerald-700'
  }`}>{typeLabels[item.type]}</span>
  {item.premium && (
- <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-amber-100 /30 text-amber-700 flex items-center gap-1">
+ <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-amber-100 !text-amber-700 flex items-center gap-1">
  <Lock className="w-3 h-3" /> Premium
  </span>
  )}
