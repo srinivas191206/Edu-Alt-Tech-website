@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Youtube, Code2, BookOpen, Briefcase, Sparkles, ExternalLink, GraduationCap, ListVideo, X } from 'lucide-react';
+import { Search, Youtube, Code2, BookOpen, Briefcase, Sparkles, ExternalLink, GraduationCap, X } from 'lucide-react';
 import { normalizeSearch } from '../lib/search';
 import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, YOUTUBE_CHANNELS, YOUTUBE_PLAYLISTS, ENGLISH_EXERCISES } from '../data/problems';
 import type { LeetCodeProblem, CourseLink, InterviewExperience, EnglishExercise, YouTubeChannel, YouTubePlaylist } from '../data/problems';
@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import LoginModal from '../components/LoginModal';
 
-type Tab = 'problems' | 'courses' | 'interviews' | 'channels' | 'english' | 'playlists';
+type Tab = 'problems' | 'courses' | 'interviews' | 'channels' | 'english';
 type ProblemSet = 'popular' | 'leetcode150' | 'top150' | 'admin';
 
 const difficultyColors: Record<string, string> = {
@@ -23,8 +23,7 @@ const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
  { key: 'courses', label: 'Full Courses', icon: <BookOpen className="w-4 h-4" /> },
  { key: 'interviews', label: 'Interviews', icon: <Briefcase className="w-4 h-4" /> },
  { key: 'english', label: 'English', icon: <BookOpen className="w-4 h-4" /> },
-  { key: 'channels', label: 'Channels', icon: <GraduationCap className="w-4 h-4" /> },
-  { key: 'playlists', label: 'Playlists', icon: <ListVideo className="w-4 h-4" /> },
+   { key: 'channels', label: 'Channels', icon: <GraduationCap className="w-4 h-4" /> },
 ];
 
 function ProblemCard({ problem, user, onLockedClick }: { problem: LeetCodeProblem; user: any; onLockedClick: () => void }) {
@@ -288,9 +287,6 @@ const Practice: React.FC = () => {
  const [channelFilter, setChannelFilter] = useState('');
   const [englishSearch, setEnglishSearch] = useState('');
   const [levelFilter, setLevelFilter] = useState('');
-  const [playlistSearch, setPlaylistSearch] = useState('');
-  const [playlistCategoryFilter, setPlaylistCategoryFilter] = useState('');
-  const [playlistLevelFilter, setPlaylistLevelFilter] = useState('');
  const [adminProblems, setAdminProblems] = useState<LeetCodeProblem[]>([]);
  const [user, setUser] = useState<any>(auth.currentUser);
  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -377,21 +373,7 @@ const Practice: React.FC = () => {
   return !user ? filteredEnglish.slice(0, 3) : filteredEnglish;
   }, [filteredEnglish, user]);
 
-  const filteredPlaylists = useMemo(() => {
-    const normalizedSearch = normalizeSearch(playlistSearch);
-    return YOUTUBE_PLAYLISTS.filter(p => {
-      const matchSearch = !normalizedSearch || normalizeSearch(p.title).includes(normalizedSearch) || normalizeSearch(p.channelName).includes(normalizedSearch) || String(p.num).includes(playlistSearch);
-      const matchCategory = !playlistCategoryFilter || p.category === playlistCategoryFilter;
-      const matchLevel = !playlistLevelFilter || p.level === playlistLevelFilter;
-      return matchSearch && matchCategory && matchLevel;
-    });
-  }, [playlistSearch, playlistCategoryFilter, playlistLevelFilter]);
-
-  const displayedPlaylists = useMemo(() => {
-    return !user ? filteredPlaylists.slice(0, 3) : filteredPlaylists;
-  }, [filteredPlaylists, user]);
-
- return (
+  return (
   <div className="practice-page-container min-h-screen pt-24 pb-20 sm:pt-32 sm:pb-32 px-4 md:px-6 bg-white relative overflow-hidden">
   <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 blur-[60px] rounded-full max-w-full" />
   <div className="max-w-[1400px] mx-auto relative z-10">
@@ -550,53 +532,9 @@ const Practice: React.FC = () => {
  </>
  )}
 
-  {/* Playlists Tab */}
-  {tab === 'playlists' && (
-  <>
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-2 sm:gap-3 mb-6">
-      <div className="relative flex-1 min-w-[120px] sm:min-w-[160px] max-w-sm">
-        <Search className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-3.5 sm:w-4 h-3.5 sm:h-4 text-slate-400" />
-        <input type="text" placeholder="Search playlists..." value={playlistSearch} onChange={e => setPlaylistSearch(e.target.value)}
-          className="w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder-slate-400"
-        />
-      </div>
-      <select value={playlistCategoryFilter} onChange={e => setPlaylistCategoryFilter(e.target.value)}
-        className="px-2.5 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-[100px] max-w-[140px] sm:max-w-none sm:min-w-[140px] truncate"
-      >
-        <option value="">All Categories</option>
-        {Array.from(new Set(YOUTUBE_PLAYLISTS.map(p => p.category))).sort().map(cat => (
-          <option key={cat} value={cat}>{cat}</option>
-        ))}
-      </select>
-      <select value={playlistLevelFilter} onChange={e => setPlaylistLevelFilter(e.target.value)}
-        className="px-2.5 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-[100px] max-w-[120px] sm:max-w-none sm:min-w-[100px] truncate"
-      >
-        <option value="">All Levels</option>
-        <option value="Beginner">Beginner</option>
-        <option value="Intermediate">Intermediate</option>
-        <option value="Advanced">Advanced</option>
-      </select>
-      {(playlistSearch || playlistCategoryFilter || playlistLevelFilter) && (
-        <button onClick={() => { setPlaylistSearch(''); setPlaylistCategoryFilter(''); setPlaylistLevelFilter(''); }}
-          className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-[10px] sm:text-xs font-bold text-slate-500 hover:text-red-500 hover:border-red-200 transition-colors">
-          <X className="w-3 sm:w-3.5 h-3 sm:h-3.5" /> Clear
-        </button>
-      )}
-    </motion.div>
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {displayedPlaylists.map(p => (
-        <PlaylistCard key={p.num} playlist={p} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
-      ))}
-    </motion.div>
-    {displayedPlaylists.length === 0 && (
-      <p className="text-center text-slate-400 py-12 font-medium">No playlists match your criteria.</p>
-    )}
-  </>
-  )}
-
   {/* Channels Tab */}
   {tab === 'channels' && (
- <>
+  <>
    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-wrap gap-2 sm:gap-3 mb-6">
     <select value={channelFilter} onChange={e => setChannelFilter(e.target.value)}
     className="px-2.5 sm:px-3 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 outline-none min-w-[100px] max-w-[140px] sm:max-w-none sm:min-w-[140px] truncate"
@@ -613,11 +551,18 @@ const Practice: React.FC = () => {
       </button>
     )}
    </motion.div>
- <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+   <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Channels</h3>
+ <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-8">
  {displayedChannels.map(ch => (
  <ChannelCard key={ch.num} channel={ch} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
  ))}
  </motion.div>
+   <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Playlists</h3>
+   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+     {YOUTUBE_PLAYLISTS.map(p => (
+       <PlaylistCard key={p.num} playlist={p} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
+     ))}
+   </motion.div>
  </>
  )}
 
