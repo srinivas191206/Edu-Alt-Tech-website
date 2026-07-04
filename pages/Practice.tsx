@@ -2,8 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Youtube, Code2, BookOpen, Briefcase, Sparkles, ExternalLink, GraduationCap, X } from 'lucide-react';
 import { normalizeSearch } from '../lib/search';
-import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, YOUTUBE_CHANNELS, YOUTUBE_PLAYLISTS, ENGLISH_EXERCISES } from '../data/problems';
-import type { LeetCodeProblem, CourseLink, InterviewExperience, EnglishExercise, YouTubeChannel, YouTubePlaylist } from '../data/problems';
+import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, YOUTUBE_CHANNELS, ENGLISH_EXERCISES } from '../data/problems';
+import type { LeetCodeProblem, CourseLink, InterviewExperience, EnglishExercise, YouTubeChannel } from '../data/problems';
 import { auth, onAuthStateChanged, db, collection, getDocs, query, orderBy } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
@@ -223,18 +223,40 @@ function ChannelCard({ channel, user, onLockedClick }: { channel: YouTubeChannel
   };
 
   return (
-    <a href={channel.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
-      className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group min-w-0"
-    >
-      <div className="w-10 h-10 rounded-xl bg-red-100/20 text-red-500 flex items-center justify-center shrink-0">
-        <Youtube className="w-5 h-5" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 transition-colors whitespace-normal break-words">{channel.name}</h3>
-        <p className="text-xs text-slate-500 mt-0.5 whitespace-normal break-words">{channel.category}</p>
-      </div>
-      <ExternalLink className="w-4 h-4 text-slate-400 shrink-0 group-hover:text-emerald-500 transition-colors" />
-    </a>
+    <div className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 min-w-0">
+      <a href={channel.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+        className="flex items-center gap-3 group mb-3"
+      >
+        <div className="w-10 h-10 rounded-xl bg-red-100/20 text-red-500 flex items-center justify-center shrink-0">
+          <Youtube className="w-5 h-5" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 transition-colors whitespace-normal break-words">{channel.name}</h3>
+          <p className="text-xs text-slate-500 mt-0.5 whitespace-normal break-words">{channel.category}</p>
+        </div>
+        <ExternalLink className="w-4 h-4 text-slate-400 shrink-0 group-hover:text-emerald-500 transition-colors" />
+      </a>
+      {channel.playlists && channel.playlists.length > 0 && (
+        <div className="border-t border-slate-100 pt-3 space-y-2">
+          {channel.playlists.map((pl, i) => (
+            <a key={i} href={pl.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}
+              className="block p-2 rounded-lg hover:bg-slate-50 transition-colors group/pl"
+            >
+              <div className="flex items-start gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold text-slate-700 group-hover/pl:text-emerald-600 transition-colors whitespace-normal break-words">{pl.title}</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">{pl.description}</p>
+                  <span className={`inline-block mt-1 px-1.5 py-0.5 rounded text-[9px] font-bold border ${levelColors[pl.level] || ''}`}>
+                    {pl.level}
+                  </span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -243,40 +265,6 @@ const levelColors: Record<string, string> = {
   Intermediate: 'bg-amber-100/30 text-amber-700 border-amber-200',
   Advanced: 'bg-red-100/30 text-red-700 border-red-200',
 };
-
-function PlaylistCard({ playlist, user, onLockedClick }: { playlist: YouTubePlaylist; user: any; onLockedClick: () => void }) {
-  const handleAction = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (!user) { e.preventDefault(); onLockedClick(); }
-  };
-
-  return (
-    <motion.div layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-      className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-lg hover:border-emerald-500 transition-all duration-300 group min-w-0"
-    >
-      <a href={playlist.url} target="_blank" rel="noopener noreferrer" onClick={handleAction}>
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-red-100/20 text-red-500 flex items-center justify-center shrink-0">
-            <Youtube className="w-5 h-5" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 transition-colors whitespace-normal break-words">{playlist.title}</h3>
-            <p className="text-xs text-slate-500 mt-0.5">{playlist.channelName}</p>
-          </div>
-          <ExternalLink className="w-4 h-4 text-slate-400 shrink-0 group-hover:text-emerald-500 transition-colors" />
-        </div>
-        <p className="text-xs text-slate-500 leading-relaxed mb-3 line-clamp-2">{playlist.description}</p>
-        <div className="flex items-center gap-2">
-          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold border bg-slate-100/30 text-slate-600 border-slate-200 truncate max-w-[140px]">
-            {playlist.category}
-          </span>
-          <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${levelColors[playlist.level] || ''}`}>
-            {playlist.level}
-          </span>
-        </div>
-      </a>
-    </motion.div>
-  );
-}
 
 const Practice: React.FC = () => {
  const [tab, setTab] = useState<Tab>('problems');
@@ -551,18 +539,11 @@ const Practice: React.FC = () => {
       </button>
     )}
    </motion.div>
-   <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Channels</h3>
- <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+ <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
  {displayedChannels.map(ch => (
  <ChannelCard key={ch.num} channel={ch} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
  ))}
  </motion.div>
-   <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Playlists</h3>
-   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-     {YOUTUBE_PLAYLISTS.map(p => (
-       <PlaylistCard key={p.num} playlist={p} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
-     ))}
-   </motion.div>
  </>
  )}
 

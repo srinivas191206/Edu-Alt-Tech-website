@@ -40,21 +40,19 @@ export interface EnglishExercise {
  completionPoints?: number;
 }
 
+export interface YouTubePlaylistInfo {
+  title: string;
+  url: string;
+  description: string;
+  level: 'Beginner' | 'Intermediate' | 'Advanced';
+}
+
 export interface YouTubeChannel {
  num: number;
  name: string;
  category: string;
  url: string;
-}
-
-export interface YouTubePlaylist {
- num: number;
- channelName: string;
- title: string;
- url: string;
- description: string;
- category: string;
- level: 'Beginner' | 'Intermediate' | 'Advanced';
+ playlists?: YouTubePlaylistInfo[];
 }
 
 export const POPULAR_PROBLEMS: LeetCodeProblem[] = [
@@ -664,15 +662,18 @@ export const YOUTUBE_CHANNELS: YouTubeChannel[] = [
  { num: 67, name: 'VOA Learning English', category: 'English Learning', url: 'https://www.youtube.com/@voalearningenglish' },
  { num: 68, name: "Rachel's English", category: 'English Learning', url: 'https://www.youtube.com/@rachelsenglish' },
  { num: 69, name: 'English Like A Native', category: 'English Learning', url: 'https://www.youtube.com/@EnglishLikeANative' },
-  { num: 70, name: 'Papa Teach Me', category: 'English Learning', url: 'https://www.youtube.com/@PapaTeachMe' },
-];
-
-export const YOUTUBE_PLAYLISTS: YouTubePlaylist[] = [
-  { num: 1, channelName: 'CareerRide', title: 'Quantitative Aptitude Complete Series', url: 'https://www.youtube.com/playlist?list=PLpyc3zvKmAulb0ZAlOnM57wZf-wXp0y67', description: 'Perfect structured timeline for placement drives. Chapters cover fundamental topics sequentially (Percentages, Time & Work, Profit & Loss).', category: 'Quantitative Aptitude', level: 'Beginner' },
-  { num: 2, channelName: 'CareerRide', title: 'Logical Reasoning Playlist', url: 'https://www.youtube.com/playlist?list=PLpyc3zvKmAuictunLia_GQC0bH363M8E6', description: 'Systematic blueprint of essential logical items like Coding-Decoding, Blood Relations, and Direction Sense. Highly structured format ideal for database normalization.', category: 'Logical Reasoning', level: 'Beginner' },
-  { num: 3, channelName: 'Feel Free to Learn', title: 'Seating Arrangements & Puzzles', url: 'https://www.youtube.com/playlist?list=PLR94A3PhqN0Bv8m3S4mYF_bVp_mD18MvB', description: 'Focuses deeply on speed techniques, shortcuts, and complex matrix-style logical layout tricks. Outstanding resource for students practicing timed tests.', category: 'Logical Reasoning', level: 'Intermediate' },
-  { num: 4, channelName: 'Feel Free to Learn', title: 'Syllogism Masterclass Series', url: 'https://www.youtube.com/playlist?list=PLR94A3PhqN0A0pZ_TszT_A6S8_D51ZfX7', description: 'Dedicated multi-part walkthrough that simplifies Venn diagrams and logic-deduction parameters. Critical focus point for competitive test clearing.', category: 'Logical Reasoning', level: 'Intermediate' },
-  { num: 5, channelName: 'Gagan Pratap Maths', title: 'Marathon Chapters (Full Math Course)', url: 'https://www.youtube.com/c/GaganPratapMaths/videos', description: 'Deep-dive multi-hour comprehensive marathons. Contains single-video masterclasses that guide students from absolute zero up to advanced levels in specific chapters.', category: 'Quantitative Aptitude', level: 'Advanced' },
+   { num: 70, name: 'Papa Teach Me', category: 'English Learning', url: 'https://www.youtube.com/@PapaTeachMe' },
+  { num: 71, name: 'CareerRide', category: 'Quantitative Aptitude', url: 'https://www.youtube.com/@CareerRide', playlists: [
+    { title: 'Quantitative Aptitude Complete Series', url: 'https://www.youtube.com/playlist?list=PLpyc3zvKmAulb0ZAlOnM57wZf-wXp0y67', description: 'Perfect structured timeline for placement drives. Chapters cover fundamental topics sequentially (Percentages, Time & Work, Profit & Loss).', level: 'Beginner' },
+    { title: 'Logical Reasoning Playlist', url: 'https://www.youtube.com/playlist?list=PLpyc3zvKmAuictunLia_GQC0bH363M8E6', description: 'Systematic blueprint of essential logical items like Coding-Decoding, Blood Relations, and Direction Sense.', level: 'Beginner' },
+  ]},
+  { num: 72, name: 'Feel Free to Learn', category: 'Logical Reasoning', url: 'https://www.youtube.com/@FeelFreetoLearn', playlists: [
+    { title: 'Seating Arrangements & Puzzles', url: 'https://www.youtube.com/playlist?list=PLR94A3PhqN0Bv8m3S4mYF_bVp_mD18MvB', description: 'Focuses deeply on speed techniques, shortcuts, and complex matrix-style logical layout tricks.', level: 'Intermediate' },
+    { title: 'Syllogism Masterclass Series', url: 'https://www.youtube.com/playlist?list=PLR94A3PhqN0A0pZ_TszT_A6S8_D51ZfX7', description: 'Dedicated multi-part walkthrough that simplifies Venn diagrams and logic-deduction parameters.', level: 'Intermediate' },
+  ]},
+  { num: 73, name: 'Gagan Pratap Maths', category: 'Quantitative Aptitude', url: 'https://www.youtube.com/@GaganPratapMaths', playlists: [
+    { title: 'Marathon Chapters (Full Math Course)', url: 'https://www.youtube.com/c/GaganPratapMaths/videos', description: 'Deep-dive multi-hour comprehensive marathons. Contains single-video masterclasses that guide students from absolute zero up to advanced levels.', level: 'Advanced' },
+  ]},
 ];
 
 
