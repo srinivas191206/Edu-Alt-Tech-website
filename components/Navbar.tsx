@@ -67,7 +67,10 @@ export default function Navbar() {
     { name: 'Dashboard', path: '/dashboard' },
   ];
 
-  const adminLinks = [{ name: 'Admin Portal', path: '/admin' }];
+  const adminLinks = [
+    { name: 'Dashboard', path: '/dashboard' },
+    { name: 'Admin Portal', path: '/admin' }
+  ];
 
   const isAdmin = userProfile?.role === 'admin' || user?.email === 'ukkukk97@gmail.com' || user?.email === 'umakrishnakanthchokkapu15@gmail.com';
   let navLinks = publicLinks;
