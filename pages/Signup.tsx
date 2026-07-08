@@ -72,11 +72,7 @@ const Signup: React.FC = () => {
  // navigate(`/verify?email=${encodeURIComponent(email)}`);
  
  // Auto-login to dashboard instead
- if (email === 'ukkukk97@gmail.com' || email === 'umakrishnakanthchokkapu15@gmail.com') {
- navigate('/admin');
- } else {
- navigate('/dashboard');
- }
+  navigate('/dashboard');
   } catch (err: any) {
   console.error('Signup error:', err);
   if (err.code === 'auth/email-already-in-use') {

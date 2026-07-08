@@ -32,11 +32,7 @@ const Login: React.FC = () => {
             createdAt: serverTimestamp()
           });
         }
-        if (u.email === 'ukkukk97@gmail.com' || u.email === 'umakrishnakanthchokkapu15@gmail.com') {
-          navigate('/admin');
-        } else {
-          navigate('/dashboard');
-        }
+        navigate('/dashboard');
       }
     });
     return () => unsub();
@@ -50,11 +46,7 @@ const Login: React.FC = () => {
  try {
  const userCredential = await signInWithEmailAndPassword(auth, email, password);
  if (!userCredential.user) return;
- if (userCredential.user.email === 'ukkukk97@gmail.com' || userCredential.user.email === 'umakrishnakanthchokkapu15@gmail.com') {
- navigate('/admin');
- } else {
- navigate('/dashboard');
- }
+  navigate('/dashboard');
   } catch (err: any) {
   if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
  setError('Email or password is incorrect');
