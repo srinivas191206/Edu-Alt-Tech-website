@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { CheckCircle, ArrowRight, Globe, Smartphone, Brain, Zap, BookOpen, GraduationCap, Sparkles, ShieldCheck } from 'lucide-react';
+import { CheckCircle, Globe, Smartphone, Brain, Zap, BookOpen, GraduationCap, Sparkles } from 'lucide-react';
 import { SERVICES } from '../constants';
 
 const iconMap: Record<string, React.ReactNode> = {

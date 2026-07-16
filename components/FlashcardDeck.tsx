@@ -62,7 +62,7 @@ const FlashcardDeck: React.FC = () => {
  const shuffled = [...cards];
  for (let i = shuffled.length - 1; i > 0; i--) {
  const j = Math.floor(Math.random() * (i + 1));
- [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  [shuffled[i]!, shuffled[j]!] = [shuffled[j]!, shuffled[i]!];
  }
  setCards(shuffled);
  setCurrent(0);
@@ -144,7 +144,7 @@ const FlashcardDeck: React.FC = () => {
  style={{ backfaceVisibility: 'hidden' }}
  >
  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-6">Question</span>
- <p className="text-2xl md:text-3xl font-bold text-slate-900 text-center leading-relaxed">{cards[current].front}</p>
+  <p className="text-2xl md:text-3xl font-bold text-slate-900 text-center leading-relaxed">{cards[current]?.front}</p>
  <span className="mt-auto text-[10px] text-slate-400 font-medium">Tap to flip</span>
  </div>
 
@@ -154,7 +154,7 @@ const FlashcardDeck: React.FC = () => {
  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
  >
  <span className="text-[10px] font-black text-white/70 uppercase tracking-widest mb-6">Answer</span>
- <p className="text-xl md:text-2xl font-bold text-white text-center leading-relaxed">{cards[current].back}</p>
+  <p className="text-xl md:text-2xl font-bold text-white text-center leading-relaxed">{cards[current]?.back}</p>
  <span className="mt-auto text-[10px] text-white/50 font-medium">Tap to flip back</span>
  </div>
  </div>

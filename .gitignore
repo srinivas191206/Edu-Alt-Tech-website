@@ -12,19 +12,27 @@ dist
 dist-ssr
 *.local
 
-# Editor directories and files
+# Environment files
+.env
+.env*.local
+.env.production
+
+# Editor
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-.env
 
+# OS
+.DS_Store
+Thumbs.db
+
+# Project
 .vercel
-.env*.local
 .firebase/
 public/resources/
+coverage/

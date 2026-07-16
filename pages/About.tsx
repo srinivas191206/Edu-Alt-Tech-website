@@ -3,25 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Target, Users, BookOpen, Rocket, Globe, HeartHandshake, Sparkles, Linkedin, Mail, GraduationCap, Code2, Zap, Award, CheckCircle, Play, Hammer, MapPin, MessageCircle, RefreshCw, Palette, Briefcase } from 'lucide-react';
 import { TEAM, SUPPORTING_TEAM } from '../constants';
-
-function useIsMobile() {
-  const [mobile, setMobile] = React.useState(false);
-  React.useEffect(() => {
-    const check = () => setMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
-  return mobile;
-}
-function MotionDiv({ children, ...props }: any) {
-  const isMobile = useIsMobile();
-  if (isMobile) {
-    const { initial, animate, whileInView, viewport, transition, whileHover, exit, layout, variants, onAnimationComplete, ...rest } = props;
-    return <div {...rest}>{children}</div>;
-  }
-  return <motion.div {...props}>{children}</motion.div>;
-}
+import { MotionDiv } from '../src/shared/hooks/useMotion';
 
 const About: React.FC = () => {
   return (
@@ -300,7 +282,7 @@ const cardAccents = [
 
 function TeamCard({ member, idx }: { member: typeof TEAM[0]; idx: number }) {
   const [imgError, setImgError] = React.useState(false);
-  const accent = cardAccents[idx % cardAccents.length];
+  const accent = cardAccents[idx % cardAccents.length]!;
 
   return (
     <motion.div

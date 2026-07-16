@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Lock, Mail, Loader2, Eye, EyeOff } from 'lucide-react';
-import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, doc, getDoc, setDoc, serverTimestamp } from '../lib/firebase';
+import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, doc, getDoc, setDoc, serverTimestamp } from '../lib/firebase';
 import { motion } from 'framer-motion';
 
 const Login: React.FC = () => {
@@ -64,7 +64,7 @@ const Login: React.FC = () => {
   const provider = new GoogleAuthProvider();
 
   try {
-  const result = await signInWithPopup(auth, provider);
+  await signInWithPopup(auth, provider);
   // For Supabase OAuth, the browser redirects to Google.
   // The auth listener (useEffect above) will handle navigation when user returns.
   // If result.user is null, the redirect is in progress.

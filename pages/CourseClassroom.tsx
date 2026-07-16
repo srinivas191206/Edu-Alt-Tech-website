@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { auth, db, storage, doc, getDoc, collection, query, where, getDocs, addDoc, updateDoc, serverTimestamp, orderBy, arrayUnion, arrayRemove, ref, uploadBytes, getDownloadURL, onAuthStateChanged } from '../lib/firebase';
+import { auth, db, storage, doc, getDoc, collection, query, where, getDocs, addDoc, updateDoc, serverTimestamp, arrayUnion, arrayRemove, ref, uploadBytes, getDownloadURL, onAuthStateChanged } from '../lib/firebase';
 import { Course, CourseEnrollment, CourseModule, ModuleLecture, CourseResource } from '../types';
 import { ArrowLeft, BookOpen, Video, FileText, Plus, Link as LinkIcon, Loader2, PlayCircle, CheckCircle2, Circle, ChevronRight, Clock, Award, Layout, Zap, X, Upload, ExternalLink, MessageCircle, Target, Calendar, Sparkles, Users } from 'lucide-react';
 import type { User } from '../lib/firebase';
@@ -11,7 +11,7 @@ import { recordModuleComplete, getOrCreateMetrics } from '../lib/userProgress';
 import { PLATFORM_COURSES } from '../data/platformCourses';
 import { adaptDifficulty } from '../lib/learningPath';
 import type { EnrollmentPlan } from '../types';
-import { getLastReadTimestamps, markCourseRead, computeUnreadCount } from '../lib/chatNotifications';
+import { getLastReadTimestamps, markCourseRead } from '../lib/chatNotifications';
 import DoubtSolver from '../components/DoubtSolver';
 import LearningPathView from '../components/LearningPathView';
 import HamsterLoader from '../components/HamsterLoader';
@@ -122,7 +122,7 @@ const CourseClassroom: React.FC = () => {
   primaryEnr = teacherEnr;
   setAllEnrollments([teacherEnr]);
   } else if (studentEnrs.length > 0) {
-  primaryEnr = studentEnrs[0];
+  primaryEnr = studentEnrs[0]!;
   setAllEnrollments(studentEnrs);
   } else {
   navigate(`/courses/${courseId}`);
@@ -226,7 +226,7 @@ const CourseClassroom: React.FC = () => {
    }
 
    const options = {
-    key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_T4jaXd9nkSffIH",
+    key: import.meta.env.VITE_RAZORPAY_KEY_ID,
     amount: amountInPaise,
     currency: "INR",
     name: "Edu Alt Tech",
@@ -554,7 +554,6 @@ const CourseClassroom: React.FC = () => {
  {modules.map((mod, idx) => {
  const isCompleted = enrollment?.completedModules?.includes(mod.id);
  const isExpanded = expandedModules.includes(mod.id);
- const isOdd = idx % 2 !== 0;
 
  return (
  <motion.div 
@@ -974,7 +973,7 @@ const CourseClassroom: React.FC = () => {
  <label className="flex flex-col items-center gap-2 cursor-pointer">
  <Upload className="w-6 h-6 text-slate-400" />
  <span className="text-xs font-bold text-slate-500">{mThumbFile ? mThumbFile.name : 'Upload Thumbnail'}</span>
- <input type="file" className="hidden" accept="image/*" onChange={e => e.target.files && setMThumbFile(e.target.files[0])} />
+  <input type="file" className="hidden" accept="image/*" onChange={e => e.target.files && setMThumbFile(e.target.files[0] ?? null)} />
  </label>
  </div>
  </div>

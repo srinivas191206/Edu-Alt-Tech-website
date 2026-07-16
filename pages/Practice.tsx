@@ -5,8 +5,6 @@ import { normalizeSearch } from '../lib/search';
 import { POPULAR_PROBLEMS, LEETCODE_150_PROBLEMS, TOP_INTERVIEW_150, FULL_COURSES, INTERVIEW_EXPERIENCES, YOUTUBE_CHANNELS, ENGLISH_EXERCISES } from '../data/problems';
 import type { LeetCodeProblem, CourseLink, InterviewExperience, EnglishExercise, YouTubeChannel } from '../data/problems';
 import { auth, onAuthStateChanged, db, collection, getDocs, query, orderBy } from '../lib/firebase';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
 import LoginModal from '../components/LoginModal';
 
 type Tab = 'problems' | 'courses' | 'interviews' | 'channels' | 'english';
@@ -278,7 +276,6 @@ const Practice: React.FC = () => {
  const [adminProblems, setAdminProblems] = useState<LeetCodeProblem[]>([]);
  const [user, setUser] = useState<any>(auth.currentUser);
  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
- const navigate = useNavigate();
 
  useEffect(() => {
  const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -308,11 +305,6 @@ const Practice: React.FC = () => {
  return Array.from(topics).sort();
  }, [problemSet]);
 
- const allCompanies = useMemo(() => {
- const companies = new Set<string>();
- currentProblems.forEach(p => p.companies?.forEach(c => companies.add(c.name)));
- return Array.from(companies).sort();
- }, [problemSet]);
 
    const filteredProblems = useMemo(() => {
    const normalizedSearch = normalizeSearch(search);
@@ -448,7 +440,7 @@ const Practice: React.FC = () => {
 
  {/* Problem Grid */}
  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
- {displayedProblems.map((p, i) => (
+ {displayedProblems.map((p, _i) => (
  <ProblemCard key={`${problemSet}-${p.num}`} problem={p} user={user} onLockedClick={() => setIsAuthModalOpen(true)} />
  ))}
  </div>

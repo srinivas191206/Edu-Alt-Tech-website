@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
-import { auth, db, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut, doc, setDoc, serverTimestamp, collection, query, where, getDocs } from '../lib/firebase';
+import { auth, db, createUserWithEmailAndPassword, updateProfile, sendEmailVerification, doc, setDoc, serverTimestamp, collection, query, where, getDocs } from '../lib/firebase';
 import { motion } from 'framer-motion';
 
 const Signup: React.FC = () => {

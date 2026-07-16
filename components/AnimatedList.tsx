@@ -93,7 +93,7 @@ function AnimatedList<T>({
       } else if (e.key === 'Enter') {
         if (selectedIndex >= 0 && selectedIndex < items.length) {
           e.preventDefault();
-          onItemSelect?.(items[selectedIndex], selectedIndex);
+          onItemSelect?.(items[selectedIndex]!, selectedIndex);
         }
       }
     };

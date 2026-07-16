@@ -3,11 +3,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import { auth, db, storage, doc, getDoc, collection, query, where, getDocs, addDoc, updateDoc, serverTimestamp, ref, uploadBytes, getDownloadURL, onAuthStateChanged, orderBy, onSnapshot } from '../lib/firebase';
 import { Course, CourseEnrollment, CourseModule, ModuleLecture, CourseResource } from '../types';
 import { PLATFORM_COURSES } from '../data/platformCourses';
-import { ArrowLeft, BookOpen, Video, FileText, Plus, Link as LinkIcon, Loader2, Users, Clock, X, Upload, ExternalLink, Calendar, GraduationCap, Trash2, Edit, Save, Send, MessageSquare, UserCheck, ListOrdered, DollarSign, BarChart3, Copy, CheckCircle, Repeat } from 'lucide-react';
+import { ArrowLeft, BookOpen, Video, FileText, Plus, Loader2, Users, X, ExternalLink, Calendar, GraduationCap, DollarSign, BarChart3, Copy, Repeat, MessageSquare, Send } from 'lucide-react';
 import type { User } from '../lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
-import { getLastReadTimestamps, markCourseRead, computeUnreadCount } from '../lib/chatNotifications';
+import { getLastReadTimestamps, markCourseRead } from '../lib/chatNotifications';
 import HamsterLoader from '../components/HamsterLoader';
 
 const ADMIN_EMAILS = ['ukkukk97@gmail.com', 'umakrishnakanthchokkapu15@gmail.com'];
@@ -70,16 +70,6 @@ const TeacherPanel: React.FC = () => {
  const [sDesc, setSDesc] = useState('');
  const [sMeetLink, setSMeetLink] = useState('');
  const [sDate, setSDate] = useState('');
- const [sRepeat, setSRepeat] = useState('none');
-
- // Recurring class modal
- const [showRecurringModal, setShowRecurringModal] = useState(false);
- const [rcTitle, setRcTitle] = useState('');
- const [rcDesc, setRcDesc] = useState('');
- const [rcLink, setRcLink] = useState('');
- const [rcRepeat, setRcRepeat] = useState<'daily' | 'weekdays' | 'weekly'>('daily');
- const [rcStart, setRcStart] = useState('');
- const [rcEnd, setRcEnd] = useState('');
 
  const fetchModulesAndResources = async (courseId: string) => {
  setLoadingModules(true);
@@ -121,7 +111,7 @@ const TeacherPanel: React.FC = () => {
   const eq = query(collection(db, 'enrollments'), where('userId', '==', s.user_id), where('courseId', '==', courseId), where('role', '==', 'student'));
   const eSnap = await getDocs(eq);
   if (!eSnap.empty) {
-  const eData = eSnap.docs[0].data();
+  const eData = eSnap.docs[0]?.data();
   if (eData.paymentStatus) paymentStatus = eData.paymentStatus;
   if (eData.plan) plan = eData.plan;
   if (eData.createdAt) enrolledAt = eData.createdAt?.toDate?.()?.toISOString() || eData.createdAt;
@@ -539,36 +529,7 @@ const TeacherPanel: React.FC = () => {
  } catch (e) {
  toast.error("Failed to schedule class");
  }
- };
-
- const handleCreateRecurringClass = async () => {
- if (!rcTitle.trim() || !rcLink.trim() || !user || !expandedCourse) {
- toast.error("Title and meeting link are required");
- return;
- }
- try {
- await db.from('teacher_recurring_classes').insert({
- teacher_id: user.uid,
- course_id: expandedCourse,
- title: rcTitle,
- description: rcDesc || '',
- meeting_link: rcLink,
- repeat_type: rcRepeat,
- start_time: rcStart || new Date().toISOString(),
- end_time: rcEnd || null,
- is_active: true,
- created_at: new Date().toISOString()
- });
- const teacherName = user.displayName || user.email || 'A teacher';
- await notifyAdmins(getCourseTitle(), rcTitle, rcLink, teacherName);
- setShowRecurringModal(false);
- setRcTitle(''); setRcDesc(''); setRcLink(''); setRcRepeat('daily'); setRcStart(''); setRcEnd('');
- await fetchScheduledClasses(expandedCourse);
- toast.success("Recurring class created! Share the link with students.");
- } catch (e) {
- toast.error("Failed to create recurring class");
- }
- };
+  };
 
  const copyToClipboard = (text: string) => {
  navigator.clipboard.writeText(text);
@@ -748,9 +709,9 @@ const TeacherPanel: React.FC = () => {
   <span className="flex items-center gap-1.5 text-sm font-bold text-slate-500">
   <Users className="w-4 h-4" /> {course.studentCount} enrolled
   </span>
-  {unreadCounts[course.courseId!] > 0 && (
-  <span className="ml-2 px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-black rounded-full">
-  {unreadCounts[course.courseId!]} new
+    {(unreadCounts[course.courseId] ?? 0) > 0 && (
+    <span className="ml-2 px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-black rounded-full">
+    {unreadCounts[course.courseId]} new
   </span>
   )}
   </div>
@@ -785,9 +746,9 @@ const TeacherPanel: React.FC = () => {
   >
   <tab.icon className="w-4 h-4" />
   {tab.label}
-  {tab.id === 'chat' && unreadCounts[course.courseId!] > 0 && activeCourseTab !== 'chat' && (
-  <span className="ml-1 px-1.5 py-0.5 bg-emerald-500 text-white text-[9px] font-black rounded-full min-w-[18px] text-center">
-  {unreadCounts[course.courseId!]}
+    {tab.id === 'chat' && (unreadCounts[course.courseId] ?? 0) > 0 && activeCourseTab !== 'chat' && (
+    <span className="ml-1 px-1.5 py-0.5 bg-emerald-500 text-white text-[9px] font-black rounded-full min-w-[18px] text-center">
+    {course.courseId && unreadCounts[course.courseId]}
   </span>
   )}
   </button>

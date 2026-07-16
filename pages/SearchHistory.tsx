@@ -24,7 +24,7 @@ const SearchHistory: React.FC = () => {
   const navigate = useNavigate();
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [, setUser] = useState<any>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {

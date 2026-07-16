@@ -1,42 +1,6 @@
-import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { motion as _motion } from 'framer-motion';
-
-function useIsMobile() {
-  const [mobile, setMobile] = React.useState(false);
-  React.useEffect(() => {
-    const check = () => setMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
-  return mobile;
-}
-function MotionH1({ children, ...props }: any) {
-  const isMobile = useIsMobile();
-  if (isMobile) {
-    const { initial, animate, whileInView, viewport, transition, whileHover, exit, layout, variants, onAnimationComplete, ...rest } = props;
-    return <h1 {...rest}>{children}</h1>;
-  }
-  return <_motion.h1 {...props}>{children}</_motion.h1>;
-}
-function MotionP({ children, ...props }: any) {
-  const isMobile = useIsMobile();
-  if (isMobile) {
-    const { initial, animate, whileInView, viewport, transition, whileHover, exit, layout, variants, onAnimationComplete, ...rest } = props;
-    return <p {...rest}>{children}</p>;
-  }
-  return <_motion.p {...props}>{children}</_motion.p>;
-}
-function MotionDiv({ children, ...props }: any) {
-  const isMobile = useIsMobile();
-  if (isMobile) {
-    const { initial, animate, whileInView, viewport, transition, whileHover, exit, layout, variants, onAnimationComplete, ...rest } = props;
-    return <div {...rest}>{children}</div>;
-  }
-  return <_motion.div {...props}>{children}</_motion.div>;
-}
+import { MotionDiv, MotionH1, MotionP } from '../src/shared/hooks/useMotion';
 import { PLATFORM_COURSES } from '../data/platformCourses';
   import { 
   ArrowRight, CheckCircle, GraduationCap, Globe, Smartphone, Brain, Zap, BookOpen, 
@@ -49,15 +13,6 @@ import Button from '../components/Button';
 import AnimatedCounter from '../components/AnimatedCounter';
 
 
-
-const iconMap: Record<string, React.ReactNode> = {
-  Globe: <Globe className="w-8 h-8" />,
-  Smartphone: <Smartphone className="w-8 h-8" />,
-  Brain: <Brain className="w-8 h-8" />,
-  Zap: <Zap className="w-8 h-8" />,
-  BookOpen: <BookOpen className="w-8 h-8" />,
-  GraduationCap: <GraduationCap className="w-8 h-8" />,
-};
 
 const Home: React.FC = () => {
 

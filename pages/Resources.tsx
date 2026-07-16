@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { Search, Download, FileText, BookOpen, Brain, FileSpreadsheet, Lock, Sparkles, ArrowRight, X } from 'lucide-react';
 import { normalizeSearch } from '../lib/search';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { auth, onAuthStateChanged, db, collection, getDocs } from '../lib/firebase';
 import LoginModal from '../components/LoginModal';
 import { getDriveSubfolders, getDriveDownloadUrl, getDriveFileCategory } from '../lib/drive';
@@ -36,16 +36,13 @@ const typeLabels: Record<string, string> = {
  worksheet: "Worksheet",
 };
 
-const categories = ["All", "Mathematics", "Science", "English", "Social Studies", "Computer Science", "Engineering", "Management"];
-
 const Resources: React.FC = () => {
   const [search, setSearch] = useState('');
  const [firebaseResources, setFirebaseResources] = useState<ResourceItem[]>([]);
  const [driveResources, setDriveResources] = useState<ResourceItem[]>([]);
- const [loadingDrive, setLoadingDrive] = useState(true);
+ const [, setLoadingDrive] = useState(true);
  const [user, setUser] = useState<any>(auth.currentUser);
  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
- const navigate = useNavigate();
 
  useEffect(() => {
  const unsubscribe = onAuthStateChanged(auth, (u) => {
