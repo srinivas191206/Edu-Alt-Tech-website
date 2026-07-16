@@ -65,9 +65,9 @@ export async function updateMetricsFromQuiz(userId: string, courseId: string): P
  for (const a of attempts) {
  for (let i = 0; i < a.questions.length; i++) {
  const q = a.questions[i];
- const isCorrect = a.userAnswers[i] === q.correctAnswer;
- if (isCorrect && q.topic) allCorrect.push(q.topic);
- else if (!isCorrect && q.topic) allMistakes.push(q.topic);
+ const isCorrect = a.userAnswers[i] === q?.correctAnswer;
+ if (isCorrect && q?.topic) allCorrect.push(q.topic);
+ else if (!isCorrect && q?.topic) allMistakes.push(q.topic);
  }
  }
 

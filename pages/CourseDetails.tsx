@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { auth, db, doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs, onAuthStateChanged } from '../lib/firebase';
 import { Course, CourseEnrollment } from '../types';
 import { PLATFORM_COURSES } from '../data/platformCourses';
-import { ArrowLeft, CheckCircle2, Clock, Users, BookOpen, AlertCircle, Loader2, ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Users, BookOpen, AlertCircle, Loader2, ArrowRight, Sparkles } from 'lucide-react';
 import type { User } from '../lib/firebase';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -60,7 +60,7 @@ const CourseDetails: React.FC = () => {
   if (!querySnapshot.empty) {
   const sorted = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() } as CourseEnrollment))
     .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
-  enrData = sorted[0];
+  enrData = sorted[0] ?? null;
   setEnrollment(enrData);
   }
 
@@ -102,7 +102,7 @@ const CourseDetails: React.FC = () => {
  setMentors(loadedMentors);
 
  if (loadedMentors.length === 1) {
- setSelectedMentor(loadedMentors[0].userId);
+  setSelectedMentor(loadedMentors[0]?.userId);
  }
 
   // --- AUTO REDIRECT TO CLASSROOM (mentors only) ---
@@ -281,7 +281,7 @@ const CourseDetails: React.FC = () => {
 
  // 3. Open Checkout
  const options = {
- key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_T4jaXd9nkSffIH",
+ key: import.meta.env.VITE_RAZORPAY_KEY_ID,
  amount: amountInPaise,
  currency: "INR",
  name: "Edu Alt Tech",
@@ -370,7 +370,7 @@ await finalizeEnrollment('full');
   const scriptLoaded = await loadRazorpayScript();
   if (!scriptLoaded) { alert("Payment gateway failed to load."); return; }
   const options = {
-  key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_T4jaXd9nkSffIH",
+  key: import.meta.env.VITE_RAZORPAY_KEY_ID,
   amount: amountInPaise,
   currency: "INR",
   name: "Edu Alt Tech",

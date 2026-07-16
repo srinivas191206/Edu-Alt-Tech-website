@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { auth, db, storage, onAuthStateChanged, collection, getDocs, doc, getDoc, updateDoc, deleteDoc, addDoc, serverTimestamp, query, where, orderBy, ref, uploadBytes, getDownloadURL, createEnrollment } from '../lib/firebase';
+import { auth, db, onAuthStateChanged, collection, getDocs, doc, getDoc, updateDoc, deleteDoc, addDoc, serverTimestamp, query, where, createEnrollment } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical, Calendar, Video, Pencil, Trash2, Plus, Image, Save, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Users, CalendarClock, X, LayoutDashboard, Database, ClipboardList, ArrowLeft, MessageSquare, BarChart3, Send, MoreVertical, Calendar, Video, Pencil, Trash2, Plus, Save, Eye, EyeOff } from 'lucide-react';
 import { TeacherApplication } from '../types';
 import { PLATFORM_COURSES } from '../data/platformCourses';
 import { toast } from 'react-hot-toast';
@@ -224,7 +224,7 @@ const AdminDashboard: React.FC = () => {
  userName: data.name || 'Unknown',
  userEmail: data.email || 'No Email',
  courseId: courseIdVal,
- skills: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n')[0].replace('Skills: ', '') : 'Course Expert',
+  skills: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n')[0]?.replace('Skills: ', '') : 'Course Expert',
  message: (data.message || '').startsWith('Skills:') ? (data.message || '').split('\n').slice(1).join('\n').trim() : (data.message || '')
  };
  });
@@ -373,7 +373,7 @@ const AdminDashboard: React.FC = () => {
  } catch(e: any) { toast.error(e?.message || "Verdict update failed"); console.error(e); }
  };
 
- const [schedulingId, setSchedulingId] = useState<string | null>(null);
+  const [, setSchedulingId] = useState<string | null>(null);
  const [meetLink, setMeetLink] = useState('');
  const [meetDate, setMeetDate] = useState('');
 
@@ -540,15 +540,7 @@ ${dateStr ? `<tr><td><span style="font-size:12px;font-weight:700;color:#64748b;t
    const map: Record<string, string> = {};
    coursesList.forEach((c: any) => { map[c.id] = c.title || 'Untitled'; });
    return map;
-  }, [coursesList]);
-  const planBreakdown = useMemo(() => {
-    const counts = { first_class: 0, full: 0 };
-    enrollments.forEach((e: any) => {
-     const p = e.plan || 'first_class';
-     if (p in counts) counts[p as keyof typeof counts]++;
-   });
-   return counts;
-  }, [enrollments]);
+   }, [coursesList]);
 
  if (loading) {
  return <HamsterLoader />;

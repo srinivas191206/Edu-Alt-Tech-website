@@ -1,6 +1,3 @@
-
-import { Users, Globe, BookOpen, Brain, Smartphone, ShieldCheck, GraduationCap, HeartHandshake, Target, Zap, Clock } from 'lucide-react';
-
 export const LINKS = {
  enroll: "https://docs.google.com/forms/d/e/1FAIpQLSeQXyJQQjPwLJt-2E1P1PYBKC89z_NsX4UJewQymFPW0C0IIw/viewform",
    whatsapp: "https://wa.me/919121505879?text=Hi%20Edu%20Alt%20Tech!%20I%27d%20like%20to%20know%20more%20about%20your%20platform.",

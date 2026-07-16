@@ -2,9 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { auth, onAuthStateChanged, db, collection, getDocs, query } from '../lib/firebase';
 import { Course } from '../types';
-import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Code, Clock, CircleDollarSign, X } from 'lucide-react';
+import { Search, Book, Sparkles, Globe, GraduationCap, Compass, ExternalLink, Clock, CircleDollarSign, X } from 'lucide-react';
 import { normalizeSearch } from '../lib/search';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoginModal from '../components/LoginModal';
 import { PLATFORM_COURSES } from '../data/platformCourses';
@@ -22,31 +22,6 @@ const FOLDER_MAP: Record<string, 'education' | 'alternative'> = {
 
 const EDUCATION_FOLDERS = new Set(['Core Education', 'Language Skills', 'Music', 'Dance', 'Arts & Creativity', 'Life Skills', 'Mind Sports', 'Health & Wellness']);
 
-function getFallbackThumbnail(title: string, folder: string): string {
- const colors: Record<string, [string, string]> = {
- 'Artificial Intelligence': ['#059669', '#10b981'],
- 'Entrepreneurship': ['#7c3aed', '#a855f7'],
- 'Career Development': ['#0284c7', '#38bdf8'],
- 'Finance': ['#ca8a04', '#eab308'],
- 'Innovation': ['#ea580c', '#f97316'],
- 'Life Skills': ['#0891b2', '#22d3ee'],
- 'Robotics': ['#4f46e5', '#818cf8'],
- 'Cybersecurity': ['#1e293b', '#475569'],
- 'Creator Economy': ['#be123c', '#f43f5e'],
- 'Future Technologies': ['#6d28d9', '#8b5cf6'],
- 'Technology': ['#0369a1', '#0ea5e9'],
- 'Core Education': ['#0d9488', '#14b8a6'],
- 'Language Skills': ['#d97706', '#f59e0b'],
- 'Music': ['#9333ea', '#a855f7'],
- 'Dance': ['#db2777', '#ec4899'],
- 'Arts & Creativity': ['#e11d48', '#fb7185'],
- 'Mind Sports': ['#15803d', '#22c55e'],
- 'Health & Wellness': ['#059669', '#34d399'],
- };
- const [c1, c2] = colors[folder] || ['#6366f1', '#a855f7'];
- return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:${c1}"/><stop offset="100%" style="stop-color:${c2}"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/><text x="200" y="200" text-anchor="middle" font-size="64" fill="rgba(255,255,255,0.2)">📚</text><text x="200" y="260" text-anchor="middle" font-size="16" fill="rgba(255,255,255,0.6)" font-weight="bold" font-family="sans-serif">${title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')}</text></svg>`)}`;
-}
-
 function getThumbnail(title: string, folder: string): string {
  const seed = encodeURIComponent((title || folder || 'course').replace(/\s+/g, '-').toLowerCase().slice(0, 50));
  return `https://picsum.photos/seed/${seed}/400/225`;
@@ -57,11 +32,6 @@ const PROVIDER_LOGOS: Record<string, string> = {
   'Hugging Face': 'https://huggingface.co/front/assets/huggingface_logo.svg',
 };
 
-const providerIcons: Record<string, React.ReactNode> = {
-  'DeepLearningAI': <Book className="w-5 h-5" />,
-  'Hugging Face': <Code className="w-5 h-5" />,
-};
-
 const Courses: React.FC = () => {
  const [courses, setCourses] = useState<Course[]>([]);
  const [loading, setLoading] = useState(true);
@@ -70,7 +40,6 @@ const Courses: React.FC = () => {
   const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
  const [user, setUser] = useState<any>(auth.currentUser);
  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
- const navigate = useNavigate();
 
  useEffect(() => {
  const unsubscribe = onAuthStateChanged(auth, (u) => {

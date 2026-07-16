@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { auth, db, onAuthStateChanged, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword, doc, onSnapshot, setDoc } from '../lib/firebase';
-import { Loader2, Camera, X, Check, LogOut, ArrowLeft, Building2, MapPin, Tag, Edit3, Save } from 'lucide-react';
+import { Loader2, Camera, Check, LogOut, ArrowLeft, Building2, MapPin, Tag, Edit3, Save } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserObject } from '../types';
 import { motion } from 'framer-motion';

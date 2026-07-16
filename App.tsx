@@ -1,11 +1,13 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { Toaster } from 'react-hot-toast';
 import AIAssistant from './components/AIAssistant';
 import HamsterLoader from './components/HamsterLoader';
+import { ErrorBoundary } from './src/shared/components/ErrorBoundary';
 
 const Home = lazy(() => import('./pages/Home'));
 const Courses = lazy(() => import('./pages/Courses'));
@@ -28,6 +30,7 @@ const TeacherPanel = lazy(() => import('./pages/TeacherPanel'));
 const SearchHistory = lazy(() => import('./pages/SearchHistory'));
 const AI = lazy(() => import('./pages/AI'));
 const FAQPage = lazy(() => import('./pages/FAQ'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -83,6 +86,7 @@ const AppContent: React.FC = () => {
   <Route path="/search-history" element={<SearchHistory />} />
    <Route path="/ai" element={<AI />} />
    <Route path="/faq" element={<FAQPage />} />
+   <Route path="*" element={<NotFound />} />
    </Routes>
   </Suspense>
   </div>
@@ -92,13 +96,27 @@ const AppContent: React.FC = () => {
  );
 };
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 const App: React.FC = () => {
   return (
    <HelmetProvider>
+   <QueryClientProvider client={queryClient}>
+   <ErrorBoundary>
    <Router>
     <ScrollToTop />
     <AppContent />
    </Router>
+   </ErrorBoundary>
+   </QueryClientProvider>
    </HelmetProvider>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Bot, X, Send, Loader2, MessageCircle, BookOpen, Shield, ChevronDown, GraduationCap, History, Maximize2, LogIn } from 'lucide-react';
+import { X, Send, Loader2, MessageCircle, BookOpen, Shield, ChevronDown, GraduationCap, History, Maximize2, LogIn } from 'lucide-react';
 import { sendAIChat, AIMode } from '../lib/ai';
-import { auth, db, onAuthStateChanged, collection, query, where, getDocs, orderBy, limit, addDoc, serverTimestamp } from '../lib/firebase';
+import { auth, db, onAuthStateChanged, collection, query, where, getDocs, limit, addDoc, serverTimestamp } from '../lib/firebase';
 import { Link, useNavigate } from 'react-router-dom';
 
 type ModeOption = {

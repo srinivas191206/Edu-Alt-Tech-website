@@ -1,5 +1,5 @@
-const DRIVE_API_KEY = 'AIzaSyBO6xmRU_shTO5PHHBNhpTNFtXsmoBIjEk';
-const ROOT_FOLDER_ID = '1toMlJExBP-titjEoCrn3TjKq6ToEC7rb';
+const DRIVE_API_KEY = import.meta.env.VITE_GOOGLE_DRIVE_API_KEY || '';
+const ROOT_FOLDER_ID = import.meta.env.VITE_GOOGLE_DRIVE_ROOT_FOLDER_ID || '1toMlJExBP-titjEoCrn3TjKq6ToEC7rb';
 
 const FOLDER_CATEGORY_MAP: Record<string, string> = {
  'english': 'English',

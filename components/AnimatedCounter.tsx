@@ -20,7 +20,7 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, suffix = '', p
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           setStarted(true);
         }
       },

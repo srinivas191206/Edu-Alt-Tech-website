@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * HamsterLoader — the single shared full-page loader used everywhere.
  */

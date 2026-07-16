@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Bot, Send, Loader2, MessageCircle, BookOpen, Shield, ChevronDown, GraduationCap, History, Sparkles, ArrowLeft, Trash2 } from 'lucide-react';
 import { sendAIChat, AIMode } from '../lib/ai';
 import { auth, db, onAuthStateChanged, collection, query, where, getDocs, getDoc, doc, orderBy, limit, addDoc, serverTimestamp, deleteDoc } from '../lib/firebase';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const MODES: { id: AIMode; label: string; icon: React.ReactNode; description: string; color: string }[] = [
   { id: 'chat', label: 'General Chat', icon: <MessageCircle className="w-4 h-4" />, description: 'Ask anything about Edu-Alt-Tech', color: 'emerald' },
@@ -27,7 +27,7 @@ const AI: React.FC = () => {
   const [mentorContext, setMentorContext] = useState<string>('');
   const [courseCatalog, setCourseCatalog] = useState<string>('');
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [userProfile, setUserProfile] = useState<any>(null);
+  const [, setUserProfile] = useState<any>(null);
   const [showSidebar, setShowSidebar] = useState(false);
   const [historyItems, setHistoryItems] = useState<any[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
@@ -286,7 +286,7 @@ const AI: React.FC = () => {
 
         <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full">
           <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-4">
-            {messages.length === 1 && messages[0].role === 'assistant' && (
+            {messages.length === 1 && messages[0]?.role === 'assistant' && (
               <div className="text-center py-8">
                 <Sparkles className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
                 <h2 className="text-xl font-black text-slate-800 mb-2">How can I help you today?</h2>

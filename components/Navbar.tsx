@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ChevronDown, User as LucideUser, LogOut, GraduationCap, BookOpen, Wrench, LayoutDashboard, Library } from 'lucide-react';
-import { auth, db, onAuthStateChanged, signOut, doc, getDoc } from '../lib/firebase';
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, User as LucideUser } from 'lucide-react';
+import { auth, db, onAuthStateChanged, doc, getDoc } from '../lib/firebase';
 import type { User as FirebaseUser } from '../lib/firebase';
 import { UserObject } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -11,7 +11,6 @@ export default function Navbar() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [userProfile, setUserProfile] = useState<UserObject | null>(null);
   const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {

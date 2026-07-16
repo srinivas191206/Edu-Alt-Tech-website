@@ -29,7 +29,7 @@ interface ButtonProps {
   type?: 'button' | 'submit';
 }
 
-const Button: React.FC<ButtonProps> = ({ children, variant = 'primary', size = 'md', to, href, onClick, className = '', disabled, type = 'button' }) => {
+const Button: React.FC<ButtonProps> = ({ children, variant = 'primary', size = 'md', to, href: _href, onClick, className = '', disabled, type = 'button' }) => {
   const base = `inline-flex items-center justify-center gap-2 font-bold transition-all duration-300 hover:-translate-y-1 active:scale-95 ${variants[variant]} ${sizes[size]} ${className}`;
 
   if (to) {

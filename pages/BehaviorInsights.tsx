@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, TrendingUp, TrendingDown, Users, Activity, Clock, ArrowLeft, AlertTriangle, BarChart3, Target } from 'lucide-react';
+import { Brain, Users, Activity, Clock, ArrowLeft, AlertTriangle, Target } from 'lucide-react';
 import { auth, db, onAuthStateChanged, collection, getDocs, query, orderBy, limit } from '../lib/firebase';
 import type { User } from '../lib/firebase';
 import type { UserMetrics, UserActivity } from '../types';
@@ -18,7 +18,7 @@ interface StudentInsight {
 }
 
 const BehaviorInsights: React.FC = () => {
- const [user, setUser] = useState<User | null>(null);
+ const [, setUser] = useState<User | null>(null);
  const [students, setStudents] = useState<StudentInsight[]>([]);
  const [loading, setLoading] = useState(true);
  const [sortBy, setSortBy] = useState<'risk' | 'engagement' | 'activity'>('risk');
@@ -47,7 +47,7 @@ const BehaviorInsights: React.FC = () => {
  mMeta.forEach(d => {
  const data = d.data() as UserMetrics;
  if (!allMetrics[data.userId]) allMetrics[data.userId] = [];
- allMetrics[data.userId].push(data);
+  allMetrics[data.userId]?.push(data);
  });
 
  const aSnap = await getDocs(query(collection(db, 'user_activities'), orderBy('timestamp', 'desc'), limit(500)));
@@ -56,7 +56,7 @@ const BehaviorInsights: React.FC = () => {
  aSnap.forEach(d => {
  const data = d.data() as UserActivity;
  activityCounts[data.userId] = (activityCounts[data.userId] || 0) + 1;
- if (!lastActive[data.userId] || data.timestamp > lastActive[data.userId]) {
+  if (!lastActive[data.userId] || data.timestamp > lastActive[data.userId]!) {
  lastActive[data.userId] = data.timestamp;
  }
  });

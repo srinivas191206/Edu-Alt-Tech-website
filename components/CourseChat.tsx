@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { db, auth, collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, getDocs, doc, getDoc, limit } from '../lib/firebase';
-import { sendAIChat } from '../lib/ai';
-import { Send, Hash, MessageCircle, User, Loader2, Search, Bot } from 'lucide-react';
+import { db, collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, getDocs, doc, getDoc, limit } from '../lib/firebase';
+import { Send, Hash, MessageCircle, User, Loader2, Bot } from 'lucide-react';
 
 interface Message {
  id: string;
@@ -45,7 +44,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  const sList = uSnap.docs.map(d => ({ uid: d.id, name: d.data().name || 'Student' }));
  setStudents(sList);
  if (sList.length > 0 && !selectedStudentId) {
- setSelectedStudentId(sList[0].uid);
+ setSelectedStudentId(sList[0]?.uid ?? null);
  }
  }
  };
@@ -250,7 +249,7 @@ const CourseChat: React.FC<ChatProps> = ({ courseId, currentUser, mentorId, role
  </div>
  ) : messages.map((msg, idx) => {
   const isMe = msg.senderId === currentUser.uid;
-  const showName = idx === 0 || messages[idx-1].senderId !== msg.senderId;
+  const showName = idx === 0 || messages[idx-1]?.senderId !== msg.senderId;
   return (
   <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
    {showName && !isMe && (

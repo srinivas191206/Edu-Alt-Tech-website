@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { auth, db, onAuthStateChanged, doc, onSnapshot, collection, query, where, getDocs, getDoc, orderBy, limit } from '../lib/firebase';
-import { Loader2, BookOpen, Download, Award, User, FileText, GraduationCap, ArrowRight, Clock, Star, TrendingUp, CheckCircle, Library, Sparkles, Video, CalendarCheck, AlertCircle, Users, Lightbulb, Target, MessageSquare, Send, Code2, History, Bell, Calendar, Lock, ArrowUpCircle, Flame, BarChart3, HelpCircle, Brain } from 'lucide-react';
+import { auth, db, onAuthStateChanged, doc, onSnapshot, collection, query, where, getDocs, orderBy, limit } from '../lib/firebase';
+import { Loader2, BookOpen, Download, Award, FileText, GraduationCap, ArrowRight, Clock, Sparkles, Video, Users, Lightbulb, MessageSquare, Send, Code2, History, Bell, Calendar, Lock, ArrowUpCircle, Flame, BarChart3 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserObject, CourseEnrollment, Course, TeacherApplication, UserMetrics } from '../types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { PLATFORM_COURSES } from '../data/platformCourses';
 import { getLastReadTimestamps } from '../lib/chatNotifications';
-import AnimatedList from '../components/AnimatedList';
-import HamsterLoader from '../components/HamsterLoader';
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -18,14 +16,14 @@ const extractMeetingLink = (message: string | undefined, explicitLink?: string):
   if (explicitLink) return explicitLink;
   if (!message) return null;
   const match = message.match(/\[Interview Link:\s*([^\]]+)\]/);
-  return match ? match[1] : null;
+  return match ? match[1] ?? null : null;
 };
 
 const extractMeetingDate = (message: string | undefined, explicitDate?: any): string | null => {
   if (explicitDate) return typeof explicitDate === 'string' ? explicitDate : explicitDate?.toISOString?.() || null;
   if (!message) return null;
   const match = message.match(/\[Interview Date:\s*([^\]]+)\]/);
-  return match ? match[1] : null;
+  return match ? match[1] ?? null : null;
 };
 
 // Custom premium Progress Ring Component
@@ -97,8 +95,8 @@ const Dashboard: React.FC = () => {
   const [chatMessages, setChatMessages] = useState<{ id: string; content: string; role: string; created_at: string }[]>([]);
   const [chatInput, setChatInput] = useState('');
   const [sendingMessage, setSendingMessage] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [rejectionCounts, setRejectionCounts] = useState<Record<string, number>>({});
+  const [, setLoading] = useState(true);
+  const [, setRejectionCounts] = useState<Record<string, number>>({});
   const [leetcodeCount, setLeetcodeCount] = useState(0);
   const [englishCount, setEnglishCount] = useState(0);
   const [practiceHistory, setPracticeHistory] = useState<any[]>([]);
@@ -425,29 +423,9 @@ const Dashboard: React.FC = () => {
   const studyMinutes = Math.floor((totalStudyTimeSeconds % 3600) / 60);
   const studyTimeFormatted = studyHours > 0 ? `${studyHours}h ${studyMinutes}m` : `${studyMinutes}m`;
 
-  const averageQuizScore = userMetrics.length > 0
-    ? Math.round(userMetrics.reduce((sum, m) => sum + (m.avgScore || 0), 0) / userMetrics.length)
-    : 0;
-
   const averageConsistency = userMetrics.length > 0
     ? Math.round(userMetrics.reduce((sum, m) => sum + (m.consistencyScore || 0), 0) / userMetrics.length)
     : 0;
-
-  const overallProgress = enrollments.length > 0
-    ? Math.round(
-        enrollments.reduce((sum, enr) => {
-          const m = userMetrics.find(metric => metric.courseId === enr.courseId);
-          if (!m) return sum;
-          const total = m.totalModules || 1;
-          const completed = m.completedModules || 0;
-          return sum + (completed / total) * 100;
-        }, 0) / enrollments.length
-      )
-    : 0;
-
-  const strengthsList = [...new Set(userMetrics.flatMap(m => m.strengths || []))].slice(0, 6);
-  const weaknessesList = [...new Set(userMetrics.flatMap(m => m.weaknesses || []))].slice(0, 6);
-  const recommendationsList = [...new Set(userMetrics.flatMap(m => m.recommendations || []))].slice(0, 4);
 
   // Next steps action items builder
   const nextSteps: string[] = [];
@@ -865,9 +843,9 @@ const Dashboard: React.FC = () => {
                               <span className="text-xs font-bold text-slate-700">{completed}/{total} Modules</span>
                             </div>
 
-                            {chatUnreadCounts[enr.courseId!] > 0 && (
+                            {(chatUnreadCounts[enr.courseId] ?? 0) > 0 && (
                               <span className="px-2 py-0.5 bg-emerald-500 text-white text-[9px] font-extrabold rounded-full shrink-0 animate-pulse">
-                                {chatUnreadCounts[enr.courseId!]} new
+                                {chatUnreadCounts[enr.courseId]} new
                               </span>
                             )}
 

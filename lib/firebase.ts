@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { User as SupabaseUser, AuthError } from '@supabase/supabase-js';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 // ── Firebase-compatible User type ───────────────────────────────────────
 
@@ -103,7 +103,7 @@ interface LimitFilter { _limit: number }
 
 // ── Exported Firestore-like functions ────────────────────────────────────
 
-export function collection(db: any, path: string, ...rest: string[]): CollectionRef {
+export function collection(_db: any, path: string, ...rest: string[]): CollectionRef {
  const table = [path, ...rest].join('/');
  return { type: 'collection', table, filters: [], orders: [] };
 }
@@ -118,13 +118,13 @@ export function doc(db: any, path?: string, ...pathSegments: string[]): DocRef {
  const parts = path.split('/');
  const id = parts[parts.length - 1];
  const table = parts.slice(0, -1).join('/');
- return { type: 'document', table, id, filters: [], orders: [] };
- }
- // doc(db, 'collection', 'id') or doc(db, 'collection', 'sub', 'id')
- let table = path!;
- let id: string;
- if (pathSegments.length >= 2) {
- id = pathSegments[pathSegments.length - 1];
+ return { type: 'document', table, id: id!, filters: [], orders: [] };
+  }
+  // doc(db, 'collection', 'id') or doc(db, 'collection', 'sub', 'id')
+  let table = path!;
+  let id: string;
+  if (pathSegments.length >= 2) {
+  id = pathSegments[pathSegments.length - 1]!;
  table = [path, ...pathSegments.slice(0, -1)].join('/');
  } else {
  id = pathSegments[0] || '';
@@ -168,7 +168,7 @@ export async function getDocs(ref: CollectionRef | DocRef): Promise<{
  }
  if (ref.limitCount) query = query.limit(ref.limitCount);
 
- const { data, error } = await query;
+ const { data, error: _error } = await query;
  const docs = (data || []).map((d: any) => ({ data: () => convertKeys(d, snakeToCamel), id: d.id }));
  return { docs, forEach: (cb: any) => docs.forEach(cb), empty: docs.length === 0, size: docs.length };
 }
@@ -304,23 +304,23 @@ export function onSnapshot(
 
 // ── Firebase Auth compatibility ──────────────────────────────────────────
 
-export function onAuthStateChanged(authObj: any, cb: AuthCallback): () => void {
+export function onAuthStateChanged(_authObj: any, cb: AuthCallback): () => void {
  return auth.onAuthStateChanged(cb);
 }
 
-export async function signInWithEmailAndPassword(authObj: any, email: string, password: string) {
+export async function signInWithEmailAndPassword(_authObj: any, email: string, password: string) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
   return { user: data.user ? new FirebaseUserClass(data.user) : null };
 }
 
-export async function createUserWithEmailAndPassword(authObj: any, email: string, password: string) {
+export async function createUserWithEmailAndPassword(_authObj: any, email: string, password: string) {
   const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) throw error;
   return { user: data.user ? new FirebaseUserClass(data.user) : null };
 }
 
-export async function signOut(authObj: any): Promise<void> {
+export async function signOut(_authObj: any): Promise<void> {
  await supabase.auth.signOut();
 }
 
@@ -329,8 +329,8 @@ export class GoogleAuthProvider {
  constructor() {}
 }
 
-export async function signInWithPopup(authObj: any, provider: any): Promise<{ user: FirebaseUserClass | null }> {
-  const { data, error } = await supabase.auth.signInWithOAuth({
+export async function signInWithPopup(_authObj: any, _provider: any): Promise<{ user: FirebaseUserClass | null }> {
+  const { error } = await supabase.auth.signInWithOAuth({
   provider: 'google',
   options: { redirectTo: window.location.origin },
   });
@@ -341,12 +341,12 @@ export async function signInWithPopup(authObj: any, provider: any): Promise<{ us
   return { user: null };
 }
 
-export async function sendPasswordResetEmail(authObj: any, email: string): Promise<void> {
+export async function sendPasswordResetEmail(_authObj: any, email: string): Promise<void> {
  const { error } = await supabase.auth.resetPasswordForEmail(email);
  if (error) throw error;
 }
 
-export async function updateProfile(user: any, profile: { displayName?: string; photoURL?: string }): Promise<void> {
+export async function updateProfile(_user: any, profile: { displayName?: string; photoURL?: string }): Promise<void> {
  const updates: any = {};
  if (profile.displayName) updates.display_name = profile.displayName;
  if (profile.photoURL) updates.avatar_url = profile.photoURL;
@@ -354,7 +354,7 @@ export async function updateProfile(user: any, profile: { displayName?: string; 
  if (error) throw error;
 }
 
-export async function sendEmailVerification(user?: any): Promise<void> {
+export async function sendEmailVerification(_user?: any): Promise<void> {
  // Supabase handles verification on signup; no-op here
 }
 
@@ -362,7 +362,7 @@ export const EmailAuthProvider = {
  credential: (email: string, password: string) => ({ email, password }),
 };
 
-export async function reauthenticateWithCredential(user: any, credential: any): Promise<void> {
+export async function reauthenticateWithCredential(_user: any, _credential: any): Promise<void> {
  const { error } = await supabase.auth.reauthenticate();
  if (error) throw error;
 }
